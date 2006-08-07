@@ -1,0 +1,17 @@
+<projectDescription>
+  <name>cas-client-uportal</name>
+  <comment>JA-SIG CAS Client for Java is the integration point for applications that want to speak with a CAS
+        server, either via the CAS 1.0 or CAS 2.0 protocol.</comment>
+  <projects>
+    <project>cas-client-core</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+      <arguments/>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

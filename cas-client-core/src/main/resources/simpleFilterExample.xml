@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-init-method="init">
+
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location"
+			value="/WEB-INF/cas-client.properties" />
+	</bean>
+	
+	<bean id="ticketValidator"
+		class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+		<property name="proxyCallbackUrl"
+			value="${cas.server.proxyCallbackUrl}" />
+		<property name="proxyGrantingTicketStorage"
+			ref="proxyGrantingTicketStorage" />
+		<property name="casServerUrl" value="${cas.server.url}" />
+		<property name="httpClient">
+			<bean class="org.jasig.cas.util.HttpClient3FactoryBean" />
+		</property>
+	</bean>
+
+	<bean id="proxyGrantingTicketStorage"
+		class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl" />
+	
+	<bean
+		id="casHttpServletRequestWrapperFilter"
+		class="org.jasig.cas.client.web.filter.HttpServletRequestWrapperFilter" />
+		
+	<bean
+		id="casValidationFilter"
+		class="org.jasig.cas.client.web.filter.CasValidationFilter">
+		<property
+			name="ticketValidator"
+			ref="ticketValidator" />
+		<property
+			name="serverName"
+			value="localhost:8443" />
+	</bean>
+	
+	<bean
+		id="casAuthenticationFilter"
+		class="org.jasig.cas.client.web.filter.CasAuthenticationFilter">
+		<property
+			name="casServerLoginUrl"
+			value="${cas.server.url}login" />
+		<property
+			name="gateway"
+			value="false" />
+		<property
+			name="renew"
+			value="false" />
+		<property
+			name="serverName"
+			value="localhost:8443" />
+	</bean>
+	
+	<bean
+		id="casAuthorizationFilter"
+		class="org.jasig.cas.client.web.filter.CasAuthorizationFilter">
+		<property
+			name="decider"
+			ref="decider" />
+	</bean>
+	
+	<bean
+		id="decider"
+		class="org.jasig.cas.client.authorization.DefaultCasAuthorizedDeciderImpl">
+		<property
+			name="users">
+			<list>
+				<value>battags</value>
+			</list>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,8 @@
+<settings>
+	<mirrors>
+		<mirrorOf>central</mirrorOf>
+		<name>JA-SIG Maven Repository</name>
+		<url>http://developer.ja-sig.org/maven/</url>
+		<id>jasig</id>
+	</mirrors>
+</settings>

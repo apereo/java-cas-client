@@ -1,0 +1,39 @@
+<assembly>
+    <id>dist</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>tar.gz</format>
+        <format>zip</format>
+    </formats>
+    <moduleSets>
+        <moduleSet>
+            <includes>
+                <include>org.jasig.cas:cas-client-core</include>
+                <include>org.jasig.cas:cas-client-uportal</include>
+            </includes>
+
+            <sources>
+                <outputDirectory>${artifactId}/src</outputDirectory>
+                <includes>
+                    <directory>src</directory>
+                    <include>README*</include>
+                    <include>LICENSE*</include>
+                    <include>NOTICE*</include>
+                    <include>pom.xml</include>
+                </includes>
+            </sources>
+            <binaries>
+                <outputDirectory>bin</outputDirectory>
+                <includeDependencies>true</includeDependencies>
+                <unpack>false</unpack>
+                <includes>
+                    <include>target/*.jar</include>
+                </includes>
+                <excludes>
+                    <exclude>*uportal*.jar</exclude>
+                    <exclude>*spring-mock*.jar</exclude>
+                </excludes>
+            </binaries>
+        </moduleSet>
+    </moduleSets>
+</assembly>
