@@ -3,13 +3,13 @@
     <parent>
         <groupId>org.jasig.cas</groupId>
         <artifactId>cas-client</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>3.0-rc1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas</groupId>
     <artifactId>cas-client-uportal</artifactId>
     <packaging>jar</packaging>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0-rc1</version>
     <name>JA-SIG CAS Client for Java - uPortal Integration</name>
     <url>http://www.ja-sig.org/products/cas/</url>
 
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>org.jasig.cas</groupId>
             <artifactId>cas-client-core</artifactId>
-            <version>3.0-SNAPSHOT</version>
+            <version>3.0-rc1</version>
         </dependency>
     </dependencies>
    <reporting>
