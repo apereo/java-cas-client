@@ -1,12 +1,7 @@
 package org.jasig.cas.client;
 
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -15,7 +10,7 @@ import java.net.Socket;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class PublicTestHttpServer extends Thread {
+public final class PublicTestHttpServer extends Thread {
 
     private static PublicTestHttpServer httpServer;
 
@@ -28,19 +23,19 @@ public class PublicTestHttpServer extends Thread {
     public String encoding;
 
     private PublicTestHttpServer(String data, String encoding, String MIMEType,
-        int port) throws UnsupportedEncodingException {
+                                 int port) throws UnsupportedEncodingException {
         this(data.getBytes(encoding), encoding, MIMEType, port);
     }
 
     private PublicTestHttpServer(byte[] data, String encoding, String MIMEType,
-        int port) throws UnsupportedEncodingException {
+                                 int port) throws UnsupportedEncodingException {
 
         this.content = data;
         this.port = port;
         this.encoding = encoding;
         String header = "HTTP/1.0 200 OK\r\n" + "Server: OneFile 1.0\r\n"
-        // + "Content-length: " + this.content.length + "\r\n"
-            + "Content-type: " + MIMEType + "\r\n\r\n";
+                // + "Content-length: " + this.content.length + "\r\n"
+                + "Content-type: " + MIMEType + "\r\n\r\n";
         this.header = header.getBytes("ASCII");
 
     }
@@ -49,7 +44,7 @@ public class PublicTestHttpServer extends Thread {
         if (httpServer == null) {
             try {
                 httpServer = new PublicTestHttpServer("test", "ASCII",
-                    "text/plain", 8085);
+                        "text/plain", 8085);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -65,16 +60,16 @@ public class PublicTestHttpServer extends Thread {
         try {
             ServerSocket server = new ServerSocket(this.port);
             System.out.println("Accepting connections on port "
-                + server.getLocalPort());
+                    + server.getLocalPort());
             while (true) {
 
                 Socket connection = null;
                 try {
                     connection = server.accept();
                     OutputStream out = new BufferedOutputStream(connection
-                        .getOutputStream());
+                            .getOutputStream());
                     InputStream in = new BufferedInputStream(connection
-                        .getInputStream());
+                            .getInputStream());
                     // read the first line only; that's all we need
                     StringBuffer request = new StringBuffer(80);
                     while (true) {

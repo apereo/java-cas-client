@@ -15,7 +15,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import javax.servlet.ServletConfig;
 
-public class SpringConfiguredProxyReceptorServletTests extends TestCase {
+public final class SpringConfiguredProxyReceptorServletTests extends TestCase {
 
     private XmlWebApplicationContext webApplicationContext;
 
@@ -23,7 +23,7 @@ public class SpringConfiguredProxyReceptorServletTests extends TestCase {
         AbstractProxyReceptorServlet servlet = new SpringConfiguredProxyReceptorServlet();
         try {
             servlet
-                .init(getServletConfig("classpath:badProxyGrantingTicketStorageConfig.xml"));
+                    .init(getServletConfig("classpath:badProxyGrantingTicketStorageConfig.xml"));
             fail("Exception expected.");
         } catch (final Exception e) {
             // expected
@@ -34,7 +34,7 @@ public class SpringConfiguredProxyReceptorServletTests extends TestCase {
         AbstractProxyReceptorServlet servlet = new SpringConfiguredProxyReceptorServlet();
         try {
             servlet
-                .init(getServletConfig("classpath:twoProxyGrantingTicketStorageConfig.xml"));
+                    .init(getServletConfig("classpath:twoProxyGrantingTicketStorageConfig.xml"));
             fail("Exception expected.");
         } catch (final Exception e) {
             // expected
@@ -45,7 +45,7 @@ public class SpringConfiguredProxyReceptorServletTests extends TestCase {
         AbstractProxyReceptorServlet servlet = new SpringConfiguredProxyReceptorServlet();
         try {
             servlet
-                .init(getServletConfig("classpath:oneProxyGrantingTicketStorageConfig.xml"));
+                    .init(getServletConfig("classpath:oneProxyGrantingTicketStorageConfig.xml"));
         } catch (final Exception e) {
             fail("Unexpected excception.");
         }
@@ -54,7 +54,7 @@ public class SpringConfiguredProxyReceptorServletTests extends TestCase {
     public void testNoPgtOrPgtIouPassed() throws Exception {
         final AbstractProxyReceptorServlet servlet = new SpringConfiguredProxyReceptorServlet();
         servlet
-            .init(getServletConfig("classpath:proxyGrantingTicketStorageConfig.xml"));
+                .init(getServletConfig("classpath:proxyGrantingTicketStorageConfig.xml"));
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.doGet(new MockHttpServletRequest(), response);
@@ -65,10 +65,10 @@ public class SpringConfiguredProxyReceptorServletTests extends TestCase {
     public void testPgtPassed() throws Exception {
         final AbstractProxyReceptorServlet servlet = new SpringConfiguredProxyReceptorServlet();
         servlet
-            .init(getServletConfig("classpath:proxyGrantingTicketStorageConfig.xml"));
+                .init(getServletConfig("classpath:proxyGrantingTicketStorageConfig.xml"));
 
         final ProxyGrantingTicketStorage storage = (ProxyGrantingTicketStorage) this.webApplicationContext
-            .getBean("proxyGrantingTicketStorage");
+                .getBean("proxyGrantingTicketStorage");
 
         final MockHttpServletRequest request = new MockHttpServletRequest();
         request.setParameter("pgtIou", "test");
@@ -83,13 +83,13 @@ public class SpringConfiguredProxyReceptorServletTests extends TestCase {
     private ServletConfig getServletConfig(final String contextLocation) {
         this.webApplicationContext = new XmlWebApplicationContext();
         this.webApplicationContext
-            .setConfigLocations(new String[] {contextLocation});
+                .setConfigLocations(new String[]{contextLocation});
         this.webApplicationContext.refresh();
 
         MockServletContext context = new MockServletContext();
         context.setAttribute(
-            WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
-            this.webApplicationContext);
+                WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
+                this.webApplicationContext);
 
         return new MockServletConfig(context);
     }

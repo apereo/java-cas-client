@@ -16,18 +16,18 @@ public abstract class AbstractProxyGrantingTicketStorageTests extends TestCase {
 
     protected ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl;
 
-    public void testNullValue() {
+    public final void testNullValue() {
         assertNull(this.proxyGrantingTicketStorageImpl
-            .retrieve("this should not exist"));
+                .retrieve("this should not exist"));
     }
 
-    public void testValueExists() {
+    public final void testValueExists() {
         final String CONST_KEY = "testKey";
         final String CONST_VALUE = "testValue";
 
         this.proxyGrantingTicketStorageImpl.save(CONST_KEY, CONST_VALUE);
 
         assertEquals(CONST_VALUE, this.proxyGrantingTicketStorageImpl
-            .retrieve(CONST_KEY));
+                .retrieve(CONST_KEY));
     }
 }

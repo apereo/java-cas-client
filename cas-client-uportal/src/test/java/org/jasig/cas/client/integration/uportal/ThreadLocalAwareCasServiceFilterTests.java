@@ -1,9 +1,9 @@
 package org.jasig.cas.client.integration.uportal;
 
 import junit.framework.TestCase;
+import org.jasig.cas.authentication.principal.SimpleService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.jasig.cas.authentication.principal.SimpleService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -16,15 +16,13 @@ import java.io.IOException;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class ThreadLocalAwareCasServiceFilterTests extends TestCase {
+public final class ThreadLocalAwareCasServiceFilterTests extends TestCase {
 
     private ThreadLocalAwareCasServiceFilter filter;
 
 
     protected void setUp() throws Exception {
-        this.filter = new ThreadLocalAwareCasServiceFilter();
-        this.filter.setServiceUrl("http://localhost");
-        this.filter.init();
+        this.filter = new ThreadLocalAwareCasServiceFilter(null, "http://localhost");
     }
 
     public void testServiceSetter() throws IOException, ServletException {

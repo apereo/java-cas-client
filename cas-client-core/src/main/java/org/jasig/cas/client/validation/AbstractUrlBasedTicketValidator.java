@@ -12,28 +12,36 @@ import java.net.URLEncoder;
 /**
  * Abstract class for validating tickets that defines a workflow that all ticket
  * validation should follow.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public abstract class AbstractUrlBasedTicketValidator implements
-    TicketValidator {
+        TicketValidator {
 
-    /** Instance of Commons Logging. */
-    protected Log log = LogFactory.getLog(this.getClass());
+    /**
+     * Instance of Commons Logging.
+     */
+    protected final Log log = LogFactory.getLog(this.getClass());
 
-    /** Url to CAS server. */
-    private String casServerUrl;
+    /**
+     * Url to CAS server.
+     */
+    private final String casServerUrl;
 
-    /** Whether this client is looking for an authentication from renew. */
-    private boolean renew;
+    /**
+     * Whether this client is looking for an authentication from renew.
+     */
+    private final boolean renew;
 
-    /** Instance of HttpClient for connecting to server. */
-    private HttpClient httpClient;
+    /**
+     * Instance of HttpClient for connecting to server.
+     */
+    private final HttpClient httpClient;
 
     public final Assertion validate(final String ticketId, final Service service)
-        throws ValidationException {
+            throws ValidationException {
         final String url = constructURL(ticketId, service);
         final String response = getResponseFromURL(url);
 
@@ -41,13 +49,13 @@ public abstract class AbstractUrlBasedTicketValidator implements
     }
 
     protected abstract String constructURL(final String ticketId,
-        final Service service);
+                                           final Service service);
 
     protected abstract Assertion parseResponse(final String response)
-        throws ValidationException;
+            throws ValidationException;
 
     private String getResponseFromURL(final String url)
-        throws ValidationException {
+            throws ValidationException {
         final GetMethod method = new GetMethod(url);
 
         try {
@@ -56,24 +64,25 @@ public abstract class AbstractUrlBasedTicketValidator implements
         } catch (Exception e) {
             log.error(e, e);
             throw new ValidationException(
-                "Unable to retrieve response from CAS Server.", e);
+                    "Unable to retrieve response from CAS Server.", e);
         } finally {
             method.releaseConnection();
         }
     }
 
-    public final void init() {
-        CommonUtils.assertNotNull(this.casServerUrl,
-            "the validationUrl cannot be null");
+    protected AbstractUrlBasedTicketValidator(final String casServerUrl, final boolean renew, final HttpClient httpClient) {
+        CommonUtils.assertNotNull(casServerUrl,
+                "the validationUrl cannot be null");
         CommonUtils
-            .assertNotNull(this.httpClient, "httpClient cannot be null.");
-
-        afterPropertiesSetInternal();
+                .assertNotNull(httpClient, "httpClient cannot be null.");
+        this.casServerUrl = casServerUrl;
+        this.renew = renew;
+        this.httpClient = httpClient;
     }
 
     /**
      * Helper method to encode the service url.
-     * 
+     *
      * @param service the service url to encode.
      * @return the encoded service url.
      */
@@ -92,26 +101,4 @@ public abstract class AbstractUrlBasedTicketValidator implements
     protected final boolean isRenew() {
         return this.renew;
     }
-
-    public final void setCasServerUrl(final String casServerUrl) {
-        this.casServerUrl = casServerUrl;
-    }
-
-    public final void setHttpClient(final HttpClient httpClient) {
-        this.httpClient = httpClient;
-    }
-
-    public final void setRenew(final boolean renew) {
-        this.renew = renew;
-    }
-
-    /**
-     * Template method for afterProperties() for subclasses to call.
-     * 
-     * @throws Exception
-     */
-    protected void afterPropertiesSetInternal() {
-        // template method
-    }
-
 }

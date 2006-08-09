@@ -5,10 +5,6 @@
  */
 package org.jasig.cas.client.util;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
@@ -18,21 +14,27 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Common utilities for easily parsing XML without duplicating logic.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public final class XmlUtils {
 
-    /** Static instance of Commons Logging. */
+    /**
+     * Static instance of Commons Logging.
+     */
     private final static Log LOG = LogFactory.getLog(XmlUtils.class);
 
     /**
      * Get an instance of an XML reader from the XMLReaderFactory.
-     * 
+     *
      * @return the XMLReader.
      */
     public static XMLReader getXmlReader() {
@@ -46,32 +48,33 @@ public final class XmlUtils {
     /**
      * Retrieve the text for a group of elements. Each text element is an entry
      * in a list.
-     * 
+     *
      * @param xmlAsString the xml response
-     * @param element the element to look for
+     * @param element     the element to look for
      * @return the list of text from the elements.
      */
     public static List getTextForElements(final String xmlAsString,
-        final String element) {
-        final List elements = new ArrayList();
+                                          final String element) {
+        // XXX: optimized to 2, as most proxy chains have a length of no more than two
+        final List elements = new ArrayList(2);
         final XMLReader reader = getXmlReader();
 
-        final DefaultHandler handler = new DefaultHandler(){
+        final DefaultHandler handler = new DefaultHandler() {
 
             private boolean foundElement = false;
 
             private StringBuffer buffer = new StringBuffer();
 
             public void startElement(final String uri, final String localName,
-                final String qName, final Attributes attributes)
-                throws SAXException {
+                                     final String qName, final Attributes attributes)
+                    throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = true;
                 }
             }
 
             public void endElement(final String uri, final String localName,
-                final String qName) throws SAXException {
+                                   final String qName) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = false;
                     elements.add(this.buffer.toString());
@@ -80,7 +83,7 @@ public final class XmlUtils {
             }
 
             public void characters(char[] ch, int start, int length)
-                throws SAXException {
+                    throws SAXException {
                 if (this.foundElement) {
                     this.buffer.append(ch, start, length);
                 }
@@ -103,37 +106,37 @@ public final class XmlUtils {
     /**
      * Retrieve the text for a specific element (when we know there is only
      * one).
-     * 
+     *
      * @param xmlAsString the xml response
-     * @param element the element to look for
+     * @param element     the element to look for
      * @return the text value of the element.
      */
     public static String getTextForElement(final String xmlAsString,
-        final String element) {
+                                           final String element) {
         final XMLReader reader = getXmlReader();
         final StringBuffer buffer = new StringBuffer();
 
-        final DefaultHandler handler = new DefaultHandler(){
+        final DefaultHandler handler = new DefaultHandler() {
 
             private boolean foundElement = false;
 
             public void startElement(final String uri, final String localName,
-                final String qName, final Attributes attributes)
-                throws SAXException {
+                                     final String qName, final Attributes attributes)
+                    throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = true;
                 }
             }
 
             public void endElement(final String uri, final String localName,
-                final String qName) throws SAXException {
+                                   final String qName) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = false;
                 }
             }
 
             public void characters(char[] ch, int start, int length)
-                throws SAXException {
+                    throws SAXException {
                 if (this.foundElement) {
                     buffer.append(ch, start, length);
                 }

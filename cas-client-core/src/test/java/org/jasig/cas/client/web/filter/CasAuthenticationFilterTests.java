@@ -22,7 +22,7 @@ import java.net.URLEncoder;
 
 /**
  * Tests for the CasAuthenticationFilter.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
@@ -36,13 +36,8 @@ public final class CasAuthenticationFilterTests extends TestCase {
     private CasAuthenticationFilter filter;
 
     protected void setUp() throws Exception {
-        this.filter = new CasAuthenticationFilter();
-        this.filter.setCasServerLoginUrl(CAS_LOGIN_URL);
-        this.filter.setGateway(false);
-        this.filter.setRenew(false);
-        this.filter.setServiceUrl(CAS_SERVICE_URL);
+        this.filter = new CasAuthenticationFilter(null, CAS_SERVICE_URL, CAS_LOGIN_URL, false, false);
         this.filter.init(new MockFilterConfig());
-        this.filter.init();
     }
 
     protected void tearDown() throws Exception {
@@ -53,10 +48,10 @@ public final class CasAuthenticationFilterTests extends TestCase {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                throws IOException, ServletException {
+                    throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -65,8 +60,8 @@ public final class CasAuthenticationFilterTests extends TestCase {
         this.filter.doFilter(request, response, filterChain);
 
         assertEquals(CAS_LOGIN_URL + "?service="
-            + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"), response
-            .getRedirectedUrl());
+                + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"), response
+                .getRedirectedUrl());
     }
 
     public void testRedirectWithQueryString() throws Exception {
@@ -76,22 +71,21 @@ public final class CasAuthenticationFilterTests extends TestCase {
         request.setQueryString("test=12456");
         request.setRequestURI("/test");
         request.setSecure(true);
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                throws IOException, ServletException {
+                    throws IOException, ServletException {
                 // nothing to do
             }
         };
 
         request.setSession(session);
-        this.filter.setServiceUrl(null);
-        this.filter.setServerName("localhost:8443");
+        this.filter = new CasAuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, false, false);
         this.filter.doFilter(request, response, filterChain);
 
         assertEquals(CAS_LOGIN_URL
-            + "?service="
-            + URLEncoder.encode("https://localhost:8443"
+                + "?service="
+                + URLEncoder.encode("https://localhost:8443"
                 + request.getRequestURI() + "?" + request.getQueryString(),
                 "UTF-8"), response.getRedirectedUrl());
     }
@@ -100,17 +94,17 @@ public final class CasAuthenticationFilterTests extends TestCase {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                throws IOException, ServletException {
+                    throws IOException, ServletException {
                 // nothing to do
             }
         };
 
         request.setSession(session);
         session.setAttribute(AbstractCasFilter.CONST_ASSERTION,
-            new AssertionImpl(new SimplePrincipal("test")));
+                new AssertionImpl(new SimplePrincipal("test")));
         this.filter.doFilter(request, response, filterChain);
 
         assertNull(response.getRedirectedUrl());
@@ -120,15 +114,15 @@ public final class CasAuthenticationFilterTests extends TestCase {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                throws IOException, ServletException {
+                    throws IOException, ServletException {
                 // nothing to do
             }
         };
 
-        this.filter.setRenew(true);
+        this.filter = new CasAuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, true, false);
         request.setSession(session);
         this.filter.doFilter(request, response, filterChain);
 
@@ -140,16 +134,16 @@ public final class CasAuthenticationFilterTests extends TestCase {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                throws IOException, ServletException {
+                    throws IOException, ServletException {
                 // nothing to do
             }
         };
 
         request.setSession(session);
-        this.filter.setGateway(true);
+        this.filter = new CasAuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, true, true);
         this.filter.doFilter(request, response, filterChain);
         assertNotNull(session.getAttribute(AbstractCasFilter.CONST_GATEWAY));
         assertNotNull(response.getRedirectedUrl());

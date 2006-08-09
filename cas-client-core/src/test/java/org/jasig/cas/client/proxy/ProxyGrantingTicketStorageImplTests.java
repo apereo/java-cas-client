@@ -7,17 +7,15 @@ package org.jasig.cas.client.proxy;
 
 /**
  * Test cases for the ProxyGrantingTicketStorageImplTests.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class ProxyGrantingTicketStorageImplTests extends
-    AbstractProxyGrantingTicketStorageTests {
+public final class ProxyGrantingTicketStorageImplTests extends
+        AbstractProxyGrantingTicketStorageTests {
 
     protected void setUp() throws Exception {
-        this.proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
-        this.proxyGrantingTicketStorageImpl.setTimeout(1000);
-        this.proxyGrantingTicketStorageImpl.init();
+        this.proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl(1000);
     }
 }

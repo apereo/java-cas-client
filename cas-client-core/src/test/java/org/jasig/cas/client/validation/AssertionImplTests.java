@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Test cases for the {@link AssertionImpl}.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
@@ -41,11 +41,11 @@ public final class AssertionImplTests extends TestCase {
 
     public void testCompleteConstructor() {
         final Assertion assertion = new AssertionImpl(CONST_PRINCIPAL,
-            CONST_ATTRIBUTES, CONST_PROXY_GRANTING_TICKET_IOU);
+                CONST_ATTRIBUTES, CONST_PROXY_GRANTING_TICKET_IOU);
 
         assertEquals(CONST_PRINCIPAL, assertion.getPrincipal());
         assertEquals(CONST_ATTRIBUTES, assertion.getAttributes());
         assertEquals(CONST_PROXY_GRANTING_TICKET_IOU, assertion
-            .getProxyGrantingTicketId());
+                .getProxyGrantingTicketId());
     }
 }

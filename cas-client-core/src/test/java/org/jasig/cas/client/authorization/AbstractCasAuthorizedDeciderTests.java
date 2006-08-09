@@ -5,13 +5,12 @@
  */
 package org.jasig.cas.client.authorization;
 
-import org.jasig.cas.authentication.principal.SimplePrincipal;
-
 import junit.framework.TestCase;
+import org.jasig.cas.authentication.principal.SimplePrincipal;
 
 /**
  * Abstract test for all CasAuthorizedDecider implementations.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
@@ -22,17 +21,17 @@ public abstract class AbstractCasAuthorizedDeciderTests extends TestCase {
 
     protected abstract CasAuthorizedDecider getCasAuthorizedDeciderImpl();
 
-    protected void setUp() throws Exception {
+    protected final void setUp() throws Exception {
         this.casAuthorizedDecider = getCasAuthorizedDeciderImpl();
     }
 
-    public void testIsAuthorized() {
+    public final void testIsAuthorized() {
         assertTrue(this.casAuthorizedDecider
-            .isAuthorizedToUseApplication(new SimplePrincipal("scott")));
+                .isAuthorizedToUseApplication(new SimplePrincipal("scott")));
     }
 
-    public void testIsNotAuthorized() {
+    public final void testIsNotAuthorized() {
         assertFalse(this.casAuthorizedDecider
-            .isAuthorizedToUseApplication(new SimplePrincipal("not")));
+                .isAuthorizedToUseApplication(new SimplePrincipal("not")));
     }
 }

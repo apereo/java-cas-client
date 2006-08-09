@@ -5,19 +5,19 @@
  */
 package org.jasig.cas.client.util;
 
+import junit.framework.TestCase;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
-import junit.framework.TestCase;
-
 /**
  * Tests for the CommonUtils.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class CommonUtilsTests extends TestCase {
+public final class CommonUtilsTests extends TestCase {
 
     public void testAssertNotNull() {
         final String CONST_MESSAGE = "test";

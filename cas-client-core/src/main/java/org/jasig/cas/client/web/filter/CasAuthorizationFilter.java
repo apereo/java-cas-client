@@ -20,17 +20,17 @@ import java.io.IOException;
  * Simple filter that attempts to determine if someone is authorized to use the
  * system. Assumes that you are protecting the application with the
  * AuthenticationFilter such that the Assertion is set in the session.
- * <p>
+ * <p/>
  * If a user is not authorized to use the application, the response code of 403
  * will be sent to the browser.
- * <p>
+ * <p/>
  * This filter needs to be configured after both the authentication filter and
  * the validation filter.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.0
  * @see CasAuthorizedDecider
+ * @since 3.0
  */
 public final class CasAuthorizationFilter implements Filter {
 
@@ -38,34 +38,43 @@ public final class CasAuthorizationFilter implements Filter {
      * Decider that determines whether a specified principal has access to the
      * resource or not.
      */
-    private CasAuthorizedDecider decider;
+    private final CasAuthorizedDecider decider;
+
+    /**
+     * @param casAuthorizedDecider the thing actually deciding to grant access or not.
+     */
+    public CasAuthorizationFilter(final CasAuthorizedDecider casAuthorizedDecider) {
+        CommonUtils.assertNotNull(casAuthorizedDecider,
+                "the casAuthorizedDecider cannot be null.");
+        this.decider = casAuthorizedDecider;
+    }
 
     public void destroy() {
         // nothing to do here
     }
 
     public void doFilter(final ServletRequest servletRequest,
-        final ServletResponse servletResponse, final FilterChain filterChain)
-        throws IOException, ServletException {
+                         final ServletResponse servletResponse, final FilterChain filterChain)
+            throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final Assertion assertion = (Assertion) request.getSession()
-            .getAttribute(AbstractCasFilter.CONST_ASSERTION);
+                .getAttribute(AbstractCasFilter.CONST_ASSERTION);
 
         if (assertion == null) {
             throw new ServletException(
-                "assertion session attribute expected but not found.");
+                    "assertion session attribute expected but not found.");
         }
 
         final Principal principal = assertion.getPrincipal();
 
         final boolean authorized = this.decider
-            .isAuthorizedToUseApplication(principal);
+                .isAuthorizedToUseApplication(principal);
 
         if (!authorized) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             throw new AuthorizationException(principal.getId()
-                + " is not authorized to use this application.");
+                    + " is not authorized to use this application.");
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
@@ -73,15 +82,5 @@ public final class CasAuthorizationFilter implements Filter {
 
     public void init(final FilterConfig filterConfig) throws ServletException {
         // nothing to do here
-
-    }
-
-    public void setDecider(final CasAuthorizedDecider decider) {
-        this.decider = decider;
-    }
-
-    public void init() {
-        CommonUtils.assertNotNull(this.decider,
-            "the casAuthorizedDecider cannot be null.");
     }
 }

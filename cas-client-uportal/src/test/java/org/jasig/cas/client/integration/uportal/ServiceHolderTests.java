@@ -8,9 +8,8 @@ import org.jasig.cas.authentication.principal.SimpleService;
  * @author Scott Battaglia
  * @version $Revision$ $Datet$
  * @since 3.0
- *
  */
-public class ServiceHolderTests extends TestCase {
+public final class ServiceHolderTests extends TestCase {
 
     public void testSetGetService() {
         final Service service = new SimpleService("test");

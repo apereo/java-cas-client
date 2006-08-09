@@ -4,11 +4,11 @@ import junit.framework.TestCase;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.authentication.principal.SimplePrincipal;
 import org.jasig.cas.authentication.principal.SimpleService;
+import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.AssertionImpl;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.jasig.cas.client.validation.ValidationException;
-import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.portal.security.PortalSecurityException;
 
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.HashMap;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class CasSecurityContextTests extends TestCase {
+public final class CasSecurityContextTests extends TestCase {
 
     private CasSecurityContext context;
 

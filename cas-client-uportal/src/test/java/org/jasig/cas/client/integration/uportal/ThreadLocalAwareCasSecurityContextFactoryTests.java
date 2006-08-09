@@ -8,7 +8,7 @@ import org.jasig.portal.security.ISecurityContext;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class ThreadLocalAwareCasSecurityContextFactoryTests extends TestCase {
+public final class ThreadLocalAwareCasSecurityContextFactoryTests extends TestCase {
 
     private ThreadLocalAwareCasSecurityContextFactory factory;
 

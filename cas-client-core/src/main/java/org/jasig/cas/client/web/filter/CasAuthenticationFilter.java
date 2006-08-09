@@ -5,46 +5,68 @@
  */
 package org.jasig.cas.client.web.filter;
 
-import java.io.IOException;
-import java.net.URLEncoder;
+import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.validation.Assertion;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.validation.Assertion;
+import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
  * the user by redirecting them to CAS (unless the user has a ticket).
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public final class CasAuthenticationFilter extends AbstractCasFilter {
 
-    /** The URL to the CAS Server login. */
-    private String casServerLoginUrl;
+    /**
+     * The URL to the CAS Server login.
+     */
+    private final String casServerLoginUrl;
 
-    /** Whether to send the renew request or not. */
-    private boolean renew;
+    /**
+     * Whether to send the renew request or not.
+     */
+    private final boolean renew;
 
-    /** Whether to send the gateway request or not. */
-    private boolean gateway;
+    /**
+     * Whether to send the gateway request or not.
+     */
+    private final boolean gateway;
+
+    public CasAuthenticationFilter(final String serverName, final String serviceUrl, final String casServerLoginUrl) {
+        this(serverName, serviceUrl, true, casServerLoginUrl, false, false);
+    }
+
+    public CasAuthenticationFilter(final String serverName, final String serviceUrl, final String casServerLoginUrl, boolean renew, boolean gateway) {
+        this(serverName, serviceUrl, true, casServerLoginUrl, renew, gateway);
+    }
+
+    public CasAuthenticationFilter(String serverName, String serviceUrl, boolean useSession, String casServerLoginUrl, boolean renew, boolean gateway) {
+        super(serverName, serviceUrl, useSession);
+        CommonUtils.assertNotNull(casServerLoginUrl,
+                "the CAS Server Login URL cannot be null.");
+        this.casServerLoginUrl = casServerLoginUrl;
+        this.renew = renew;
+        this.gateway = gateway;
+    }
 
     protected void doFilterInternal(final HttpServletRequest request,
-        final HttpServletResponse response, final FilterChain filterChain)
-        throws IOException, ServletException {
+                                    final HttpServletResponse response, final FilterChain filterChain)
+            throws IOException, ServletException {
         final HttpSession session = request.getSession(isUseSession());
         final String ticket = request.getParameter(PARAM_TICKET);
         final Assertion assertion = session != null ? (Assertion) session
-            .getAttribute(CONST_ASSERTION) : null;
+                .getAttribute(CONST_ASSERTION) : null;
         final boolean wasGatewayed = session != null
-            && session.getAttribute(CONST_GATEWAY) != null;
+                && session.getAttribute(CONST_GATEWAY) != null;
 
         if (CommonUtils.isBlank(ticket) && assertion == null && !wasGatewayed) {
             if (this.gateway && session != null) {
@@ -53,9 +75,9 @@ public final class CasAuthenticationFilter extends AbstractCasFilter {
 
             final String serviceUrl = constructServiceUrl(request, response);
             final String urlToRedirectTo = this.casServerLoginUrl + "?service="
-                + URLEncoder.encode(serviceUrl, "UTF-8")
-                + (this.renew ? "&renew=true" : "")
-                + (this.gateway ? "&gateway=true" : "");
+                    + URLEncoder.encode(serviceUrl, "UTF-8")
+                    + (this.renew ? "&renew=true" : "")
+                    + (this.gateway ? "&gateway=true" : "");
             response.sendRedirect(urlToRedirectTo);
             return;
         }
@@ -65,22 +87,5 @@ public final class CasAuthenticationFilter extends AbstractCasFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    public void setCasServerLoginUrl(final String casServerLoginUrl) {
-        this.casServerLoginUrl = casServerLoginUrl;
-    }
-
-    public void setGateway(final boolean gateway) {
-        this.gateway = gateway;
-    }
-
-    public void setRenew(final boolean renew) {
-        this.renew = renew;
-    }
-
-    protected void afterPropertiesSetInternal() {
-        CommonUtils.assertNotNull(this.casServerLoginUrl,
-            "the CAS Server Login URL cannot be null.");
     }
 }

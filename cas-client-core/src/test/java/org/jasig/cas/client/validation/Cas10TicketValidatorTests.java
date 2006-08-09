@@ -14,7 +14,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Test cases for the {@link Cas10TicketValidator}.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
@@ -28,19 +28,15 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
     }
 
     protected void setUp() throws Exception {
-        this.ticketValidator = new Cas10TicketValidator();
-        this.ticketValidator.setCasServerUrl(CONST_CAS_SERVER_URL);
-        this.ticketValidator.setRenew(true);
-        this.ticketValidator.setHttpClient(new HttpClient());
-        this.ticketValidator.init();
+        this.ticketValidator = new Cas10TicketValidator(CONST_CAS_SERVER_URL, true, new HttpClient());
     }
 
     public void testNoResponse() throws Exception {
         PublicTestHttpServer.instance().content = "no\n\n"
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
         try {
             this.ticketValidator.validate("testTicket", new SimpleService(
-                "myService"));
+                    "myService"));
             fail("ValidationException expected.");
         } catch (final ValidationException e) {
             // expected
@@ -48,20 +44,20 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
     }
 
     public void testYesResponse() throws ValidationException,
-        UnsupportedEncodingException {
+            UnsupportedEncodingException {
         PublicTestHttpServer.instance().content = "yes\nusername\n\n"
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
         final Assertion assertion = this.ticketValidator.validate("testTicket",
-            new SimpleService("myService"));
+                new SimpleService("myService"));
         assertEquals(CONST_USERNAME, assertion.getPrincipal().getId());
     }
 
     public void testBadResponse() throws UnsupportedEncodingException {
         PublicTestHttpServer.instance().content = "falalala\n\n"
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
         try {
             this.ticketValidator.validate("testTicket", new SimpleService(
-                "myService"));
+                    "myService"));
             fail("ValidationException expected.");
         } catch (final ValidationException e) {
             // expected

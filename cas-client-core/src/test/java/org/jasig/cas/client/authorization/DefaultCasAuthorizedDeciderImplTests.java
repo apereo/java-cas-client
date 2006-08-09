@@ -9,14 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class DefaultCasAuthorizedDeciderImplTests extends
-    AbstractCasAuthorizedDeciderTests {
+        AbstractCasAuthorizedDeciderTests {
 
     public CasAuthorizedDecider getCasAuthorizedDeciderImpl() {
-        final DefaultCasAuthorizedDeciderImpl impl = new DefaultCasAuthorizedDeciderImpl();
         final List list = new ArrayList();
         list.add("scott");
-        impl.setUsers(list);
-        impl.init();
+
+        final DefaultCasAuthorizedDeciderImpl impl = new DefaultCasAuthorizedDeciderImpl(list);
         return impl;
     }
 

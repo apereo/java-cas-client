@@ -24,7 +24,7 @@ import java.io.IOException;
 
 /**
  * Tests for the CasAuthorizationFilter.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
@@ -34,14 +34,13 @@ public final class CasAuthorizationFilterTests extends TestCase {
     private CasAuthorizationFilter casAuthorizationFilter;
 
     protected void setUp() throws Exception {
-        this.casAuthorizationFilter = new CasAuthorizationFilter();
-        this.casAuthorizationFilter.setDecider(new CasAuthorizedDecider(){
+        this.casAuthorizationFilter = new CasAuthorizationFilter(new CasAuthorizedDecider() {
 
             public boolean isAuthorizedToUseApplication(Principal principal) {
                 return principal.getId().equals("scott");
             }
         });
-        this.casAuthorizationFilter.init();
+
         this.casAuthorizationFilter.init(new MockFilterConfig());
     }
 
@@ -56,18 +55,18 @@ public final class CasAuthorizationFilterTests extends TestCase {
         request.setSession(session);
 
         session.setAttribute(AbstractCasFilter.CONST_ASSERTION,
-            new AssertionImpl(new SimplePrincipal("scott")));
+                new AssertionImpl(new SimplePrincipal("scott")));
 
         try {
             this.casAuthorizationFilter.doFilter(request, response,
-                new FilterChain(){
+                    new FilterChain() {
 
-                    public void doFilter(ServletRequest arg0,
-                        ServletResponse arg1) throws IOException,
-                        ServletException {
-                        // nothing to do
-                    }
-                });
+                        public void doFilter(ServletRequest arg0,
+                                             ServletResponse arg1) throws IOException,
+                                ServletException {
+                            // nothing to do
+                        }
+                    });
         } catch (Exception e) {
             fail("No exception expected");
         }
@@ -80,7 +79,7 @@ public final class CasAuthorizationFilterTests extends TestCase {
         request.setSession(session);
 
         session.setAttribute(AbstractCasFilter.CONST_ASSERTION,
-            new AssertionImpl(new SimplePrincipal("test")));
+                new AssertionImpl(new SimplePrincipal("test")));
 
         try {
             this.casAuthorizationFilter.doFilter(request, response, null);

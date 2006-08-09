@@ -5,9 +5,9 @@
  */
 package org.jasig.cas.client.validation;
 
+import org.apache.commons.httpclient.HttpClient;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.authentication.principal.SimplePrincipal;
-import org.jasig.cas.authentication.principal.SimpleService;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
@@ -15,37 +15,53 @@ import org.jasig.cas.client.util.XmlUtils;
 /**
  * Implementation of TicketValidator that follows the CAS 2.0 protocol (without
  * proxying).
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public class Cas20ServiceTicketValidator extends
-    AbstractUrlBasedTicketValidator {
+        AbstractUrlBasedTicketValidator {
 
-    /** Proxy callback url to send to the CAS server. */
-    private Service proxyCallbackUrl;
+    /**
+     * Proxy callback url to send to the CAS server.
+     */
+    private final Service proxyCallbackUrl;
 
-    /** The storage mechanism for the ProxyGrantingTickets. */
-    private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
+    /**
+     * The storage mechanism for the ProxyGrantingTickets.
+     */
+    private final ProxyGrantingTicketStorage proxyGrantingTicketStorage;
+
+    public Cas20ServiceTicketValidator(final String casServerUrl, final boolean renew, final HttpClient httpClient, final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
+        this(casServerUrl, renew, httpClient, null, proxyGrantingTicketStorage);
+    }
+
+    public Cas20ServiceTicketValidator(final String casServerUrl, final boolean renew, final HttpClient httpClient, final Service proxyCallbackUrl, final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
+        super(casServerUrl, renew, httpClient);
+        CommonUtils.assertNotNull(proxyGrantingTicketStorage,
+                "proxyGrantingTicketStorage cannot be null");
+        this.proxyCallbackUrl = proxyCallbackUrl;
+        this.proxyGrantingTicketStorage = proxyGrantingTicketStorage;
+    }
 
     protected String constructURL(final String ticketId,
-        final Service service) {
+                                  final Service service) {
         return getCasServerUrl()
-            + getValidationUrlName()
-            + "?ticket="
-            + ticketId
-            + (isRenew() ? "&renew=true" : "")
-            + "&service="
-            + getEncodedService(service)
-            + (this.proxyCallbackUrl != null ? "&pgtUrl="
+                + getValidationUrlName()
+                + "?ticket="
+                + ticketId
+                + (isRenew() ? "&renew=true" : "")
+                + "&service="
+                + getEncodedService(service)
+                + (this.proxyCallbackUrl != null ? "&pgtUrl="
                 + getEncodedService(this.proxyCallbackUrl) : "");
     }
 
     protected final Assertion parseResponse(String response)
-        throws ValidationException {
+            throws ValidationException {
         final String error = XmlUtils.getTextForElement(response,
-            "authenticationFailure");
+                "authenticationFailure");
 
         if (CommonUtils.isNotBlank(error)) {
             log.debug("Validation of ticket failed: " + error);
@@ -54,7 +70,7 @@ public class Cas20ServiceTicketValidator extends
 
         final String principal = XmlUtils.getTextForElement(response, "user");
         final String proxyGrantingTicketIou = XmlUtils.getTextForElement(
-            response, "proxyGrantingTicket");
+                response, "proxyGrantingTicket");
 
         if (CommonUtils.isEmpty(principal)) {
             throw new ValidationException("No principal found.");
@@ -62,13 +78,13 @@ public class Cas20ServiceTicketValidator extends
 
         if (CommonUtils.isNotBlank(proxyGrantingTicketIou)) {
             return getValidAssertionInternal(response, new AssertionImpl(
-                new SimplePrincipal(principal), null,
-                this.proxyGrantingTicketStorage
-                    .retrieve(proxyGrantingTicketIou)));
+                    new SimplePrincipal(principal), null,
+                    this.proxyGrantingTicketStorage
+                            .retrieve(proxyGrantingTicketIou)));
         }
 
         return getValidAssertionInternal(response, new AssertionImpl(
-            new SimplePrincipal(principal)));
+                new SimplePrincipal(principal)));
     }
 
     protected String getValidationUrlName() {
@@ -76,32 +92,7 @@ public class Cas20ServiceTicketValidator extends
     }
 
     protected Assertion getValidAssertionInternal(final String response,
-        final Assertion assertion) throws ValidationException {
+                                                  final Assertion assertion) throws ValidationException {
         return assertion;
-    }
-
-    /**
-     * Sets the proxy callback url
-     * 
-     * @param proxyCallbackUrl the proxycallback url specified for this
-     * application.
-     */
-    public final void setProxyCallbackUrl(final String proxyCallbackUrl) {
-        this.proxyCallbackUrl = new SimpleService(proxyCallbackUrl);
-    }
-
-    /**
-     * Sets the ProxyGrantingTicketStorage
-     * 
-     * @param proxyGrantingTicketStorage the storage mechanism to use.
-     */
-    public final void setProxyGrantingTicketStorage(
-        final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
-        this.proxyGrantingTicketStorage = proxyGrantingTicketStorage;
-    }
-
-    protected void afterPropertiesSetInternal() {
-        CommonUtils.assertNotNull(this.proxyGrantingTicketStorage,
-            "proxyGrantingTicketStorage cannot be null");
     }
 }

@@ -161,5 +161,9 @@
     <orderEntry type="module" module-name="cas-client-core" />
     <orderEntryProperties />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ACTIVE_VCS_NAME" value="CVS" />
+    <option name="USE_PROJECT_VCS" value="false" />
+  </component>
 </module>
 

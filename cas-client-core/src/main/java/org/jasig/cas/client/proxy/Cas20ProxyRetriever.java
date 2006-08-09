@@ -5,10 +5,6 @@
  */
 package org.jasig.cas.client.proxy;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
@@ -17,35 +13,60 @@ import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * Implementation of a ProxyRetriever that follows the CAS 2.0 specification.
  * For more information on the CAS 2.0 specification, please see the <a
  * href="http://www.ja-sig.org/products/cas/overview/protocol/index.html">specification
  * document</a>.
- * <p>
+ * <p/>
  * In general, this class will make a call to the CAS server with some specified
  * parameters and receive an XML response to parse.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public final class Cas20ProxyRetriever implements ProxyRetriever {
 
-    /** Instance of Commons Logging. */
-    protected Log log = LogFactory.getLog(this.getClass());
+    /**
+     * Instance of Commons Logging.
+     */
+    protected final Log log = LogFactory.getLog(this.getClass());
 
-    /** Url to CAS server. */
-    private String casServerUrl;
+    /**
+     * Url to CAS server.
+     */
+    private final String casServerUrl;
 
-    /** Instance of HttpClient for connecting to server. */
-    private HttpClient httpClient;
+    /**
+     * Instance of HttpClient for connecting to server.
+     */
+    private final HttpClient httpClient;
+
+    /**
+     * Main Constructor.
+     *
+     * @param casServerUrl the URL to the CAS server (i.e. http://localhost/cas/)
+     * @param httpClient   an Instance of a thread-safe HttpClient.
+     */
+    public Cas20ProxyRetriever(final String casServerUrl, final HttpClient httpClient) {
+        CommonUtils.assertNotNull(casServerUrl,
+                "casServerUrl cannot be null.");
+        CommonUtils
+                .assertNotNull(httpClient, "httpClient cannot be null.");
+        this.casServerUrl = casServerUrl;
+        this.httpClient = httpClient;
+    }
 
     public String getProxyTicketIdFor(final String proxyGrantingTicketId,
-        final Service targetService) {
+                                      final Service targetService) {
 
         final String url = constructUrl(proxyGrantingTicketId, targetService
-            .getId());
+                .getId());
 
         final GetMethod method = new GetMethod(url);
         try {
@@ -53,7 +74,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
             final String response = method.getResponseBodyAsString();
 
             final String error = XmlUtils.getTextForElement(response,
-                "proxyFailure");
+                    "proxyFailure");
 
             if (CommonUtils.isNotEmpty(error)) {
                 log.debug(error);
@@ -71,28 +92,13 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
     }
 
     private String constructUrl(final String proxyGrantingTicketId,
-        final String targetService) {
+                                final String targetService) {
         try {
             return this.casServerUrl + "proxy" + "?pgt="
-                + proxyGrantingTicketId + "&targetService="
-                + URLEncoder.encode(targetService, "UTF-8");
+                    + proxyGrantingTicketId + "&targetService="
+                    + URLEncoder.encode(targetService, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
-    }
-    
-    public void setCasServerUrl(final String casServerUrl) {
-        this.casServerUrl = casServerUrl;
-    }
-
-    public void setHttpClient(final HttpClient httpClient) {
-        this.httpClient = httpClient;
-    }
-
-    public void init() {
-        CommonUtils.assertNotNull(this.casServerUrl,
-            "casServerUrl cannot be null.");
-        CommonUtils
-            .assertNotNull(this.httpClient, "httpClient cannot be null.");
     }
 }

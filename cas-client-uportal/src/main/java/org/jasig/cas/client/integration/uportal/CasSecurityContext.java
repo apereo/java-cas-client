@@ -17,32 +17,45 @@ import org.jasig.portal.security.provider.ChainingSecurityContext;
 /**
  * Implementation of ICasSecurityContext that knows how to handle CAS ticket
  * validation, as well as the retrieval of Proxy Tickets.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public class CasSecurityContext extends ChainingSecurityContext implements
-    ICasSecurityContext {
+        ICasSecurityContext {
 
-    /** Unique Id for Serialization */
+    /**
+     * Unique Id for Serialization
+     */
     private static final long serialVersionUID = 1L;
 
-    /** Instance of TicketValidator to validate tickets. */
+    /**
+     * Instance of TicketValidator to validate tickets.
+     */
     private final TicketValidator ticketValidator;
 
-    /** Instance of ProxyRetriever to obtain proxy tickets. */
+    /**
+     * Instance of ProxyRetriever to obtain proxy tickets.
+     */
     private final ProxyRetriever proxyRetriever;
 
-    /** Instance of Service representing uPortal instance. */
+    /**
+     * Instance of Service representing uPortal instance.
+     */
     private final Service service;
 
-    /** Assertion about the person this security context is for. */
+    /**
+     * Assertion about the person this security context is for.
+     */
     private Assertion assertion;
 
     /**
      * Instantiate a new CasSecurityContext, setting the required fields.
      *
+     * @param ticketValidator the TicketValidator to validate tickets.
+     * @param service         the Service representing the portal.
+     * @param proxyRetriever  the ProxyRetriever to use to retrieve proxies.
      */
     public CasSecurityContext(final TicketValidator ticketValidator, final Service service, final ProxyRetriever proxyRetriever
     ) {
@@ -55,14 +68,14 @@ public class CasSecurityContext extends ChainingSecurityContext implements
         this.proxyRetriever = proxyRetriever;
     }
 
-    public final String getProxyTicket(final Service service) {
+    public final String getProxyTicket(final Service targetService) {
         if (this.proxyRetriever == null
-            || CommonUtils.isEmpty(this.assertion.getProxyGrantingTicketId())) {
+                || CommonUtils.isEmpty(this.assertion.getProxyGrantingTicketId())) {
             return null;
         }
 
         return this.proxyRetriever.getProxyTicketIdFor(this.assertion
-            .getProxyGrantingTicketId(), service);
+                .getProxyGrantingTicketId(), targetService);
     }
 
     public final int getAuthType() {
@@ -72,17 +85,17 @@ public class CasSecurityContext extends ChainingSecurityContext implements
     public final synchronized void authenticate() throws PortalSecurityException {
         this.isauth = false;
         final String serviceTicket = new String(
-            this.myOpaqueCredentials.credentialstring);
+                this.myOpaqueCredentials.credentialstring);
         final Service service = getService();
 
         if (log.isDebugEnabled()) {
             log.debug("Attempting to validate ticket [" + serviceTicket
-                + "] for service [" + service.toString());
+                    + "] for service [" + service.toString());
         }
 
         try {
             this.assertion = this.ticketValidator.validate(serviceTicket,
-                service);
+                    service);
             this.myAdditionalDescriptor = null;
             this.myPrincipal.setUID(this.assertion.getPrincipal().getId());
             this.isauth = true;
@@ -92,7 +105,7 @@ public class CasSecurityContext extends ChainingSecurityContext implements
             throw new PortalSecurityException(e.getMessage(), e);
         }
     }
-    
+
     protected Service getService() {
         return this.service;
     }

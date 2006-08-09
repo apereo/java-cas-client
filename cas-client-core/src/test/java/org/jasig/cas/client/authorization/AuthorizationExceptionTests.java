@@ -12,7 +12,7 @@ import junit.framework.TestCase;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class AuthorizationExceptionTests extends TestCase {
+public final class AuthorizationExceptionTests extends TestCase {
 
     private static final String CONST_MESSAGE = "t";
 
@@ -20,7 +20,7 @@ public class AuthorizationExceptionTests extends TestCase {
 
     public void testMessageThrowable() {
         final AuthorizationException e = new AuthorizationException(
-            CONST_MESSAGE, CONST_THROWABLE);
+                CONST_MESSAGE, CONST_THROWABLE);
 
         assertEquals(CONST_MESSAGE, e.getMessage());
         assertEquals(CONST_THROWABLE, e.getCause());
@@ -28,14 +28,14 @@ public class AuthorizationExceptionTests extends TestCase {
 
     public void testMessage() {
         final AuthorizationException e = new AuthorizationException(
-            CONST_MESSAGE);
+                CONST_MESSAGE);
 
         assertEquals(CONST_MESSAGE, e.getMessage());
     }
 
     public void testThrowable() {
         final AuthorizationException e = new AuthorizationException(
-            CONST_THROWABLE);
+                CONST_THROWABLE);
 
         assertEquals(CONST_THROWABLE, e.getCause());
     }

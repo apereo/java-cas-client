@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * Tests for the HttpServletRequestWrapperFilter.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
@@ -41,115 +41,115 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
     public void testWrappedRequest() throws Exception {
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpSession session = new MockHttpSession();
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(ServletRequest request,
-                ServletResponse response) throws IOException, ServletException {
+                                 ServletResponse response) throws IOException, ServletException {
                 HttpServletRequestWrapperFilterTests.this.mockRequest = (HttpServletRequest) request;
             }
 
         };
         session.setAttribute(AbstractCasFilter.CONST_ASSERTION,
-            new AssertionImpl(new SimplePrincipal("test")));
+                new AssertionImpl(new SimplePrincipal("test")));
 
         request.setSession(session);
 
         this.filter.doFilter(request, new MockHttpServletResponse(),
-            filterChain);
+                filterChain);
         assertEquals("test", this.mockRequest.getRemoteUser());
         assertEquals(request.getAttributeNames(), this.mockRequest
-            .getAttributeNames());
+                .getAttributeNames());
         assertEquals(request.getAuthType(), this.mockRequest.getAuthType());
 
         this.mockRequest.setCharacterEncoding("test");
 
         assertEquals(request.getCharacterEncoding(), this.mockRequest
-            .getCharacterEncoding());
+                .getCharacterEncoding());
         assertNotSame(request.getClass(), this.mockRequest.getClass());
         assertEquals(request.getContentLength(), this.mockRequest
-            .getContentLength());
+                .getContentLength());
         assertEquals(request.getContentType(), this.mockRequest
-            .getContentType());
+                .getContentType());
         assertEquals(request.getContextPath(), this.mockRequest
-            .getContextPath());
+                .getContextPath());
         assertEquals(request.getCookies(), this.mockRequest.getCookies());
         assertEquals(request.getHeaderNames(), this.mockRequest
-            .getHeaderNames());
+                .getHeaderNames());
         assertEquals(request.getInputStream(), this.mockRequest
-            .getInputStream());
+                .getInputStream());
         assertEquals(request.getLocalAddr(), this.mockRequest.getLocalAddr());
         assertEquals(request.getLocale(), this.mockRequest.getLocale());
         assertEquals(request.getLocales().hasMoreElements(), this.mockRequest
-            .getLocales().hasMoreElements());
+                .getLocales().hasMoreElements());
         assertEquals(request.getLocalName(), this.mockRequest.getLocalName());
         assertEquals(request.getLocalPort(), this.mockRequest.getLocalPort());
         assertEquals(request.getMethod(), this.mockRequest.getMethod());
         assertEquals(request.getParameterMap(), this.mockRequest
-            .getParameterMap());
+                .getParameterMap());
         assertEquals(request.getParameterNames().hasMoreElements(),
-            this.mockRequest.getParameterNames().hasMoreElements());
+                this.mockRequest.getParameterNames().hasMoreElements());
         assertEquals(request.getPathInfo(), this.mockRequest.getPathInfo());
         assertEquals(request.getPathTranslated(), this.mockRequest
-            .getPathTranslated());
+                .getPathTranslated());
         assertEquals(request.getProtocol(), this.mockRequest.getProtocol());
         assertEquals(request.getQueryString(), this.mockRequest
-            .getQueryString());
+                .getQueryString());
         assertEquals(request.getReader(), this.mockRequest.getReader());
         assertEquals(request.getRemoteAddr(), this.mockRequest.getRemoteAddr());
         assertEquals(request.getRemoteHost(), this.mockRequest.getRemoteHost());
         assertEquals(request.getRemotePort(), this.mockRequest.getRemotePort());
         assertEquals(request.getRequestedSessionId(), this.mockRequest
-            .getRequestedSessionId());
+                .getRequestedSessionId());
         assertEquals(request.getRequestURI(), this.mockRequest.getRequestURI());
         assertEquals(request.getRequestURL().toString(), this.mockRequest
-            .getRequestURL().toString());
+                .getRequestURL().toString());
         assertEquals(request.getScheme(), this.mockRequest.getScheme());
         assertEquals(request.getServerName(), this.mockRequest.getServerName());
         assertEquals(request.getServerPort(), this.mockRequest.getServerPort());
         assertEquals(request.getServletPath(), this.mockRequest
-            .getServletPath());
+                .getServletPath());
         assertEquals(request.getSession(), this.mockRequest.getSession());
         assertEquals(request.getSession(false), this.mockRequest
-            .getSession(false));
+                .getSession(false));
         assertEquals(request.getUserPrincipal(), this.mockRequest
-            .getUserPrincipal());
+                .getUserPrincipal());
         assertEquals(request.isRequestedSessionIdFromCookie(), this.mockRequest
-            .isRequestedSessionIdFromCookie());
+                .isRequestedSessionIdFromCookie());
         assertEquals(request.isRequestedSessionIdFromUrl(), this.mockRequest
-            .isRequestedSessionIdFromUrl());
+                .isRequestedSessionIdFromUrl());
         assertEquals(request.isRequestedSessionIdFromURL(), this.mockRequest
-            .isRequestedSessionIdFromURL());
+                .isRequestedSessionIdFromURL());
         assertEquals(request.isRequestedSessionIdValid(), this.mockRequest
-            .isRequestedSessionIdValid());
+                .isRequestedSessionIdValid());
         assertEquals(request.isSecure(), this.mockRequest.isSecure());
         assertEquals(request.isUserInRole("test"), this.mockRequest
-            .isUserInRole("test"));
+                .isUserInRole("test"));
         assertEquals(request.getDateHeader("test"), this.mockRequest
-            .getDateHeader("test"));
+                .getDateHeader("test"));
         assertEquals(request.getHeader("test"), this.mockRequest
-            .getHeader("test"));
+                .getHeader("test"));
         assertEquals(request.getHeaders("test").hasMoreElements(),
-            this.mockRequest.getHeaders("test").hasMoreElements());
+                this.mockRequest.getHeaders("test").hasMoreElements());
         assertEquals(request.getIntHeader("test"), this.mockRequest
-            .getIntHeader("test"));
+                .getIntHeader("test"));
 
         this.mockRequest.setAttribute("test", "test");
 
         assertEquals(request.getAttribute("test"), this.mockRequest
-            .getAttribute("test"));
+                .getAttribute("test"));
 
         this.mockRequest.removeAttribute("test");
 
         assertEquals(request.getAttribute("test"), this.mockRequest
-            .getAttribute("test"));
+                .getAttribute("test"));
         assertEquals(request.getParameter("test"), this.mockRequest
-            .getParameter("test"));
+                .getParameter("test"));
         assertEquals(request.getParameterValues("test"), this.mockRequest
-            .getParameterValues("test"));
+                .getParameterValues("test"));
         assertEquals(request.getRealPath("test"), this.mockRequest
-            .getRealPath("test"));
+                .getRealPath("test"));
         assertEquals(request.getRequestDispatcher("test").getClass(),
-            this.mockRequest.getRequestDispatcher("test").getClass());
+                this.mockRequest.getRequestDispatcher("test").getClass());
 
     }
 }

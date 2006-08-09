@@ -14,47 +14,58 @@ import org.jasig.portal.security.InitialSecurityContextFactory;
 import org.jasig.portal.spring.PortalApplicationContextFacade;
 
 /**
- * Abstract implementation of a SecurityContextFactory that can load all the dependences if a 
+ * Abstract implementation of a SecurityContextFactory that can load all the dependences if a
  * CasSecurityCcontext.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
- *
  */
 public abstract class AbstractCasSecurityContextFactory extends
-    InitialSecurityContextFactory {
+        InitialSecurityContextFactory {
 
 
-    /** Spring Bean ID for the Ticket Validator. */
+    /**
+     * Spring Bean ID for the Ticket Validator.
+     */
     public static final String CONST_CAS_TICKET_VALIDATOR = "casTicketValidator";
 
-    /** Spring Bean ID for the Proxy Retriever. */
+    /**
+     * Spring Bean ID for the Proxy Retriever.
+     */
     public static final String CONST_CAS_PROXY_RETRIEVER = "casProxyRetriever";
 
-    /** Spring Bean ID for the Service. */
+    /**
+     * Spring Bean ID for the Service.
+     */
     public static final String CONST_CAS_SERVICE = "casService";
 
-    /** Spring Bean ID for the ProxyGrantingTicketStorage. */
+    /**
+     * Spring Bean ID for the ProxyGrantingTicketStorage.
+     */
     public static final String CONST_CAS_PROXY_GRANTING_TICKET_STORAGE = "casProxyGrantingTicketStorage";
 
-    /** Instance of Commons Logging. */
+    /**
+     * Instance of Commons Logging.
+     */
     protected final Log log = LogFactory.getLog(this.getClass());
 
     /**
      * The Ticket Validator referenced by the constant
      * <code>CONST_CAS_TICKET_VALIDATOR</code>.
      */
-    protected TicketValidator ticketValidator;
+    protected final TicketValidator ticketValidator;
 
     /**
      * The ProxyRetriever referenced by the constant
      * <code>CONST_CAS_PROXY_RETRIEVER</code>.
      */
-    protected ProxyRetriever proxyRetriever;
+    protected final ProxyRetriever proxyRetriever;
 
-    /** The Service referenced by the constant <code>CONST_CAS_SERVICE</code>. */
-    protected Service service;
+    /**
+     * The Service referenced by the constant <code>CONST_CAS_SERVICE</code>.
+     */
+    protected final Service service;
 
     /**
      * Default constructor retrieves and caches results from looking up entries
@@ -63,18 +74,19 @@ public abstract class AbstractCasSecurityContextFactory extends
      */
     public AbstractCasSecurityContextFactory() {
         this.ticketValidator = (TicketValidator) PortalApplicationContextFacade
-            .getPortalApplicationContext().getBean(CONST_CAS_TICKET_VALIDATOR);
+                .getPortalApplicationContext().getBean(CONST_CAS_TICKET_VALIDATOR);
         if (PortalApplicationContextFacade.getPortalApplicationContext()
-            .containsBean(CONST_CAS_PROXY_RETRIEVER)) {
+                .containsBean(CONST_CAS_PROXY_RETRIEVER)) {
             this.proxyRetriever = (ProxyRetriever) PortalApplicationContextFacade
-                .getPortalApplicationContext().getBean(
+                    .getPortalApplicationContext().getBean(
                     CONST_CAS_PROXY_RETRIEVER);
         } else {
+            this.proxyRetriever = null;
             log
-                .warn("No Proxy Retriever found in PortalApplicationFacade.  No Proxying capabilities will be provided by CAS.");
+                    .warn("No Proxy Retriever found in PortalApplicationFacade.  No Proxying capabilities will be provided by CAS.");
         }
         this.service = (Service) PortalApplicationContextFacade
-            .getPortalApplicationContext().getBean(CONST_CAS_SERVICE);
+                .getPortalApplicationContext().getBean(CONST_CAS_SERVICE);
     }
-    
+
 }

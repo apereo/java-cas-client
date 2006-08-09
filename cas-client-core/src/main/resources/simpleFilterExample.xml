@@ -1,77 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-init-method="init">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="propertyPlaceholderConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location"
-			value="/WEB-INF/cas-client.properties" />
-	</bean>
-	
-	<bean id="ticketValidator"
-		class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
-		<property name="proxyCallbackUrl"
-			value="${cas.server.proxyCallbackUrl}" />
-		<property name="proxyGrantingTicketStorage"
-			ref="proxyGrantingTicketStorage" />
-		<property name="casServerUrl" value="${cas.server.url}" />
-		<property name="httpClient">
-			<bean class="org.jasig.cas.util.HttpClient3FactoryBean" />
-		</property>
-	</bean>
+    <bean id="propertyPlaceholderConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location"
+                  value="/WEB-INF/cas-client.properties"/>
+    </bean>
 
-	<bean id="proxyGrantingTicketStorage"
-		class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl" />
-	
-	<bean
-		id="casHttpServletRequestWrapperFilter"
-		class="org.jasig.cas.client.web.filter.HttpServletRequestWrapperFilter" />
-		
-	<bean
-		id="casValidationFilter"
-		class="org.jasig.cas.client.web.filter.CasValidationFilter">
-		<property
-			name="ticketValidator"
-			ref="ticketValidator" />
-		<property
-			name="serverName"
-			value="localhost:8443" />
-	</bean>
-	
-	<bean
-		id="casAuthenticationFilter"
-		class="org.jasig.cas.client.web.filter.CasAuthenticationFilter">
-		<property
-			name="casServerLoginUrl"
-			value="${cas.server.url}login" />
-		<property
-			name="gateway"
-			value="false" />
-		<property
-			name="renew"
-			value="false" />
-		<property
-			name="serverName"
-			value="localhost:8443" />
-	</bean>
-	
-	<bean
-		id="casAuthorizationFilter"
-		class="org.jasig.cas.client.web.filter.CasAuthorizationFilter">
-		<property
-			name="decider"
-			ref="decider" />
-	</bean>
-	
-	<bean
-		id="decider"
-		class="org.jasig.cas.client.authorization.DefaultCasAuthorizedDeciderImpl">
-		<property
-			name="users">
-			<list>
-				<value>battags</value>
-			</list>
-		</property>
-	</bean>
+    <bean id="ticketValidator"
+          class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+        <constructor-arg index="0" value="${cas.server.url}"/>
+        <constructor-arg index="1" value="false"/>
+        <constructor-arg index="2">
+            <bean class="org.jasig.cas.util.HttpClient3FactoryBean"/>
+        </constructor-arg>
+        <constructor-arg index="3">
+            <bean
+                    class="org.jasig.cas.authentication.principal.SimpleService">
+                <constructor-arg value="${cas.server.proxyCallbackUrl}"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="4" ref="proxyGrantingTicketStorage"/>
+    </bean>
+
+    <bean id="proxyGrantingTicketStorage"
+          class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl"/>
+
+    <bean
+            id="casHttpServletRequestWrapperFilter"
+            class="org.jasig.cas.client.web.filter.HttpServletRequestWrapperFilter"/>
+
+    <bean
+            id="casValidationFilter"
+            class="org.jasig.cas.client.web.filter.CasValidationFilter">
+        <constructor-arg index="0" value="localhost:8443"/>
+        <constructor-arg index="1">
+            <null/>
+        </constructor-arg>
+        <constructor-arg index="2" ref="ticketValidator"/>
+    </bean>
+
+    <bean
+            id="casAuthenticationFilter"
+            class="org.jasig.cas.client.web.filter.CasAuthenticationFilter">
+        <constructor-arg index="0" value="localhost:8443"/>
+        <constructor-arg index="1">
+            <null/>
+        </constructor-arg>
+        <constructor-arg index="2" value="${cas.server.url}login"/>
+        <constructor-arg index="3" value="false"/>
+        <constructor-arg index="4" value="false"/>
+    </bean>
+
+    <bean
+            id="casAuthorizationFilter"
+            class="org.jasig.cas.client.web.filter.CasAuthorizationFilter">
+        <constructor-arg index="0" ref="decider"></constructor-arg>
+    </bean>
+
+    <bean
+            id="decider"
+            class="org.jasig.cas.client.authorization.DefaultCasAuthorizedDeciderImpl">
+        <constructor-arg index="0">
+            <list>
+                <value>battags</value>
+            </list>
+        </constructor-arg>
+    </bean>
 </beans>

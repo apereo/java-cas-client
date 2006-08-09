@@ -13,14 +13,16 @@ import java.util.Map;
 
 /**
  * Concrete implementation of an Assertion.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public class AssertionImpl implements Assertion {
 
-    /** Unique id for serialization. */
+    /**
+     * Unique id for serialization.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -29,10 +31,14 @@ public class AssertionImpl implements Assertion {
      */
     private final Map attributes;
 
-    /** The principal who was authenticated. */
+    /**
+     * The principal who was authenticated.
+     */
     private final Principal principal;
 
-    /** The Proxy Granting Ticket Id returned by the server. */
+    /**
+     * The Proxy Granting Ticket Id returned by the server.
+     */
     private final String proxyGrantingTicketId;
 
     public AssertionImpl(final Principal principal) {
@@ -40,24 +46,24 @@ public class AssertionImpl implements Assertion {
     }
 
     public AssertionImpl(final Principal principal, final Map attributes,
-        final String proxyGrantingTicketId) {
+                         final String proxyGrantingTicketId) {
         CommonUtils.assertNotNull(principal, "principal cannot be null");
 
         this.principal = principal;
         this.attributes = attributes == null ? new HashMap() : attributes;
         this.proxyGrantingTicketId = CommonUtils
-            .isNotEmpty(proxyGrantingTicketId) ? proxyGrantingTicketId : null;
+                .isNotEmpty(proxyGrantingTicketId) ? proxyGrantingTicketId : null;
     }
 
-    public Map getAttributes() {
+    public final Map getAttributes() {
         return this.attributes;
     }
 
-    public Principal getPrincipal() {
+    public final Principal getPrincipal() {
         return this.principal;
     }
 
-    public String getProxyGrantingTicketId() {
+    public final String getProxyGrantingTicketId() {
         return this.proxyGrantingTicketId;
     }
 }

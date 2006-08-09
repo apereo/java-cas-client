@@ -9,16 +9,16 @@ import org.jasig.portal.security.ISecurityContext;
 
 /**
  * Factory to instantiate ThreadLocalAwareCasSecurityContexts.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public final class ThreadLocalAwareCasSecurityContextFactory extends
-    AbstractCasSecurityContextFactory {
+        AbstractCasSecurityContextFactory {
 
     public ISecurityContext getSecurityContext() {
         return new ThreadLocalAwareCasSecurityContext(this.ticketValidator,
-            this.service, this.proxyRetriever);
+                this.service, this.proxyRetriever);
     }
 }

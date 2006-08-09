@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 /**
  * Base class for all TicketValidator tests to inherit from.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0

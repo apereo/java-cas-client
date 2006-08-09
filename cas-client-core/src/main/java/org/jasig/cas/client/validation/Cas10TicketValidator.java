@@ -5,40 +5,45 @@
  */
 package org.jasig.cas.client.validation;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-
+import org.apache.commons.httpclient.HttpClient;
 import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.authentication.principal.SimplePrincipal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+
 /**
  * Implementation of TicketValidator that follows the CAS 1.0 protocol.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class Cas10TicketValidator extends AbstractUrlBasedTicketValidator {
+public final class Cas10TicketValidator extends AbstractUrlBasedTicketValidator {
+
+    public Cas10TicketValidator(final String casServerUrl, final boolean renew, final HttpClient httpClient) {
+        super(casServerUrl, renew, httpClient);
+    }
 
     protected String constructURL(final String ticketId, final Service service) {
         return getCasServerUrl() + "validate?ticket=" + ticketId
-            + (isRenew() ? "&renew=true" : "") + "&service="
-            + getEncodedService(service);
+                + (isRenew() ? "&renew=true" : "") + "&service="
+                + getEncodedService(service);
     }
 
     protected final Assertion parseResponse(final String response)
-        throws ValidationException {
+            throws ValidationException {
         if (response == null || "no\n\n".equals(response)
-            || !response.startsWith("yes")) {
+                || !response.startsWith("yes")) {
             throw new ValidationException(
-                "'No' response returned from server for validation request.");
+                    "'No' response returned from server for validation request.");
         }
 
         try {
             final BufferedReader reader = new BufferedReader(new StringReader(
-                response));
+                    response));
             reader.readLine();
 
             final Principal principal = new SimplePrincipal(reader.readLine());

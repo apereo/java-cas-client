@@ -18,13 +18,13 @@ import java.util.List;
 
 /**
  * Test cases for the {@link Cas20ProxyTicketValidator}.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public final class Cas20ProxyTicketValidatorTests extends
-    AbstractTicketValidatorTests {
+        AbstractTicketValidatorTests {
 
     private Cas20ProxyTicketValidator ticketValidator;
 
@@ -33,46 +33,36 @@ public final class Cas20ProxyTicketValidatorTests extends
     }
 
     protected void setUp() throws Exception {
-        ProxyGrantingTicketStorage proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
-        this.ticketValidator = new Cas20ProxyTicketValidator();
-        this.ticketValidator.setCasServerUrl(CONST_CAS_SERVER_URL);
-        this.ticketValidator.setRenew(true);
-        this.ticketValidator
-            .setProxyGrantingTicketStorage(proxyGrantingTicketStorage);
-        this.ticketValidator.setHttpClient(new HttpClient());
-
+        final ProxyGrantingTicketStorage proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
         final List list = new ArrayList();
         list.add("proxy1 proxy2 proxy3");
-        this.ticketValidator.setProxyChains(list);
 
-        this.ticketValidator.init();
+        this.ticketValidator = new Cas20ProxyTicketValidator(CONST_CAS_SERVER_URL, true, new HttpClient(), proxyGrantingTicketStorage, list, false);
     }
 
-    private ProxyGrantingTicketStorage getProxyGrantingTicketStorage()
-        throws Exception {
+    private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
         ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
-        proxyGrantingTicketStorageImpl.init();
 
         return proxyGrantingTicketStorageImpl;
     }
 
     public void testProxyChainWithValidProxy() throws ValidationException,
-        UnsupportedEncodingException {
+            UnsupportedEncodingException {
         final String USERNAME = "username";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
         PublicTestHttpServer.instance().content = RESPONSE
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
 
         final Assertion assertion = this.ticketValidator.validate("test",
-            new SimpleService("test"));
+                new SimpleService("test"));
         assertEquals(USERNAME, assertion.getPrincipal().getId());
     }
 
     public void testProxyChainWithInvalidProxy() throws ValidationException,
-        UnsupportedEncodingException {
+            UnsupportedEncodingException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy7</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
         PublicTestHttpServer.instance().content = RESPONSE
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
 
         try {
             this.ticketValidator.validate("test", new SimpleService("test"));

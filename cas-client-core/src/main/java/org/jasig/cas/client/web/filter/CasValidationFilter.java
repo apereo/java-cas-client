@@ -22,30 +22,60 @@ import java.io.IOException;
  * will attempt to validate the ticket. On a successful validation, it sets the
  * Assertion object into the session. On an unsuccessful validation attempt, it
  * sets the response code to 403.
- * <p>
+ * <p/>
  * This filter needs to be configured after the authentication filter (if that
  * filter exists in the chain).
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @since 3.0
  * @see TicketValidator
+ * @since 3.0
  */
 public final class CasValidationFilter extends AbstractCasFilter {
 
-    /** Instance of the ticket validator. */
-    private TicketValidator ticketValidator;
+    /**
+     * Instance of the ticket validator.
+     */
+    private final TicketValidator ticketValidator;
 
     /**
      * Specify whether the filter should redirect the user agent after a
      * successful validation to remove the ticket parameter from the query
      * string.
      */
-    private boolean redirectAfterValidation;
+    private final boolean redirectAfterValidation;
 
-    public void doFilterInternal(final HttpServletRequest request,
-        final HttpServletResponse response, final FilterChain filterChain)
-        throws IOException, ServletException {
+    /**
+     * Constructor that takes the severName (or serviceUrl) and the TicketValidator.  Either serveName or serviceUrl is required (but not both).
+     *
+     * @param serverName      the name of the server in <hostname>:<port> combination, if using a non-standard port.
+     * @param serviceUrl      the url to always redirect to.
+     * @param ticketValidator the validator to validate the tickets.
+     */
+    public CasValidationFilter(final String serverName, final String serviceUrl, final TicketValidator ticketValidator) {
+        this(serverName, serviceUrl, true, ticketValidator, false);
+    }
+
+    /**
+     * Constructor that takes the severName (or serviceUrl), TicketValidator, useSession and redirectAfterValidation.  Either serveName or serviceUrl is required (but not both).
+     *
+     * @param serverName              the name of the server in <hostname>:<port> combination, if using a non-standard port.
+     * @param serviceUrl              the url to always redirect to.
+     * @param useSession              flag to set whether to store stuff in the session.
+     * @param ticketValidator         the validator to validate the tickets.
+     * @param redirectAfterValidation whether to redirect to remove the ticket.
+     */
+    public CasValidationFilter(final String serverName, final String serviceUrl, final boolean useSession, final TicketValidator ticketValidator, final boolean redirectAfterValidation) {
+        super(serverName, serviceUrl, useSession);
+        CommonUtils.assertNotNull(ticketValidator,
+                "ticketValidator cannot be null.");
+        this.ticketValidator = ticketValidator;
+        this.redirectAfterValidation = redirectAfterValidation;
+    }
+
+    protected void doFilterInternal(final HttpServletRequest request,
+                                    final HttpServletResponse response, final FilterChain filterChain)
+            throws IOException, ServletException {
         final String ticket = request.getParameter(PARAM_TICKET);
 
         if (CommonUtils.isNotBlank(ticket)) {
@@ -55,19 +85,19 @@ public final class CasValidationFilter extends AbstractCasFilter {
 
             try {
                 final Assertion assertion = this.ticketValidator.validate(
-                    ticket, new SimpleService(constructServiceUrl(request,
+                        ticket, new SimpleService(constructServiceUrl(request,
                         response)));
 
                 if (log.isDebugEnabled()) {
                     log.debug("Successfully authenticated user: "
-                        + assertion.getPrincipal().getId());
+                            + assertion.getPrincipal().getId());
                 }
 
                 request.setAttribute(CONST_PRINCIPAL, assertion.getPrincipal());
 
                 if (isUseSession()) {
                     request.getSession().setAttribute(CONST_ASSERTION,
-                        assertion);
+                            assertion);
                 }
             } catch (final ValidationException e) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -78,35 +108,10 @@ public final class CasValidationFilter extends AbstractCasFilter {
 
         if (this.redirectAfterValidation) {
             response.sendRedirect(response
-                .encodeRedirectURL(constructServiceUrl(request, response)));
+                    .encodeRedirectURL(constructServiceUrl(request, response)));
             return;
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    /**
-     * Sets the ticket validator for validating tickets.
-     * 
-     * @param ticketValidator the ticket validator instance we want to use.
-     */
-    public void setTicketValidator(final TicketValidator ticketValidator) {
-        this.ticketValidator = ticketValidator;
-    }
-
-    /**
-     * Sets the flag that tells the filter to redirect after the successful
-     * validation.
-     * 
-     * @param redirectAfterValidation true if we want to redirect, false
-     * otherwise.
-     */
-    public void setRedirectAfterValidation(boolean redirectAfterValidation) {
-        this.redirectAfterValidation = redirectAfterValidation;
-    }
-
-    protected void afterPropertiesSetInternal() {
-        CommonUtils.assertNotNull(this.ticketValidator,
-            "ticketValidator cannot be null.");
     }
 }

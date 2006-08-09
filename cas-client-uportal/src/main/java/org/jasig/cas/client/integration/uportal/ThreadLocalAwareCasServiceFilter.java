@@ -22,22 +22,31 @@ import java.io.IOException;
  * {@link ThreadLocalAwareCasSecurityContext} in order to use it for Ticket
  * validation.
  * <p>This filter places the Service in a {@link ServiceHolder}.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public final class ThreadLocalAwareCasServiceFilter extends AbstractCasFilter {
 
+
+    public ThreadLocalAwareCasServiceFilter(final String serverName, final String serviceUrl) {
+        super(serverName, serviceUrl);
+    }
+
+    public ThreadLocalAwareCasServiceFilter(final String serverName, final String serviceUrl, final boolean useSession) {
+        super(serverName, serviceUrl, useSession);
+    }
+
     protected void doFilterInternal(final HttpServletRequest request,
-        final HttpServletResponse response, final FilterChain filterChain)
-        throws IOException, ServletException {
+                                    final HttpServletResponse response, final FilterChain filterChain)
+            throws IOException, ServletException {
         final boolean hasTicket = CommonUtils.isNotBlank(request
-            .getParameter("ticket"));
+                .getParameter(AbstractCasFilter.PARAM_TICKET));
         try {
             if (hasTicket) {
                 final Service service = new SimpleService(constructServiceUrl(
-                    request, response));
+                        request, response));
                 ServiceHolder.setService(service);
             }
 

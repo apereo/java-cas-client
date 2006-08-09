@@ -8,14 +8,16 @@ package org.jasig.cas.client.validation;
 /**
  * Implementation of Exception to be thrown when there is an error validating
  * the Ticket returned from the CAS server.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public class ValidationException extends Exception {
 
-    /** Unique Id for serialization. */
+    /**
+     * Unique Id for serialization.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -27,8 +29,9 @@ public class ValidationException extends Exception {
 
     /**
      * Constructor that accepts a message and a chained exception.
+     *
      * @param message the error message.
-     * @param cause the exception we are chaining with.
+     * @param cause   the exception we are chaining with.
      */
     public ValidationException(final String message, final Throwable cause) {
         super(message, cause);
@@ -36,6 +39,7 @@ public class ValidationException extends Exception {
 
     /**
      * Constructor that accepts a message.
+     *
      * @param message the error message.
      */
     public ValidationException(final String message) {
@@ -44,6 +48,7 @@ public class ValidationException extends Exception {
 
     /**
      * Constructor that accepts a chained exception.
+     *
      * @param cause the exception we are chaining with.
      */
     public ValidationException(final Throwable cause) {

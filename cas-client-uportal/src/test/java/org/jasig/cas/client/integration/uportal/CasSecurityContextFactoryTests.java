@@ -8,7 +8,7 @@ import org.jasig.portal.security.ISecurityContext;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class CasSecurityContextFactoryTests extends TestCase {
+public final class CasSecurityContextFactoryTests extends TestCase {
 
     private CasSecurityContextFactory casSecurityContextFactory;
 

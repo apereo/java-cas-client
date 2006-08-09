@@ -16,12 +16,12 @@ import java.util.Map;
 
 /**
  * Test Cases for <code>DelegatingFilter</code>
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public class DelegatingFilterTests extends TestCase {
+public final class DelegatingFilterTests extends TestCase {
 
     private DelegatingFilter delegatingFilter;
 
@@ -33,12 +33,7 @@ public class DelegatingFilterTests extends TestCase {
         delegators.put("1", new TestFilter(1));
 
         this.filterExecuted = -1;
-        this.delegatingFilter = new DelegatingFilter();
-        this.delegatingFilter.setDefaultFilter(new TestFilter(0));
-        this.delegatingFilter.setExactMatch(true);
-        this.delegatingFilter.setDelegators(delegators);
-        this.delegatingFilter.setRequestParameterName("test");
-        this.delegatingFilter.init();
+        this.delegatingFilter = new DelegatingFilter("test", delegators, true, new TestFilter(0));
         this.delegatingFilter.init(null);
     }
 
@@ -51,7 +46,7 @@ public class DelegatingFilterTests extends TestCase {
         request.addParameter("test", "1");
 
         this.delegatingFilter.doFilter(request, new MockHttpServletResponse(),
-            null);
+                null);
 
         assertEquals(1, this.filterExecuted);
     }
@@ -61,14 +56,14 @@ public class DelegatingFilterTests extends TestCase {
         request.addParameter("test", "0");
 
         this.delegatingFilter.doFilter(request, new MockHttpServletResponse(),
-            null);
+                null);
 
         assertEquals(0, this.filterExecuted);
     }
 
     public void testNoParam() throws Exception {
         this.delegatingFilter.doFilter(new MockHttpServletRequest(),
-            new MockHttpServletResponse(), null);
+                new MockHttpServletResponse(), null);
 
         assertEquals(0, this.filterExecuted);
     }
@@ -79,27 +74,27 @@ public class DelegatingFilterTests extends TestCase {
 
         delegators.put("1.*", new TestFilter(1));
 
-        this.delegatingFilter.setExactMatch(false);
-        this.delegatingFilter.setDelegators(delegators);
+        this.delegatingFilter = new DelegatingFilter("test", delegators, false, new TestFilter(0));
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addParameter("test", "1");
 
         this.delegatingFilter.doFilter(request, new MockHttpServletResponse(),
-            null);
+                null);
 
         assertEquals(1, this.filterExecuted);
         request = new MockHttpServletRequest();
         request.addParameter("test", "15");
 
         this.delegatingFilter.doFilter(request, new MockHttpServletResponse(),
-            null);
+                null);
 
         assertEquals(1, this.filterExecuted);
         request = new MockHttpServletRequest();
         request.addParameter("test", "0");
 
         this.delegatingFilter.doFilter(request, new MockHttpServletResponse(),
-            null);
+                null);
 
         assertEquals(0, this.filterExecuted);
     }
@@ -108,17 +103,15 @@ public class DelegatingFilterTests extends TestCase {
         Map map = new HashMap();
         map.put("test", new Object());
 
-        this.delegatingFilter.setDelegators(map);
-
         try {
-            this.delegatingFilter.init();
+            this.delegatingFilter = new DelegatingFilter("test", map, false, new TestFilter(0));
             fail("Exception expected.");
         } catch (IllegalArgumentException e) {
             // expected
         }
     }
 
-    private class TestFilter implements Filter {
+    private final class TestFilter implements Filter {
 
         private final int i;
 
@@ -131,7 +124,7 @@ public class DelegatingFilterTests extends TestCase {
         }
 
         public void doFilter(ServletRequest arg0, ServletResponse arg1,
-            FilterChain arg2) throws IOException, ServletException {
+                             FilterChain arg2) throws IOException, ServletException {
             DelegatingFilterTests.this.filterExecuted = this.i;
 
         }

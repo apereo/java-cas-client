@@ -24,10 +24,10 @@ import java.util.Map;
  * Implementation of a filter that wraps the normal HttpServletRequest with a
  * wrapper that overrides the getRemoteUser method to retrieve the user from the
  * CAS Assertion.
- * <p>
+ * <p/>
  * This filter needs to be configured in the chain so that it executes after
  * both the authentication and the validation filters.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
@@ -44,22 +44,22 @@ public final class HttpServletRequestWrapperFilter implements Filter {
      * stored in the user session.
      */
     public void doFilter(final ServletRequest servletRequest,
-        final ServletResponse servletResponse, final FilterChain filterChain)
-        throws IOException, ServletException {
+                         final ServletResponse servletResponse, final FilterChain filterChain)
+            throws IOException, ServletException {
         filterChain.doFilter(new CasHttpServletRequestWrapper(
-            (HttpServletRequest) servletRequest), servletResponse);
+                (HttpServletRequest) servletRequest), servletResponse);
     }
 
     public void init(final FilterConfig filterConfig) throws ServletException {
         // nothing to do
     }
 
-    protected final class CasHttpServletRequestWrapper implements
-        HttpServletRequest {
+    final class CasHttpServletRequestWrapper implements
+            HttpServletRequest {
 
         private final HttpServletRequest request;
 
-        protected CasHttpServletRequestWrapper(final HttpServletRequest request) {
+        CasHttpServletRequestWrapper(final HttpServletRequest request) {
             this.request = request;
         }
 
@@ -113,20 +113,20 @@ public final class HttpServletRequestWrapperFilter implements Filter {
 
         public String getRemoteUser() {
             final org.jasig.cas.authentication.principal.Principal p = (org.jasig.cas.authentication.principal.Principal) this.request
-                .getAttribute(AbstractCasFilter.CONST_PRINCIPAL);
-            
+                    .getAttribute(AbstractCasFilter.CONST_PRINCIPAL);
+
             if (p != null) {
                 return p.getId();
             }
-            
+
             final Assertion assertion = (Assertion) WebUtils
-            .getSessionAttribute(this.request,
-                AbstractCasFilter.CONST_ASSERTION);
-            
+                    .getSessionAttribute(this.request,
+                            AbstractCasFilter.CONST_ASSERTION);
+
             if (assertion != null) {
                 return assertion.getPrincipal().getId();
             }
-            
+
             return null;
         }
 
@@ -191,7 +191,7 @@ public final class HttpServletRequestWrapperFilter implements Filter {
         }
 
         public void setCharacterEncoding(String s)
-            throws UnsupportedEncodingException {
+                throws UnsupportedEncodingException {
             this.request.setCharacterEncoding(s);
         }
 

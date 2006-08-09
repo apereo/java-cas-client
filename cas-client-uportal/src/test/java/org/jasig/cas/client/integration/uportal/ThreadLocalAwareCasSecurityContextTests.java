@@ -7,7 +7,7 @@ import org.jasig.cas.authentication.principal.SimpleService;
 /**
  * @author Scott
  */
-public class ThreadLocalAwareCasSecurityContextTests extends TestCase {
+public final class ThreadLocalAwareCasSecurityContextTests extends TestCase {
 
     private ThreadLocalAwareCasSecurityContext context;
 

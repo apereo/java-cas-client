@@ -16,13 +16,13 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Test cases for the {@link Cas20ServiceTicketValidator}.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
 public final class Cas20ServiceTicketValidatorTests extends
-    AbstractTicketValidatorTests {
+        AbstractTicketValidatorTests {
 
     private Cas20ServiceTicketValidator ticketValidator;
 
@@ -34,19 +34,11 @@ public final class Cas20ServiceTicketValidatorTests extends
 
     protected void setUp() throws Exception {
         this.proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
-        this.ticketValidator = new Cas20ServiceTicketValidator();
-        this.ticketValidator.setCasServerUrl(CONST_CAS_SERVER_URL);
-        this.ticketValidator.setRenew(true);
-        this.ticketValidator
-            .setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
-        this.ticketValidator.setHttpClient(new HttpClient());
-        this.ticketValidator.init();
+        this.ticketValidator = new Cas20ServiceTicketValidator(CONST_CAS_SERVER_URL, true, new HttpClient(), this.proxyGrantingTicketStorage);
     }
 
-    private ProxyGrantingTicketStorage getProxyGrantingTicketStorage()
-        throws Exception {
+    private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
         ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
-        proxyGrantingTicketStorageImpl.init();
 
         return proxyGrantingTicketStorageImpl;
     }
@@ -54,7 +46,7 @@ public final class Cas20ServiceTicketValidatorTests extends
     public void testNoResponse() throws UnsupportedEncodingException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-1856339-aA5Yuvrxzpv8Tau1cYQ7 not recognized</cas:authenticationFailure></cas:serviceResponse>";
         PublicTestHttpServer.instance().content = RESPONSE
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
         try {
             this.ticketValidator.validate("test", new SimpleService("test"));
             fail("ValidationException expected due to 'no' response");
@@ -64,37 +56,37 @@ public final class Cas20ServiceTicketValidatorTests extends
     }
 
     public void testYesResponseButNoPgt() throws ValidationException,
-        UnsupportedEncodingException {
+            UnsupportedEncodingException {
         final String USERNAME = "username";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
-            + USERNAME
-            + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
+                + USERNAME
+                + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
         PublicTestHttpServer.instance().content = RESPONSE
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
 
         final Assertion assertion = this.ticketValidator.validate("test",
-            new SimpleService("test"));
+                new SimpleService("test"));
         assertEquals(USERNAME, assertion.getPrincipal().getId());
     }
 
     public void testYesResponseWithPgt() throws ValidationException,
-        UnsupportedEncodingException {
+            UnsupportedEncodingException {
         final String USERNAME = "username";
         final String PGTIOU = "testPgtIou";
         final String PGT = "test";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
-            + USERNAME
-            + "</cas:user><cas:proxyGrantingTicket>"
-            + PGTIOU
-            + "</cas:proxyGrantingTicket></cas:authenticationSuccess></cas:serviceResponse>";
+                + USERNAME
+                + "</cas:user><cas:proxyGrantingTicket>"
+                + PGTIOU
+                + "</cas:proxyGrantingTicket></cas:authenticationSuccess></cas:serviceResponse>";
 
         PublicTestHttpServer.instance().content = RESPONSE
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
 
         this.proxyGrantingTicketStorage.save(PGTIOU, PGT);
 
         final Assertion assertion = this.ticketValidator.validate("test",
-            new SimpleService("test"));
+                new SimpleService("test"));
         assertEquals(USERNAME, assertion.getPrincipal().getId());
         assertEquals(PGT, assertion.getProxyGrantingTicketId());
     }
@@ -102,7 +94,7 @@ public final class Cas20ServiceTicketValidatorTests extends
     public void testInvalidResponse() throws Exception {
         final String RESPONSE = "<root />";
         PublicTestHttpServer.instance().content = RESPONSE
-            .getBytes(PublicTestHttpServer.instance().encoding);
+                .getBytes(PublicTestHttpServer.instance().encoding);
         try {
             this.ticketValidator.validate("test", new SimpleService("test"));
             fail("ValidationException expected due to invalid response.");

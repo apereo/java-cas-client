@@ -24,7 +24,7 @@ import java.io.IOException;
 
 /**
  * Tests for the CasValidationFilter.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
@@ -34,19 +34,16 @@ public final class CasValidationFilterTests extends TestCase {
     private CasValidationFilter filter;
 
     protected void setUp() throws Exception {
-        this.filter = new CasValidationFilter();
-        this.filter.setServerName("https://localhost");
-        this.filter.setTicketValidator(new TicketValidator(){
+        this.filter = new CasValidationFilter("localhost:8443", null, new TicketValidator() {
 
             public Assertion validate(final String ticketId,
-                final Service service) throws ValidationException {
+                                      final Service service) throws ValidationException {
                 if (ticketId.equals("true")) {
                     return new AssertionImpl(new SimplePrincipal("test"));
                 }
                 throw new ValidationException("error validating ticket.");
             }
         });
-        this.filter.init();
     }
 
     protected void tearDown() throws Exception {
@@ -58,11 +55,11 @@ public final class CasValidationFilterTests extends TestCase {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(final ServletRequest arg0,
-                final ServletResponse arg1) throws IOException,
-                ServletException {
+                                 final ServletResponse arg1) throws IOException,
+                    ServletException {
                 // nothing to do
             }
         };
@@ -78,11 +75,11 @@ public final class CasValidationFilterTests extends TestCase {
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
         request.setParameter(AbstractCasFilter.PARAM_TICKET, "true");
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(final ServletRequest arg0,
-                final ServletResponse arg1) throws IOException,
-                ServletException {
+                                 final ServletResponse arg1) throws IOException,
+                    ServletException {
                 // nothing to do
             }
         };
@@ -98,11 +95,11 @@ public final class CasValidationFilterTests extends TestCase {
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
         request.setParameter(AbstractCasFilter.PARAM_TICKET, "false");
-        final FilterChain filterChain = new FilterChain(){
+        final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(final ServletRequest arg0,
-                final ServletResponse arg1) throws IOException,
-                ServletException {
+                                 final ServletResponse arg1) throws IOException,
+                    ServletException {
                 // nothing to do
             }
         };
@@ -112,7 +109,7 @@ public final class CasValidationFilterTests extends TestCase {
             fail("Exception expected.");
         } catch (final ServletException e) {
             assertTrue(e.getRootCause().getClass().isAssignableFrom(
-                ValidationException.class));
+                    ValidationException.class));
             // expected
         }
     }
