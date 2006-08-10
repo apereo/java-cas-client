@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.validation.TicketValidator;
+import org.jasig.portal.security.ISecurityContextFactory;
 import org.jasig.portal.security.InitialSecurityContextFactory;
 import org.jasig.portal.spring.PortalApplicationContextFacade;
 
@@ -22,7 +23,7 @@ import org.jasig.portal.spring.PortalApplicationContextFacade;
  * @since 3.0
  */
 public abstract class AbstractCasSecurityContextFactory extends
-        InitialSecurityContextFactory {
+        InitialSecurityContextFactory implements ISecurityContextFactory {
 
 
     /**

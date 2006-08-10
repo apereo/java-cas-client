@@ -19,6 +19,10 @@ import org.jasig.portal.security.ISecurityContextFactory;
  */
 public final class CasSecurityContextFactory extends AbstractCasSecurityContextFactory {
 
+    public CasSecurityContextFactory() {
+        super();
+    }
+
     /**
      * Instantiate a new instance of CasSecurityContext.
      *
