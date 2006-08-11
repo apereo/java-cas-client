@@ -13,7 +13,7 @@
             </includes>
 
             <sources>
-                <outputDirectory>${artifactId}/src</outputDirectory>
+                <outputDirectory>${artifactId}</outputDirectory>
                 <includes>
                     <directory>src</directory>
                     <include>README*</include>
@@ -26,12 +26,13 @@
                 <outputDirectory>bin</outputDirectory>
                 <includeDependencies>true</includeDependencies>
                 <unpack>false</unpack>
+                <scope>runtime</scope>
                 <includes>
                     <include>target/*.jar</include>
                 </includes>
                 <excludes>
-                    <exclude>*uportal*.jar</exclude>
-                    <exclude>*spring-mock*.jar</exclude>
+                    <exclude>**/uportal*.jar</exclude>
+                    <exclude>**/spring-mock*.jar</exclude>
                 </excludes>
             </binaries>
         </moduleSet>
