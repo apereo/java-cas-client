@@ -19,10 +19,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assembly.xml" afterPath="$PROJECT_DIR$/assembly.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cas-client.iws" afterPath="$PROJECT_DIR$/cas-client.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cas-client-uportal/pom.xml" afterPath="$PROJECT_DIR$/cas-client-uportal/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cas-client-uportal/cas-client-uportal.iml" afterPath="$PROJECT_DIR$/cas-client-uportal/cas-client-uportal.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cas-client-core/cas-client-core.iml" afterPath="$PROJECT_DIR$/cas-client-core/cas-client-core.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cas-client.iml" afterPath="$PROJECT_DIR$/cas-client.iml" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -209,7 +210,7 @@
       <file leaf-file-name="assembly.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/assembly.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="30" selection-start="1030" selection-end="1030" vertical-scroll-proportion="0.46804327">
+            <state line="36" column="49" selection-start="1238" selection-end="1238" vertical-scroll-proportion="0.7699248">
               <folding />
             </state>
           </provider>
@@ -218,7 +219,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="41" selection-start="2697" selection-end="2697" vertical-scroll-proportion="0.08357915">
+            <state line="63" column="41" selection-start="2697" selection-end="2697" vertical-scroll-proportion="0.02556391">
               <folding />
             </state>
           </provider>
@@ -507,7 +508,7 @@
       <showLibraryContents />
       <hideEmptyPackages ProjectPane="true" />
       <abbreviatePackageNames ProjectPane="false" />
-      <showStructure ProjectPane="false" Scope="false" PackagesPane="false" Favorites="false" />
+      <showStructure Favorites="false" Scope="false" PackagesPane="false" ProjectPane="false" />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
@@ -556,23 +557,6 @@
         <option name="Make" value="true" />
       </method>
     </tempConfiguration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <module name="" />
-    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -592,6 +576,13 @@
         <option name="Make" value="true" />
       </method>
     </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -603,6 +594,16 @@
       <option name="VM_PARAMETERS" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <module name="" />
     </configuration>
   </component>
   <component name="ScopeViewComponent">
@@ -722,7 +723,7 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24986653" order="1" />
       <window_info id="IDE talk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.13988253" order="4" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" order="12" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32857144" order="12" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="IDEtalk History" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24164279" order="8" />
@@ -749,7 +750,7 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="PUT_FOCUS_INTO_COMMENT" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="added interface for ISecurityContextFactory" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated poms and assembly" />
     <option name="SAVE_LAST_COMMIT_MESSAGE" value="true" />
     <option name="CHECKIN_DIALOG_SPLITTER_PROPORTION" value="0.8" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
@@ -763,6 +764,7 @@
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
     <MESSAGE value="added interface for ISecurityContextFactory" />
+    <MESSAGE value="updated poms and assembly" />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -902,14 +904,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="41" selection-start="2697" selection-end="2697" vertical-scroll-proportion="0.08357915">
+        <state line="63" column="41" selection-start="2697" selection-end="2697" vertical-scroll-proportion="0.02556391">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/assembly.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="30" selection-start="1030" selection-end="1030" vertical-scroll-proportion="0.46804327">
+        <state line="36" column="49" selection-start="1238" selection-end="1238" vertical-scroll-proportion="0.7699248">
           <folding />
         </state>
       </provider>

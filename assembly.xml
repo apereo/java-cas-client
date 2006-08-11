@@ -26,15 +26,18 @@
                 <outputDirectory>bin</outputDirectory>
                 <includeDependencies>true</includeDependencies>
                 <unpack>false</unpack>
-                <scope>runtime</scope>
                 <includes>
                     <include>target/*.jar</include>
                 </includes>
-                <excludes>
-                    <exclude>**/uportal*.jar</exclude>
-                    <exclude>**/spring-mock*.jar</exclude>
-                </excludes>
             </binaries>
         </moduleSet>
     </moduleSets>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <excludes>
+                <exclude>**/.*uportal.*.jar</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
 </assembly>
