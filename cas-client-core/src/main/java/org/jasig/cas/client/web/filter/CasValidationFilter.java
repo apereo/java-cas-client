@@ -104,12 +104,12 @@ public final class CasValidationFilter extends AbstractCasFilter {
                 log.warn(e, e);
                 throw new ServletException(e);
             }
-        }
 
-        if (this.redirectAfterValidation) {
-            response.sendRedirect(response
-                    .encodeRedirectURL(constructServiceUrl(request, response)));
-            return;
+            if (this.redirectAfterValidation) {
+                response.sendRedirect(response
+                        .encodeRedirectURL(constructServiceUrl(request, response)));
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);

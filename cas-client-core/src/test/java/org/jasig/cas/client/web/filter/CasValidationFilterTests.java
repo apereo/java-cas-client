@@ -87,6 +87,7 @@ public final class CasValidationFilterTests extends TestCase {
         this.filter.doFilter(request, response, filterChain);
 
         assertNotNull(session.getAttribute(AbstractCasFilter.CONST_ASSERTION));
+        assertNull(response.getRedirectedUrl());
     }
 
     public void testValidationFailure() throws Exception {
