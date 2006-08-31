@@ -5,6 +5,13 @@
         <format>tar.gz</format>
         <format>zip</format>
     </formats>
+
+    <files>
+        <file>
+            <source>pom.xml</source>
+        </file>
+    </files>
+
     <moduleSets>
         <moduleSet>
             <includes>
