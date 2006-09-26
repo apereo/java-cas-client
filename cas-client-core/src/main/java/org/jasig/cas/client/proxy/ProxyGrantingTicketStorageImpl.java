@@ -1,11 +1,15 @@
 /*
  * Copyright 2006 The JA-SIG Collaborative. All rights reserved. See license
  * distributed with this file and available online at
- * http://www.uportal.org/license.html
+ * http://www.ja-sig.org/products/cas/overview/license/index.html
  */
 package org.jasig.cas.client.proxy;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of {@link ProxyGrantingTicketStorage} that is backed by a
