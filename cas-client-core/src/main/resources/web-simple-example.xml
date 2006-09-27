@@ -17,27 +17,27 @@
 
     <filter>
         <filter-name>CAS Authentication Filter Proxy</filter-name>
-        <filter-class>org.jasig.cas.client.util.FilterToBeanProxy</filter-class>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <init-param>
-            <param-name>targetBean</param-name>
+            <param-name>targetBeanName</param-name>
             <param-value>casAuthenticationFilter</param-value>
         </init-param>
     </filter>
 
     <filter>
         <filter-name>CAS Validation Filter Proxy</filter-name>
-        <filter-class>org.jasig.cas.client.util.FilterToBeanProxy</filter-class>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <init-param>
-            <param-name>targetBean</param-name>
+            <param-name>targetBeanName</param-name>
             <param-value>casValidationFilter</param-value>
         </init-param>
     </filter>
 
     <filter>
         <filter-name>CAS Authorization Filter Proxy</filter-name>
-        <filter-class>org.jasig.cas.client.util.FilterToBeanProxy</filter-class>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <init-param>
-            <param-name>targetBean</param-name>
+            <param-name>targetBeanName</param-name>
             <param-value>casAuthorizationFilter</param-value>
         </init-param>
     </filter>
