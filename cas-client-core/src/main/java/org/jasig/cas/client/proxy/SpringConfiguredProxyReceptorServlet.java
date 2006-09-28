@@ -35,16 +35,14 @@ public final class SpringConfiguredProxyReceptorServlet extends
      */
     private static final long serialVersionUID = -5642050740265266568L;
 
-    public void init(final ServletConfig servletConfig) throws ServletException {
+    protected ProxyGrantingTicketStorage retrieveProxyGrantingTicketStorageFromConfiguration(final ServletConfig servletConfig) throws ServletException {
         final WebApplicationContext context = WebApplicationContextUtils
                 .getRequiredWebApplicationContext(servletConfig.getServletContext());
 
         if (context.containsBean(CONST_PROXY_GRANTING_TICKET_STORAGE_BEAN_NAME)) {
-            this
-                    .setProxyGrantingTicketStorage((ProxyGrantingTicketStorage) context
-                            .getBean(CONST_PROXY_GRANTING_TICKET_STORAGE_BEAN_NAME,
-                                    ProxyGrantingTicketStorage.class));
-            return;
+            return (ProxyGrantingTicketStorage) context
+                    .getBean(CONST_PROXY_GRANTING_TICKET_STORAGE_BEAN_NAME,
+                            ProxyGrantingTicketStorage.class);
         }
 
         final Map map = context
@@ -59,8 +57,7 @@ public final class SpringConfiguredProxyReceptorServlet extends
                     "Expecting one ProxyGrantingTicketStorage and found multiple instances.");
         }
 
-        setProxyGrantingTicketStorage((ProxyGrantingTicketStorage) map.get(map
-                .keySet().iterator().next()));
+        return (ProxyGrantingTicketStorage) map.get(map
+                .keySet().iterator().next());
     }
-
 }

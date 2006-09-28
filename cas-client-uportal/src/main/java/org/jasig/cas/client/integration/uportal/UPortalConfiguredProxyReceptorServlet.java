@@ -29,11 +29,12 @@ public final class UPortalConfiguredProxyReceptorServlet extends
      */
     private static final long serialVersionUID = 6596608588362834646L;
 
-    public void init(final ServletConfig servletConfig) throws ServletException {
+
+    protected ProxyGrantingTicketStorage retrieveProxyGrantingTicketStorageFromConfiguration(final ServletConfig servletConfig) throws ServletException {
         logger.info("Retrieving ProxyGrantingTicketStorage from PortalApplicationContextFacade.");
-        setProxyGrantingTicketStorage((ProxyGrantingTicketStorage) PortalApplicationContextFacade
+        return (ProxyGrantingTicketStorage) PortalApplicationContextFacade
                 .getPortalApplicationContext()
                 .getBean(
-                        AbstractCasSecurityContextFactory.CONST_CAS_PROXY_GRANTING_TICKET_STORAGE));
+                        AbstractCasSecurityContextFactory.CONST_CAS_PROXY_GRANTING_TICKET_STORAGE);
     }
 }

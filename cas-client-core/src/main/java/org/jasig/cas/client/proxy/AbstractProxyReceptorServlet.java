@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -85,8 +86,9 @@ public abstract class AbstractProxyReceptorServlet extends HttpServlet {
                         "<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
     }
 
-    protected final void setProxyGrantingTicketStorage(
-            final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
-        this.proxyGrantingTicketStorage = proxyGrantingTicketStorage;
+    public final void init(final ServletConfig servletConfig) throws ServletException {
+        this.proxyGrantingTicketStorage = retrieveProxyGrantingTicketStorageFromConfiguration(servletConfig);
     }
+
+    protected abstract ProxyGrantingTicketStorage retrieveProxyGrantingTicketStorageFromConfiguration(final ServletConfig servletConfig) throws ServletException;
 }
