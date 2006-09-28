@@ -11,15 +11,15 @@ import org.jasig.cas.client.util.CommonUtils;
 import java.util.List;
 
 /**
- * Default implementation of the CasAuthorizedDecider that delegates to a list
+ * Default implementation of the AuthorizedDecider that delegates to a list
  * to check if someone is authorized.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class DefaultCasAuthorizedDeciderImpl implements
-        CasAuthorizedDecider {
+public final class DefaultAuthorizedDeciderImpl implements
+        AuthorizedDecider {
 
     /**
      * The list of users authorized to use the system.
@@ -31,7 +31,7 @@ public final class DefaultCasAuthorizedDeciderImpl implements
      *
      * @param users the list of acceptable users.
      */
-    public DefaultCasAuthorizedDeciderImpl(final List users) {
+    public DefaultAuthorizedDeciderImpl(final List users) {
         CommonUtils.assertNotEmpty(users, "users cannot be empty.");
         this.users = users;
     }

@@ -15,7 +15,7 @@ import org.jasig.cas.authentication.principal.Principal;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public interface CasAuthorizedDecider {
+public interface AuthorizedDecider {
 
     /**
      * Determines whether someone can use the system or not.
