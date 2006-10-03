@@ -6,6 +6,8 @@
 package org.jasig.cas.client.validation;
 
 import org.jasig.cas.authentication.principal.Principal;
+import org.jasig.cas.authentication.principal.Service;
+import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 
 import java.util.HashMap;
@@ -41,29 +43,61 @@ public class AssertionImpl implements Assertion {
      */
     private final String proxyGrantingTicketId;
 
+    /**
+     * Reference to ProxyRetriever so that clients can retrieve proxy tickets for a service.
+     */
+    private final ProxyRetriever proxyRetriever;
+
+
+    /**
+     * Simple constructor that accepts a Principal.
+     *
+     * @param principal the Principal this assertion is for.
+     */
     public AssertionImpl(final Principal principal) {
-        this(principal, null, null);
+        this(principal, null, null, null);
     }
 
+    /**
+     * Constructor that accepts a Principal and a map of attributes.
+     *
+     * @param principal  the Principal this assertion is for.
+     * @param attributes a map of attributes about the principal.
+     */
+    public AssertionImpl(final Principal principal, final Map attributes) {
+        this(principal, attributes, null, null);
+    }
+
+    /**
+     * @param principal             the Principal this assertion is for.
+     * @param attributes            a map of attributes about the principal.
+     * @param proxyRetriever        used to retrieve proxy tickets from CAS Server.
+     * @param proxyGrantingTicketId the Id to use to request proxy tickets.
+     */
     public AssertionImpl(final Principal principal, final Map attributes,
-                         final String proxyGrantingTicketId) {
+                         final ProxyRetriever proxyRetriever, final String proxyGrantingTicketId) {
         CommonUtils.assertNotNull(principal, "principal cannot be null");
 
         this.principal = principal;
         this.attributes = attributes == null ? new HashMap() : attributes;
         this.proxyGrantingTicketId = CommonUtils
                 .isNotEmpty(proxyGrantingTicketId) ? proxyGrantingTicketId : null;
+        this.proxyRetriever = proxyRetriever;
     }
 
     public final Map getAttributes() {
         return this.attributes;
     }
 
-    public final Principal getPrincipal() {
-        return this.principal;
+    public String getProxyTicketFor(final Service service) {
+        if (proxyRetriever == null || proxyGrantingTicketId == null) {
+            return null;
+        }
+
+        return this.proxyRetriever.getProxyTicketIdFor(this.proxyGrantingTicketId, service);
     }
 
-    public final String getProxyGrantingTicketId() {
-        return this.proxyGrantingTicketId;
+    public final Principal getPrincipal() {
+        return this.principal;
     }
 }

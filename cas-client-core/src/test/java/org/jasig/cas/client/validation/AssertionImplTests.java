@@ -8,6 +8,7 @@ package org.jasig.cas.client.validation;
 import junit.framework.TestCase;
 import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.SimplePrincipal;
+import org.jasig.cas.authentication.principal.SimpleService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,16 +37,14 @@ public final class AssertionImplTests extends TestCase {
 
         assertEquals(CONST_PRINCIPAL, assertion.getPrincipal());
         assertTrue(assertion.getAttributes().isEmpty());
-        assertNull(assertion.getProxyGrantingTicketId());
+        assertNull(assertion.getProxyTicketFor(new SimpleService("test")));
     }
 
     public void testCompleteConstructor() {
         final Assertion assertion = new AssertionImpl(CONST_PRINCIPAL,
-                CONST_ATTRIBUTES, CONST_PROXY_GRANTING_TICKET_IOU);
+                CONST_ATTRIBUTES);
 
         assertEquals(CONST_PRINCIPAL, assertion.getPrincipal());
         assertEquals(CONST_ATTRIBUTES, assertion.getAttributes());
-        assertEquals(CONST_PROXY_GRANTING_TICKET_IOU, assertion
-                .getProxyGrantingTicketId());
     }
 }

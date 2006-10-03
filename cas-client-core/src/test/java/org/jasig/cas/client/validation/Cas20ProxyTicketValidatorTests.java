@@ -7,10 +7,12 @@ package org.jasig.cas.client.validation;
 
 
 import org.apache.commons.httpclient.HttpClient;
+import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.authentication.principal.SimpleService;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
+import org.jasig.cas.client.proxy.ProxyRetriever;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -37,13 +39,24 @@ public final class Cas20ProxyTicketValidatorTests extends
         final List list = new ArrayList();
         list.add("proxy1 proxy2 proxy3");
 
-        this.ticketValidator = new Cas20ProxyTicketValidator(CONST_CAS_SERVER_URL, true, new HttpClient(), proxyGrantingTicketStorage, list, false);
+        this.ticketValidator = new Cas20ProxyTicketValidator(CONST_CAS_SERVER_URL, true, new HttpClient(), new SimpleService("test"), list, false, getProxyGrantingTicketStorage(), getProxyRetriever());
     }
 
     private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
-        ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
+        final ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
 
         return proxyGrantingTicketStorageImpl;
+    }
+
+    private ProxyRetriever getProxyRetriever() {
+        final ProxyRetriever proxyRetriever = new ProxyRetriever() {
+
+            public String getProxyTicketIdFor(String proxyGrantingTicketId, Service targetService) {
+                return "test";
+            }
+        };
+
+        return proxyRetriever;
     }
 
     public void testProxyChainWithValidProxy() throws ValidationException,

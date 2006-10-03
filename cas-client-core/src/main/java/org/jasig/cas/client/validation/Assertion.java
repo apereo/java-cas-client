@@ -6,6 +6,7 @@
 package org.jasig.cas.client.validation;
 
 import org.jasig.cas.authentication.principal.Principal;
+import org.jasig.cas.authentication.principal.Service;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -36,9 +37,10 @@ public interface Assertion extends Serializable {
     Map getAttributes();
 
     /**
-     * Method to retrieve the proxyGrantingTicket Id.
+     * Retrieves a proxy ticket for the specific service.
      *
-     * @return the ProxyGrantingTicket Id if one exists, otherwise null.
+     * @param service The service to proxy to.
+     * @return the Proxy Ticket Id or null.
      */
-    String getProxyGrantingTicketId();
+    String getProxyTicketFor(Service service);
 }

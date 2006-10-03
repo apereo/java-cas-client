@@ -9,6 +9,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.authentication.principal.SimpleService;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
+import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 
@@ -41,19 +42,18 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
     private final boolean acceptAnyProxy;
 
     /**
-     * @param casServerUrl               the url to the CAS server, minus the endpoint.
-     * @param renew                      flag for whether we require authentication to be via an initial authentication.
-     * @param httpClient                 an instance of HttpClient to do the calls.
-     * @param proxyGrantingTicketStorage a reference to the storage of the proxy tickets.
-     * @param proxyChains                the chains of proxy lists that we accept tickets from.
-     * @param acceptAnyProxy             flag on whether we accept any proxy or not.
+     * @param casServerUrl   the url to the CAS server, minus the endpoint.
+     * @param renew          flag for whether we require authentication to be via an initial authentication.
+     * @param httpClient     an instance of HttpClient to do the calls.
+     * @param proxyChains    the chains of proxy lists that we accept tickets from.
+     * @param acceptAnyProxy flag on whether we accept any proxy or not.
      */
-    public Cas20ProxyTicketValidator(final String casServerUrl, final boolean renew, final HttpClient httpClient, final ProxyGrantingTicketStorage proxyGrantingTicketStorage, List proxyChains, boolean acceptAnyProxy) {
-        this(casServerUrl, renew, httpClient, null, proxyGrantingTicketStorage, proxyChains, acceptAnyProxy);
+    public Cas20ProxyTicketValidator(final String casServerUrl, final boolean renew, final HttpClient httpClient, List proxyChains, boolean acceptAnyProxy) {
+        this(casServerUrl, renew, httpClient, null, proxyChains, acceptAnyProxy, null, null);
     }
 
-    public Cas20ProxyTicketValidator(final String casServerUrl, final boolean renew, final HttpClient httpClient, final Service proxyCallbackUrl, final ProxyGrantingTicketStorage proxyGrantingTicketStorage, List proxyChains, boolean acceptAnyProxy) {
-        super(casServerUrl, renew, httpClient, proxyCallbackUrl, proxyGrantingTicketStorage);
+    public Cas20ProxyTicketValidator(final String casServerUrl, final boolean renew, final HttpClient httpClient, final Service proxyCallbackUrl, List proxyChains, boolean acceptAnyProxy, final ProxyGrantingTicketStorage proxyGrantingTicketStorage, final ProxyRetriever proxyRetriever) {
+        super(casServerUrl, renew, httpClient, proxyCallbackUrl, proxyGrantingTicketStorage, proxyRetriever);
 
         CommonUtils.assertTrue(proxyChains != null || acceptAnyProxy,
                 "proxyChains cannot be null or acceptAnyProxy must be true.");
@@ -83,34 +83,27 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         return "proxyValidate";
     }
 
-    protected Assertion getValidAssertionInternal(final String response,
-                                                  final Assertion assertion) throws ValidationException {
+
+    protected Assertion getValidAssertionInternal(final String response, final String principal, final String proxyGrantingTicketIou) throws ValidationException {
         final List proxies = XmlUtils.getTextForElements(response, "proxy");
-        final Service[] principals = new Service[proxies.size()];
 
         // this means there was nothing in the proxy chain, which is okay
-        if (principals.length == 0 || this.acceptAnyProxy) {
-            return assertion;
+        if (proxies.isEmpty() || this.acceptAnyProxy) {
+            return getAssertionBasedOnProxyGrantingTicketIou(proxyGrantingTicketIou, principal);
         }
 
+        final Service[] principals = new Service[proxies.size()];
         int i = 0;
         for (final Iterator iter = proxies.iterator(); iter.hasNext();) {
             principals[i++] = new SimpleService((String) iter.next());
         }
 
-        boolean found = false;
         for (Iterator iter = this.proxyChains.iterator(); iter.hasNext();) {
             if (Arrays.equals(principals, (Object[]) iter.next())) {
-                found = true;
-                break;
+                return getAssertionBasedOnProxyGrantingTicketIou(proxyGrantingTicketIou, principal);
             }
         }
 
-        if (!found) {
-            throw new InvalidProxyChainValidationException();
-        }
-
-        return new AssertionImpl(assertion.getPrincipal(), assertion
-                .getAttributes(), assertion.getProxyGrantingTicketId());
+        throw new InvalidProxyChainValidationException();
     }
 }

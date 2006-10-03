@@ -26,7 +26,7 @@ public abstract class AbstractUrlBasedTicketValidator implements
     protected final Log log = LogFactory.getLog(this.getClass());
 
     /**
-     * Url to CAS server.
+     * Url to CAS server.   Generally of the form https://server:port/cas/
      */
     private final String casServerUrl;
 
@@ -36,7 +36,7 @@ public abstract class AbstractUrlBasedTicketValidator implements
     private final boolean renew;
 
     /**
-     * Instance of HttpClient for connecting to server.
+     * Instance of HttpClient for connecting to server. Care should be taken only inject a multi-threaded HttpClient.
      */
     private final HttpClient httpClient;
 
@@ -48,9 +48,23 @@ public abstract class AbstractUrlBasedTicketValidator implements
         return parseResponse(response);
     }
 
+    /**
+     * Constructs the URL endpoint for contacting CAS for ticket validation.
+     *
+     * @param ticketId the opaque ticket id.
+     * @param service  the service we are validating for.
+     * @return the fully constructed url.
+     */
     protected abstract String constructURL(final String ticketId,
                                            final Service service);
 
+    /**
+     * Parses the response retrieved from the url endpoint.
+     *
+     * @param response the String response.
+     * @return an Assertion based on the response.
+     * @throws ValidationException if there was an error validating the ticket.
+     */
     protected abstract Assertion parseResponse(final String response)
             throws ValidationException;
 

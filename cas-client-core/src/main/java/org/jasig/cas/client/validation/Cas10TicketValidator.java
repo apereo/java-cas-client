@@ -47,7 +47,7 @@ public final class Cas10TicketValidator extends AbstractUrlBasedTicketValidator 
             reader.readLine();
 
             final Principal principal = new SimplePrincipal(reader.readLine());
-            return new AssertionImpl(principal);
+            return new AssertionImpl(principal, null);
         } catch (final IOException e) {
             throw new ValidationException("Unable to parse response.", e);
         }
