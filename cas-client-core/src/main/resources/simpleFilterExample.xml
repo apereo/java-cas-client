@@ -34,7 +34,7 @@
 
     <bean
             id="casValidationFilter"
-            class="org.jasig.cas.client.web.filter.CasValidationFilter">
+            class="org.jasig.cas.client.web.filter.TicketValidationFilter">
         <constructor-arg index="0" value="localhost:8443"/>
         <constructor-arg index="1">
             <null/>
@@ -44,7 +44,7 @@
 
     <bean
             id="casAuthenticationFilter"
-            class="org.jasig.cas.client.web.filter.CasAuthenticationFilter">
+            class="org.jasig.cas.client.web.filter.AuthenticationFilter">
         <constructor-arg index="0" value="localhost:8443"/>
         <constructor-arg index="1">
             <null/>
@@ -56,13 +56,13 @@
 
     <bean
             id="casAuthorizationFilter"
-            class="org.jasig.cas.client.web.filter.CasAuthorizationFilter">
+            class="org.jasig.cas.client.web.filter.AuthorizationFilter">
         <constructor-arg index="0" ref="decider"></constructor-arg>
     </bean>
 
     <bean
             id="decider"
-            class="org.jasig.cas.client.authorization.DefaultCasAuthorizedDeciderImpl">
+            class="org.jasig.cas.client.authorization.DefaultAuthorizedDeciderImpl">
         <constructor-arg index="0">
             <list>
                 <value>battags</value>

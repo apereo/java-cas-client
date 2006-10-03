@@ -31,7 +31,7 @@ import java.io.IOException;
  * @see TicketValidator
  * @since 3.0
  */
-public final class CasValidationFilter extends AbstractCasFilter {
+public final class TicketValidationFilter extends AbstractCasFilter {
 
     /**
      * Instance of the ticket validator.
@@ -52,7 +52,7 @@ public final class CasValidationFilter extends AbstractCasFilter {
      * @param serviceUrl      the url to always redirect to.
      * @param ticketValidator the validator to validate the tickets.
      */
-    public CasValidationFilter(final String serverName, final String serviceUrl, final TicketValidator ticketValidator) {
+    public TicketValidationFilter(final String serverName, final String serviceUrl, final TicketValidator ticketValidator) {
         this(serverName, serviceUrl, true, ticketValidator, false);
     }
 
@@ -65,7 +65,7 @@ public final class CasValidationFilter extends AbstractCasFilter {
      * @param ticketValidator         the validator to validate the tickets.
      * @param redirectAfterValidation whether to redirect to remove the ticket.
      */
-    public CasValidationFilter(final String serverName, final String serviceUrl, final boolean useSession, final TicketValidator ticketValidator, final boolean redirectAfterValidation) {
+    public TicketValidationFilter(final String serverName, final String serviceUrl, final boolean useSession, final TicketValidator ticketValidator, final boolean redirectAfterValidation) {
         super(serverName, serviceUrl, useSession);
         CommonUtils.assertNotNull(ticketValidator,
                 "ticketValidator cannot be null.");

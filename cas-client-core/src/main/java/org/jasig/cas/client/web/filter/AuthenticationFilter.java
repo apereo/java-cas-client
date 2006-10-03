@@ -24,7 +24,7 @@ import java.net.URLEncoder;
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class CasAuthenticationFilter extends AbstractCasFilter {
+public final class AuthenticationFilter extends AbstractCasFilter {
 
     /**
      * The URL to the CAS Server login.
@@ -41,15 +41,15 @@ public final class CasAuthenticationFilter extends AbstractCasFilter {
      */
     private final boolean gateway;
 
-    public CasAuthenticationFilter(final String serverName, final String serviceUrl, final String casServerLoginUrl) {
+    public AuthenticationFilter(final String serverName, final String serviceUrl, final String casServerLoginUrl) {
         this(serverName, serviceUrl, true, casServerLoginUrl, false, false);
     }
 
-    public CasAuthenticationFilter(final String serverName, final String serviceUrl, final String casServerLoginUrl, boolean renew, boolean gateway) {
+    public AuthenticationFilter(final String serverName, final String serviceUrl, final String casServerLoginUrl, boolean renew, boolean gateway) {
         this(serverName, serviceUrl, true, casServerLoginUrl, renew, gateway);
     }
 
-    public CasAuthenticationFilter(String serverName, String serviceUrl, boolean useSession, String casServerLoginUrl, boolean renew, boolean gateway) {
+    public AuthenticationFilter(String serverName, String serviceUrl, boolean useSession, String casServerLoginUrl, boolean renew, boolean gateway) {
         super(serverName, serviceUrl, useSession);
         CommonUtils.assertNotNull(casServerLoginUrl,
                 "the CAS Server Login URL cannot be null.");

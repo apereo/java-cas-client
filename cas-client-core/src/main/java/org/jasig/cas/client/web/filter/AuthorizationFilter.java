@@ -7,9 +7,10 @@ package org.jasig.cas.client.web.filter;
 
 import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.client.authorization.AuthorizationException;
-import org.jasig.cas.client.authorization.CasAuthorizedDecider;
+import org.jasig.cas.client.authorization.AuthorizedDecider;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -34,21 +35,21 @@ import java.io.IOException;
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
- * @see CasAuthorizedDecider
+ * @see AuthorizedDecider
  * @since 3.0
  */
-public final class CasAuthorizationFilter implements Filter {
+public final class AuthorizationFilter implements Filter {
 
     /**
      * Decider that determines whether a specified principal has access to the
      * resource or not.
      */
-    private final CasAuthorizedDecider decider;
+    private final AuthorizedDecider decider;
 
     /**
      * @param casAuthorizedDecider the thing actually deciding to grant access or not.
      */
-    public CasAuthorizationFilter(final CasAuthorizedDecider casAuthorizedDecider) {
+    public AuthorizationFilter(final AuthorizedDecider casAuthorizedDecider) {
         CommonUtils.assertNotNull(casAuthorizedDecider,
                 "the casAuthorizedDecider cannot be null.");
         this.decider = casAuthorizedDecider;
@@ -63,14 +64,7 @@ public final class CasAuthorizationFilter implements Filter {
             throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        final Assertion assertion = (Assertion) request.getSession()
-                .getAttribute(AbstractCasFilter.CONST_ASSERTION);
-
-        if (assertion == null) {
-            throw new ServletException(
-                    "assertion session attribute expected but not found.");
-        }
-
+        final Assertion assertion = (Assertion) WebUtils.getRequiredSessionAttribute(request, AbstractCasFilter.CONST_ASSERTION);
         final Principal principal = assertion.getPrincipal();
 
         final boolean authorized = this.decider
