@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.SimplePrincipal;
 import org.jasig.cas.client.authorization.AuthorizationException;
-import org.jasig.cas.client.authorization.CasAuthorizedDecider;
+import org.jasig.cas.client.authorization.AuthorizedDecider;
 import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -23,18 +23,18 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 /**
- * Tests for the CasAuthorizationFilter.
+ * Tests for the AuthorizationFilter.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class CasAuthorizationFilterTests extends TestCase {
+public final class AuthorizationFilterTests extends TestCase {
 
-    private CasAuthorizationFilter casAuthorizationFilter;
+    private AuthorizationFilter casAuthorizationFilter;
 
     protected void setUp() throws Exception {
-        this.casAuthorizationFilter = new CasAuthorizationFilter(new CasAuthorizedDecider() {
+        this.casAuthorizationFilter = new AuthorizationFilter(new AuthorizedDecider() {
 
             public boolean isAuthorizedToUseApplication(Principal principal) {
                 return principal.getId().equals("scott");

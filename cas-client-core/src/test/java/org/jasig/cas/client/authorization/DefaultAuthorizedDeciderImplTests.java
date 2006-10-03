@@ -8,14 +8,14 @@ package org.jasig.cas.client.authorization;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DefaultCasAuthorizedDeciderImplTests extends
-        AbstractCasAuthorizedDeciderTests {
+public final class DefaultAuthorizedDeciderImplTests extends
+        AbstractAuthorizedDeciderTests {
 
-    public CasAuthorizedDecider getCasAuthorizedDeciderImpl() {
+    public AuthorizedDecider getCasAuthorizedDeciderImpl() {
         final List list = new ArrayList();
         list.add("scott");
 
-        final DefaultCasAuthorizedDeciderImpl impl = new DefaultCasAuthorizedDeciderImpl(list);
+        final DefaultAuthorizedDeciderImpl impl = new DefaultAuthorizedDeciderImpl(list);
         return impl;
     }
 

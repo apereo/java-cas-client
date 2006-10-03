@@ -115,8 +115,7 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
                 .getUserPrincipal());
         assertEquals(request.isRequestedSessionIdFromCookie(), this.mockRequest
                 .isRequestedSessionIdFromCookie());
-        assertEquals(request.isRequestedSessionIdFromUrl(), this.mockRequest
-                .isRequestedSessionIdFromUrl());
+
         assertEquals(request.isRequestedSessionIdFromURL(), this.mockRequest
                 .isRequestedSessionIdFromURL());
         assertEquals(request.isRequestedSessionIdValid(), this.mockRequest
@@ -146,10 +145,7 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
                 .getParameter("test"));
         assertEquals(request.getParameterValues("test"), this.mockRequest
                 .getParameterValues("test"));
-        assertEquals(request.getRealPath("test"), this.mockRequest
-                .getRealPath("test"));
         assertEquals(request.getRequestDispatcher("test").getClass(),
                 this.mockRequest.getRequestDispatcher("test").getClass());
-
     }
 }

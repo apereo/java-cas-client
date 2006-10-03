@@ -9,17 +9,17 @@ import junit.framework.TestCase;
 import org.jasig.cas.authentication.principal.SimplePrincipal;
 
 /**
- * Abstract test for all CasAuthorizedDecider implementations.
+ * Abstract test for all AuthorizedDecider implementations.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public abstract class AbstractCasAuthorizedDeciderTests extends TestCase {
+public abstract class AbstractAuthorizedDeciderTests extends TestCase {
 
-    private CasAuthorizedDecider casAuthorizedDecider;
+    private AuthorizedDecider casAuthorizedDecider;
 
-    protected abstract CasAuthorizedDecider getCasAuthorizedDeciderImpl();
+    protected abstract AuthorizedDecider getCasAuthorizedDeciderImpl();
 
     protected final void setUp() throws Exception {
         this.casAuthorizedDecider = getCasAuthorizedDeciderImpl();

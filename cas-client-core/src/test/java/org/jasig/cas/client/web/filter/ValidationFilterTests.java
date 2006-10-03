@@ -23,18 +23,18 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 /**
- * Tests for the CasValidationFilter.
+ * Tests for the TicketValidationFilter.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class CasValidationFilterTests extends TestCase {
+public final class ValidationFilterTests extends TestCase {
 
-    private CasValidationFilter filter;
+    private TicketValidationFilter filter;
 
     protected void setUp() throws Exception {
-        this.filter = new CasValidationFilter("localhost:8443", null, new TicketValidator() {
+        this.filter = new TicketValidationFilter("localhost:8443", null, new TicketValidator() {
 
             public Assertion validate(final String ticketId,
                                       final Service service) throws ValidationException {

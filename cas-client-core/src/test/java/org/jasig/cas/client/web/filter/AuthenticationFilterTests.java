@@ -21,22 +21,22 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 /**
- * Tests for the CasAuthenticationFilter.
+ * Tests for the AuthenticationFilter.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.0
  */
-public final class CasAuthenticationFilterTests extends TestCase {
+public final class AuthenticationFilterTests extends TestCase {
 
     private static final String CAS_SERVICE_URL = "https://localhost:8443/service";
 
     private static final String CAS_LOGIN_URL = "https://localhost:8443/cas/login";
 
-    private CasAuthenticationFilter filter;
+    private AuthenticationFilter filter;
 
     protected void setUp() throws Exception {
-        this.filter = new CasAuthenticationFilter(null, CAS_SERVICE_URL, CAS_LOGIN_URL, false, false);
+        this.filter = new AuthenticationFilter(null, CAS_SERVICE_URL, CAS_LOGIN_URL, false, false);
         this.filter.init(new MockFilterConfig());
     }
 
@@ -80,7 +80,7 @@ public final class CasAuthenticationFilterTests extends TestCase {
         };
 
         request.setSession(session);
-        this.filter = new CasAuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, false, false);
+        this.filter = new AuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, false, false);
         this.filter.doFilter(request, response, filterChain);
 
         assertEquals(CAS_LOGIN_URL
@@ -122,7 +122,7 @@ public final class CasAuthenticationFilterTests extends TestCase {
             }
         };
 
-        this.filter = new CasAuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, true, false);
+        this.filter = new AuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, true, false);
         request.setSession(session);
         this.filter.doFilter(request, response, filterChain);
 
@@ -143,7 +143,7 @@ public final class CasAuthenticationFilterTests extends TestCase {
         };
 
         request.setSession(session);
-        this.filter = new CasAuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, true, true);
+        this.filter = new AuthenticationFilter("localhost:8443", null, CAS_LOGIN_URL, true, true);
         this.filter.doFilter(request, response, filterChain);
         assertNotNull(session.getAttribute(AbstractCasFilter.CONST_GATEWAY));
         assertNotNull(response.getRedirectedUrl());
