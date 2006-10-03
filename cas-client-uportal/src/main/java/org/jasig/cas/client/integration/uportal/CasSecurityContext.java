@@ -6,7 +6,6 @@
 package org.jasig.cas.client.integration.uportal;
 
 import org.jasig.cas.authentication.principal.Service;
-import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidator;
@@ -36,11 +35,6 @@ public class CasSecurityContext extends ChainingSecurityContext implements
     private final TicketValidator ticketValidator;
 
     /**
-     * Instance of ProxyRetriever to obtain proxy tickets.
-     */
-    private final ProxyRetriever proxyRetriever;
-
-    /**
      * Instance of Service representing uPortal instance.
      */
     private final Service service;
@@ -55,27 +49,18 @@ public class CasSecurityContext extends ChainingSecurityContext implements
      *
      * @param ticketValidator the TicketValidator to validate tickets.
      * @param service         the Service representing the portal.
-     * @param proxyRetriever  the ProxyRetriever to use to retrieve proxies.
      */
-    public CasSecurityContext(final TicketValidator ticketValidator, final Service service, final ProxyRetriever proxyRetriever
-    ) {
+    public CasSecurityContext(final TicketValidator ticketValidator, final Service service) {
         CommonUtils.assertNotNull(ticketValidator, "ticketValidator cannot be null.");
         CommonUtils.assertNotNull(service, "service cannot be null.");
 
         log.trace("Initalizing CasSecurityContext");
         this.ticketValidator = ticketValidator;
         this.service = service;
-        this.proxyRetriever = proxyRetriever;
     }
 
     public final String getProxyTicket(final Service targetService) {
-        if (this.proxyRetriever == null
-                || CommonUtils.isEmpty(this.assertion.getProxyGrantingTicketId())) {
-            return null;
-        }
-
-        return this.proxyRetriever.getProxyTicketIdFor(this.assertion
-                .getProxyGrantingTicketId(), targetService);
+        return this.assertion.getProxyTicketFor(targetService);
     }
 
     public final int getAuthType() {

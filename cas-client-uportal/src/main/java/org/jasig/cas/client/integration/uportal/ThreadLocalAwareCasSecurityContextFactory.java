@@ -19,6 +19,6 @@ public final class ThreadLocalAwareCasSecurityContextFactory extends
 
     public ISecurityContext getSecurityContext() {
         return new ThreadLocalAwareCasSecurityContext(this.ticketValidator,
-                this.service, this.proxyRetriever);
+                this.service);
     }
 }

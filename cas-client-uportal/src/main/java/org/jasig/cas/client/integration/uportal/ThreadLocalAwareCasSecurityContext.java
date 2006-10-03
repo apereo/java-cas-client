@@ -6,7 +6,6 @@
 package org.jasig.cas.client.integration.uportal;
 
 import org.jasig.cas.authentication.principal.Service;
-import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.validation.TicketValidator;
 
 /**
@@ -32,12 +31,10 @@ public final class ThreadLocalAwareCasSecurityContext extends
      *
      * @param ticketValidator the Ticket Validator.
      * @param service         the Service instance representing this uPortal instance.
-     * @param proxyRetriever  the object used to retrieve proxies.
      */
     public ThreadLocalAwareCasSecurityContext(
-            final TicketValidator ticketValidator, final Service service,
-            final ProxyRetriever proxyRetriever) {
-        super(ticketValidator, service, proxyRetriever);
+            final TicketValidator ticketValidator, final Service service) {
+        super(ticketValidator, service);
     }
 
     protected Service getService() {

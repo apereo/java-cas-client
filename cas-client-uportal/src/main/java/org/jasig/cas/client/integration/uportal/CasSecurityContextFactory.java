@@ -31,7 +31,6 @@ public final class CasSecurityContextFactory extends AbstractCasSecurityContextF
     public ISecurityContext getSecurityContext() {
         log
                 .trace("Returning CasSecurityContext from CasSecurityContextFactory.");
-        return new CasSecurityContext(this.ticketValidator, this.service, this.proxyRetriever
-        );
+        return new CasSecurityContext(this.ticketValidator, this.service);
     }
 }
