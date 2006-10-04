@@ -100,10 +100,8 @@ public final class AuthorizationFilterTests extends TestCase {
         try {
             this.casAuthorizationFilter.doFilter(request, response, null);
             fail("ServletException expected.");
-        } catch (ServletException e) {
-            // expected
         } catch (Exception e) {
-            fail("ServletException expected, not IOException.");
+            // expected
         }
     }
 }
