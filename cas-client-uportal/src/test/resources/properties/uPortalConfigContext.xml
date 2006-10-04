@@ -16,6 +16,7 @@
 
         </constructor-arg>
         <constructor-arg index="4" ref="casProxyGrantingTicketStorage"/>
+        <constructor-arg index="5" ref="casProxyRetriever"/>
     </bean>
 
     <bean
@@ -24,7 +25,7 @@
 
 
     <bean
-            id="casProxyReceiver"
+            id="casProxyRetriever"
             class="org.jasig.cas.client.proxy.Cas20ProxyRetriever">
         <constructor-arg value="https://localhost:8443/cas/"/>
         <constructor-arg ref="httpClient"/>

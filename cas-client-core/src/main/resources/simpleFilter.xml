@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="propertyPlaceholderConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location"
+                  value="/WEB-INF/cas-client.properties"/>
+    </bean>
+
+    <bean
+            id="authorizedDecider"
+            class="org.jasig.cas.client.authorization.DefaultAuthorizedDeciderImpl">
+        <constructor-arg index="0">
+            <list>
+                <value>scott</value>
+                <value>velpi</value>
+                <value>apetro</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean
+            id="httpClient"
+            class="org.jasig.cas.util.HttpClient3FactoryBean"/>
+
+    <bean
+            id="proxyRetriever"
+            class="org.jasig.cas.client.proxy.Cas20ProxyRetriever">
+        <constructor-arg index="0" value="${cas.server.url}"/>
+        <constructor-arg index="1" ref="httpClient"/>
+    </bean>
+
+    <bean id="proxyGrantingTicketStorage"
+          class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl"/>
+
+
+    <!-- final String casServerUrl, final boolean renew, final HttpClient httpClient, final Service proxyCallbackUrl, List proxyChains, boolean acceptAnyProxy, final ProxyGrantingTicketStorage proxyGrantingTicketStorage, final ProxyRetriever proxyRetriever -->
+    <bean
+            id="ticketValidator"
+            class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
+        <constructor-arg index="0" value="${cas.server.url}"/>
+        <constructor-arg index="1" value="${cas.server.renew}"/>
+        <constructor-arg index="2" ref="httpClient"/>
+        <constructor-arg index="3">
+            <bean
+                    class="org.jasig.cas.authentication.principal.SimpleService">
+                <!-- proxyCallbackUrl: does nothing when using the ServiceTicketValidator -->
+                <constructor-arg value="${cas.client.proxyCallbackUrl}"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="4">
+            <list></list>
+        </constructor-arg>
+        <constructor-arg index="5" value="true"/>
+        <constructor-arg index="6" ref="proxyGrantingTicketStorage"/>
+        <constructor-arg index="7" ref="proxyRetriever"/>
+    </bean>
+
+    <bean
+            id="casHttpServletRequestWrapperFilter"
+            class="org.jasig.cas.client.web.filter.HttpServletRequestWrapperFilter"/>
+
+    <bean
+            id="casValidationFilter"
+            class="org.jasig.cas.client.web.filter.TicketValidationFilter">
+        <!-- serverName of client to construct serviceURL eg:"thisServer.myDomain.net" -->
+        <constructor-arg index="0" value="${cas.client.serverName}"/>
+        <!-- serviceUrl of client: either provide serverName or serviceUrl -->
+        <constructor-arg index="1">
+            <null/>
+        </constructor-arg>
+        <!-- ticketValidator implementation (defines protocol version to be used) -->
+        <constructor-arg index="2" ref="ticketValidator"/>
+    </bean>
+
+    <bean
+            id="casAuthenticationFilter"
+            class="org.jasig.cas.client.web.filter.AuthenticationFilter">
+        <!-- serverName of client to construct serviceURL eg:"thisServer.myDomain.net" -->
+        <constructor-arg index="0" value="${cas.client.serverName}"/>
+        <!-- serviceUrl of client: either provide serverName or serviceUrl -->
+        <constructor-arg index="1">
+            <null/>
+        </constructor-arg>
+        <!-- CAS server loginUrl -->
+        <constructor-arg index="2" value="${cas.server.url}login"/>
+        <!-- renew? -->
+        <constructor-arg index="3" value="${cas.server.renew}"/>
+        <!-- gateway? -->
+        <constructor-arg index="4" value="${cas.server.gateway}"/>
+    </bean>
+
+    <bean
+            id="casAuthorizationFilter"
+            class="org.jasig.cas.client.web.filter.AuthorizationFilter">
+        <!-- casAuthorizedDecider bean/class -->
+        <constructor-arg index="0" ref="authorizedDecider"></constructor-arg>
+    </bean>
+</beans>
