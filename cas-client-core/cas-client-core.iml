@@ -17,6 +17,24 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
+          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-core/2.0/spring-core-2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
           <root url="jar://C:/Documents and Settings/Scott/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -44,15 +62,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-core/2.0-rc2/spring-core-2.0-rc2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://C:/Documents and Settings/Scott/.m2/repository/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -62,7 +71,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-beans/2.0-rc2/spring-beans-2.0-rc2.jar!/" />
+          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-aop/2.0/spring-aop-2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -71,7 +80,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-web/2.0-rc2/spring-web-2.0-rc2.jar!/" />
+          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-context/2.0/spring-context-2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -89,7 +98,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-mock/2.0-rc2/spring-mock-2.0-rc2.jar!/" />
+          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-beans/2.0/spring-beans-2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -98,7 +107,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-context/2.0-rc2/spring-context-2.0-rc2.jar!/" />
+          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-mock/2.0/spring-mock-2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -116,6 +125,15 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
+          <root url="jar://C:/Documents and Settings/Scott/.m2/repository/org/springframework/spring-web/2.0/spring-web-2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
           <root url="jar://C:/Documents and Settings/Scott/.m2/repository/commons-httpclient/commons-httpclient/3.0.1/commons-httpclient-3.0.1.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -123,10 +141,6 @@
       </library>
     </orderEntry>
     <orderEntryProperties />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <option name="ACTIVE_VCS_NAME" value="CVS" />
-    <option name="USE_PROJECT_VCS" value="false" />
   </component>
 </module>
 
