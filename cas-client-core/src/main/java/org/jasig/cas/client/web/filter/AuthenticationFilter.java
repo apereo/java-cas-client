@@ -69,7 +69,9 @@ public final class AuthenticationFilter extends AbstractCasFilter {
                 && session.getAttribute(CONST_GATEWAY) != null;
 
         if (CommonUtils.isBlank(ticket) && assertion == null && !wasGatewayed) {
+            log.debug("no ticket and no assertion found");
             if (this.gateway && session != null) {
+                log.debug("setting gateway attribute in session");
                 session.setAttribute(CONST_GATEWAY, "yes");
             }
 
@@ -78,11 +80,17 @@ public final class AuthenticationFilter extends AbstractCasFilter {
                     + URLEncoder.encode(serviceUrl, "UTF-8")
                     + (this.renew ? "&renew=true" : "")
                     + (this.gateway ? "&gateway=true" : "");
+
+            if (log.isDebugEnabled()) {
+                log.debug("redirecting to \"" + urlToRedirectTo + "\"");
+            }
+
             response.sendRedirect(urlToRedirectTo);
             return;
         }
 
         if (session != null) {
+            log.debug("removing gateway attribute from session");
             session.setAttribute(CONST_GATEWAY, null);
         }
 

@@ -11,6 +11,8 @@ import org.jasig.cas.client.authorization.AuthorizedDecider;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
 import org.springframework.web.util.WebUtils;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -39,6 +41,12 @@ import java.io.IOException;
  * @since 3.0
  */
 public final class AuthorizationFilter implements Filter {
+
+
+    /**
+     * Instance of Commons Logging.
+     */
+    private final Log log = LogFactory.getLog(this.getClass());
 
     /**
      * Decider that determines whether a specified principal has access to the
@@ -71,11 +79,13 @@ public final class AuthorizationFilter implements Filter {
                 .isAuthorizedToUseApplication(principal);
 
         if (!authorized) {
+            log.debug("User not authorized to access application.");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             throw new AuthorizationException(principal.getId()
                     + " is not authorized to use this application.");
         }
 
+        log.debug("User successfully authorized.");
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

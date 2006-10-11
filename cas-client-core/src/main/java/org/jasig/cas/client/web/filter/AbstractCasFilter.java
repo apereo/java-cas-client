@@ -86,6 +86,8 @@ public abstract class AbstractCasFilter implements Filter {
         this.serverName = serverName;
         this.serviceUrl = serviceUrl;
         this.useSession = useSession;
+
+        log.info("Service Name set to: " + this.serverName + "; Service Url  set to: " + this.serviceUrl + "Use Session set to: " + this.useSession);
     }
 
     public final void destroy() {

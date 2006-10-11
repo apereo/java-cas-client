@@ -71,6 +71,10 @@ public final class TicketValidationFilter extends AbstractCasFilter {
                 "ticketValidator cannot be null.");
         this.ticketValidator = ticketValidator;
         this.redirectAfterValidation = redirectAfterValidation;
+
+        log.info("Initialized with the following properties:  " +
+                "ticketValidator=" + this.ticketValidator.getClass().getName() + "; " +
+                "redirectAfterValidation=" + this.redirectAfterValidation);
     }
 
     protected void doFilterInternal(final HttpServletRequest request,
