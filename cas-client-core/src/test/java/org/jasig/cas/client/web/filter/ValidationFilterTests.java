@@ -34,7 +34,7 @@ public final class ValidationFilterTests extends TestCase {
     private TicketValidationFilter filter;
 
     protected void setUp() throws Exception {
-        this.filter = new TicketValidationFilter("localhost:8443", null, new TicketValidator() {
+        this.filter = new TicketValidationFilter("localhost:8443", true, new TicketValidator() {
 
             public Assertion validate(final String ticketId,
                                       final Service service) throws ValidationException {

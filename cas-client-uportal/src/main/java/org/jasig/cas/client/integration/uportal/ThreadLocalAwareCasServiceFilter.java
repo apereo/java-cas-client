@@ -30,12 +30,12 @@ import java.io.IOException;
 public final class ThreadLocalAwareCasServiceFilter extends AbstractCasFilter {
 
 
-    public ThreadLocalAwareCasServiceFilter(final String serverName, final String serviceUrl) {
-        super(serverName, serviceUrl);
+    public ThreadLocalAwareCasServiceFilter(final String service, final boolean isServerName) {
+        super(service, isServerName);
     }
 
-    public ThreadLocalAwareCasServiceFilter(final String serverName, final String serviceUrl, final boolean useSession) {
-        super(serverName, serviceUrl, useSession);
+    public ThreadLocalAwareCasServiceFilter(final String service, final boolean isServerName, final boolean useSession) {
+        super(service, isServerName, useSession);
     }
 
     protected void doFilterInternal(final HttpServletRequest request,

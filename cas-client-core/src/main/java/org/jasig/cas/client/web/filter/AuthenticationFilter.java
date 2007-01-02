@@ -41,16 +41,16 @@ public final class AuthenticationFilter extends AbstractCasFilter {
      */
     private final boolean gateway;
 
-    public AuthenticationFilter(final String serverName, final String serviceUrl, final String casServerLoginUrl) {
-        this(serverName, serviceUrl, true, casServerLoginUrl, false, false);
+    public AuthenticationFilter(final String serverName, final boolean isServerName, final String casServerLoginUrl) {
+        this(serverName, isServerName, true, casServerLoginUrl, false, false);
     }
 
-    public AuthenticationFilter(final String serverName, final String serviceUrl, final String casServerLoginUrl, boolean renew, boolean gateway) {
-        this(serverName, serviceUrl, true, casServerLoginUrl, renew, gateway);
+    public AuthenticationFilter(final String serverName, final boolean isServerName, final String casServerLoginUrl, boolean renew, boolean gateway) {
+        this(serverName, isServerName, true, casServerLoginUrl, renew, gateway);
     }
 
-    public AuthenticationFilter(String serverName, String serviceUrl, boolean useSession, String casServerLoginUrl, boolean renew, boolean gateway) {
-        super(serverName, serviceUrl, useSession);
+    public AuthenticationFilter(final String serverName, final boolean isServerName, final boolean useSession, String casServerLoginUrl, final boolean renew, final boolean gateway) {
+        super(serverName, isServerName, useSession);
         CommonUtils.assertNotNull(casServerLoginUrl,
                 "the CAS Server Login URL cannot be null.");
         this.casServerLoginUrl = casServerLoginUrl;

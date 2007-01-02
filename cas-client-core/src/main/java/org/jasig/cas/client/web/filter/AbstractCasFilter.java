@@ -61,12 +61,12 @@ public abstract class AbstractCasFilter implements Filter {
      * The name of the server in the following format: <hostname>:<port> where
      * port is optional if its a standard port.
      */
-    private final String serverName;
+    private final String service;
 
     /**
      * The exact service url to match to.
      */
-    private final String serviceUrl;
+    private final boolean isServerName;
 
     /**
      * Whether to store the entry in session or not. Defaults to true.
@@ -74,20 +74,18 @@ public abstract class AbstractCasFilter implements Filter {
     private final boolean useSession;
 
 
-    protected AbstractCasFilter(final String serverName, final String serviceUrl) {
-        this(serverName, serviceUrl, true);
+    protected AbstractCasFilter(final String service, final boolean isServerName) {
+        this(service, isServerName, true);
     }
 
-    protected AbstractCasFilter(final String serverName, final String serviceUrl, final boolean useSession) {
-        CommonUtils.assertTrue(CommonUtils.isNotBlank(serverName)
-                || CommonUtils.isNotBlank(serviceUrl),
-                "either serverName or serviceUrl must be set");
+    protected AbstractCasFilter(final String service, final boolean isServerName, final boolean useSession) {
+        CommonUtils.assertNotNull(service, "service must be set");
 
-        this.serverName = serverName;
-        this.serviceUrl = serviceUrl;
+        this.service = service;
+        this.isServerName = isServerName;
         this.useSession = useSession;
 
-        log.info("Service Name set to: " + this.serverName + "; Service Url  set to: " + this.serviceUrl + "Use Session set to: " + this.useSession);
+        log.info("Service set to: " + this.service + "; Is Server Name?  set to: " + this.isServerName + "Use Session set to: " + this.useSession);
     }
 
     public final void destroy() {
@@ -120,15 +118,15 @@ public abstract class AbstractCasFilter implements Filter {
      */
     protected final String constructServiceUrl(final HttpServletRequest request,
                                                final HttpServletResponse response) {
-        if (CommonUtils.isNotBlank(this.serviceUrl)) {
-            return response.encodeURL(this.serviceUrl);
+        if (!isServerName) {
+            return response.encodeURL(this.service);
         }
 
         final StringBuffer buffer = new StringBuffer();
 
         synchronized (buffer) {
             buffer.append(request.isSecure() ? "https://" : "http://");
-            buffer.append(this.serverName);
+            buffer.append(this.service);
             buffer.append(request.getRequestURI());
 
             if (CommonUtils.isNotBlank(request.getQueryString())) {

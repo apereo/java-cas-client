@@ -22,7 +22,7 @@ public final class ThreadLocalAwareCasServiceFilterTests extends TestCase {
 
 
     protected void setUp() throws Exception {
-        this.filter = new ThreadLocalAwareCasServiceFilter(null, "http://localhost");
+        this.filter = new ThreadLocalAwareCasServiceFilter("http://localhost", false);
     }
 
     public void testServiceSetter() throws IOException, ServletException {
