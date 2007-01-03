@@ -29,20 +29,15 @@ import java.io.IOException;
  */
 public final class ThreadLocalAwareCasServiceFilter extends AbstractCasFilter {
 
-
     public ThreadLocalAwareCasServiceFilter(final String service, final boolean isServerName) {
         super(service, isServerName);
-    }
-
-    public ThreadLocalAwareCasServiceFilter(final String service, final boolean isServerName, final boolean useSession) {
-        super(service, isServerName, useSession);
     }
 
     protected void doFilterInternal(final HttpServletRequest request,
                                     final HttpServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
         final boolean hasTicket = CommonUtils.isNotBlank(request
-                .getParameter(AbstractCasFilter.PARAM_TICKET));
+                .getParameter(getArtifactParameterName()));
         try {
             if (hasTicket) {
                 final Service service = new SimpleService(constructServiceUrl(

@@ -36,7 +36,7 @@ public final class AuthenticationFilterTests extends TestCase {
     private AuthenticationFilter filter;
 
     protected void setUp() throws Exception {
-        this.filter = new AuthenticationFilter(CAS_SERVICE_URL, false, CAS_LOGIN_URL, false, false);
+        this.filter = new AuthenticationFilter(CAS_SERVICE_URL, false, CAS_LOGIN_URL);
         this.filter.init(new MockFilterConfig());
     }
 
@@ -80,7 +80,7 @@ public final class AuthenticationFilterTests extends TestCase {
         };
 
         request.setSession(session);
-        this.filter = new AuthenticationFilter("localhost:8443", true, CAS_LOGIN_URL, false, false);
+        this.filter = new AuthenticationFilter("localhost:8443", true, CAS_LOGIN_URL);
         this.filter.doFilter(request, response, filterChain);
 
         assertEquals(CAS_LOGIN_URL
@@ -122,7 +122,8 @@ public final class AuthenticationFilterTests extends TestCase {
             }
         };
 
-        this.filter = new AuthenticationFilter("localhost:8443", true, CAS_LOGIN_URL, true, false);
+        this.filter = new AuthenticationFilter("localhost:8443", true, CAS_LOGIN_URL);
+        this.filter.setRenew(true);
         request.setSession(session);
         this.filter.doFilter(request, response, filterChain);
 
@@ -143,7 +144,9 @@ public final class AuthenticationFilterTests extends TestCase {
         };
 
         request.setSession(session);
-        this.filter = new AuthenticationFilter("localhost:8443", true, CAS_LOGIN_URL, true, true);
+        this.filter = new AuthenticationFilter("localhost:8443", true, CAS_LOGIN_URL);
+        this.filter.setRenew(true);
+        this.filter.setGateway(true);;
         this.filter.doFilter(request, response, filterChain);
         assertNotNull(session.getAttribute(AbstractCasFilter.CONST_GATEWAY));
         assertNotNull(response.getRedirectedUrl());

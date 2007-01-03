@@ -43,52 +43,23 @@ public final class TicketValidationFilter extends AbstractCasFilter {
      * successful validation to remove the ticket parameter from the query
      * string.
      */
-    private final boolean redirectAfterValidation;
+    private boolean redirectAfterValidation = false;
 
     /** Determines whether an exception is thrown when there is a ticket validation failure. */
-    private final boolean exceptionOnValidationFailure;
+    private boolean exceptionOnValidationFailure = true;
 
     /**
-     * Constructor that takes the severName (or serviceUrl) and the TicketValidator.  Either serveName or serviceUrl is required (but not both).
+     * Constructor that takes the severName (or serviceUrl), TicketValidator, useSession and redirectAfterValidation.  Either serveName or serviceUrl is required (but not both).
      *
      * @param service              the name of the server in <hostname>:<port> combination, if using a non-standard port or the fully qualified url.
      * @param isServerName              whether the service is the host name or the fully qualified url.
-     * @param ticketValidator the validator to validate the tickets.
+     * @param ticketValidator         the validator to validate the tickets.
      */
     public TicketValidationFilter(final String service, final boolean isServerName, final TicketValidator ticketValidator) {
-        this(service, isServerName, true, ticketValidator, false);
-    }
-
-    /**
-     * Constructor that takes the severName (or serviceUrl), TicketValidator, useSession and redirectAfterValidation.  Either serveName or serviceUrl is required (but not both).
-     *
-     * @param service              the name of the server in <hostname>:<port> combination, if using a non-standard port or the fully qualified url.
-     * @param isServerName              whether the service is the host name or the fully qualified url.
-     * @param useSession              flag to set whether to store stuff in the session.
-     * @param ticketValidator         the validator to validate the tickets.
-     * @param redirectAfterValidation whether to redirect to remove the ticket.
-     */
-    public TicketValidationFilter(final String service, final boolean isServerName, final boolean useSession, final TicketValidator ticketValidator, final boolean redirectAfterValidation) {
-        this(service, isServerName, useSession, ticketValidator, redirectAfterValidation, true);
-    }
-
-    /**
-     * Constructor that takes the severName (or serviceUrl), TicketValidator, useSession and redirectAfterValidation.  Either serveName or serviceUrl is required (but not both).
-     *
-     * @param service              the name of the server in <hostname>:<port> combination, if using a non-standard port or the fully qualified url.
-     * @param isServerName              whether the service is the host name or the fully qualified url.
-     * @param useSession              flag to set whether to store stuff in the session.
-     * @param ticketValidator         the validator to validate the tickets.
-     * @param redirectAfterValidation whether to redirect to remove the ticket.
-     * @param exceptionOnValidationFailure whether to throw an exception if there is a validation failure or not.
-     */
-    public TicketValidationFilter(final String service, final boolean isServerName, final boolean useSession, final TicketValidator ticketValidator, final boolean redirectAfterValidation, final boolean exceptionOnValidationFailure) {
-        super(service, isServerName, useSession);
+        super(service, isServerName);
         CommonUtils.assertNotNull(ticketValidator,
                 "ticketValidator cannot be null.");
         this.ticketValidator = ticketValidator;
-        this.redirectAfterValidation = redirectAfterValidation;
-        this.exceptionOnValidationFailure = exceptionOnValidationFailure;
 
         log.info("Initialized with the following properties:  " +
                 "ticketValidator=" + this.ticketValidator.getClass().getName() + "; " +
@@ -99,7 +70,7 @@ public final class TicketValidationFilter extends AbstractCasFilter {
     protected void doFilterInternal(final HttpServletRequest request,
                                     final HttpServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
-        final String ticket = request.getParameter(PARAM_TICKET);
+        final String ticket = request.getParameter(getArtifactParameterName());
 
         if (CommonUtils.isNotBlank(ticket)) {
             if (log.isDebugEnabled()) {
@@ -139,5 +110,14 @@ public final class TicketValidationFilter extends AbstractCasFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    public void setRedirectAfterValidation(final boolean redirectAfterValidation) {
+        this.redirectAfterValidation = redirectAfterValidation;
+    }
+
+
+    public void setExceptionOnValidationFailure(final boolean exceptionOnValidationFailure) {
+        this.exceptionOnValidationFailure = exceptionOnValidationFailure;
     }
 }

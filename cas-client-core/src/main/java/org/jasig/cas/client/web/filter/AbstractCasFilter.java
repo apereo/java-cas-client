@@ -32,11 +32,6 @@ import java.io.IOException;
 public abstract class AbstractCasFilter implements Filter {
 
     /**
-     * Constant string representing the ticket parameter.
-     */
-    public static final String PARAM_TICKET = "ticket";
-
-    /**
      * Constant representing where we store the <code>Assertion</code> in the
      * session.
      */
@@ -71,19 +66,15 @@ public abstract class AbstractCasFilter implements Filter {
     /**
      * Whether to store the entry in session or not. Defaults to true.
      */
-    private final boolean useSession;
+    private boolean useSession = true;
 
+    private String artifactParameterName = "ticket";
 
     protected AbstractCasFilter(final String service, final boolean isServerName) {
-        this(service, isServerName, true);
-    }
-
-    protected AbstractCasFilter(final String service, final boolean isServerName, final boolean useSession) {
         CommonUtils.assertNotNull(service, "service must be set");
 
         this.service = service;
         this.isServerName = isServerName;
-        this.useSession = useSession;
 
         log.info("Service set to: " + this.service + "; Is Server Name?  set to: " + this.isServerName + "Use Session set to: " + this.useSession);
     }
@@ -131,7 +122,7 @@ public abstract class AbstractCasFilter implements Filter {
 
             if (CommonUtils.isNotBlank(request.getQueryString())) {
                 final int location = request.getQueryString().indexOf(
-                        PARAM_TICKET + "=");
+                        this.artifactParameterName + "=");
 
                 if (location == 0) {
                     final String returnValue = response.encodeURL(buffer
@@ -148,7 +139,7 @@ public abstract class AbstractCasFilter implements Filter {
                     buffer.append(request.getQueryString());
                 } else if (location > 0) {
                     final int actualLocation = request.getQueryString()
-                            .indexOf("&" + PARAM_TICKET + "=");
+                            .indexOf("&" + this.artifactParameterName + "=");
 
                     if (actualLocation == -1) {
                         buffer.append(request.getQueryString());
@@ -169,5 +160,23 @@ public abstract class AbstractCasFilter implements Filter {
 
     protected final boolean isUseSession() {
         return this.useSession;
+    }
+
+    public final void setUseSession(final boolean useSession) {
+        this.useSession = useSession;
+    }
+
+    /**
+     * Defaults to "ticket" based on the CAS 2 Specification.  Other examples include SAML artifacts which are defined as
+     * "SAMLart"
+     * 
+     * @param artifactName
+     */
+    public final void setArtifactParameterName(final String artifactName) {
+        this.artifactParameterName = artifactName;
+    }
+
+    protected final String getArtifactParameterName() {
+        return this.artifactParameterName;
     }
 }

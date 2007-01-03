@@ -74,7 +74,7 @@ public final class ValidationFilterTests extends TestCase {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
-        request.setParameter(AbstractCasFilter.PARAM_TICKET, "true");
+        request.setParameter("ticket", "true");
         final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(final ServletRequest arg0,
@@ -95,7 +95,7 @@ public final class ValidationFilterTests extends TestCase {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
-        request.setParameter(AbstractCasFilter.PARAM_TICKET, "false");
+        request.setParameter("ticket", "false");
         final FilterChain filterChain = new FilterChain() {
 
             public void doFilter(final ServletRequest arg0,

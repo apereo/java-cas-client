@@ -34,35 +34,30 @@ public final class AuthenticationFilter extends AbstractCasFilter {
     /**
      * Whether to send the renew request or not.
      */
-    private final boolean renew;
+    private boolean renew = false;
 
     /**
      * Whether to send the gateway request or not.
      */
-    private final boolean gateway;
+    private boolean gateway = false;
 
-    public AuthenticationFilter(final String serverName, final boolean isServerName, final String casServerLoginUrl) {
-        this(serverName, isServerName, true, casServerLoginUrl, false, false);
-    }
+    /**
+     * Defines the parameter to look for when attempting to construct the login url.
+     */
+    private String serviceParameterName = "service";
 
-    public AuthenticationFilter(final String serverName, final boolean isServerName, final String casServerLoginUrl, boolean renew, boolean gateway) {
-        this(serverName, isServerName, true, casServerLoginUrl, renew, gateway);
-    }
-
-    public AuthenticationFilter(final String serverName, final boolean isServerName, final boolean useSession, String casServerLoginUrl, final boolean renew, final boolean gateway) {
-        super(serverName, isServerName, useSession);
+    public AuthenticationFilter(final String serverName, final boolean isServerName, String casServerLoginUrl) {
+        super(serverName, isServerName);
         CommonUtils.assertNotNull(casServerLoginUrl,
                 "the CAS Server Login URL cannot be null.");
         this.casServerLoginUrl = casServerLoginUrl;
-        this.renew = renew;
-        this.gateway = gateway;
     }
 
     protected void doFilterInternal(final HttpServletRequest request,
                                     final HttpServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
         final HttpSession session = request.getSession(isUseSession());
-        final String ticket = request.getParameter(PARAM_TICKET);
+        final String ticket = request.getParameter(getArtifactParameterName());
         final Assertion assertion = session != null ? (Assertion) session
                 .getAttribute(CONST_ASSERTION) : null;
         final boolean wasGatewayed = session != null
@@ -76,7 +71,7 @@ public final class AuthenticationFilter extends AbstractCasFilter {
             }
 
             final String serviceUrl = constructServiceUrl(request, response);
-            final String urlToRedirectTo = this.casServerLoginUrl + "?service="
+            final String urlToRedirectTo = this.casServerLoginUrl + "?" + this.serviceParameterName + "="
                     + URLEncoder.encode(serviceUrl, "UTF-8")
                     + (this.renew ? "&renew=true" : "")
                     + (this.gateway ? "&gateway=true" : "");
@@ -95,5 +90,23 @@ public final class AuthenticationFilter extends AbstractCasFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    public void setRenew(final boolean renew) {
+        this.renew = renew;
+    }
+
+    public void setGateway(final boolean gateway) {
+        this.gateway = gateway;
+    }
+
+    /**
+     * Defaults to "service" due to the CAS 2.0 specification.  Other options
+     * include the SAML specifications's TARGET attribute.
+     * 
+     * @param serviceParameterName
+     */
+    public void setServiceParameterName(final String serviceParameterName) {
+        this.serviceParameterName = serviceParameterName;
     }
 }
