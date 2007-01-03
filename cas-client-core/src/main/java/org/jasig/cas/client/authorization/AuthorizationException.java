@@ -19,15 +19,31 @@ public final class AuthorizationException extends RuntimeException {
      */
     private static final long serialVersionUID = 5912038088650643442L;
 
-    public AuthorizationException(String arg0, Throwable arg1) {
-        super(arg0, arg1);
+    /**
+     * Constructs a new exception with the specified detail message and cause.
+     * 
+     * @param message the detail message. The detail message is saved for later retrieval by the Throwable.getMessage() method.
+     * @param cause the cause (which is saved for later retrieval by the Throwable.getCause() method). (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
+     */
+    public AuthorizationException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 
-    public AuthorizationException(String arg0) {
-        super(arg0);
+    /**
+     * Constructs a new exception with the specified detail message.
+     * 
+     * @param message the detail message. The detail message is saved for later retrieval by the Throwable.getMessage() method.
+     */
+    public AuthorizationException(final String message) {
+        super(message);
     }
 
-    public AuthorizationException(Throwable arg0) {
-        super(arg0);
+    /**
+     * Constructs a new exception with the specified cause and a detail message of (cause==null ? null : cause.toString()) (which typically contains the class and detail message of cause).
+     * 
+     * @param cause the cause (which is saved for later retrieval by the Throwable.getCause() method). (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
+     */
+    public AuthorizationException(final Throwable cause) {
+        super(cause);
     }
 }
