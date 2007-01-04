@@ -50,6 +50,7 @@ public class Saml10TicketValidator extends AbstractUrlBasedTicketValidator {
 
     protected Assertion parseResponse(final String response) throws ValidationException {
         try {
+            log.debug(response);
             final SAMLResponse samlResponse = new SAMLResponse(new ByteArrayInputStream(response.getBytes()));
 
             // check to see if we have any assertions
@@ -95,8 +96,8 @@ public class Saml10TicketValidator extends AbstractUrlBasedTicketValidator {
                 final Assertion casAssertion = new AssertionImpl(principal, authenticationAttributes);
                 return casAssertion;
             }
-
-        } catch (final SAMLException e) {
+       } catch (final SAMLException e) {
+            log.error(e,e);
             throw new ValidationException(e);
         }
 
