@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.jasig.cas</groupId>
-        <version>3.1-SNAPSHOT</version>
+        <version>3.1-m1</version>
         <artifactId>cas-client</artifactId>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -10,7 +10,7 @@
     <artifactId>cas-client-core</artifactId>
     <packaging>jar</packaging>
     <name>JA-SIG CAS Client for Java - Core</name>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.1-m1</version>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>

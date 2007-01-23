@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas</groupId>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.1-m1</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>JA-SIG CAS Client for Java</name>
@@ -77,13 +77,16 @@
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <descriptor>assembly.xml</descriptor>
-                </configuration>
-            </plugin>
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+ 				<version>2.2-SNAPSHOT</version>
+				<configuration>
+					<descriptors>
+						<descriptor>${basedir}/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
         </plugins>
     </build>
 
