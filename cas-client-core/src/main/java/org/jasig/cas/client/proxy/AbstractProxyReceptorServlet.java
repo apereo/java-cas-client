@@ -48,6 +48,9 @@ public abstract class AbstractProxyReceptorServlet extends HttpServlet {
      */
     private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
 
+    /**
+     * Instance of Commons Logging
+     */
     protected final Log logger = LogFactory.getLog(this.getClass());
 
     /**
@@ -86,9 +89,20 @@ public abstract class AbstractProxyReceptorServlet extends HttpServlet {
                         "<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
     }
 
+    /**
+     * Delegates to the protected method <code>retrieveProxyGrantingTicketStorageFromConfiguration()</code>.
+     */
     public final void init(final ServletConfig servletConfig) throws ServletException {
         this.proxyGrantingTicketStorage = retrieveProxyGrantingTicketStorageFromConfiguration(servletConfig);
     }
 
+    /**
+     * Abstract class to retrieve the <code>ProxyGrantingTicketStorage</code> from the ServletConfig.  Its up to
+     * implementing classes to figure out where they are initializing/retrieving the object from.
+     *
+     * @param servletConfig the Servlet Config that has access to the <code>ProxyGrantingTicketStorage</code>.
+     * @return the initialized <code>ProxyGrantingTicketStorage</code>.
+     * @throws ServletException if there is an exception retrieving the <code>ProxyGrantingTicketStorage</code>.
+     */
     protected abstract ProxyGrantingTicketStorage retrieveProxyGrantingTicketStorageFromConfiguration(final ServletConfig servletConfig) throws ServletException;
 }
