@@ -1,1 +1,0 @@
-@mvn clean package assembly:assembly -Ddescriptor=assembly.xml
