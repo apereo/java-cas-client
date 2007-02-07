@@ -41,11 +41,6 @@ public final class AuthenticationFilter extends AbstractCasFilter {
      */
     private boolean gateway = false;
 
-    /**
-     * Defines the parameter to look for when attempting to construct the login url.
-     */
-    private String serviceParameterName = "service";
-
     public AuthenticationFilter(final String serverName, final boolean isServerName, String casServerLoginUrl) {
         super(serverName, isServerName);
         CommonUtils.assertNotNull(casServerLoginUrl,
@@ -57,7 +52,7 @@ public final class AuthenticationFilter extends AbstractCasFilter {
                                     final HttpServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
         final HttpSession session = request.getSession(isUseSession());
-        final String ticket = request.getParameter(getArtifactParameterName());
+        final String ticket = request.getParameter(getArgumentExtractor().getArtifactParameterName());
         final Assertion assertion = session != null ? (Assertion) session
                 .getAttribute(CONST_ASSERTION) : null;
         final boolean wasGatewayed = session != null
@@ -71,7 +66,7 @@ public final class AuthenticationFilter extends AbstractCasFilter {
             }
 
             final String serviceUrl = constructServiceUrl(request, response);
-            final String urlToRedirectTo = this.casServerLoginUrl + "?" + this.serviceParameterName + "="
+            final String urlToRedirectTo = this.casServerLoginUrl + "?" + getArgumentExtractor().getServiceParameterName() + "="
                     + URLEncoder.encode(serviceUrl, "UTF-8")
                     + (this.renew ? "&renew=true" : "")
                     + (this.gateway ? "&gateway=true" : "");
@@ -98,15 +93,5 @@ public final class AuthenticationFilter extends AbstractCasFilter {
 
     public void setGateway(final boolean gateway) {
         this.gateway = gateway;
-    }
-
-    /**
-     * Defaults to "service" due to the CAS 2.0 specification.  Other options
-     * include the SAML specifications's TARGET attribute.
-     * 
-     * @param serviceParameterName
-     */
-    public void setServiceParameterName(final String serviceParameterName) {
-        this.serviceParameterName = serviceParameterName;
     }
 }

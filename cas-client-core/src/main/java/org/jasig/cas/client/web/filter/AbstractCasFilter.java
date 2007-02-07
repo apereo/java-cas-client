@@ -8,6 +8,8 @@ package org.jasig.cas.client.web.filter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.web.support.ArgumentExtractor;
+import org.jasig.cas.web.support.CasArgumentExtractor;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -68,7 +70,9 @@ public abstract class AbstractCasFilter implements Filter {
      */
     private boolean useSession = true;
 
-    private String artifactParameterName = "ticket";
+    /** Instance of an ArgumentExtractor to retrieve arguments based on supported protocol.  Default is the CAS 2 protocol. */
+    private ArgumentExtractor argumentExtractor = new CasArgumentExtractor();
+
 
     protected AbstractCasFilter(final String service, final boolean isServerName) {
         CommonUtils.assertNotNull(service, "service must be set");
@@ -122,7 +126,7 @@ public abstract class AbstractCasFilter implements Filter {
 
             if (CommonUtils.isNotBlank(request.getQueryString())) {
                 final int location = request.getQueryString().indexOf(
-                        this.artifactParameterName + "=");
+                        this.argumentExtractor.getArtifactParameterName() + "=");
 
                 if (location == 0) {
                     final String returnValue = response.encodeURL(buffer
@@ -139,7 +143,7 @@ public abstract class AbstractCasFilter implements Filter {
                     buffer.append(request.getQueryString());
                 } else if (location > 0) {
                     final int actualLocation = request.getQueryString()
-                            .indexOf("&" + this.artifactParameterName + "=");
+                            .indexOf("&" + this.argumentExtractor.getArtifactParameterName() + "=");
 
                     if (actualLocation == -1) {
                         buffer.append(request.getQueryString());
@@ -166,17 +170,13 @@ public abstract class AbstractCasFilter implements Filter {
         this.useSession = useSession;
     }
 
-    /**
-     * Defaults to "ticket" based on the CAS 2 Specification.  Other examples include SAML artifacts which are defined as
-     * "SAMLart"
-     * 
-     * @param artifactName
-     */
-    public final void setArtifactParameterName(final String artifactName) {
-        this.artifactParameterName = artifactName;
+
+    protected ArgumentExtractor getArgumentExtractor() {
+        return this.argumentExtractor;
     }
 
-    protected final String getArtifactParameterName() {
-        return this.artifactParameterName;
+    public void setArgumentExtractor(final ArgumentExtractor argumentExtractor) {
+        CommonUtils.assertNotNull(argumentExtractor, "argumentExtractor cannot be null.");
+        this.argumentExtractor = argumentExtractor;
     }
 }

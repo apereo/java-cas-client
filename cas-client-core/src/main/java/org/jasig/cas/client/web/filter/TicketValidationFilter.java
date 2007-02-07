@@ -70,7 +70,7 @@ public final class TicketValidationFilter extends AbstractCasFilter {
     protected void doFilterInternal(final HttpServletRequest request,
                                     final HttpServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
-        final String ticket = request.getParameter(getArtifactParameterName());
+        final String ticket = request.getParameter(getArgumentExtractor().getArtifactParameterName());
 
         if (CommonUtils.isNotBlank(ticket)) {
             if (log.isDebugEnabled()) {
@@ -115,7 +115,6 @@ public final class TicketValidationFilter extends AbstractCasFilter {
     public void setRedirectAfterValidation(final boolean redirectAfterValidation) {
         this.redirectAfterValidation = redirectAfterValidation;
     }
-
 
     public void setExceptionOnValidationFailure(final boolean exceptionOnValidationFailure) {
         this.exceptionOnValidationFailure = exceptionOnValidationFailure;

@@ -37,7 +37,7 @@ public final class ThreadLocalAwareCasServiceFilter extends AbstractCasFilter {
                                     final HttpServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
         final boolean hasTicket = CommonUtils.isNotBlank(request
-                .getParameter(getArtifactParameterName()));
+                .getParameter(getArgumentExtractor().getArtifactParameterName()));
         try {
             if (hasTicket) {
                 final Service service = new SimpleService(constructServiceUrl(
