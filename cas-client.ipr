@@ -100,7 +100,6 @@
           <option name="m_ignorePrimitives" value="false" />
         </inspection_tool>
         <inspection_tool class="NonFinalStaticVariableUsedInClassInitialization" level="WARNING" enabled="true" />
-        <inspection_tool class="OverridableMethodCallInConstructor" level="WARNING" enabled="true" />
         <inspection_tool class="OverriddenMethodCallInConstructor" level="WARNING" enabled="true" />
         <inspection_tool class="StaticVariableInitialization" level="WARNING" enabled="true">
           <option name="m_ignorePrimitives" value="false" />
