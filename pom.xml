@@ -130,12 +130,11 @@
                 </exclusion>
 
                 <exclusion>
-                    <groupId>opensaml</groupId>
-                    <artifactId>opensaml</artifactId>
+                    <groupId>com.sun.jndi.ldap</groupId>
+                    <artifactId>ldapbp</artifactId>
                 </exclusion>
 
-
-                <exclusion>
+               <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>spring</artifactId>
                 </exclusion>
@@ -153,7 +152,6 @@
                 <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-webflow</artifactId>
-
                 </exclusion>
 
                 <exclusion>
