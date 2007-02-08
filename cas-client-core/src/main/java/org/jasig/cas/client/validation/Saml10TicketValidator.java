@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.net.URLEncoder;
 
 /**
  * @author Scott Battaglia
@@ -45,7 +46,12 @@ public class Saml10TicketValidator extends AbstractUrlBasedTicketValidator {
 
 
     protected String constructURL(final String ticketId, final Service service) {
-        return getCasServerUrl() + "/samlValidate?SAMLart=" + ticketId + "&TARGET=" + getEncodedService(service);
+        try {
+            final String encodedTicket = URLEncoder.encode(ticketId, "UTF-8");
+            return getCasServerUrl() + "/samlValidate?SAMLart=" + encodedTicket + "&TARGET=" + getEncodedService(service);
+        } catch (final Exception e) {
+            return getCasServerUrl() + "/samlValidate?SAMLart=" + ticketId + "&TARGET=" + getEncodedService(service);
+        }
     }
 
     protected Assertion parseResponse(final String response) throws ValidationException {
