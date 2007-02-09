@@ -97,12 +97,12 @@ public abstract class AbstractUrlBasedTicketValidator implements
     /**
      * Helper method to encode the service url.
      *
-     * @param service the service url to encode.
-     * @return the encoded service url.
+     * @param value the String to encode.
+     * @return the encoded String.
      */
-    protected final String getEncodedService(final Service service) {
+    protected final String urlEncode(final String value) {
         try {
-            return URLEncoder.encode(service.getId(), "UTF-8");
+            return URLEncoder.encode(value, "UTF-8");
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

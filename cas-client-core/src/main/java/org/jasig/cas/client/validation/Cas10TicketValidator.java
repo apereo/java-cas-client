@@ -30,7 +30,7 @@ public final class Cas10TicketValidator extends AbstractUrlBasedTicketValidator 
     protected String constructURL(final String ticketId, final Service service) {
         return getCasServerUrl() + "validate?ticket=" + ticketId
                 + (isRenew() ? "&renew=true" : "") + "&service="
-                + getEncodedService(service);
+                + urlEncode(service.getId());
     }
 
     protected final Assertion parseResponse(final String response)

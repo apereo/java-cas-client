@@ -46,12 +46,7 @@ public class Saml10TicketValidator extends AbstractUrlBasedTicketValidator {
 
 
     protected String constructURL(final String ticketId, final Service service) {
-        try {
-            final String encodedTicket = URLEncoder.encode(ticketId, "UTF-8");
-            return getCasServerUrl() + "/samlValidate?SAMLart=" + encodedTicket + "&TARGET=" + getEncodedService(service);
-        } catch (final Exception e) {
-            return getCasServerUrl() + "/samlValidate?SAMLart=" + ticketId + "&TARGET=" + getEncodedService(service);
-        }
+        return getCasServerUrl() + "/samlValidate?SAMLart=" + urlEncode(ticketId) + "&TARGET=" + urlEncode(service.getId());
     }
 
     protected Assertion parseResponse(final String response) throws ValidationException {

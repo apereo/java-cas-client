@@ -64,9 +64,9 @@ public class Cas20ServiceTicketValidator extends
                 + ticketId
                 + (isRenew() ? "&renew=true" : "")
                 + "&service="
-                + getEncodedService(service)
+                + urlEncode(service.getId())
                 + (this.proxyCallbackUrl != null ? "&pgtUrl="
-                + getEncodedService(this.proxyCallbackUrl) : "");
+                + urlEncode(this.proxyCallbackUrl.getId()) : "");
     }
 
     protected final Assertion parseResponse(final String response)
