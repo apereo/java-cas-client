@@ -35,8 +35,6 @@
     <bean id="proxyGrantingTicketStorage"
           class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl"/>
 
-
-    <!-- final String casServerUrl, final boolean renew, final HttpClient httpClient, final Service proxyCallbackUrl, List proxyChains, boolean acceptAnyProxy, final ProxyGrantingTicketStorage proxyGrantingTicketStorage, final ProxyRetriever proxyRetriever -->
     <bean
             id="ticketValidator"
             class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
@@ -67,10 +65,8 @@
             class="org.jasig.cas.client.web.filter.TicketValidationFilter">
         <!-- serverName of client to construct serviceURL eg:"thisServer.myDomain.net" -->
         <constructor-arg index="0" value="${cas.client.serverName}"/>
-        <!-- serviceUrl of client: either provide serverName or serviceUrl -->
-        <constructor-arg index="1">
-            <null/>
-        </constructor-arg>
+        <!-- true if serverName is host:port, false if fully-qualified URL -->
+        <constructor-arg index="1" value="true" />
         <!-- ticketValidator implementation (defines protocol version to be used) -->
         <constructor-arg index="2" ref="ticketValidator"/>
     </bean>
@@ -80,16 +76,10 @@
             class="org.jasig.cas.client.web.filter.AuthenticationFilter">
         <!-- serverName of client to construct serviceURL eg:"thisServer.myDomain.net" -->
         <constructor-arg index="0" value="${cas.client.serverName}"/>
-        <!-- serviceUrl of client: either provide serverName or serviceUrl -->
-        <constructor-arg index="1">
-            <null/>
-        </constructor-arg>
-        <!-- CAS server loginUrl -->
+        <!-- true if serverName is host:port, false if fully-qualified URL -->
+        <constructor-arg index="1" value="true" />
+        <!-- casServerLoginUrl - fully-qualified CAS login URL   -->
         <constructor-arg index="2" value="${cas.server.url}login"/>
-        <!-- renew? -->
-        <constructor-arg index="3" value="${cas.server.renew}"/>
-        <!-- gateway? -->
-        <constructor-arg index="4" value="${cas.server.gateway}"/>
     </bean>
 
     <bean
