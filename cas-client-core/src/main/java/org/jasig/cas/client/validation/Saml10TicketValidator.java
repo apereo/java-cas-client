@@ -148,8 +148,8 @@ public class Saml10TicketValidator extends AbstractUrlBasedTicketValidator {
 
             if (statement instanceof SAMLAttributeStatement) {
                 final SAMLAttributeStatement attributeStatement = (SAMLAttributeStatement) statement;
-
-                if (subject.equals(attributeStatement.getSubject())) {
+                // used because SAMLSubject does not implement equals
+                if (subject.getNameIdentifier().getName().equals(attributeStatement.getSubject().getNameIdentifier().getName())) {
                     for (final Iterator iter2 = attributeStatement.getAttributes(); iter2.hasNext();)
                     attributes.add(iter2.next());
                 }
