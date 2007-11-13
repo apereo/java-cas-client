@@ -29,6 +29,9 @@ public final class ProxyGrantingTicketStorageImpl implements
      */
     private static final long DEFAULT_TIMEOUT = 60000;
 
+    /**
+     * Map that stores the PGTIOU to PGT mappings.
+     */
     private final Map cache = new HashMap();
 
     /**

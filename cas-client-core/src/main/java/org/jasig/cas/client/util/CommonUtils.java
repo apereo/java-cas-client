@@ -5,6 +5,13 @@
  */
 package org.jasig.cas.client.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collection;
 
 /**
@@ -15,6 +22,9 @@ import java.util.Collection;
  * @since 3.0
  */
 public final class CommonUtils {
+
+    /** Instance of Commons Logging. */
+    private static final Log LOG = LogFactory.getLog(CommonUtils.class);
 
     private CommonUtils() {
         // nothing to do
@@ -101,6 +111,90 @@ public final class CommonUtils {
      */
     public static boolean isNotBlank(final String string) {
         return !isBlank(string);
+    }
+
+    /**
+     * Constructs the URL to use to redirect to the CAS server.
+     *
+     * @param casServerLoginUrl the CAS Server login url.
+     * @param serviceParameterName the name of the parameter that defines the service.
+     * @param serviceUrl the actual service's url.
+     * @param renew whether we should send renew or not.
+     * @param gateway where we should send gateway or not.
+     * @return the fully constructed redirect url.
+     */
+    public static final String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName, final String serviceUrl, final boolean renew, final boolean gateway) {
+        try {
+        return casServerLoginUrl + "?" + serviceParameterName + "="
+                    + URLEncoder.encode(serviceUrl, "UTF-8")
+                    + (renew ? "&renew=true" : "")
+                    + (gateway ? "&gateway=true" : "");
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+/**
+     * Constructs a service url from the HttpServletRequest or from the given
+     * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
+     * serviceName.
+     *
+     * @param request  the HttpServletRequest
+     * @param response the HttpServletResponse
+     * @return the service url to use.
+     */
+    public static final String constructServiceUrl(final HttpServletRequest request,
+                                               final HttpServletResponse response, final String service, final String serverName, final String artifactParameterName) {
+        if (CommonUtils.isNotBlank(service)) {
+            return response.encodeURL(service);
+        }
+
+        final StringBuffer buffer = new StringBuffer();
+
+        synchronized (buffer) {
+            if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
+                buffer.append(request.isSecure() ? "https://" : "http://");
+            }
+
+            buffer.append(serverName);
+            buffer.append(request.getRequestURI());
+
+            if (CommonUtils.isNotBlank(request.getQueryString())) {
+                final int location = request.getQueryString().indexOf(
+                        artifactParameterName + "=");
+
+                if (location == 0) {
+                    final String returnValue = response.encodeURL(buffer
+                            .toString());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("serviceUrl generated: " + returnValue);
+                    }
+                    return returnValue;
+                }
+
+                buffer.append("?");
+
+                if (location == -1) {
+                    buffer.append(request.getQueryString());
+                } else if (location > 0) {
+                    final int actualLocation = request.getQueryString()
+                            .indexOf("&" + artifactParameterName + "=");
+
+                    if (actualLocation == -1) {
+                        buffer.append(request.getQueryString());
+                    } else if (actualLocation > 0) {
+                        buffer.append(request.getQueryString().substring(0,
+                                actualLocation));
+                    }
+                }
+            }
+        }
+
+        final String returnValue = response.encodeURL(buffer.toString());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("serviceUrl generated: " + returnValue);
+        }
+        return returnValue;
     }
 
 }

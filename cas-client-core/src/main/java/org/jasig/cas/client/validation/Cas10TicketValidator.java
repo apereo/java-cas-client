@@ -11,7 +11,7 @@ import java.io.StringReader;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class Cas10TicketValidator extends AbstractCasProtocolUrlBasedTicketValidator {
+public final class Cas10TicketValidator extends AbstractCasProtocolUrlBasedTicketValidator {
 
     public Cas10TicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Implements the Single Sign Out protocol.
+ * Implements the Single Sign Out protocol.  It handles registering the session and destroying the session.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -22,10 +22,19 @@ import java.io.IOException;
  */
 public final class SingleSignOutFilter extends AbstractConfigurationFilter {
 
+    /**
+     * The name of the artifact parameter.  This is used to capture the session identifier.
+     */
     private String artifactParameterName = "ticket";
 
     public void init(final FilterConfig filterConfig) throws ServletException {
         setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
+
+        init();
+    }
+
+    public void init() {
+        CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
     }
 
     public void setArtifactParameterName(final String artifactParameterName) {

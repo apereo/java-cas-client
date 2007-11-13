@@ -54,12 +54,17 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         return this.ticketValidator;
     }
 
-    public void init(final FilterConfig filterConfig) throws ServletException {
-        super.init(filterConfig);
+    protected void initInternal(final FilterConfig filterConfig) throws ServletException {
+        super.initInternal(filterConfig);
         setExceptionOnValidationFailure(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "exceptionOnValidationFailure", "true")));
         setRedirectAfterValidation(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation", "false")));
         setUseSession(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "useSession", "true")));
         setTicketValidator(getTicketValidator(filterConfig));
+    }
+
+    public void init() {
+        super.init();
+        CommonUtils.assertNotNull(this.ticketValidator, "ticketValidator cannot be null.");
     }
 
     /**

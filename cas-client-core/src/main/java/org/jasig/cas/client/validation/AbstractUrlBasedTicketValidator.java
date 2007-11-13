@@ -2,6 +2,7 @@ package org.jasig.cas.client.validation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.cas.client.util.CommonUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -44,6 +45,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      */
     protected AbstractUrlBasedTicketValidator(final String casServerUrlPrefix) {
         this.casServerUrlPrefix = casServerUrlPrefix;
+        CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
     }
 
     /**
@@ -51,7 +53,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      *
      * @param urlParameters the map containing the parameters.
      */
-    protected void populateUrlAttributeMap(Map urlParameters) {
+    protected void populateUrlAttributeMap(final Map urlParameters) {
         // nothing to do
     }
 

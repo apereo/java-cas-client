@@ -2,6 +2,7 @@ package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
+import org.jasig.cas.client.util.CommonUtils;
 
 import java.util.Collections;
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @since 3.1
  * 
  */
-public class AssertionImpl implements Assertion {
+public final class AssertionImpl implements Assertion {
 
     /** The date from which the assertion is valid. */
     private final Date validFromDate;
@@ -70,6 +71,10 @@ public class AssertionImpl implements Assertion {
         this.validFromDate = validFromDate;
         this.validUntilDate = validUntilDate;
         this.attributes = attributes;
+
+        CommonUtils.assertNotNull(this.principal, "principal cannot be null.");
+        CommonUtils.assertNotNull(this.validFromDate, "validFromDate cannot be null.");
+        CommonUtils.assertNotNull(this.attributes, "attributes cannot be null.");
     }
     public Date getValidFromDate() {
         return this.validFromDate;

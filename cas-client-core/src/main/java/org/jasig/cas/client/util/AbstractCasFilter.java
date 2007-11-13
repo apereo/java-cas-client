@@ -30,8 +30,10 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     /** Instance of commons logging for logging purposes. */
     protected final Log log = LogFactory.getLog(getClass());
 
+    /** Defines the parameter to look for for the artifact. */
     private String artifactParameterName = "ticket";
 
+    /** Defines the parameter to look for for the service. */
     private String serviceParameterName = "service";
 
     /**
@@ -42,78 +44,36 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     /** The exact url of the service. */
     private String service;
 
-    public void init(final FilterConfig filterConfig) throws ServletException {
+    public final void init(final FilterConfig filterConfig) throws ServletException {
         setServerName(getPropertyFromInitParams(filterConfig, "serverName", null));
         setService(getPropertyFromInitParams(filterConfig, "service", null));
         setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
         setServiceParameterName(getPropertyFromInitParams(filterConfig, "serviceParameterName", "service"));
+
+        initInternal(filterConfig);
+        init();
+    }
+
+    /** Controls the ordering of filter initialiation and checking by defining a method that runs before the init. */
+    protected void initInternal(final FilterConfig filterConfig) throws ServletException {
+        // template method
+    }
+
+    /**
+     * Initialization method.  Called by Filter's init method or by Spring.
+     */
+    public void init() {
+        CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
+        CommonUtils.assertNotNull(this.serviceParameterName, "serviceParameterName cannot be null.");
+        CommonUtils.assertTrue(CommonUtils.isNotEmpty(this.serverName) || CommonUtils.isNotEmpty(this.service), "serverName or service must be set.");
     }
 
     public final void destroy() {
         // nothing to do
     }
 
-    /**
-     * Constructs a service url from the HttpServletRequest or from the given
-     * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
-     * serviceName.
-     *
-     * @param request  the HttpServletRequest
-     * @param response the HttpServletResponse
-     * @return the service url to use.
-     */
-    protected final String constructServiceUrl(final HttpServletRequest request,
-                                               final HttpServletResponse response) {
-        if (CommonUtils.isNotBlank(this.service)) {
-            return response.encodeURL(this.service);
-        }
-
-        final StringBuffer buffer = new StringBuffer();
-
-        synchronized (buffer) {
-            if (!this.serverName.startsWith("https://") && !this.serverName.startsWith("http://")) {
-                buffer.append(request.isSecure() ? "https://" : "http://");
-            }
-            
-            buffer.append(this.serverName);
-            buffer.append(request.getRequestURI());
-
-            if (CommonUtils.isNotBlank(request.getQueryString())) {
-                final int location = request.getQueryString().indexOf(
-                        this.artifactParameterName + "=");
-
-                if (location == 0) {
-                    final String returnValue = response.encodeURL(buffer
-                            .toString());
-                    if (log.isDebugEnabled()) {
-                        log.debug("serviceUrl generated: " + returnValue);
-                    }
-                    return returnValue;
-                }
-
-                buffer.append("?");
-
-                if (location == -1) {
-                    buffer.append(request.getQueryString());
-                } else if (location > 0) {
-                    final int actualLocation = request.getQueryString()
-                            .indexOf("&" + this.artifactParameterName + "=");
-
-                    if (actualLocation == -1) {
-                        buffer.append(request.getQueryString());
-                    } else if (actualLocation > 0) {
-                        buffer.append(request.getQueryString().substring(0,
-                                actualLocation));
-                    }
-                }
-            }
-        }
-
-        final String returnValue = response.encodeURL(buffer.toString());
-        if (log.isDebugEnabled()) {
-            log.debug("serviceUrl generated: " + returnValue);
-        }
-        return returnValue;
+    protected final String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response) {
+        return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName, this.artifactParameterName);
     }
 
     public final void setServerName(final String serverName) {

@@ -5,16 +5,19 @@
  */
 package org.jasig.cas.client.authentication;
 
+import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
-import org.jasig.cas.client.util.AbstractCasFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.URLEncoder;
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -35,7 +38,7 @@ import java.net.URLEncoder;
  */
 public class AuthenticationFilter extends AbstractCasFilter {
 
-    protected static final String CONST_CAS_GATEWAY = "_const_cas_gateway_";
+    public static final String CONST_CAS_GATEWAY = "_const_cas_gateway_";
 
     /**
      * The URL to the CAS Server login.
@@ -52,14 +55,19 @@ public class AuthenticationFilter extends AbstractCasFilter {
      */
     private boolean gateway = false;
 
-    public void init(final FilterConfig filterConfig) throws ServletException {
-        super.init(filterConfig);
+    protected void initInternal(final FilterConfig filterConfig) throws ServletException {
+        super.initInternal(filterConfig);
         setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
         setRenew(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
         setGateway(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
     }
 
-    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+    public void init() {
+        super.init();
+        CommonUtils.assertNotNull(this.casServerLoginUrl, "casServerLoginUrl cannot be null.");
+    }
+
+    public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession(false);
@@ -77,10 +85,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             }
 
             final String serviceUrl = constructServiceUrl(request, response);
-            final String urlToRedirectTo = this.casServerLoginUrl + "?" + getServiceParameterName() + "="
-                    + URLEncoder.encode(serviceUrl, "UTF-8")
-                    + (this.renew ? "&renew=true" : "")
-                    + (this.gateway ? "&gateway=true" : "");
+            final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), serviceUrl, this.renew, this.gateway);
 
             if (log.isDebugEnabled()) {
                 log.debug("redirecting to \"" + urlToRedirectTo + "\"");
@@ -98,15 +103,15 @@ public class AuthenticationFilter extends AbstractCasFilter {
         filterChain.doFilter(request, response);
     }
 
-    public void setRenew(final boolean renew) {
+    public final void setRenew(final boolean renew) {
         this.renew = renew;
     }
 
-    public void setGateway(final boolean gateway) {
+    public final void setGateway(final boolean gateway) {
         this.gateway = gateway;
     }
 
-    public void setCasServerLoginUrl(final String casServerLoginUrl) {
+    public final void setCasServerLoginUrl(final String casServerLoginUrl) {
         this.casServerLoginUrl = casServerLoginUrl;
     }
 }

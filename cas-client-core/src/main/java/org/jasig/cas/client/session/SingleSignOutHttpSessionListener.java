@@ -18,10 +18,16 @@ import java.util.Map;
  * @version $Revision$ Date$
  * @since 3.1
  */
-public class SingleSignOutHttpSessionListener implements HttpSessionListener {
+public final class SingleSignOutHttpSessionListener implements HttpSessionListener {
 
+    /**
+     * Maps the ID from the CAS server to the Session.
+     */
     private static final Map MANAGED_SESSIONS = new HashMap();
 
+    /**
+     * Maps the Session ID to the key from the CAS Server.
+     */
     private static final Map ID_TO_SESSION_KEY_MAPPING = new HashMap();
 
     public void sessionCreated(final HttpSessionEvent event) {
@@ -40,6 +46,12 @@ public class SingleSignOutHttpSessionListener implements HttpSessionListener {
         MANAGED_SESSIONS.put(key, value);
     }
 
+    /**
+     * Method to remove the session from the mapping based on the key returned from the
+     * CAS server.
+     *
+     * @param key the key to look up in the map of sessions.
+     */
     public static void removeSession(final String key) {
         final HttpSession session = (HttpSession) MANAGED_SESSIONS.get(key);
 

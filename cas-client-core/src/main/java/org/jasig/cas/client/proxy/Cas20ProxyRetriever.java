@@ -35,7 +35,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
     /**
      * Instance of Commons Logging.
      */
-    protected final Log log = LogFactory.getLog(this.getClass());
+    private final Log log = LogFactory.getLog(this.getClass());
 
     /**
      * Url to CAS server.

@@ -13,12 +13,12 @@ import java.util.List;
  * @since 3.1
  *
  */
-public class ProxyListPropertyEditor extends PropertyEditorSupport {
+public final class ProxyListPropertyEditor extends PropertyEditorSupport {
 
     /**
      * The new list of proxies to create.  Its a list of String arrays.
      */
-    private List proxyChains = new ArrayList();
+    private final List proxyChains = new ArrayList();
 
     public Object getValue() {
         return this.proxyChains;

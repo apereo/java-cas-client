@@ -12,7 +12,7 @@ import javax.servlet.FilterConfig;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
+public final class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
 
     public Saml11TicketValidationFilter() {
         setArtifactParameterName("SAMLart");

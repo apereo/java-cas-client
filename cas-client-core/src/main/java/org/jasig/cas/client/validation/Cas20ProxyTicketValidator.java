@@ -2,6 +2,7 @@ package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.util.XmlUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -13,12 +14,12 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
+public final class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
 
     private boolean acceptAnyProxy;
 
     /** This should be a list of an array of Strings */
-    private List allowedProxyChains;
+    private List allowedProxyChains = new ArrayList();
 
     public Cas20ProxyTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
@@ -33,7 +34,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         final String[] proxiedList = (String[]) proxies.toArray(new String[proxies.size()]);
 
         // this means there was nothing in the proxy chain, which is okay
-        if (proxies.isEmpty() || this.acceptAnyProxy) {
+        if (proxies == null || proxies.isEmpty() || this.acceptAnyProxy) {
             return;
         }
 

@@ -1,6 +1,7 @@
 package org.jasig.cas.client.authentication;
 
 import org.jasig.cas.client.proxy.ProxyRetriever;
+import org.jasig.cas.client.util.CommonUtils;
 
 import java.util.Collections;
 import java.util.Map;
@@ -69,6 +70,9 @@ public class AttributePrincipalImpl implements AttributePrincipal{
         this.attributes = attributes;
         this.proxyGrantingTicket = proxyGrantingTicket;
         this.proxyRetriever = proxyRetriever;
+
+        CommonUtils.assertNotNull(this.name, "name cannot be null.");
+        CommonUtils.assertNotNull(this.attributes, "attributes cannot be null.");
     }
 
     public Map getAttributes() {

@@ -41,6 +41,7 @@ public abstract class AbstractCasProtocolUrlBasedTicketValidator extends Abstrac
             }
 
         } catch (final IOException e) {
+            log.error(e,e);
             return null;
         } finally {
             if (connection != null) {

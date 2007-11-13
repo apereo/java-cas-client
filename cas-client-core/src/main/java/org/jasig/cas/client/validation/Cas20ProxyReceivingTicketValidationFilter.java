@@ -48,9 +48,15 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
      */
     private ProxyGrantingTicketStorage proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
 
-    public void init(final FilterConfig filterConfig) throws ServletException {
-        super.init(filterConfig);
+    protected void initInternal(final FilterConfig filterConfig) throws ServletException {
+        super.initInternal(filterConfig);
         setProxyReceptorUrl(getPropertyFromInitParams(filterConfig, "proxyReceptorUrl", null));
+    }
+
+    public void init() {
+        super.init();
+        CommonUtils.assertNotNull(this.proxyReceptorUrl, "proxyReceptorUrl cannot be null.");
+        CommonUtils.assertNotNull(this.proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
     }
 
     /**
@@ -95,7 +101,7 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
     /**
      * This processes the ProxyReceptor request before the ticket validation code executes.
      */
-    protected final boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+    protected boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final String requestUri = request.getRequestURI();
@@ -126,18 +132,15 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
                 proxyGrantingTicket);
 
         response.getWriter().write("<?xml version=\"1.0\"?>");
-        response
-                .getWriter()
-                .write(
-                        "<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
+        response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
         return false;
     }
 
-    public final void setProxyReceptorUrl(final String proxyReceptorUrl) {
+    public void setProxyReceptorUrl(final String proxyReceptorUrl) {
         this.proxyReceptorUrl = proxyReceptorUrl;
     }
 
-    public final void setProxyGrantingTicketStorage(final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
+    public void setProxyGrantingTicketStorage(final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
         this.proxyGrantingTicketStorage = proxyGrantingTicketStorage;
     }
 }

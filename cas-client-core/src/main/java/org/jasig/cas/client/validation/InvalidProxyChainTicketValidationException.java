@@ -7,7 +7,7 @@ package org.jasig.cas.client.validation;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class InvalidProxyChainTicketValidationException extends TicketValidationException {
+public final class InvalidProxyChainTicketValidationException extends TicketValidationException {
 
     /**
      * Constructs an exception with the supplied message.
