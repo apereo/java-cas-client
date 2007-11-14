@@ -97,9 +97,11 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
                 final String key = (String) entry.getKey();
                 final String value = (String) entry.getValue();
 
-                buffer.append(key);
-                buffer.append("=");
-                buffer.append(value);
+                if (value != null) {
+	                buffer.append(key);
+	                buffer.append("=");
+	                buffer.append(value);
+                }
             }
 
             return buffer.toString();
@@ -113,6 +115,10 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      * @return the encoded url, or the original url if "UTF-8" character encoding could not be found.                       
      */
     protected final String encodeUrl(final String url) {
+    	if (url == null) {
+    		return null;
+    	}
+    	
         try {
             return URLEncoder.encode(url, "UTF-8");
         } catch (final UnsupportedEncodingException e) {

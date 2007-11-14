@@ -55,7 +55,7 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
 
     public void init() {
         super.init();
-        CommonUtils.assertNotNull(this.proxyReceptorUrl, "proxyReceptorUrl cannot be null.");
+//        CommonUtils.assertNotNull(this.proxyReceptorUrl, "proxyReceptorUrl cannot be null.");
         CommonUtils.assertNotNull(this.proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
     }
 
@@ -106,7 +106,7 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final String requestUri = request.getRequestURI();
 
-        if (!requestUri.endsWith(proxyReceptorUrl)) {
+        if (CommonUtils.isEmpty(this.proxyReceptorUrl) || !requestUri.endsWith(this.proxyReceptorUrl)) {
             return true;
         }
 
