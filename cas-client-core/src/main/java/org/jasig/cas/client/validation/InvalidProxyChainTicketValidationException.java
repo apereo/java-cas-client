@@ -10,6 +10,11 @@ package org.jasig.cas.client.validation;
 public final class InvalidProxyChainTicketValidationException extends TicketValidationException {
 
     /**
+	 * Unique Id for Serialization
+	 */
+	private static final long serialVersionUID = -7736653266370691534L;
+
+	/**
      * Constructs an exception with the supplied message.
      * @param string the supplied message.
      */

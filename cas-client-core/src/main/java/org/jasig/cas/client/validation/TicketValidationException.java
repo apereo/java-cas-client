@@ -10,7 +10,12 @@ package org.jasig.cas.client.validation;
 public class TicketValidationException extends Exception {
 
     /**
-     * Constructs an exception with the supplied messsage.
+	 * Unique Id for Serialization
+	 */
+	private static final long serialVersionUID = -7036248720402711806L;
+
+	/**
+     * Constructs an exception with the supplied message.
      *
      * @param string the message
      */
