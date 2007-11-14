@@ -27,8 +27,6 @@ public final class Cas20ServiceTicketValidatorTests extends
 
     private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
 
-    private ProxyRetriever proxyRetriever;
-
     public Cas20ServiceTicketValidatorTests() {
         super();
     }

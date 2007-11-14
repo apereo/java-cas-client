@@ -31,7 +31,6 @@ public final class Cas20ProxyTicketValidatorTests extends
     }
 
     protected void setUp() throws Exception {
-        final ProxyGrantingTicketStorage proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
         final List list = new ArrayList();
         list.add(new String[] {"proxy1", "proxy2", "proxy3"});
 
