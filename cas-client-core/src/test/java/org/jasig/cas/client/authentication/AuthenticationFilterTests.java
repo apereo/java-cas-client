@@ -132,8 +132,6 @@ public final class AuthenticationFilterTests extends TestCase {
             }
         };
 
-        // TODO: "localhost:8443", true, CAS_LOGIN_URL 
-        this.filter = new AuthenticationFilter();
         this.filter.setRenew(true);
         request.setSession(session);
         this.filter.doFilter(request, response, filterChain);
@@ -155,8 +153,6 @@ public final class AuthenticationFilterTests extends TestCase {
         };
 
         request.setSession(session);
-        // TODO: "localhost:8443", true, CAS_LOGIN_URL
-        this.filter = new AuthenticationFilter();
         this.filter.setRenew(true);
         this.filter.setGateway(true);
         this.filter.doFilter(request, response, filterChain);
