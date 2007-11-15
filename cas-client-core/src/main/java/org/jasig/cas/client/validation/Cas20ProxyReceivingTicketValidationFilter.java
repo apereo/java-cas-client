@@ -1,10 +1,5 @@
 package org.jasig.cas.client.validation;
 
-import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
-import org.jasig.cas.client.util.CommonUtils;
-
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -12,6 +7,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
+import org.jasig.cas.client.util.CommonUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +56,6 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
 
     public void init() {
         super.init();
-//        CommonUtils.assertNotNull(this.proxyReceptorUrl, "proxyReceptorUrl cannot be null.");
         CommonUtils.assertNotNull(this.proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
     }
 
@@ -91,7 +91,7 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
             return new ArrayList();
         }
 
-        final String[] splitProxies = proxies.split(" ");
+        final String[] splitProxies = proxies.split("\n");
         final List items = Arrays.asList(splitProxies);
         final ProxyListPropertyEditor editor = new ProxyListPropertyEditor();
         editor.setValue(items);

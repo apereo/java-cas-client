@@ -54,7 +54,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         init();
     }
 
-    /** Controls the ordering of filter initialiation and checking by defining a method that runs before the init. */
+    /** Controls the ordering of filter initialization and checking by defining a method that runs before the init. */
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         // template method
     }
