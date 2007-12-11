@@ -63,7 +63,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         final String principal = XmlUtils.getTextForElement(response, "user");
         final String proxyGrantingTicketIou = XmlUtils.getTextForElement(
                 response, "proxyGrantingTicket");
-        final String proxyGrantingTicket = this.proxyGrantingTicketStorage.retrieve(proxyGrantingTicketIou);
+        final String proxyGrantingTicket = this.proxyGrantingTicketStorage != null ? this.proxyGrantingTicketStorage.retrieve(proxyGrantingTicketIou) : null;
 
         if (CommonUtils.isEmpty(principal)) {
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
