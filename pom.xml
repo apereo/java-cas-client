@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas</groupId>
-    <version>3.1-M1</version>
+    <version>3.1-RC1</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>JA-SIG CAS Client for Java</name>
@@ -58,14 +58,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <scm>
-        <connection>scm:cvs:pserver:anonymous:@developer.ja-sig.org:2401/home/cvs/jasig:cas-clients/java-client
-        </connection>
-        <developerConnection>
-            scm:cvs:pserver:${username}@developer.ja-sig.org:2401/home/cvs/jasig:cas-clients/java-client
-        </developerConnection>
-        <url>http://developer.ja-sig.org/source/browse/jasig/cas-clients/java-client</url>
-    </scm>
     <organization>
         <name>JA-SIG</name>
         <url>http://www.ja-sig.org</url>
@@ -127,19 +119,7 @@
             <url>http://developer.ja-sig.org/maven2/</url>
             <layout>default</layout>
         </repository>
-        <repository>
-            <id>ibiblio</id>
-            <name>Ibiblio Repository</name>
-            <url>http://www.ibiblio.org/maven2</url>
-        </repository>
     </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>ibiblio</id>
-            <name>Ibiblio Repository</name>
-            <url>http://www.ibiblio.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
     <modules>
         <module>cas-client-core</module>
     </modules>
