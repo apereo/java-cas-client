@@ -1,5 +1,6 @@
 package org.jasig.cas.client.authentication;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public interface AttributePrincipal extends Principal {
+public interface AttributePrincipal extends Principal, Serializable {
 
     /**
      * Retrieves a CAS proxy ticket for this specific principal.
