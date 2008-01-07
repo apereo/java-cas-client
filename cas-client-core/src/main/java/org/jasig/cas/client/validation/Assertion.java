@@ -2,6 +2,7 @@ package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public interface Assertion {
+public interface Assertion extends Serializable {
 
     /**
      * The date from which the assertion is valid from.
