@@ -81,6 +81,30 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         return true;
     }
 
+    /**
+     * Template method that gets executed if ticket validation succeeds.  Override if you want additional behavior to occur
+     * if ticket validation succeeds.  This method is called after all ValidationFilter processing required for a successful authentication
+     * occurs.
+     *
+     * @param request the HttpServletRequest.
+     * @param response the HttpServletResponse.
+     * @param assertion the successful Assertion from the server.
+     */
+    protected void onSuccessfulValidation(final HttpServletRequest request, final HttpServletResponse response, final Assertion assertion) {
+        // nothing to do here.                                                                                            
+    }
+
+    /**
+     * Template method that gets executed if validation fails.  This method is called right after the exception is caught from the ticket validator
+     * but before any of the processing of the exception occurs.
+     *
+     * @param request the HttpServletRequest.
+     * @param response the HttpServletResponse.
+     */
+    protected void onFailedValidation(final HttpServletRequest request, final HttpServletResponse response) {
+        // nothing to do here.
+    }
+
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
 
         if (!preFilter(servletRequest, servletResponse, filterChain)) {
@@ -112,9 +136,12 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     request.getSession().setAttribute(CONST_CAS_ASSERTION,
                             assertion);
                 }
+                onSuccessfulValidation(request, response, assertion);
             } catch (final TicketValidationException e) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 log.warn(e, e);
+
+                onFailedValidation(request, response);
 
                 if (this.exceptionOnValidationFailure) {
                     throw new ServletException(e);

@@ -1,5 +1,10 @@
 package org.jasig.cas.client.validation;
 
+import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
+import org.jasig.cas.client.util.CommonUtils;
+
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -7,12 +12,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
-import org.jasig.cas.client.util.CommonUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +26,7 @@ import java.util.List;
  * @since 3.1
  *
  */
-public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketValidationFilter {
+public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketValidationFilter {
 
     /**
      * Constant representing the ProxyGrantingTicket IOU Request Parameter.
@@ -65,7 +64,7 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
      * @param filterConfig the Filter Configuration object.
      * @return a fully constructed TicketValidator.
      */
-    protected TicketValidator getTicketValidator(final FilterConfig filterConfig) {
+    protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
         final String allowAnyProxy = getPropertyFromInitParams(filterConfig, "acceptAnyProxy", null);
         final String allowedProxyChains = getPropertyFromInitParams(filterConfig, "allowedProxyChains", null);
         final String casServerUrlPrefix = getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null);
@@ -86,7 +85,7 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
         return validator;
     }
 
-    protected List constructListOfProxies(final String proxies) {
+    protected final List constructListOfProxies(final String proxies) {
         if (CommonUtils.isBlank(proxies)) {
             return new ArrayList();
         }
@@ -101,7 +100,7 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
     /**
      * This processes the ProxyReceptor request before the ticket validation code executes.
      */
-    protected boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+    protected final boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final String requestUri = request.getRequestURI();
@@ -136,11 +135,11 @@ public final class Cas20ProxyReceivingTicketValidationFilter extends AbstractTic
         return false;
     }
 
-    public void setProxyReceptorUrl(final String proxyReceptorUrl) {
+    public final void setProxyReceptorUrl(final String proxyReceptorUrl) {
         this.proxyReceptorUrl = proxyReceptorUrl;
     }
 
-    public void setProxyGrantingTicketStorage(final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
+    public final void setProxyGrantingTicketStorage(final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
         this.proxyGrantingTicketStorage = proxyGrantingTicketStorage;
     }
 }

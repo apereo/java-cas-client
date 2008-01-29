@@ -12,14 +12,14 @@ import javax.servlet.FilterConfig;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
+public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
 
     public Saml11TicketValidationFilter() {
         setArtifactParameterName("SAMLart");
         setServiceParameterName("TARGET");
     }
 
-    protected TicketValidator getTicketValidator(final FilterConfig filterConfig) {
+    protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
         final Saml11TicketValidator validator = new Saml11TicketValidator(getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null));
         final String tolerance = getPropertyFromInitParams(filterConfig, "tolerance", "1000");
         validator.setTolerance(Long.parseLong(tolerance));
