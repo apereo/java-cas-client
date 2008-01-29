@@ -18,7 +18,10 @@ import java.util.Map;
  */
 public final class AssertionImpl implements Assertion {
 
-    /** The date from which the assertion is valid. */
+    /** Unique Id for serialization. */
+	private static final long serialVersionUID = -7767943925833639221L;
+
+	/** The date from which the assertion is valid. */
     private final Date validFromDate;
 
     /** The date the assertion is valid until. */

@@ -13,9 +13,12 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class AttributePrincipalImpl implements AttributePrincipal{
+public class AttributePrincipalImpl implements AttributePrincipal {
 
-    /** The unique identifier for this principal. */
+    /** Unique Id for Serialization */
+	private static final long serialVersionUID = -8810123156070148535L;
+
+	/** The unique identifier for this principal. */
     private final String name;
 
     /** Map of key/value pairs about this principal. */
