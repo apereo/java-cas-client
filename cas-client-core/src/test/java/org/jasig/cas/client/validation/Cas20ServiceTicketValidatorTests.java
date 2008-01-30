@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The JA-SIG Collaborative. All rights reserved. See license
+ * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
  * distributed with this file and available online at
  * http://www.ja-sig.org/products/cas/overview/license/index.html
  */
@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
  * Test cases for the {@link Cas20ServiceTicketValidator}.
  *
  * @author Scott Battaglia
- * @version $Revision: 11737 $ $Date: 2006-10-03 09:14:02 -0400 (Tue, 03 Oct 2006) $
+ * @version $Revision: 11737 $ $Date: 2007-10-03 09:14:02 -0400 (Tue, 03 Oct 2007) $
  * @since 3.0
  */
 public final class Cas20ServiceTicketValidatorTests extends

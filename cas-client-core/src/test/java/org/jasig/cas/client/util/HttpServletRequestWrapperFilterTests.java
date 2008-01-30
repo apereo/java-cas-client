@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The JA-SIG Collaborative. All rights reserved. See license
+ * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
  * distributed with this file and available online at
  * http://www.ja-sig.org/products/cas/overview/license/index.html
  */
@@ -22,7 +22,7 @@ import java.io.IOException;
  * Tests for the HttpServletRequestWrapperFilter.
  *
  * @author Scott Battaglia
- * @version $Revision: 11742 $ $Date: 2006-10-05 14:03:58 -0400 (Thu, 05 Oct 2006) $
+ * @version $Revision: 11742 $ $Date: 2007-10-05 14:03:58 -0400 (Thu, 05 Oct 2007) $
  * @since 3.0
  */
 

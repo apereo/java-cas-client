@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The JA-SIG Collaborative. All rights reserved. See license
+ * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
  * distributed with this file and available online at
  * http://www.ja-sig.org/products/cas/overview/license/index.html
  */
@@ -11,7 +11,7 @@ import org.jasig.cas.client.validation.Assertion;
  * Static holder that places Assertion in a threadlocal.
  *
  * @author Scott Battaglia
- * @version $Revision: 11728 $ $Date: 2006-09-26 14:20:43 -0400 (Tue, 26 Sep 2006) $
+ * @version $Revision: 11728 $ $Date: 2007-09-26 14:20:43 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
 public class AssertionHolder {

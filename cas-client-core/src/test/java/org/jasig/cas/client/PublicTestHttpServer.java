@@ -7,7 +7,7 @@ import java.net.Socket;
 
 /**
  * @author Scott Battaglia
- * @version $Revision: 11721 $ $Date: 2006-08-09 15:17:44 -0400 (Wed, 09 Aug 2006) $
+ * @version $Revision: 11721 $ $Date: 2007-08-09 15:17:44 -0400 (Wed, 09 Aug 2007) $
  * @since 3.0
  */
 public final class PublicTestHttpServer extends Thread {
