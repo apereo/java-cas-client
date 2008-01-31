@@ -1,3 +1,8 @@
+/*
+ * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
+ * distributed with this file and available online at
+ * http://www.ja-sig.org/products/cas/overview/license/index.html
+ */
 package org.jasig.cas.client.validation;
 
 /**
@@ -12,7 +17,7 @@ package org.jasig.cas.client.validation;
 public interface TicketValidator {
 
     /**
-     * Attempts to validatea  ticket for the provided service.
+     * Attempts to validate a ticket for the provided service.
      *
      * @param ticket the ticket to attempt to validate.
      * @param service the service this ticket is valid for.
