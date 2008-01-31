@@ -31,6 +31,8 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
      * The name of the artifact parameter.  This is used to capture the session identifier.
      */
     private String artifactParameterName = "ticket";
+    
+    private static SessionMappingStorage SESSION_MAPPING_STORAGE = new HashMapBackedSessionMappingStorage();
 
     public void init(final FilterConfig filterConfig) throws ServletException {
         setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
@@ -40,6 +42,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
 
     public void init() {
         CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
+        CommonUtils.assertNotNull(SESSION_MAPPING_STORAGE, "sessionMappingStorage cannote be null.");
     }
 
     public void setArtifactParameterName(final String artifactParameterName) {
@@ -56,7 +59,11 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
                 final String sessionIdentifier = XmlUtils.getTextForElement(logoutRequest, "SessionIndex");
 
                 if (CommonUtils.isNotBlank(sessionIdentifier)) {
-                    SingleSignOutHttpSessionListener.removeSession(sessionIdentifier);
+                	final HttpSession session = SESSION_MAPPING_STORAGE.removeSessionByMappingId(sessionIdentifier);
+                	
+                	if (session != null) {
+                		session.invalidate();
+                	}
                     return;
                 }
             }
@@ -64,11 +71,19 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
             final String artifact = request.getParameter(this.artifactParameterName);
             final HttpSession session = request.getSession();
             if (CommonUtils.isNotBlank(artifact)) {
-                SingleSignOutHttpSessionListener.addSession(artifact, session);
+            	SESSION_MAPPING_STORAGE.addSessionById(artifact, session);
             }
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+    
+    public void setSessionMappingStorage(final SessionMappingStorage storage) {
+    	SESSION_MAPPING_STORAGE = storage;
+    }
+    
+    public static SessionMappingStorage getSessionMappingStorage() {
+    	return SESSION_MAPPING_STORAGE;
     }
 
     public void destroy() {
