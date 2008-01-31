@@ -9,6 +9,8 @@ import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.proxy.ProxyRetriever;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -83,5 +85,22 @@ public final class Cas20ProxyTicketValidatorTests extends
         } catch (InvalidProxyChainTicketValidationException e) {
             // expected
         }
+    }
+    
+    public void testConstructionFromSpringBean() throws TicketValidationException,
+    UnsupportedEncodingException {
+    	final ApplicationContext context = new ClassPathXmlApplicationContext("classpath:cas20ProxyTicketValidator.xml");
+    	final Cas20ProxyTicketValidator v = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidator");
+    	final Cas20ProxyTicketValidator v2 = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidatorWithAllowAnyProxy");
+    	
+        final String USERNAME = "username";
+        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
+        PublicTestHttpServer.instance().content = RESPONSE
+                .getBytes(PublicTestHttpServer.instance().encoding);
+
+        final Assertion assertion = v.validate("test",
+                "test");
+        assertEquals(USERNAME, assertion.getPrincipal().getName());
+
     }
 }

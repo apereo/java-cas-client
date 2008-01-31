@@ -1,3 +1,8 @@
+/*
+ * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
+ * distributed with this file and available online at
+ * http://www.ja-sig.org/products/cas/overview/license/index.html
+ */
 package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.util.XmlUtils;
@@ -39,7 +44,7 @@ public final class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator
         }
 
         for (Iterator iter = this.allowedProxyChains.iterator(); iter.hasNext();) {
-            if (Arrays.equals(proxiedList, (Object[]) iter.next())) {
+            if (Arrays.equals(proxiedList, (String[]) iter.next())) {
                 return;
             }
         }
