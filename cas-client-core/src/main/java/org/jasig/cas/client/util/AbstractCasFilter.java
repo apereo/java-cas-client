@@ -35,6 +35,9 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     /** Defines the parameter to look for for the service. */
     private String serviceParameterName = "service";
+    
+    /** Sets where response.encodeUrl should be called on service urls when constructed. */
+    private boolean encodeServiceUrl = true;
 
     /**
      * The name of the server.  Should be in the following format: {protocol}:{hostName}:{port}.
@@ -49,6 +52,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         setService(getPropertyFromInitParams(filterConfig, "service", null));
         setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
         setServiceParameterName(getPropertyFromInitParams(filterConfig, "serviceParameterName", "service"));
+        setEncodeServiceUrl(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
 
         initInternal(filterConfig);
         init();
@@ -73,7 +77,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     }
 
     protected final String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response) {
-        return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName, this.artifactParameterName);
+        return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName, this.artifactParameterName, this.encodeServiceUrl);
     }
 
     public final void setServerName(final String serverName) {
@@ -90,6 +94,10 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     public final void setServiceParameterName(final String serviceParameterName) {
         this.serviceParameterName = serviceParameterName;
+    }
+    
+    public final void setEncodeServiceUrl(final boolean encodeServiceUrl) {
+    	this.encodeServiceUrl = encodeServiceUrl;
     }
 
     public final String getArtifactParameterName() {

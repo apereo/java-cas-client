@@ -133,7 +133,7 @@ public final class CommonUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
 /**
      * Constructs a service url from the HttpServletRequest or from the given
      * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
@@ -144,9 +144,9 @@ public final class CommonUtils {
      * @return the service url to use.
      */
     public static final String constructServiceUrl(final HttpServletRequest request,
-                                               final HttpServletResponse response, final String service, final String serverName, final String artifactParameterName) {
+                                               final HttpServletResponse response, final String service, final String serverName, final String artifactParameterName, final boolean encode) {
         if (CommonUtils.isNotBlank(service)) {
-            return response.encodeURL(service);
+            return encode ? response.encodeURL(service) : service;
         }
 
         final StringBuffer buffer = new StringBuffer();
@@ -164,8 +164,8 @@ public final class CommonUtils {
                         artifactParameterName + "=");
 
                 if (location == 0) {
-                    final String returnValue = response.encodeURL(buffer
-                            .toString());
+                    final String returnValue = encode ? response.encodeURL(buffer
+                            .toString()): buffer.toString();
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("serviceUrl generated: " + returnValue);
                     }
@@ -190,7 +190,7 @@ public final class CommonUtils {
             }
         }
 
-        final String returnValue = response.encodeURL(buffer.toString());
+        final String returnValue = encode ? response.encodeURL(buffer.toString()) : buffer.toString();
         if (LOG.isDebugEnabled()) {
             LOG.debug("serviceUrl generated: " + returnValue);
         }
