@@ -9,8 +9,8 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.util.CommonUtils;
 
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -53,7 +53,7 @@ public final class AssertionImpl implements Assertion {
      * @param principal the Principal to associate with the Assertion.
      */
     public AssertionImpl(final AttributePrincipal principal) {
-        this(principal, Collections.EMPTY_MAP);
+        this(principal, new HashMap());
     }
 
     /**
