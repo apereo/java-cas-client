@@ -112,14 +112,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>jasig</id>
-            <name>JA-SIG Maven Repository</name>
-            <url>http://developer.ja-sig.org/maven2/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
     <modules>
         <module>cas-client-core</module>
     </modules>
