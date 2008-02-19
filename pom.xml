@@ -13,6 +13,12 @@
         <system>JIRA</system>
         <url>http://www.ja-sig.org/issues</url>
     </issueManagement>
+	<scm>
+	    <connection>scm:svn:https://www.ja-sig.org/svn/cas-clients/java-client</connection>
+	    <developerConnection>scm:svn:https://www.ja-sig.org/svn/cas-clients/java-client</developerConnection>
+	    <tag>HEAD</tag>
+	    <url>https://www.ja-sig.org/svn/cas-clients/java-client</url>
+	</scm>
     <inceptionYear>2006</inceptionYear>
     <mailingLists>
         <mailingList>
