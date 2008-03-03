@@ -19,8 +19,8 @@ import javax.servlet.FilterConfig;
 public class Cas10TicketValidationFilter extends AbstractTicketValidationFilter {
 
     protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
-        final String casUrlServerPrefix = getPropertyFromInitParams(filterConfig, "casUrlServerPrefix", null);
-        final Cas10TicketValidator validator = new Cas10TicketValidator(casUrlServerPrefix);
+        final String casServerUrlPrefix = getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null);
+        final Cas10TicketValidator validator = new Cas10TicketValidator(casServerUrlPrefix);
         validator.setRenew(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
 
         return validator;
