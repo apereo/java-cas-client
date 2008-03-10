@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas</groupId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>JA-SIG CAS Client for Java</name>
@@ -121,4 +121,12 @@
     <modules>
         <module>cas-client-core</module>
     </modules>
+    
+	<distributionManagement>
+		<repository>
+			<id>acegi.repo</id>
+			<name>Acegi Repository</name>
+			<url>scp://shell.sf.net/home/groups/a/ac/acegisecurity/htdocs/repository/releases</url>
+		</repository>
+	</distributionManagement>
 </project>
