@@ -120,6 +120,7 @@
 
     <modules>
         <module>cas-client-core</module>
+        <module>cas-client-integration-atlassian</module>
     </modules>
     
 	<distributionManagement>
