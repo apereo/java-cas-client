@@ -5,6 +5,8 @@
  */
 package org.jasig.cas.client.session;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractConfigurationFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
@@ -31,12 +33,12 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
      * The name of the artifact parameter.  This is used to capture the session identifier.
      */
     private String artifactParameterName = "ticket";
-    
+
     private static SessionMappingStorage SESSION_MAPPING_STORAGE = new HashMapBackedSessionMappingStorage();
+    private static Log log = LogFactory.getLog(SingleSignOutFilter.class);
 
     public void init(final FilterConfig filterConfig) throws ServletException {
         setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
-
         init();
     }
 
@@ -56,15 +58,26 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
             final String logoutRequest = request.getParameter("logoutRequest");
 
             if (CommonUtils.isNotBlank(logoutRequest)) {
+
+                if (log.isTraceEnabled()) {
+                    log.trace ("Logout request=[" + logoutRequest + "]");
+                }
+                
                 final String sessionIdentifier = XmlUtils.getTextForElement(logoutRequest, "SessionIndex");
 
                 if (CommonUtils.isNotBlank(sessionIdentifier)) {
                 	final HttpSession session = SESSION_MAPPING_STORAGE.removeSessionByMappingId(sessionIdentifier);
-                	
+
                 	if (session != null) {
-                		session.invalidate();
+                        String sessionID = session.getId();
+
+                        if (log.isTraceEnabled()) {
+                            log.trace ("Invalidating session [" + sessionID + "] for ST [" + sessionIdentifier + "]");
+                        }
+                        
+                        session.invalidate();
                 	}
-                    return;
+                  return;
                 }
             }
         } else {
@@ -77,11 +90,11 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
-    
+
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
     	SESSION_MAPPING_STORAGE = storage;
     }
-    
+
     public static SessionMappingStorage getSessionMappingStorage() {
     	return SESSION_MAPPING_STORAGE;
     }
