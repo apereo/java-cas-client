@@ -5,6 +5,8 @@
  */
 package org.jasig.cas.client.proxy;
 
+import java.io.Serializable;
+
 /**
  * Interface to abstract the retrieval of a proxy ticket to make the
  * implementation a black box to the client.
@@ -13,7 +15,7 @@ package org.jasig.cas.client.proxy;
  * @version $Revision: 11729 $ $Date: 2007-09-26 14:22:30 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
-public interface ProxyRetriever {
+public interface ProxyRetriever extends Serializable {
 
     /**
      * Retrieves a proxy ticket for a specific targetService.
