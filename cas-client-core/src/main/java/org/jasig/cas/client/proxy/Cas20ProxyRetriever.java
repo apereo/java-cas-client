@@ -32,7 +32,10 @@ import java.net.URLEncoder;
  */
 public final class Cas20ProxyRetriever implements ProxyRetriever {
 
-    /**
+    /** Unique Id for serialization. */
+	private static final long serialVersionUID = 560409469568911791L;
+
+	/**
      * Instance of Commons Logging.
      */
     private final Log log = LogFactory.getLog(this.getClass());
