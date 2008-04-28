@@ -542,7 +542,7 @@
         <dependency>
             <groupId>org.jasig.cas</groupId>
             <artifactId>cas-client-core</artifactId>
-            <version>3.1.2</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
