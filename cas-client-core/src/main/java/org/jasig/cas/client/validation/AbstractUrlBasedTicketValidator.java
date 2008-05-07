@@ -44,6 +44,11 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     private boolean renew;
 
     /**
+     * A map containing custom parameters to pass to the validation url.
+     */
+    private Map customParameters;
+
+    /**
      * Constructs a new TicketValidator with the casServerUrlPrefix.
      *
      * @param casServerUrlPrefix the location of the CAS server.
@@ -86,6 +91,10 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
         }
 
         populateUrlAttributeMap(urlParameters);
+
+        if (this.customParameters != null) {
+            urlParameters.putAll(this.customParameters);
+        }
 
         final String suffix = getUrlSuffix();
         final StringBuffer buffer = new StringBuffer(urlParameters.size()*10 + this.casServerUrlPrefix.length() + suffix.length() +1);
@@ -170,5 +179,9 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     public void setRenew(final boolean renew) {
         this.renew = renew;
+    }
+
+    public void setCustomParameters(final Map customParameters) {
+        this.customParameters = customParameters;
     }
 }

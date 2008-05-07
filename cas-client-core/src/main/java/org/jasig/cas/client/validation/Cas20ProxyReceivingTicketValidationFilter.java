@@ -20,11 +20,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Creates either a CAS20ProxyTicketValidator or a CAS20ServiceTicketValidator depending on whether any of the
  * proxy parameters are set.
+ * <p>
+ * This filter can also pass additional parameteres to the ticket validator.  Any init parameter not included in the
+ * reserved list {@link org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter#RESERVED_INIT_PARAMS}.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -42,6 +48,8 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
      * Constant representing the ProxyGrantingTicket Request Parameter.
      */
     private static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
+
+    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl"};
 
     /**
      * The URL to send to the CAS server as the URL that will process proxying requests on the CAS client. 
@@ -87,6 +95,20 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
         validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix));
         validator.setRenew(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+
+        final Map additionalParameters = new HashMap();
+        final List params = Arrays.asList(RESERVED_INIT_PARAMS);
+
+        for (final Enumeration e = filterConfig.getInitParameterNames(); e.hasMoreElements();) {
+            final String s = (String) e.nextElement();
+
+            if (!params.contains(s)) {
+                additionalParameters.put(s, filterConfig.getInitParameter(s));
+            }
+        }
+
+        validator.setCustomParameters(additionalParameters);
+
         return validator;
     }
 
