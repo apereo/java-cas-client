@@ -77,7 +77,7 @@ public final class HttpServletRequestWrapperFilter implements Filter {
         }
 
         public String getRemoteUser() {
-            return getUserPrincipal().getName();
+            return principal != null ? this.principal.getName() : null;
         }
     }
 }
