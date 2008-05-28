@@ -75,7 +75,11 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
                             log.trace ("Invalidating session [" + sessionID + "] for ST [" + sessionIdentifier + "]");
                         }
                         
-                        session.invalidate();
+                        try {
+                        	session.invalidate();
+                        } catch (final IllegalStateException e) {
+                        	log.debug(e,e);
+                        }
                 	}
                   return;
                 }
