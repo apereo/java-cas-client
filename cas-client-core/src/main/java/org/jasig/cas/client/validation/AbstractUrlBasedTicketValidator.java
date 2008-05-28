@@ -102,7 +102,9 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
         int i = 0;
         synchronized (buffer) {
             buffer.append(this.casServerUrlPrefix);
-            buffer.append("/");
+            if (!this.casServerUrlPrefix.endsWith("/")) {
+            	buffer.append("/");	
+            }
             buffer.append(suffix);
 
             for (final Iterator iter = urlParameters.entrySet().iterator(); iter.hasNext();) {

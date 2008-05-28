@@ -99,9 +99,9 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
     private String constructUrl(final String proxyGrantingTicketId,
                                 final String targetService) {
         try {
-            return this.casServerUrl + "proxy" + "?pgt="
-                    + proxyGrantingTicketId + "&targetService="
-                    + URLEncoder.encode(targetService, "UTF-8");
+        	return this.casServerUrl + (this.casServerUrl.endsWith("/") ? "" : "/") + "proxy" + "?pgt="
+            + proxyGrantingTicketId + "&targetService="
+            + URLEncoder.encode(targetService, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
