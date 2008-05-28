@@ -86,7 +86,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         if (CommonUtils.isNotBlank(allowAnyProxy) || CommonUtils.isNotBlank(allowedProxyChains)) {
             final Cas20ProxyTicketValidator v = new Cas20ProxyTicketValidator(casServerUrlPrefix);
             v.setAcceptAnyProxy(Boolean.parseBoolean(allowAnyProxy));
-            v.setAllowedProxyChains(constructListOfProxies(allowedProxyChains));
+            v.setAllowedProxyChains(new ProxyList(constructListOfProxies(allowedProxyChains)));
             validator = v;
         } else {
             validator = new Cas20ServiceTicketValidator(casServerUrlPrefix);
@@ -119,7 +119,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
         final String[] splitProxies = proxies.split("\n");
         final List items = Arrays.asList(splitProxies);
-        final ProxyListPropertyEditor editor = new ProxyListPropertyEditor();
+        final ProxyListEditor editor = new ProxyListEditor();
         editor.setValue(items);
         return (List) editor.getValue();
     }

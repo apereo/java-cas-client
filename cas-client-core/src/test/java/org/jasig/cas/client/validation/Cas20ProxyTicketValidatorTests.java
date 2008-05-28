@@ -9,7 +9,6 @@ import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.proxy.ProxyRetriever;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.UnsupportedEncodingException;
@@ -41,7 +40,7 @@ public final class Cas20ProxyTicketValidatorTests extends
         this.ticketValidator.setProxyCallbackUrl("test");
         this.ticketValidator.setProxyGrantingTicketStorage(getProxyGrantingTicketStorage());
         this.ticketValidator.setProxyRetriever(getProxyRetriever());
-        this.ticketValidator.setAllowedProxyChains(list);
+        this.ticketValidator.setAllowedProxyChains(new ProxyList(list));
     }
 
     private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
@@ -92,8 +91,8 @@ public final class Cas20ProxyTicketValidatorTests extends
     
     public void testConstructionFromSpringBean() throws TicketValidationException,
     UnsupportedEncodingException {
-    	final ApplicationContext context = new ClassPathXmlApplicationContext("classpath:cas20ProxyTicketValidator.xml");
-    	final Cas20ProxyTicketValidator v = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidator");
+    	final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:cas20ProxyTicketValidator.xml");
+        final Cas20ProxyTicketValidator v = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidator");
     	final Cas20ProxyTicketValidator v2 = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidatorWithAllowAnyProxy");
     	
         final String USERNAME = "username";

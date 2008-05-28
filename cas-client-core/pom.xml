@@ -76,29 +76,33 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>2.5.1</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>		
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>2.5.1</version>
+			<artifactId>spring-mock</artifactId>
+			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>2.5.1</version>
+			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>		
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>2.5.1</version>
+			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>		
     </dependencies>
+
+    <properties>
+        <spring.version>2.0.8</spring.version>
+    </properties>
 </project>

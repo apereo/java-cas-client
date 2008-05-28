@@ -7,9 +7,6 @@ package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.util.XmlUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,10 +21,14 @@ public final class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator
     private boolean acceptAnyProxy;
 
     /** This should be a list of an array of Strings */
-    private List allowedProxyChains = new ArrayList();
+    private ProxyList allowedProxyChains = new ProxyList();
 
     public Cas20ProxyTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
+    }
+
+    public ProxyList getAllowedProxyChains() {
+        return this.allowedProxyChains;
     }
 
     protected String getUrlSuffix() {
@@ -43,10 +44,8 @@ public final class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator
             return;
         }
 
-        for (Iterator iter = this.allowedProxyChains.iterator(); iter.hasNext();) {
-            if (Arrays.equals(proxiedList, (String[]) iter.next())) {
-                return;
-            }
+        if (allowedProxyChains.contains(proxiedList)) {
+            return;
         }
 
         throw new InvalidProxyChainTicketValidationException("Invalid proxy chain: " + proxies.toString());
@@ -56,7 +55,7 @@ public final class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator
         this.acceptAnyProxy = acceptAnyProxy;
     }
 
-    public void setAllowedProxyChains(final List allowedProxyChains) {
+    public void setAllowedProxyChains(final ProxyList allowedProxyChains) {
         this.allowedProxyChains = allowedProxyChains;
     }
 }

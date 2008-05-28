@@ -13,7 +13,9 @@
 				proxy1 proxy2 proxy3
 			</value>
 		</property>
-	</bean>
+        <property name="proxyCallbackUrl" value="https://localhost:8443/test" />
+        <property name="renew" value="true" />
+    </bean>
 	
 	<bean id="proxyTicketValidatorWithAllowAnyProxy"
 		class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator"
