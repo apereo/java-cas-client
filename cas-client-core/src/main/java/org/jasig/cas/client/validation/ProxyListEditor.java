@@ -45,6 +45,6 @@ public final class ProxyListEditor extends PropertyEditorSupport {
 			}
 		}
 
-		setValue(proxyChains);
+		setValue(new ProxyList(proxyChains));
 	}
 }

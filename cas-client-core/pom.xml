@@ -82,7 +82,7 @@
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-mock</artifactId>
+			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
@@ -103,6 +103,6 @@
     </dependencies>
 
     <properties>
-        <spring.version>2.0.8</spring.version>
+        <spring.version>2.5.4</spring.version>
     </properties>
 </project>
