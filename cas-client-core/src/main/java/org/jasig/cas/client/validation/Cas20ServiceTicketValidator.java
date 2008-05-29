@@ -13,6 +13,14 @@ import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,16 +83,54 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         }
 
         final Assertion assertion;
+        final Map attributes = extractCustomAttributes(response);
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
-            final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, proxyGrantingTicket, this.proxyRetriever);
+            final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
             assertion = new AssertionImpl(attributePrincipal);
         } else {
-            assertion = new AssertionImpl(principal);
+            assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
         }
 
         customParseResponse(response, assertion);
 
         return assertion;
+    }
+    
+    protected Map extractCustomAttributes(final String xml) {
+    	final int pos1 = xml.indexOf("<cas:attributes>");
+    	final int pos2 = xml.indexOf("</cas:attributes>");
+    	
+    	if (pos1 == -1) {
+    		return Collections.EMPTY_MAP;
+    	}
+    	
+    	final String attributesText = xml.substring(pos1+16, pos2);
+    	
+    	final Map attributes = new HashMap();
+    	final BufferedReader br = new BufferedReader(new StringReader(attributesText));
+    	
+    	String line;
+    	final List attributeNames = new ArrayList();
+    	try {
+	    	while ((line = br.readLine()) != null) {
+	    		final String trimmedLine = line.trim();
+	    		if (trimmedLine.length() > 0) {
+		    		final int leftPos = trimmedLine.indexOf(":");
+		    		final int rightPos = trimmedLine.indexOf(">");
+		    		attributeNames.add(trimmedLine.substring(leftPos+1, rightPos));
+	    		}
+	    	}
+	    	br.close();
+    	} catch (final IOException e) {
+    		//ignore
+    	}
+
+    	for (final Iterator iter = attributeNames.iterator(); iter.hasNext();) {
+    		final String name = (String) iter.next();
+    		attributes.put(name, XmlUtils.getTextForElement(xml, name));
+    	}
+    	
+    	return attributes;
     }
 
     /**

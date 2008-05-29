@@ -111,6 +111,26 @@ public final class Cas20ServiceTicketValidatorTests extends
         assertEquals(USERNAME, assertion.getPrincipal().getName());
 //        assertEquals(PGT, assertion.getProxyGrantingTicketId());
     }
+    
+    public void testGetAttributes() throws TicketValidationException,
+    UnsupportedEncodingException {
+        final String USERNAME = "username";
+        final String PGTIOU = "testPgtIou";
+        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
+            + USERNAME
+            + "</cas:user><cas:proxyGrantingTicket>"
+            + PGTIOU
+            + "</cas:proxyGrantingTicket><cas:attributes>\n<cas:password>test</cas:password>\n<cas:eduPersonId>id</cas:eduPersonId>\n</cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
+        
+        PublicTestHttpServer.instance().content = RESPONSE
+        .getBytes(PublicTestHttpServer.instance().encoding);
+
+        final Assertion assertion = this.ticketValidator.validate("test", "test");
+        assertEquals(USERNAME, assertion.getPrincipal().getName());
+        assertEquals("test", assertion.getPrincipal().getAttributes().get("password"));
+        assertEquals("id", assertion.getPrincipal().getAttributes().get("eduPersonId"));
+        //assertEquals(PGT, assertion.getProxyGrantingTicketId());
+    }
 
     public void testInvalidResponse() throws Exception {
         final String RESPONSE = "<root />";

@@ -16,7 +16,7 @@ import java.util.List;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
+public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
 
     private boolean acceptAnyProxy;
 
