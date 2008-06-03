@@ -105,7 +105,13 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <scope>test</scope>
-	    <version>1.2.15</version>
+	        <version>1.2.15</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jmxri</artifactId>
+                    <groupId>com.sun.jmx</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
