@@ -39,16 +39,6 @@ import java.util.Map;
  */
 public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketValidationFilter {
 
-    /**
-     * Constant representing the ProxyGrantingTicket IOU Request Parameter.
-     */
-    private static final String PARAM_PROXY_GRANTING_TICKET_IOU = "pgtIou";
-
-    /**
-     * Constant representing the ProxyGrantingTicket Request Parameter.
-     */
-    private static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
-
     private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl"};
 
     /**
@@ -137,29 +127,8 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             return true;
         }
 
-        final String proxyGrantingTicketIou = request
-                .getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+        CommonUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
 
-        final String proxyGrantingTicket = request
-                .getParameter(PARAM_PROXY_GRANTING_TICKET);
-
-        if (CommonUtils.isBlank(proxyGrantingTicket)
-                || CommonUtils.isBlank(proxyGrantingTicketIou)) {
-            response.getWriter().write("");
-            return false;
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Received proxyGrantingTicketId ["
-                    + proxyGrantingTicket + "] for proxyGrantingTicketIou ["
-                    + proxyGrantingTicketIou + "]");
-        }
-
-        this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou,
-                proxyGrantingTicket);
-
-        response.getWriter().write("<?xml version=\"1.0\"?>");
-        response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
         return false;
     }
 

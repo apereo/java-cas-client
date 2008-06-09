@@ -7,9 +7,12 @@ package org.jasig.cas.client.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -25,6 +28,16 @@ public final class CommonUtils {
 
     /** Instance of Commons Logging. */
     private static final Log LOG = LogFactory.getLog(CommonUtils.class);
+    
+    /**
+     * Constant representing the ProxyGrantingTicket IOU Request Parameter.
+     */
+    private static final String PARAM_PROXY_GRANTING_TICKET_IOU = "pgtIou";
+
+    /**
+     * Constant representing the ProxyGrantingTicket Request Parameter.
+     */
+    private static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
 
     private CommonUtils() {
         // nothing to do
@@ -132,6 +145,32 @@ public final class CommonUtils {
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static final void readAndRespondToProxyReceptorRequest(final HttpServletRequest request, final HttpServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage) throws IOException {
+        final String proxyGrantingTicketIou = request
+        .getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+
+		final String proxyGrantingTicket = request
+		        .getParameter(PARAM_PROXY_GRANTING_TICKET);
+
+		if (CommonUtils.isBlank(proxyGrantingTicket)
+		        || CommonUtils.isBlank(proxyGrantingTicketIou)) {
+		    response.getWriter().write("");
+		    return;
+		}
+
+		if (LOG.isDebugEnabled()) {
+		    LOG.debug("Received proxyGrantingTicketId ["
+		            + proxyGrantingTicket + "] for proxyGrantingTicketIou ["
+		            + proxyGrantingTicketIou + "]");
+		}
+
+		proxyGrantingTicketStorage.save(proxyGrantingTicketIou,
+		        proxyGrantingTicket);
+		
+		response.getWriter().write("<?xml version=\"1.0\"?>");
+		response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
     }
     
 /**
