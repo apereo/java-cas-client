@@ -169,6 +169,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         try {
             conn = (HttpURLConnection) validationUrl.openConnection();
             conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "text/xml"); 
             conn.setRequestProperty("Content-Length", Integer.toString(MESSAGE_TO_SEND.length()));
             conn.setRequestProperty("SOAPAction", "http://www.oasis-open.org/committees/security");
             conn.setUseCaches(false);
