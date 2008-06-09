@@ -1,5 +1,7 @@
 package org.jasig.cas.client.authentication;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 
@@ -14,6 +16,8 @@ import java.util.Map;
  * @since 3.1
  */
 public class AttributePrincipalImpl implements AttributePrincipal {
+	
+	private static final Log LOG = LogFactory.getLog(AttributePrincipalImpl.class);
 
     /** Unique Id for Serialization */
 	private static final long serialVersionUID = -8810123156070148535L;
@@ -86,6 +90,8 @@ public class AttributePrincipalImpl implements AttributePrincipal {
         if (proxyGrantingTicket != null) {
             return this.proxyRetriever.getProxyTicketIdFor(this.proxyGrantingTicket, service);
         }
+        
+       	LOG.debug("No ProxyGrantingTicket was supplied, so no Proxy Ticket can be retrieved.");
         return null;
     }
 

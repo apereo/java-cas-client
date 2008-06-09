@@ -49,10 +49,15 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     public final void init(final FilterConfig filterConfig) throws ServletException {
         setServerName(getPropertyFromInitParams(filterConfig, "serverName", null));
+        log.trace("Loading serverName property: " + this.serverName);
         setService(getPropertyFromInitParams(filterConfig, "service", null));
+        log.trace("Loading service property: " + this.service);
         setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
+        log.trace("Loading artifact parameter name property: " + this.artifactParameterName);
         setServiceParameterName(getPropertyFromInitParams(filterConfig, "serviceParameterName", "service"));
+        log.trace("Loading serviceParameterName property: " + this.serviceParameterName);
         setEncodeServiceUrl(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
+        log.trace("Loading encodeServiceUrl property: " + this.encodeServiceUrl);
 
         initInternal(filterConfig);
         init();

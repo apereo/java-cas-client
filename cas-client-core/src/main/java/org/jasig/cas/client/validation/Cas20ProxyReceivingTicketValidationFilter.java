@@ -64,6 +64,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
         setProxyReceptorUrl(getPropertyFromInitParams(filterConfig, "proxyReceptorUrl", null));
+        log.trace("Setting proxyReceptorUrl parameter: " + this.proxyReceptorUrl);
     }
 
     public void init() {

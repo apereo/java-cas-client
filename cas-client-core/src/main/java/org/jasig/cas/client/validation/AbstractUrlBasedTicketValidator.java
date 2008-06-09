@@ -83,6 +83,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     protected final String constructValidationUrl(final String ticket, final String serviceUrl) {
         final Map urlParameters = new HashMap();
 
+        log.debug("Placing URL parameters in map.");
         urlParameters.put("ticket", ticket);
         urlParameters.put("service", encodeUrl(serviceUrl));
 
@@ -90,8 +91,10 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
             urlParameters.put("renew", "true");
         }
 
+        log.debug("Calling template URL attribute map.");
         populateUrlAttributeMap(urlParameters);
 
+        log.debug("Loading custom parameters from configuration.");
         if (this.customParameters != null) {
             urlParameters.putAll(this.customParameters);
         }
@@ -164,13 +167,19 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     public Assertion validate(final String ticket, final String service) throws TicketValidationException {
 
+    	log.debug("Constructing validation url.");
         final String validationUrl = constructValidationUrl(ticket, service);
 
         try {
+        	log.debug("Retrieving response from server.");
             final String serverResponse = retrieveResponseFromServer(new URL(validationUrl), ticket);
 
             if (serverResponse == null) {
                 throw new TicketValidationException("The CAS server returned no response.");
+            }
+            
+            if (log.isDebugEnabled()) {
+            	log.debug("Server response: " + serverResponse);
             }
 
             return parseResponseFromServer(serverResponse);

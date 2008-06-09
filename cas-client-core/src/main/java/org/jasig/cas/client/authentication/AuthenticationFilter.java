@@ -58,8 +58,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
         setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
+        log.trace("Loaded CasServerLoginUrl parameter: " + this.casServerLoginUrl);
         setRenew(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+        log.trace("Loaded renew parameter: " + this.renew);
         setGateway(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
+        log.trace("Loaded gateway parameter: " + this.gateway);
     }
 
     public void init() {
@@ -85,6 +88,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
             }
 
             final String serviceUrl = constructServiceUrl(request, response);
+            
+            if (log.isDebugEnabled()) {
+            	log.debug("Constructed service url: " + serviceUrl);
+            }
+            
             final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), serviceUrl, this.renew, this.gateway);
 
             if (log.isDebugEnabled()) {

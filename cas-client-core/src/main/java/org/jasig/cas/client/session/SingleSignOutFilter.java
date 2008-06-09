@@ -71,8 +71,8 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
                 	if (session != null) {
                         String sessionID = session.getId();
 
-                        if (log.isTraceEnabled()) {
-                            log.trace ("Invalidating session [" + sessionID + "] for ST [" + sessionIdentifier + "]");
+                        if (log.isDebugEnabled()) {
+                            log.debug ("Invalidating session [" + sessionID + "] for ST [" + sessionIdentifier + "]");
                         }
                         
                         try {
@@ -85,8 +85,12 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
                 }
             }
         } else {
-            final String artifact = request.getParameter(this.artifactParameterName);
+        	final String artifact = request.getParameter(this.artifactParameterName);
             final HttpSession session = request.getSession();
+            
+            if (log.isDebugEnabled() && session != null) {
+            	log.debug("Storing session identifier for " + session.getId());
+            }
             if (CommonUtils.isNotBlank(artifact)) {
             	SESSION_MAPPING_STORAGE.addSessionById(artifact, session);
             }

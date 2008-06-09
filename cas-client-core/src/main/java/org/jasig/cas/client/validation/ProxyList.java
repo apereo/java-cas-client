@@ -38,4 +38,8 @@ public final class ProxyList {
 
         return false;
     }
+    
+    public String toString() {
+    	return this.proxyChains.toString();
+    }
 }

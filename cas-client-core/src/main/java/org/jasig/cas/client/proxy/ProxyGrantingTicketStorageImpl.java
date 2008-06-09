@@ -11,6 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Implementation of {@link ProxyGrantingTicketStorage} that is backed by a
  * HashMap that keeps a ProxyGrantingTicket for a specified amount of time.
@@ -23,6 +26,8 @@ import java.util.Map;
  */
 public final class ProxyGrantingTicketStorageImpl implements
         ProxyGrantingTicketStorage {
+	
+	private final Log log = LogFactory.getLog(getClass());
 
     /**
      * Default timeout in milliseconds.
@@ -63,11 +68,15 @@ public final class ProxyGrantingTicketStorageImpl implements
                 .get(proxyGrantingTicketIou);
 
         if (holder == null) {
+        	log.info("No Proxy Ticket found for " + proxyGrantingTicketIou);
             return null;
         }
 
         this.cache.remove(holder);
 
+        if (log.isDebugEnabled()) {
+        	log.debug("Returned ProxyGrantingTicket of " + holder.getProxyGrantingTicket());
+        }
         return holder.getProxyGrantingTicket();
     }
 
@@ -76,6 +85,9 @@ public final class ProxyGrantingTicketStorageImpl implements
         final ProxyGrantingTicketHolder holder = new ProxyGrantingTicketHolder(
                 proxyGrantingTicket);
 
+        if (log.isDebugEnabled()) {
+        	log.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [" + proxyGrantingTicketIou + ", " + proxyGrantingTicket + "]");
+        }
         this.cache.put(proxyGrantingTicketIou, holder);
     }
 
