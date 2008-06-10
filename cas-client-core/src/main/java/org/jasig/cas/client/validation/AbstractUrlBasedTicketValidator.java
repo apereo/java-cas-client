@@ -167,8 +167,11 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     public Assertion validate(final String ticket, final String service) throws TicketValidationException {
 
-    	log.debug("Constructing validation url.");
+
         final String validationUrl = constructValidationUrl(ticket, service);
+        if (log.isDebugEnabled()) {
+            log.debug("Constructing validation url: " + validationUrl);
+        }
 
         try {
         	log.debug("Retrieving response from server.");
