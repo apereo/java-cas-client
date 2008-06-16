@@ -37,8 +37,6 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
             this.validator.validate("test", "test");
             fail("ValidationException expected due to 'no' response");
         } catch (final TicketValidationException e) {
-            e.printStackTrace();
-            System.out.println(e);
             // expected
         }
     }
