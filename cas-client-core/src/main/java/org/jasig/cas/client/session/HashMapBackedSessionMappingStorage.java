@@ -31,19 +31,19 @@ public final class HashMapBackedSessionMappingStorage implements
      */
     private final Map ID_TO_SESSION_KEY_MAPPING = new HashMap();
 
-	public void addSessionById(String mappingId, HttpSession session) {
+	public synchronized void addSessionById(String mappingId, HttpSession session) {
         ID_TO_SESSION_KEY_MAPPING.put(session.getId(), mappingId);
         MANAGED_SESSIONS.put(mappingId, session);
 
 	}
 
-	public void removeBySessionById(String sessionId) {
+	public synchronized void removeBySessionById(String sessionId) {
         final String key = (String) ID_TO_SESSION_KEY_MAPPING.get(sessionId);
         MANAGED_SESSIONS.remove(key);
         ID_TO_SESSION_KEY_MAPPING.remove(sessionId);
 	}
 
-	public HttpSession removeSessionByMappingId(String mappingId) {
+	public synchronized HttpSession removeSessionByMappingId(String mappingId) {
 		final HttpSession session = (HttpSession) MANAGED_SESSIONS.get(mappingId);
 
         if (session != null) {
