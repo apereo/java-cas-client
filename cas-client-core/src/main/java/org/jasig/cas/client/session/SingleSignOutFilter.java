@@ -92,6 +92,11 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
             	log.debug("Storing session identifier for " + session.getId());
             }
             if (CommonUtils.isNotBlank(artifact)) {
+            	try {
+            		SESSION_MAPPING_STORAGE.removeBySessionById(session.getId());
+            	} catch (final Exception e) {
+            		// ignore if the session is already marked as invalid.  Nothing we can do!
+            	}
             	SESSION_MAPPING_STORAGE.addSessionById(artifact, session);
             }
         }
