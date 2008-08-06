@@ -38,8 +38,6 @@ import java.io.IOException;
  */
 public class AuthenticationFilter extends AbstractCasFilter {
 
-    public static final String CONST_CAS_GATEWAY = "_const_cas_gateway_";
-
     /**
      * The URL to the CAS Server login.
      */
@@ -54,6 +52,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
      * Whether to send the gateway request or not.
      */
     private boolean gateway = false;
+    
+    private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
@@ -63,6 +63,17 @@ public class AuthenticationFilter extends AbstractCasFilter {
         log.trace("Loaded renew parameter: " + this.renew);
         setGateway(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
         log.trace("Loaded gateway parameter: " + this.gateway);
+        
+        final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
+        
+        if (gatewayStorageClass != null) {
+        	try {
+        		this.gatewayStorage = (GatewayResolver) Class.forName(gatewayStorageClass).newInstance();
+        	} catch (final Exception e) {
+        		log.error(e,e);
+        		throw new ServletException(e);
+        	}
+        }
     }
 
     public void init() {
@@ -75,25 +86,27 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession(false);
         final String ticket = request.getParameter(getArtifactParameterName());
+        final String serviceUrl = constructServiceUrl(request, response);
         final Assertion assertion = session != null ? (Assertion) session
                 .getAttribute(CONST_CAS_ASSERTION) : null;
-        final boolean wasGatewayed = session != null
-                && session.getAttribute(CONST_CAS_GATEWAY) != null;
+        final boolean wasGatewayed = this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
 
         if (CommonUtils.isBlank(ticket) && assertion == null && !wasGatewayed) {
+        	final String modifiedServiceUrl;
+        	
             log.debug("no ticket and no assertion found");
             if (this.gateway) {
                 log.debug("setting gateway attribute in session");
-                request.getSession(true).setAttribute(CONST_CAS_GATEWAY, "yes");
+                modifiedServiceUrl = this.gatewayStorage.storeGatewayInformation(request, serviceUrl);
+            } else {
+            	modifiedServiceUrl = serviceUrl;
             }
-
-            final String serviceUrl = constructServiceUrl(request, response);
             
             if (log.isDebugEnabled()) {
-            	log.debug("Constructed service url: " + serviceUrl);
+            	log.debug("Constructed service url: " + modifiedServiceUrl);
             }
             
-            final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), serviceUrl, this.renew, this.gateway);
+            final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
             if (log.isDebugEnabled()) {
                 log.debug("redirecting to \"" + urlToRedirectTo + "\"");
@@ -101,11 +114,6 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
             response.sendRedirect(urlToRedirectTo);
             return;
-        }
-
-        if (session != null) {
-            log.debug("removing gateway attribute from session");
-            session.setAttribute(CONST_CAS_GATEWAY, null);
         }
 
         filterChain.doFilter(request, response);
@@ -121,5 +129,9 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
     public final void setCasServerLoginUrl(final String casServerLoginUrl) {
         this.casServerLoginUrl = casServerLoginUrl;
+    }
+    
+    public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
+    	this.gatewayStorage = gatewayStorage;
     }
 }

@@ -156,12 +156,12 @@ public final class AuthenticationFilterTests extends TestCase {
         this.filter.setRenew(true);
         this.filter.setGateway(true);
         this.filter.doFilter(request, response, filterChain);
-        assertNotNull(session.getAttribute(AuthenticationFilter.CONST_CAS_GATEWAY));
+        assertNotNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNotNull(response.getRedirectedUrl());
 
         final MockHttpServletResponse response2 = new MockHttpServletResponse();
         this.filter.doFilter(request, response2, filterChain);
-        assertNull(session.getAttribute(AuthenticationFilter.CONST_CAS_GATEWAY));
+        assertNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNull(response2.getRedirectedUrl());
     }
 }
