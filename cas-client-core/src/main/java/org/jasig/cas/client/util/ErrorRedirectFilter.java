@@ -28,6 +28,8 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * If there is an exact match the filter uses that value.  If there's a non-exact match (i.e. inheritance), then the filter
  * uses the last value that matched.
+ * <p>
+ * If there is no match it will redirect to a default error page.  The default exception is configured via the "defaultErrorRedirectPage" property.
  *  
  * @author Scott Battaglia
  * @version $Revision$ $Date$
@@ -40,12 +42,15 @@ public final class ErrorRedirectFilter implements Filter {
 	
 	private final List errors = new ArrayList();
 	
+	private String defaultErrorRedirectPage;
+	
 	public void destroy() {
 		// nothing to do here
 	}
 
 	public void doFilter(final ServletRequest request, final ServletResponse response,
 			final FilterChain filterChain) throws IOException, ServletException {
+		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 		try {
 			filterChain.doFilter(request, response);
 		} catch (final ServletException e) {
@@ -62,21 +67,24 @@ public final class ErrorRedirectFilter implements Filter {
 			}
 			
 			if (currentMatch != null) {
-				final HttpServletResponse httpResponse = (HttpServletResponse) response;
 				httpResponse.sendRedirect(currentMatch.getUrl());
-				return;	
+			} else {
+				httpResponse.sendRedirect(defaultErrorRedirectPage);
 			}
-			throw e;
 		}
-	}
+	} 	
 
 	public void init(final FilterConfig filterConfig) throws ServletException {
+		this.defaultErrorRedirectPage = filterConfig.getInitParameter("defaultErrorRedirectPage");
+		
 		final Enumeration enumeration = filterConfig.getInitParameterNames();
 		
 		while (enumeration.hasMoreElements()) {
 			final String className = (String) enumeration.nextElement();
 			try {
-				this.errors.add(new ErrorHolder(className, filterConfig.getInitParameter(className)));
+				if (!className.equals("defaultErrorRedirectPage")) {
+					this.errors.add(new ErrorHolder(className, filterConfig.getInitParameter(className)));
+				}
 			} catch (final ClassNotFoundException e) {
 				log.warn("Class [" + className + "] cannot be found in ClassLoader.  Ignoring.");
 			}
