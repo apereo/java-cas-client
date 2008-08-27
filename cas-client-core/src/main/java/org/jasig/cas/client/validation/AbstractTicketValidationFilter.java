@@ -63,7 +63,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         super.initInternal(filterConfig);
         setExceptionOnValidationFailure(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "exceptionOnValidationFailure", "true")));
         log.trace("Setting exceptionOnValidationFailure parameter: " + this.exceptionOnValidationFailure);
-        setRedirectAfterValidation(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation", "false")));
+        setRedirectAfterValidation(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation", "true")));
         log.trace("Setting redirectAfterValidation parameter: " + this.redirectAfterValidation);
         setUseSession(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "useSession", "true")));
         log.trace("Setting useSession parameter: " + this.useSession);
