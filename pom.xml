@@ -80,6 +80,14 @@
 					</descriptors>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.4</source>
+					<target>1.4</target>
+				</configuration>
+			</plugin>
         </plugins>
     </build>
 
@@ -127,7 +135,7 @@
 		<repository>
 			<id>acegi.repo</id>
 			<name>Acegi Repository</name>
-			<url>scp://shell.sf.net/home/groups/a/ac/acegisecurity/htdocs/repository/releases</url>
+			<url>scp://web.sourceforge.net/home/groups/a/ac/acegisecurity/htdocs/repository/releases</url>
 		</repository>
 	</distributionManagement>
 </project>
