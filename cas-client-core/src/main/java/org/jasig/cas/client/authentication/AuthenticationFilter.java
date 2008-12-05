@@ -59,9 +59,9 @@ public class AuthenticationFilter extends AbstractCasFilter {
         super.initInternal(filterConfig);
         setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
         log.trace("Loaded CasServerLoginUrl parameter: " + this.casServerLoginUrl);
-        setRenew(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+        setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
         log.trace("Loaded renew parameter: " + this.renew);
-        setGateway(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
+        setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
         log.trace("Loaded gateway parameter: " + this.gateway);
         
         final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);

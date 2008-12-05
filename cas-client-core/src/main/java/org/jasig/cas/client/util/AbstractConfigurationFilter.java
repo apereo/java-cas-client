@@ -68,6 +68,10 @@ public abstract class AbstractConfigurationFilter implements Filter {
         return defaultValue;
     }
     
+    protected final boolean parseBoolean(final String value) {
+    	return ((value != null) && value.equalsIgnoreCase("true"));
+    }
+    
     protected final String loadFromContext(final InitialContext context, String path) {
     	try {
     		return (String) context.lookup(path);

@@ -76,7 +76,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
         if (CommonUtils.isNotBlank(allowAnyProxy) || CommonUtils.isNotBlank(allowedProxyChains)) {
             final Cas20ProxyTicketValidator v = new Cas20ProxyTicketValidator(casServerUrlPrefix);
-            v.setAcceptAnyProxy(Boolean.parseBoolean(allowAnyProxy));
+            v.setAcceptAnyProxy(parseBoolean(allowAnyProxy));
             v.setAllowedProxyChains(new ProxyList(constructListOfProxies(allowedProxyChains)));
             validator = v;
         } else {
@@ -85,7 +85,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         validator.setProxyCallbackUrl(getPropertyFromInitParams(filterConfig, "proxyCallbackUrl", null));
         validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
         validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix));
-        validator.setRenew(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+        validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
 
         final Map additionalParameters = new HashMap();
         final List params = Arrays.asList(RESERVED_INIT_PARAMS);

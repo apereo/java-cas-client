@@ -56,7 +56,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         log.trace("Loading artifact parameter name property: " + this.artifactParameterName);
         setServiceParameterName(getPropertyFromInitParams(filterConfig, "serviceParameterName", "service"));
         log.trace("Loading serviceParameterName property: " + this.serviceParameterName);
-        setEncodeServiceUrl(Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
+        setEncodeServiceUrl(parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
         log.trace("Loading encodeServiceUrl property: " + this.encodeServiceUrl);
 
         initInternal(filterConfig);
