@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.jasig.cas</groupId>
-        <version>3.1.4</version>
+        <version>3.1.5</version>
         <artifactId>cas-client</artifactId>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -60,6 +60,12 @@
 			<groupId>com.atlassian.seraph</groupId>
 			<version>0.37</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>opensymphony</groupId>
+					<artifactId>propertyset</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
         <dependency>
