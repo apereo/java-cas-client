@@ -26,7 +26,7 @@ import java.security.Principal;
  */
 public final class JiraCasAuthenticator extends DefaultAuthenticator {
 
-    private static final Log log = LogFactory.getLog(ConfluenceCasAuthenticator.class);
+    private static final Log log = LogFactory.getLog(JiraCasAuthenticator.class);
 
     public Principal getUser(final HttpServletRequest request, final HttpServletResponse response) {
         final HttpSession session = request.getSession();
