@@ -72,11 +72,11 @@ public abstract class AbstractConfigurationFilter implements Filter {
     	return ((value != null) && value.equalsIgnoreCase("true"));
     }
     
-    protected final String loadFromContext(final InitialContext context, String path) {
+    protected final String loadFromContext(final InitialContext context, final String path) {
     	try {
     		return (String) context.lookup(path);
     	} catch (final NamingException e) {
-    		log.warn(e,e);
+    		log.warn("No value found in context for: '" + path + "'; Returning null.");
     		return null;
     	}
     }
