@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  *  <p>
  * The following filter options can be configured (either at the context-level or filter-level).
  * <ul>
- * <li><code>serverName</code> - the name of the CAS server, in the format: localhost:8080 or localhost:8443 or localhost</li>
+ * <li><code>serverName</code> - the name of the CAS client server, in the format: localhost:8080 or localhost:8443 or localhost or https://localhost:8443</li>
  * <li><code>service</code> - the completely qualified service url, i.e. https://localhost/cas-client/app</li>
  * </ul>
  * <p>Please note that one of the two above parameters must be set.</p>
