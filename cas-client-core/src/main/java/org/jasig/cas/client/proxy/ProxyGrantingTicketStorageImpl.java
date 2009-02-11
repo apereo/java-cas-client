@@ -5,10 +5,9 @@
  */
 package org.jasig.cas.client.proxy;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -21,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
  * A cleanup thread is run periodically to clean out the HashMap.
  *
  * @author Scott Battaglia
+ * @author Brad Cupit (brad [at] lsu {dot} edu)
  * @version $Revision: 11729 $ $Date: 2007-09-26 14:22:30 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
@@ -37,7 +37,7 @@ public final class ProxyGrantingTicketStorageImpl implements
     /**
      * Map that stores the PGTIOU to PGT mappings.
      */
-    private final Map cache = new HashMap();
+    private final Map cache = Collections.synchronizedMap(new HashMap());
 
     /**
      * Constructor set the timeout to the default value.
@@ -91,7 +91,7 @@ public final class ProxyGrantingTicketStorageImpl implements
         this.cache.put(proxyGrantingTicketIou, holder);
     }
 
-    private final class ProxyGrantingTicketHolder {
+    private static final class ProxyGrantingTicketHolder {
 
         private final String proxyGrantingTicket;
 
@@ -111,7 +111,7 @@ public final class ProxyGrantingTicketStorageImpl implements
         }
     }
 
-    private final class ProxyGrantingTicketCleanupThread extends Thread {
+    private static final class ProxyGrantingTicketCleanupThread extends Thread {
 
         private final long timeout;
 
@@ -132,23 +132,14 @@ public final class ProxyGrantingTicketStorageImpl implements
                     // nothing to do
                 }
 
-                final List itemsToRemove = new ArrayList();
-
                 synchronized (this.cache) {
-                    for (final Iterator iter = this.cache.keySet().iterator(); iter
+                    for (final Iterator iter = this.cache.values().iterator(); iter
                             .hasNext();) {
-                        final Object key = iter.next();
-                        final ProxyGrantingTicketHolder holder = (ProxyGrantingTicketHolder) this.cache
-                                .get(key);
+                        final ProxyGrantingTicketHolder holder = (ProxyGrantingTicketHolder) iter.next();
 
                         if (holder.isExpired(this.timeout)) {
-                            itemsToRemove.add(key);
+                            iter.remove();
                         }
-                    }
-
-                    for (final Iterator iter = itemsToRemove.iterator(); iter
-                            .hasNext();) {
-                        this.cache.remove(iter.next());
                     }
                 }
             }
