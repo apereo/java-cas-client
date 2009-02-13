@@ -12,12 +12,15 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.cas.client.cleanup.CleanUpRegistry;
+import org.jasig.cas.client.cleanup.Cleanable;
 
 /**
  * Implementation of {@link ProxyGrantingTicketStorage} that is backed by a
  * HashMap that keeps a ProxyGrantingTicket for a specified amount of time.
- * <p/>
- * A cleanup thread is run periodically to clean out the HashMap.
+ * <p>
+ * {@link CleanUpRegistry#cleanAll()} must be called on a regular basis to
+ * keep the HashMap from growing indefinitely.
  *
  * @author Scott Battaglia
  * @author Brad Cupit (brad [at] lsu {dot} edu)
@@ -25,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * @since 3.0
  */
 public final class ProxyGrantingTicketStorageImpl implements
-        ProxyGrantingTicketStorage {
+        ProxyGrantingTicketStorage, Cleanable {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -38,6 +41,14 @@ public final class ProxyGrantingTicketStorageImpl implements
      * Map that stores the PGTIOU to PGT mappings.
      */
     private final Map cache = Collections.synchronizedMap(new HashMap());
+
+    /**
+     * time, in milliseconds, before a {@link ProxyGrantingTicketHolder}
+     * is considered expired and ready for removal.
+     * 
+     * @see ProxyGrantingTicketStorageImpl#DEFAULT_TIMEOUT
+     */
+	private long timeout;
 
     /**
      * Constructor set the timeout to the default value.
@@ -53,10 +64,7 @@ public final class ProxyGrantingTicketStorageImpl implements
      * @param timeout the time to hold on to the ProxyGrantingTicket
      */
     public ProxyGrantingTicketStorageImpl(final long timeout) {
-        final Thread thread = new ProxyGrantingTicketCleanupThread(
-                timeout, this.cache);
-        thread.setDaemon(true);
-        thread.start();
+    	this.timeout = timeout;
     }
 
     /**
@@ -91,6 +99,25 @@ public final class ProxyGrantingTicketStorageImpl implements
         this.cache.put(proxyGrantingTicketIou, holder);
     }
 
+    /**
+     * Cleans up old, expired proxy tickets. This method should be
+     * called regularly via a thread or timer.
+     * 
+     * @see CleanUpRegistry#cleanAll()
+     */
+    public void cleanUp() {
+        synchronized (this.cache) {
+            for (final Iterator iter = this.cache.values().iterator(); iter
+                    .hasNext();) {
+                final ProxyGrantingTicketHolder holder = (ProxyGrantingTicketHolder) iter.next();
+
+                if (holder.isExpired(this.timeout)) {
+                    iter.remove();
+                }
+            }
+        }    	
+    }
+    
     private static final class ProxyGrantingTicketHolder {
 
         private final String proxyGrantingTicket;
@@ -108,41 +135,6 @@ public final class ProxyGrantingTicketStorageImpl implements
 
         final boolean isExpired(final long timeout) {
             return System.currentTimeMillis() - this.timeInserted > timeout;
-        }
-    }
-
-    private static final class ProxyGrantingTicketCleanupThread extends Thread {
-
-        private final long timeout;
-
-        private final Map cache;
-
-        public ProxyGrantingTicketCleanupThread(final long timeout,
-                                                final Map cache) {
-            this.timeout = timeout;
-            this.cache = cache;
-        }
-
-        public void run() {
-
-            while (true) {
-                try {
-                    Thread.sleep(this.timeout);
-                } catch (final InterruptedException e) {
-                    // nothing to do
-                }
-
-                synchronized (this.cache) {
-                    for (final Iterator iter = this.cache.values().iterator(); iter
-                            .hasNext();) {
-                        final ProxyGrantingTicketHolder holder = (ProxyGrantingTicketHolder) iter.next();
-
-                        if (holder.isExpired(this.timeout)) {
-                            iter.remove();
-                        }
-                    }
-                }
-            }
         }
     }
 }

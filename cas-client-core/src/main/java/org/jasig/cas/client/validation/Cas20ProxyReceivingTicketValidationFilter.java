@@ -5,10 +5,13 @@
  */
 package org.jasig.cas.client.validation;
 
-import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
-import org.jasig.cas.client.util.CommonUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -17,13 +20,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.jasig.cas.client.cleanup.CleanUpRegistry;
+import org.jasig.cas.client.cleanup.CleanUpRegistryImpl;
+import org.jasig.cas.client.cleanup.Cleanable;
+import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
+import org.jasig.cas.client.util.CommonUtils;
 
 /**
  * Creates either a CAS20ProxyTicketValidator or a CAS20ServiceTicketValidator depending on whether any of the
@@ -47,9 +51,14 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     private String proxyReceptorUrl;
 
     /**
+     * a place to register implementations of {@link Cleanable}
+     */
+    private CleanUpRegistry cleanUpRegistry;
+    
+    /**
      * Storage location of ProxyGrantingTickets and Proxy Ticket IOUs.
      */
-    private ProxyGrantingTicketStorage proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
+    private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
@@ -59,6 +68,13 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
     public void init() {
         super.init();
+        
+        if (this.cleanUpRegistry == null) {
+            this.cleanUpRegistry = CleanUpRegistryImpl.getInstance();
+        }
+        
+        this.proxyGrantingTicketStorage = newProxyGrantingTicketStorage(this.cleanUpRegistry);
+        
         CommonUtils.assertNotNull(this.proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
     }
 
@@ -136,7 +152,14 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         this.proxyReceptorUrl = proxyReceptorUrl;
     }
 
-    public final void setProxyGrantingTicketStorage(final ProxyGrantingTicketStorage proxyGrantingTicketStorage) {
-        this.proxyGrantingTicketStorage = proxyGrantingTicketStorage;
+    protected final void setCleanUpRegistry(final CleanUpRegistry cleanUpRegistry) {
+        this.cleanUpRegistry = cleanUpRegistry;
+    }
+    
+    private ProxyGrantingTicketStorage newProxyGrantingTicketStorage(final CleanUpRegistry cleanUpRegistry) {
+        ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
+        cleanUpRegistry.addCleanble(proxyGrantingTicketStorageImpl);
+        
+        return proxyGrantingTicketStorageImpl;
     }
 }
