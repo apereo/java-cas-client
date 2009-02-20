@@ -11,11 +11,12 @@ public class ProxyGrantingTicketStorageImplTest extends TestCase {
     public void testCleanUp() throws Exception {
         String proxyGrantingTicketIou = "proxyGrantingTicketIou";
         
-        int timeout = 100;
+        int timeout = 250;
         ProxyGrantingTicketStorageImpl storage = new ProxyGrantingTicketStorageImpl(timeout);
         storage.save(proxyGrantingTicketIou, "proxyGrantingTicket");
         
-        Thread.sleep(timeout + 1);
+        // sleep long enough for the ticket to timeout
+        Thread.sleep(timeout * 2);
         
         storage.cleanUp();
         
