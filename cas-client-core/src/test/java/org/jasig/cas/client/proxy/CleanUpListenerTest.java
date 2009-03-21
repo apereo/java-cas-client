@@ -1,4 +1,4 @@
-package org.jasig.cas.client.cleanup;
+package org.jasig.cas.client.proxy;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,8 +17,8 @@ import org.springframework.mock.web.MockServletContext;
  * @author Brad Cupit (brad [at] lsu {dot} edu)
  */
 public class CleanUpListenerTest extends TestCase {
-    private final CleanUpRegistry defaultCleanUpRegistry = CleanUpRegistryImpl.getInstance();
     private final Timer defaultTimer = new Timer(true);
+    private final CleanUpTimerTask defaultTimerTask = new CleanUpTimerTask();
     
     public void testStartsThreadAtStartup() throws Exception {
         final MethodFlag scheduleMethodFlag = new MethodFlag();
@@ -29,7 +29,7 @@ public class CleanUpListenerTest extends TestCase {
             }
         };
         
-        final CleanUpListener cleanUpListener = new CleanUpListener(timer, defaultCleanUpRegistry);
+        final CleanUpListener cleanUpListener = new CleanUpListener(timer, defaultTimerTask);
         cleanUpListener.contextInitialized(new TestServletContextEvent(1));
         
         assertTrue(scheduleMethodFlag.wasCalled());
@@ -45,7 +45,7 @@ public class CleanUpListenerTest extends TestCase {
             }
         };
         
-        final CleanUpListener cleanUpListener = new CleanUpListener(timer, defaultCleanUpRegistry);
+        final CleanUpListener cleanUpListener = new CleanUpListener(timer, defaultTimerTask);
         cleanUpListener.contextInitialized(new TestServletContextEvent(1));
         cleanUpListener.contextDestroyed(null);
         
@@ -53,51 +53,45 @@ public class CleanUpListenerTest extends TestCase {
     }
     
     public void testCallsCleanAllOnSchedule() throws Exception {
-        final MethodFlag cleanAllMethodFlag = new MethodFlag();
+        final MethodFlag timerTaskFlag = new MethodFlag();
         
-        final CleanUpRegistry cleanUpRegistry = new CleanUpRegistry() {
-            public void addCleanble(Cleanable cleanable) {
-            }
-
-            public void cleanAll() {
-                cleanAllMethodFlag.setCalled();
+        final TimerTask timerTask = new TimerTask() {
+            public void run() {
+                timerTaskFlag.setCalled();
             }
         };
         
         long millisBetweenCleanUps = 250;
         
-        final CleanUpListener cleanUpListener = new CleanUpListener(defaultTimer, cleanUpRegistry);
+        final CleanUpListener cleanUpListener = new CleanUpListener(defaultTimer, timerTask);
         cleanUpListener.contextInitialized(new TestServletContextEvent(millisBetweenCleanUps));
         
         // wait long enough for the clean up to occur
         Thread.sleep(millisBetweenCleanUps * 2);
         
-        assertTrue(cleanAllMethodFlag.wasCalled()); 
+        assertTrue(timerTaskFlag.wasCalled()); 
     }
     
     public void testDelaysFirstCleanAll() throws Exception {
-        final MethodFlag cleanAllMethodFlag = new MethodFlag();
+        final MethodFlag timerTaskFlag = new MethodFlag();
         
-        final CleanUpRegistry cleanUpRegistry = new CleanUpRegistry() {
-            public void addCleanble(Cleanable cleanable) {
-            }
-            
-            public void cleanAll() {
-                cleanAllMethodFlag.setCalled();
+        final TimerTask timerTask = new TimerTask() {
+            public void run() {
+                timerTaskFlag.setCalled();
             }
         };
         
         long millisBetweenCleanUps = 250;
         
-        final CleanUpListener cleanUpListener = new CleanUpListener(defaultTimer, cleanUpRegistry);
+        final CleanUpListener cleanUpListener = new CleanUpListener(defaultTimer, timerTask);
         cleanUpListener.contextInitialized(new TestServletContextEvent(millisBetweenCleanUps));
         
-        assertFalse(cleanAllMethodFlag.wasCalled());
+        assertFalse(timerTaskFlag.wasCalled());
         
         // wait long enough for the clean up to occur
         Thread.sleep(millisBetweenCleanUps * 2);
         
-        assertTrue(cleanAllMethodFlag.wasCalled()); 
+        assertTrue(timerTaskFlag.wasCalled()); 
     }
     
     public void testReturnsDefaultWhenNoContextParamConfigured() throws Exception {

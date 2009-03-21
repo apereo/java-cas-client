@@ -21,12 +21,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jasig.cas.client.cleanup.CleanUpRegistry;
-import org.jasig.cas.client.cleanup.CleanUpRegistryImpl;
-import org.jasig.cas.client.cleanup.Cleanable;
 import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
+import org.jasig.cas.client.proxy.CleanUpListener;
 import org.jasig.cas.client.util.CommonUtils;
 
 /**
@@ -49,16 +47,11 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
      * The URL to send to the CAS server as the URL that will process proxying requests on the CAS client. 
      */
     private String proxyReceptorUrl;
-
-    /**
-     * a place to register implementations of {@link Cleanable}
-     */
-    private CleanUpRegistry cleanUpRegistry;
     
     /**
      * Storage location of ProxyGrantingTickets and Proxy Ticket IOUs.
      */
-    private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
+    private static ProxyGrantingTicketStorage proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
@@ -69,13 +62,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     public void init() {
         super.init();
         
-        if (this.cleanUpRegistry == null) {
-            this.cleanUpRegistry = CleanUpRegistryImpl.getInstance();
-        }
-        
-        this.proxyGrantingTicketStorage = newProxyGrantingTicketStorage(this.cleanUpRegistry);
-        
-        CommonUtils.assertNotNull(this.proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
+        CommonUtils.assertNotNull(proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
     }
 
     /**
@@ -99,7 +86,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             validator = new Cas20ServiceTicketValidator(casServerUrlPrefix);
         }
         validator.setProxyCallbackUrl(getPropertyFromInitParams(filterConfig, "proxyCallbackUrl", null));
-        validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
+        validator.setProxyGrantingTicketStorage(proxyGrantingTicketStorage);
         validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix));
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
 
@@ -143,7 +130,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             return true;
         }
 
-        CommonUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
+        CommonUtils.readAndRespondToProxyReceptorRequest(request, response, proxyGrantingTicketStorage);
 
         return false;
     }
@@ -151,15 +138,17 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     public final void setProxyReceptorUrl(final String proxyReceptorUrl) {
         this.proxyReceptorUrl = proxyReceptorUrl;
     }
-
-    protected final void setCleanUpRegistry(final CleanUpRegistry cleanUpRegistry) {
-        this.cleanUpRegistry = cleanUpRegistry;
-    }
     
-    private ProxyGrantingTicketStorage newProxyGrantingTicketStorage(final CleanUpRegistry cleanUpRegistry) {
-        ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
-        cleanUpRegistry.addCleanble(proxyGrantingTicketStorageImpl);
-        
-        return proxyGrantingTicketStorageImpl;
+    /**
+     * Static getter so {@link CleanUpListener} has some way of retrieving
+     * the actual storage. This relies on the fact that this class (the Filter)
+     * will only be instantiated once per webapp.
+     */
+    public static ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
+        return proxyGrantingTicketStorage;
+    }
+
+    public void setProxyGrantingTicketStorage(ProxyGrantingTicketStorage storage) {
+        proxyGrantingTicketStorage = storage;
     }
 }

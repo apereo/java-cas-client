@@ -12,8 +12,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jasig.cas.client.cleanup.CleanUpRegistry;
-import org.jasig.cas.client.cleanup.Cleanable;
 
 /**
  * Implementation of {@link ProxyGrantingTicketStorage} that is backed by a
@@ -28,7 +26,7 @@ import org.jasig.cas.client.cleanup.Cleanable;
  * @since 3.0
  */
 public final class ProxyGrantingTicketStorageImpl implements
-        ProxyGrantingTicketStorage, Cleanable {
+        ProxyGrantingTicketStorage {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -100,10 +98,8 @@ public final class ProxyGrantingTicketStorageImpl implements
     }
 
     /**
-     * Cleans up old, expired proxy tickets. This method should be
-     * called regularly via a thread or timer.
-     * 
-     * @see CleanUpRegistry#cleanAll()
+     * Cleans up old, expired proxy tickets. This method must be
+     * called regularly via an external thread or timer.
      */
     public void cleanUp() {
         synchronized (this.cache) {
