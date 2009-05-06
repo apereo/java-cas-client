@@ -28,6 +28,7 @@ public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter
         final Saml11TicketValidator validator = new Saml11TicketValidator(getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null));
         final String tolerance = getPropertyFromInitParams(filterConfig, "tolerance", "1000");
         validator.setTolerance(Long.parseLong(tolerance));
+        validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
         return validator;
     }
 }
