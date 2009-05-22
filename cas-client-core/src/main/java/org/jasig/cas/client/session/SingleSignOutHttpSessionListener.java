@@ -24,8 +24,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class SingleSignOutHttpSessionListener implements HttpSessionListener {
 
-	private Log log = LogFactory.getLog(getClass());
-
 	private SessionMappingStorage SESSION_MAPPING_STORAGE;
 	
     public void sessionCreated(final HttpSessionEvent event) {
@@ -37,11 +35,7 @@ public final class SingleSignOutHttpSessionListener implements HttpSessionListen
     		SESSION_MAPPING_STORAGE = getSessionMappingStorage();
     	}
         final HttpSession session = event.getSession();
-        
-        if (log.isDebugEnabled()) {
-        	log.debug("Removing HttpSession: " + session.getId());
-        }
-        
+              
         SESSION_MAPPING_STORAGE.removeBySessionById(session.getId());
     }
 
