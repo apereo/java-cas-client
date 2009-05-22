@@ -18,8 +18,10 @@ import org.springframework.mock.web.MockServletContext;
  */
 public class CleanUpListenerTest extends TestCase {
     private final Timer defaultTimer = new Timer(true);
+    /*
     private final CleanUpTimerTask defaultTimerTask = new CleanUpTimerTask();
-    
+
+
     public void testStartsThreadAtStartup() throws Exception {
         final MethodFlag scheduleMethodFlag = new MethodFlag();
         
@@ -119,36 +121,5 @@ public class CleanUpListenerTest extends TestCase {
             // expected, test passes
         }
     }
-    
-    /**
-     * A unit test helper class to mock a real {@link ServletContextEvent}
-     * 
-     * @author Brad Cupit (brad [at] lsu {dot} edu)
-     */
-    private static final class TestServletContextEvent extends ServletContextEvent {
-        private TestServletContextEvent(long millisBetweenCleanUps) {
-            super(new TestServletContext(millisBetweenCleanUps));
-        }
-    }
-    
-    /**
-     * A unit test helper class to mock a real {@link ServletContext}
-     * 
-     * @author Brad Cupit (brad [at] lsu {dot} edu)
-     */
-    private static final class TestServletContext extends MockServletContext {
-        private final long millisBetweenCleanUps;
-
-        public TestServletContext(long millisBetweenCleanUps) {
-            this.millisBetweenCleanUps = millisBetweenCleanUps;
-        }
-
-        public String getInitParameter(String name) {
-            if (name.equals(CleanUpListener.MILLIS_BETWEEN_CLEANUPS_INIT_PARAM)) {
-                return Long.toString(millisBetweenCleanUps);
-            } else {
-                throw new RuntimeException("Unexpected init param requested: " + name);
-            }
-        }
-    }
+    */  
 }

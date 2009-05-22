@@ -6,12 +6,7 @@
 package org.jasig.cas.client.validation;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -21,48 +16,58 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
-import org.jasig.cas.client.proxy.CleanUpListener;
+import org.jasig.cas.client.proxy.*;
 import org.jasig.cas.client.util.CommonUtils;
 
 /**
  * Creates either a CAS20ProxyTicketValidator or a CAS20ServiceTicketValidator depending on whether any of the
  * proxy parameters are set.
  * <p>
- * This filter can also pass additional parameteres to the ticket validator.  Any init parameter not included in the
+ * This filter can also pass additional parameters to the ticket validator.  Any init parameter not included in the
  * reserved list {@link org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter#RESERVED_INIT_PARAMS}.
  *
  * @author Scott Battaglia
+ * @author Brad Cupit (brad [at] lsu {dot} edu)
  * @version $Revision$ $Date$
  * @since 3.1
  *
  */
 public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketValidationFilter {
 
-    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl"};
+    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl", "millisBetweenCleanUps"};
+
+    private static final int DEFAULT_MILLIS_BETWEEN_CLEANUPS = 60 * 1000;
 
     /**
      * The URL to send to the CAS server as the URL that will process proxying requests on the CAS client. 
      */
     private String proxyReceptorUrl;
+
+    private Timer timer;
+
+    private TimerTask timerTask;
+
+    private int millisBetweenCleanUps;
     
     /**
      * Storage location of ProxyGrantingTickets and Proxy Ticket IOUs.
      */
-    private static ProxyGrantingTicketStorage proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
+    private ProxyGrantingTicketStorage proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
         setProxyReceptorUrl(getPropertyFromInitParams(filterConfig, "proxyReceptorUrl", null));
+
         log.trace("Setting proxyReceptorUrl parameter: " + this.proxyReceptorUrl);
+        this.millisBetweenCleanUps = Integer.parseInt(getPropertyFromInitParams(filterConfig, "millisBetweenCleanUps", Integer.toString(DEFAULT_MILLIS_BETWEEN_CLEANUPS)));
     }
 
     public void init() {
         super.init();
-        
         CommonUtils.assertNotNull(proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
+        this.timer = new Timer(true);
+        this.timerTask = new CleanUpTimerTask(this.proxyGrantingTicketStorage);
+        this.timer.schedule(this.timerTask, this.millisBetweenCleanUps, this.millisBetweenCleanUps);
     }
 
     /**
@@ -118,6 +123,11 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         return (List) editor.getValue();
     }
 
+    public void destroy() {
+        super.destroy();
+        this.timer.cancel();
+    }
+
     /**
      * This processes the ProxyReceptor request before the ticket validation code executes.
      */
@@ -138,17 +148,16 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     public final void setProxyReceptorUrl(final String proxyReceptorUrl) {
         this.proxyReceptorUrl = proxyReceptorUrl;
     }
-    
-    /**
-     * Static getter so {@link CleanUpListener} has some way of retrieving
-     * the actual storage. This relies on the fact that this class (the Filter)
-     * will only be instantiated once per webapp.
-     */
-    public static ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
-        return proxyGrantingTicketStorage;
+
+    public void setProxyGrantingTicketStorage(final ProxyGrantingTicketStorage storage) {
+        proxyGrantingTicketStorage = storage;
     }
 
-    public void setProxyGrantingTicketStorage(ProxyGrantingTicketStorage storage) {
-        proxyGrantingTicketStorage = storage;
+    public void setTimer(final Timer timer) {
+        this.timer = timer;
+    }
+
+    public void setTimerTask(final TimerTask timerTask) {
+        this.timerTask = timerTask;
     }
 }

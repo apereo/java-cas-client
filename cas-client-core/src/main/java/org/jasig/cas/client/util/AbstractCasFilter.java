@@ -63,13 +63,18 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         init();
     }
 
-    /** Controls the ordering of filter initialization and checking by defining a method that runs before the init. */
+    /** Controls the ordering of filter initialization and checking by defining a method that runs before the init.
+     * @param filterConfig the original filter configuration.
+     * @throws ServletException if there is a problem.
+     *
+     */
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         // template method
     }
 
     /**
-     * Initialization method.  Called by Filter's init method or by Spring.
+     * Initialization method.  Called by Filter's init method or by Spring.  Similar in concept to the InitializingBean interface's
+     * afterPropertiesSet();
      */
     public void init() {
         CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
@@ -77,7 +82,8 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         CommonUtils.assertTrue(CommonUtils.isNotEmpty(this.serverName) || CommonUtils.isNotEmpty(this.service), "serverName or service must be set.");
     }
 
-    public final void destroy() {
+    // empty implementation as most filters won't need this.
+    public void destroy() {
         // nothing to do
     }
 

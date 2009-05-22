@@ -86,8 +86,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
                 final Map authenticationAttributes = new HashMap();
                 authenticationAttributes.put("samlAuthenticationStatement::authMethod", authenticationStatement.getAuthMethod());
 
-                final Assertion casAssertion = new AssertionImpl(principal, authenticationAttributes);
-                return casAssertion;
+                return new AssertionImpl(principal, authenticationAttributes);
             }
        } catch (final SAMLException e) {
             throw new TicketValidationException(e);

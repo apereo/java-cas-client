@@ -14,11 +14,11 @@ import junit.framework.TestCase;
 public class CleanUpTimerTaskTest extends TestCase {
 
     public void testRun() throws Exception {
-        TimerTask timerTask = new CleanUpTimerTask();
-        
-        ProxyGrantingTicketStorageTestImpl storage = new ProxyGrantingTicketStorageTestImpl();
+        final ProxyGrantingTicketStorageTestImpl storage = new ProxyGrantingTicketStorageTestImpl();
         new Cas20ProxyReceivingTicketValidationFilter().setProxyGrantingTicketStorage(storage);
-        
+
+        final TimerTask timerTask = new CleanUpTimerTask(storage);
+
         timerTask.run();
         assertTrue(storage.cleanUpWasCalled());
     }

@@ -8,9 +8,6 @@ import junit.framework.TestCase;
  * @author Brad Cupit (brad [at] lsu {dot} edu)
  */
 public class Cas20ProxyReceivingTicketValidationFilterTest extends TestCase {
-    public void testHasDefaultStorage() throws Exception {
-        assertNotNull(Cas20ProxyReceivingTicketValidationFilter.getProxyGrantingTicketStorage());
-    }
     
     public void testThrowsForNullStorage() throws Exception {
         Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
