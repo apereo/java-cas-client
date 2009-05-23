@@ -56,23 +56,25 @@ public class AuthenticationFilter extends AbstractCasFilter {
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
-        super.initInternal(filterConfig);
-        setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
-        log.trace("Loaded CasServerLoginUrl parameter: " + this.casServerLoginUrl);
-        setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
-        log.trace("Loaded renew parameter: " + this.renew);
-        setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
-        log.trace("Loaded gateway parameter: " + this.gateway);
-        
-        final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
-        
-        if (gatewayStorageClass != null) {
-        	try {
-        		this.gatewayStorage = (GatewayResolver) Class.forName(gatewayStorageClass).newInstance();
-        	} catch (final Exception e) {
-        		log.error(e,e);
-        		throw new ServletException(e);
-        	}
+        if (!isIgnoreInitConfiguration()) {
+            super.initInternal(filterConfig);
+            setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
+            log.trace("Loaded CasServerLoginUrl parameter: " + this.casServerLoginUrl);
+            setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+            log.trace("Loaded renew parameter: " + this.renew);
+            setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
+            log.trace("Loaded gateway parameter: " + this.gateway);
+
+            final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
+
+            if (gatewayStorageClass != null) {
+                try {
+                    this.gatewayStorage = (GatewayResolver) Class.forName(gatewayStorageClass).newInstance();
+                } catch (final Exception e) {
+                    log.error(e,e);
+                    throw new ServletException(e);
+                }
+            }
         }
     }
 

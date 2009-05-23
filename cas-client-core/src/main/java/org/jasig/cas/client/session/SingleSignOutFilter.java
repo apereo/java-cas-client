@@ -38,7 +38,9 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     private static Log log = LogFactory.getLog(SingleSignOutFilter.class);
 
     public void init(final FilterConfig filterConfig) throws ServletException {
-        setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
+        if (!isIgnoreInitConfiguration()) {
+            setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
+        }
         init();
     }
 

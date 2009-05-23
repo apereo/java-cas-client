@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
  * Implementation of {@link ProxyGrantingTicketStorage} that is backed by a
  * HashMap that keeps a ProxyGrantingTicket for a specified amount of time.
  * <p>
- * {@link CleanUpRegistry#cleanAll()} must be called on a regular basis to
+ * {@link ProxyGrantingTicketStorage#cleanUp()} must be called on a regular basis to
  * keep the HashMap from growing indefinitely.
  *
  * @author Scott Battaglia

@@ -64,9 +64,15 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
     public void init() {
         super.init();
-        CommonUtils.assertNotNull(proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
-        this.timer = new Timer(true);
-        this.timerTask = new CleanUpTimerTask(this.proxyGrantingTicketStorage);
+        CommonUtils.assertNotNull(this.proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
+
+        if (this.timer == null) {
+            this.timer = new Timer(true);
+        }
+
+        if (this.timerTask == null) {
+            this.timerTask = new CleanUpTimerTask(this.proxyGrantingTicketStorage);
+        }
         this.timer.schedule(this.timerTask, this.millisBetweenCleanUps, this.millisBetweenCleanUps);
     }
 

@@ -19,6 +19,8 @@ public abstract class AbstractConfigurationFilter implements Filter {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 
+    private boolean ignoreInitConfiguration = false;
+
     /**
      * Retrieves the property from the FilterConfig.  First it checks the FilterConfig's initParameters to see if it
      * has a value.
@@ -28,6 +30,7 @@ public abstract class AbstractConfigurationFilter implements Filter {
      *
      * @param filterConfig the Filter Configuration.
      * @param propertyName the property to retrieve.
+     * @param defaultValue the default value if the property is not found.
      * @return the property value, following the above conventions.  It will always return the more specific value (i.e.
      *  filter vs. context).
      */
@@ -79,5 +82,13 @@ public abstract class AbstractConfigurationFilter implements Filter {
     		log.warn("No value found in context for: '" + path + "'; Returning null.");
     		return null;
     	}
+    }
+
+    public final void setIgnoreInitConfiguration(boolean ignoreInitConfiguration) {
+        this.ignoreInitConfiguration = ignoreInitConfiguration;
+    }
+
+    protected final boolean isIgnoreInitConfiguration() {
+        return this.ignoreInitConfiguration;
     }
 }
