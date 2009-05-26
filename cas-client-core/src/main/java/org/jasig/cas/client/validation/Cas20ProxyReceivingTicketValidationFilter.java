@@ -166,4 +166,8 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     public void setTimerTask(final TimerTask timerTask) {
         this.timerTask = timerTask;
     }
+
+    public void setMillisBetweenCleanUps(final int millisBetweenCleanUps) {
+        this.millisBetweenCleanUps = millisBetweenCleanUps;
+    }
 }
