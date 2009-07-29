@@ -13,6 +13,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * TicketValidator that can understand validating a SAML artifact.  This includes the SOAP request/response.
@@ -158,8 +160,14 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         return list;
     }
 
+    private static String getFormattedDateAndTime(final Date date) {
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        return dateFormat.format(date);
+    }
+
+
     protected String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-        final String MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"_192.168.16.51.1024506224022\" IssueInstant=\"2002-06-19T17:03:44.022Z\">"
+        final String MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"" + UUID.randomUUID().toString() + "\" IssueInstant=\"" + getFormattedDateAndTime(new Date()) + "\">"
                 + "<samlp:AssertionArtifact>" + ticket
                 + "</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>";
 
