@@ -138,7 +138,7 @@ public final class CommonUtils {
      */
     public static final String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName, final String serviceUrl, final boolean renew, final boolean gateway) {
         try {
-        return casServerLoginUrl + "?" + serviceParameterName + "="
+        return casServerLoginUrl + (casServerLoginUrl.indexOf("?") != -1 ? "&" : "?") + serviceParameterName + "="
                     + URLEncoder.encode(serviceUrl, "UTF-8")
                     + (renew ? "&renew=true" : "")
                     + (gateway ? "&gateway=true" : "");

@@ -19,6 +19,22 @@ import java.util.Collection;
  */
 public final class CommonUtilsTests extends TestCase {
 
+    public void testRedirectUrlWithParam() {
+        final String loginUrl = "http://localhost:8080/login?myName=foo";
+        final String fullyConstructedUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", false, false);
+
+        int count = 0;
+        final char[] chars = fullyConstructedUrl.toCharArray();
+
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '?') {
+                count ++;
+            }
+        }
+
+        assertEquals(1, count);
+    }
+
     public void testAssertNotNull() {
         final String CONST_MESSAGE = "test";
         CommonUtils.assertNotNull(new Object(), CONST_MESSAGE);
