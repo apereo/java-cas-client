@@ -87,38 +87,43 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession(false);
-        final String ticket = request.getParameter(getArtifactParameterName());
         final String serviceUrl = constructServiceUrl(request, response);
-        final Assertion assertion = session != null ? (Assertion) session
-                .getAttribute(CONST_CAS_ASSERTION) : null;
-        final boolean wasGatewayed = this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
+        final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;    
 
-        if (CommonUtils.isBlank(ticket) && assertion == null && !wasGatewayed) {
-        	final String modifiedServiceUrl;
-        	
-            log.debug("no ticket and no assertion found");
-            if (this.gateway) {
-                log.debug("setting gateway attribute in session");
-                modifiedServiceUrl = this.gatewayStorage.storeGatewayInformation(request, serviceUrl);
-            } else {
-            	modifiedServiceUrl = serviceUrl;
-            }
-            
-            if (log.isDebugEnabled()) {
-            	log.debug("Constructed service url: " + modifiedServiceUrl);
-            }
-            
-            final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
-
-            if (log.isDebugEnabled()) {
-                log.debug("redirecting to \"" + urlToRedirectTo + "\"");
-            }
-
-            response.sendRedirect(urlToRedirectTo);
+        if (assertion != null) {
+            filterChain.doFilter(request, response);
             return;
         }
 
-        filterChain.doFilter(request, response);
+        final String ticket = request.getParameter(getArtifactParameterName());
+        final boolean wasGatewayed = this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
+
+        if (CommonUtils.isNotBlank(ticket) || wasGatewayed) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        final String modifiedServiceUrl;
+
+        log.debug("no ticket and no assertion found");
+        if (this.gateway) {
+            log.debug("setting gateway attribute in session");
+            modifiedServiceUrl = this.gatewayStorage.storeGatewayInformation(request, serviceUrl);
+        } else {
+            modifiedServiceUrl = serviceUrl;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Constructed service url: " + modifiedServiceUrl);
+        }
+
+        final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
+
+        if (log.isDebugEnabled()) {
+            log.debug("redirecting to \"" + urlToRedirectTo + "\"");
+        }
+
+        response.sendRedirect(urlToRedirectTo);
     }
 
     public final void setRenew(final boolean renew) {
