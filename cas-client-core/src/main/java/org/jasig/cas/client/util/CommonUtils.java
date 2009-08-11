@@ -11,6 +11,7 @@ import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -236,4 +237,15 @@ public final class CommonUtils {
         return returnValue;
     }
 
+    /**
+     * Safe method for retrieving a parameter from the request without disrupting the reader UNLESS the parameter
+     * actually exists in the query string.
+     *
+     * @param request the request to check.
+     * @param parameter the parameter to look for.
+     * @return the value of the parameter.
+     */
+    public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
+        return request.getQueryString().indexOf(parameter) != -1 ? request.getParameter(parameter) : null;       
+    }
 }
