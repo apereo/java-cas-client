@@ -246,6 +246,6 @@ public final class CommonUtils {
      * @return the value of the parameter.
      */
     public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
-        return request.getQueryString().indexOf(parameter) != -1 ? request.getParameter(parameter) : null;       
+        return request.getQueryString() == null || request.getQueryString().indexOf(parameter) == -1 ? null : request.getParameter(parameter);       
     }
 }
