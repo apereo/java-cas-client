@@ -14,6 +14,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -89,8 +90,7 @@ public final class DelegatingFilter implements Filter {
                          final ServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
 
-        final String parameter = request
-                .getParameter(this.requestParameterName);
+        final String parameter = CommonUtils.safeGetParameter((HttpServletRequest) request, this.requestParameterName);
 
         if (CommonUtils.isNotEmpty(parameter)) {
             for (final Iterator iter = this.delegators.keySet().iterator(); iter

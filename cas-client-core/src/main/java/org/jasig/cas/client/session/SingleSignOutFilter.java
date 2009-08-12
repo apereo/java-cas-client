@@ -57,7 +57,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
 
         if ("POST".equals(request.getMethod())) {
-            final String logoutRequest = request.getParameter("logoutRequest");
+            final String logoutRequest = CommonUtils.safeGetParameter(request, "logoutRequest");
 
             if (CommonUtils.isNotBlank(logoutRequest)) {
 
@@ -87,7 +87,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
                 }
             }
         } else {
-        	final String artifact = request.getParameter(this.artifactParameterName);
+        	final String artifact = CommonUtils.safeGetParameter(request, this.artifactParameterName);
             final HttpSession session = request.getSession();
             
             if (log.isDebugEnabled() && session != null) {
