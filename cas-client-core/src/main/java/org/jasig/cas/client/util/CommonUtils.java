@@ -148,7 +148,7 @@ public final class CommonUtils {
         }
     }
     
-    public static final void readAndRespondToProxyReceptorRequest(final HttpServletRequest request, final HttpServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage) throws IOException {
+    public static void readAndRespondToProxyReceptorRequest(final HttpServletRequest request, final HttpServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage) throws IOException {
         final String proxyGrantingTicketIou = request
         .getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
 
@@ -183,7 +183,7 @@ public final class CommonUtils {
      * @param response the HttpServletResponse
      * @return the service url to use.
      */
-    public static final String constructServiceUrl(final HttpServletRequest request,
+    public static String constructServiceUrl(final HttpServletRequest request,
                                                final HttpServletResponse response, final String service, final String serverName, final String artifactParameterName, final boolean encode) {
         if (CommonUtils.isNotBlank(service)) {
             return encode ? response.encodeURL(service) : service;
@@ -240,12 +240,21 @@ public final class CommonUtils {
     /**
      * Safe method for retrieving a parameter from the request without disrupting the reader UNLESS the parameter
      * actually exists in the query string.
+     * <p>
+     * Note, this does not work for POST Requests for "logoutRequest".  It works for all other CAS POST requests because the
+     * parameter is ALWAYS in the GET request.
+     * <p>
+     * If we see the "logoutRequest" parameter we MUST treat it as if calling the standard request.getParameter.
      *
      * @param request the request to check.
      * @param parameter the parameter to look for.
      * @return the value of the parameter.
      */
     public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
+        if ("POST".equals(request.getMethod()) && "logoutRequest".equals(parameter)) {
+            LOG.warn("safeGetParameter called on a POST HttpServletRequest for LogoutRequest.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
+            return request.getParameter(parameter);
+        }
         return request.getQueryString() == null || request.getQueryString().indexOf(parameter) == -1 ? null : request.getParameter(parameter);       
     }
 }
