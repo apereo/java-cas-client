@@ -38,12 +38,14 @@ public abstract class AbstractConfigurationFilter implements Filter {
         final String value = filterConfig.getInitParameter(propertyName);
 
         if (CommonUtils.isNotBlank(value)) {
+            log.info("Property [" + propertyName + "] loaded from FilterConfig.getInitParameter with value [" + value + "]");
             return value;
         }
 
         final String value2 = filterConfig.getServletContext().getInitParameter(propertyName);
 
         if (CommonUtils.isNotBlank(value2)) {
+            log.info("Property [" + propertyName + "] loaded from ServletContext.getInitParameter with value [" + value2 + "]");
             return value2;
         }
         InitialContext context = null;
@@ -59,15 +61,18 @@ public abstract class AbstractConfigurationFilter implements Filter {
         final String value3 = loadFromContext(context, "java:comp/env/cas/" + shortName + "/" + propertyName);
         
         if (CommonUtils.isNotBlank(value3)) {
+            log.info("Property [" + propertyName + "] loaded from JNDI Filter Specific Property with value [" + value3 + "]");
         	return value3;
         }
         
         final String value4 = loadFromContext(context, "java:comp/env/cas/" + propertyName); 
         
         if (CommonUtils.isNotBlank(value4)) {
+            log.info("Property [" + propertyName + "] loaded from JNDI with value [" + value3 + "]");
         	return value4;
         }
 
+        log.info("Property [" + propertyName + "] not found.  Using default value [" + defaultValue + "]");
         return defaultValue;
     }
     
@@ -79,7 +84,6 @@ public abstract class AbstractConfigurationFilter implements Filter {
     	try {
     		return (String) context.lookup(path);
     	} catch (final NamingException e) {
-    		log.warn("No value found in context for: '" + path + "'; Returning null.");
     		return null;
     	}
     }
