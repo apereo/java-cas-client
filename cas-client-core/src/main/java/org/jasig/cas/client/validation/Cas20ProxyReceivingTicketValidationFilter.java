@@ -91,7 +91,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         if (CommonUtils.isNotBlank(allowAnyProxy) || CommonUtils.isNotBlank(allowedProxyChains)) {
             final Cas20ProxyTicketValidator v = new Cas20ProxyTicketValidator(casServerUrlPrefix);
             v.setAcceptAnyProxy(parseBoolean(allowAnyProxy));
-            v.setAllowedProxyChains(new ProxyList(constructListOfProxies(allowedProxyChains)));
+            v.setAllowedProxyChains(createProxyList(allowedProxyChains));
             validator = v;
         } else {
             validator = new Cas20ServiceTicketValidator(casServerUrlPrefix);
@@ -117,17 +117,15 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         return validator;
     }
 
-    protected final List constructListOfProxies(final String proxies) {
+    protected final ProxyList createProxyList(final String proxies) {
         if (CommonUtils.isBlank(proxies)) {
-            return new ArrayList();
+            return new ProxyList();
         }
 
-        final String[] splitProxies = proxies.split("\n");
-        final List items = Arrays.asList(splitProxies);
         final ProxyListEditor editor = new ProxyListEditor();
-        editor.setValue(items);
-        return (List) editor.getValue();
-    }
+        editor.setAsText(proxies);
+        return (ProxyList) editor.getValue();
+     }
 
     public void destroy() {
         super.destroy();
@@ -165,5 +163,9 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
     public void setTimerTask(final TimerTask timerTask) {
         this.timerTask = timerTask;
+    }
+
+    public void setMillisBetweenCleanUps(final int millisBetweenCleanUps) {
+        this.millisBetweenCleanUps = millisBetweenCleanUps;
     }
 }

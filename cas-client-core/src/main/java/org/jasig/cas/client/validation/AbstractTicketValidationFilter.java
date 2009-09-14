@@ -121,7 +121,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        final String ticket = request.getParameter(getArtifactParameterName());
+        final String ticket = CommonUtils.safeGetParameter(request, getArtifactParameterName());
 
         if (CommonUtils.isNotBlank(ticket)) {
             if (log.isDebugEnabled()) {
