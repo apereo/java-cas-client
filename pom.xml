@@ -135,7 +135,7 @@
 		<repository>
 			<id>acegi.repo</id>
 			<name>Acegi Repository</name>
-			<url>scp://web.sourceforge.net/home/groups/a/ac/acegisecurity/htdocs/repository/releases</url>
+			<url>sftp://web.sourceforge.net/home/groups/a/ac/acegisecurity/htdocs/repository/releases</url>
 		</repository>
 	</distributionManagement>
 </project>
