@@ -15,7 +15,12 @@ import javax.servlet.ServletRequest;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URLEncoder;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.util.Collection;
 
 /**
@@ -137,7 +142,7 @@ public final class CommonUtils {
      * @param gateway where we should send gateway or not.
      * @return the fully constructed redirect url.
      */
-    public static final String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName, final String serviceUrl, final boolean renew, final boolean gateway) {
+    public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName, final String serviceUrl, final boolean renew, final boolean gateway) {
         try {
         return casServerLoginUrl + (casServerLoginUrl.indexOf("?") != -1 ? "&" : "?") + serviceParameterName + "="
                     + URLEncoder.encode(serviceUrl, "UTF-8")
@@ -181,6 +186,10 @@ public final class CommonUtils {
      *
      * @param request  the HttpServletRequest
      * @param response the HttpServletResponse
+     * @param service the configured service url (this will be used if not null)
+     * @param serverName the server name to  use to constuct the service url if the service param is empty
+     * @param artifactParameterName the artifact parameter name to remove (i.e. ticket)
+     * @param encode whether to encode the url or not (i.e. Jsession).    
      * @return the service url to use.
      */
     public static String constructServiceUrl(final HttpServletRequest request,
@@ -256,5 +265,53 @@ public final class CommonUtils {
             return request.getParameter(parameter);
         }
         return request.getQueryString() == null || request.getQueryString().indexOf(parameter) == -1 ? null : request.getParameter(parameter);       
+    }
+
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the url to contact.
+     * @return the response.
+     */
+    public static String getResponseFromServer(final URL constructedUrl) {
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) constructedUrl.openConnection();
+
+            final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String line;
+            final StringBuffer stringBuffer = new StringBuffer(255);
+
+            synchronized (stringBuffer) {
+                while ((line = in.readLine()) != null) {
+                    stringBuffer.append(line);
+                    stringBuffer.append("\n");
+                }
+                return stringBuffer.toString();
+            }
+        } catch (final Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+    }
+
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param url the url to contact.
+     * @return the response.
+     */
+    public static String getResponseFromServer(final String url) {
+        try {
+            return getResponseFromServer(new URL(url));
+        } catch (final MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

@@ -5,6 +5,8 @@
  */
 package org.jasig.cas.client.validation;
 
+import org.jasig.cas.client.util.CommonUtils;
+
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.BufferedReader;
@@ -28,30 +30,6 @@ public abstract class AbstractCasProtocolUrlBasedTicketValidator extends Abstrac
      * Retrieves the response from the server by opening a connection and merely reading the response.
      */
     protected final String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-        HttpURLConnection connection = null;
-
-        try {
-            connection = (HttpURLConnection) validationUrl.openConnection();
-            final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            String line;
-            final StringBuffer stringBuffer = new StringBuffer(255);
-
-            synchronized (stringBuffer) {
-                while ((line = in.readLine()) != null) {
-                    stringBuffer.append(line);
-                    stringBuffer.append("\n");
-                }
-                return stringBuffer.toString();
-            }
-
-        } catch (final IOException e) {
-            log.error(e,e);
-            return null;
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
+        return CommonUtils.getResponseFromServer(validationUrl);               
     }
 }

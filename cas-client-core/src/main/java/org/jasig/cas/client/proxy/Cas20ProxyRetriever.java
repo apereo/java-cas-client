@@ -60,44 +60,18 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
                                       final String targetService) {
 
         final String url = constructUrl(proxyGrantingTicketId, targetService);
-        HttpURLConnection conn = null;
-        try {
-            final URL constructedUrl = new URL(url);
-            conn = (HttpURLConnection) constructedUrl.openConnection();
+        final String response = CommonUtils.getResponseFromServer(url);
+        final String error = XmlUtils.getTextForElement(response, "proxyFailure");
 
-            final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            String line;
-            final StringBuffer stringBuffer = new StringBuffer(255);
-            final String response;
-
-            synchronized (stringBuffer) {
-                while ((line = in.readLine()) != null) {
-                    stringBuffer.append(line);
-                }
-                response = stringBuffer.toString();
-            }
-
-            final String error = XmlUtils.getTextForElement(response,
-                    "proxyFailure");
-
-            if (CommonUtils.isNotEmpty(error)) {
-                log.debug(error);
-                return null;
-            }
-
-            return XmlUtils.getTextForElement(response, "proxyTicket");
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
+        if (CommonUtils.isNotEmpty(error)) {
+            log.debug(error);
+            return null;
         }
+
+        return XmlUtils.getTextForElement(response, "proxyTicket");
     }
 
-    private String constructUrl(final String proxyGrantingTicketId,
-                                final String targetService) {
+    private String constructUrl(final String proxyGrantingTicketId, final String targetService) {
         try {
         	return this.casServerUrl + (this.casServerUrl.endsWith("/") ? "" : "/") + "proxy" + "?pgt="
             + proxyGrantingTicketId + "&targetService="
