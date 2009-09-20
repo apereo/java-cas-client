@@ -129,7 +129,12 @@
     <modules>
         <module>cas-client-core</module>
         <module>cas-client-integration-atlassian</module>
+        <module>cas-client-support-distributed</module>
     </modules>
+
+    <properties>
+        <ehcache.version>1.5.0</ehcache.version>
+    </properties>
     
 	<distributionManagement>
 		<repository>

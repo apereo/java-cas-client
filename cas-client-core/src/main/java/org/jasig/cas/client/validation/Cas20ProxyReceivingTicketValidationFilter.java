@@ -58,6 +58,17 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         super.initInternal(filterConfig);
         setProxyReceptorUrl(getPropertyFromInitParams(filterConfig, "proxyReceptorUrl", null));
 
+        final String proxyGrantingTicketStorageClass = getPropertyFromInitParams(filterConfig, "proxyGrantingTicketStorageClass", null);
+
+        if (proxyGrantingTicketStorageClass != null) {
+            try {
+                final Class storageClass = Class.forName(proxyGrantingTicketStorageClass);
+                this.proxyGrantingTicketStorage = (ProxyGrantingTicketStorage) storageClass.newInstance();
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         log.trace("Setting proxyReceptorUrl parameter: " + this.proxyReceptorUrl);
         this.millisBetweenCleanUps = Integer.parseInt(getPropertyFromInitParams(filterConfig, "millisBetweenCleanUps", Integer.toString(DEFAULT_MILLIS_BETWEEN_CLEANUPS)));
     }
