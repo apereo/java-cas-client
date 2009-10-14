@@ -131,6 +131,7 @@
         <module>cas-client-integration-atlassian</module>
         <module>cas-client-support-distributed-ehcache</module>
         <module>cas-client-support-distributed-memcached</module>
+        <module>cas-client-support-distributed-ehcache</module>
     </modules>
 
     <properties>
