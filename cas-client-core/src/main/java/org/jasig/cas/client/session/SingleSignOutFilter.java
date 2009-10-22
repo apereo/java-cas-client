@@ -88,18 +88,22 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
             }
         } else {
         	final String artifact = CommonUtils.safeGetParameter(request, this.artifactParameterName);
-            final HttpSession session = request.getSession();
-            
-            if (log.isDebugEnabled() && session != null) {
-            	log.debug("Storing session identifier for " + session.getId());
-            }
-            if (CommonUtils.isNotBlank(artifact)) {
-            	try {
-            		SESSION_MAPPING_STORAGE.removeBySessionById(session.getId());
-            	} catch (final Exception e) {
-            		// ignore if the session is already marked as invalid.  Nothing we can do!
-            	}
-            	SESSION_MAPPING_STORAGE.addSessionById(artifact, session);
+            final HttpSession session = request.getSession(false);
+
+            if (session != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Storing session identifier for " + session.getId());
+                }
+                if (CommonUtils.isNotBlank(artifact)) {
+                    try {
+                        SESSION_MAPPING_STORAGE.removeBySessionById(session.getId());
+                    } catch (final Exception e) {
+                        // ignore if the session is already marked as invalid.  Nothing we can do!
+                    }
+                    SESSION_MAPPING_STORAGE.addSessionById(artifact, session);
+                }
+            } else {
+                log.debug("No Session Found, so ignoring.");
             }
         }
 
