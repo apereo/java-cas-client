@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas</groupId>
-    <version>3.1.9-SNAPSHOT</version>
+    <version>3.1.9</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>JA-SIG CAS Client for Java</name>
@@ -131,7 +131,6 @@
         <module>cas-client-integration-atlassian</module>
         <module>cas-client-support-distributed-ehcache</module>
         <module>cas-client-support-distributed-memcached</module>
-        <module>cas-client-support-distributed-ehcache</module>
     </modules>
 
     <properties>
