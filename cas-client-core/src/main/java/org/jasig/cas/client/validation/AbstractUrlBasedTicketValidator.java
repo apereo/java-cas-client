@@ -111,12 +111,12 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
             buffer.append(suffix);
 
             for (final Iterator iter = urlParameters.entrySet().iterator(); iter.hasNext();) {
-                buffer.append(i++ == 0 ? "?" : "&");
                 final Map.Entry entry = (Map.Entry) iter.next();
                 final String key = (String) entry.getKey();
                 final String value = (String) entry.getValue();
 
                 if (value != null) {
+                    buffer.append(i++ == 0 ? "?" : "&");
 	                buffer.append(key);
 	                buffer.append("=");
 	                buffer.append(value);
