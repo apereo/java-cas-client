@@ -87,14 +87,14 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession(false);
-        final String serviceUrl = constructServiceUrl(request, response);
-        final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;    
+        final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
 
         if (assertion != null) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        final String serviceUrl = constructServiceUrl(request, response);
         final String ticket = CommonUtils.safeGetParameter(request,getArtifactParameterName());
         final boolean wasGatewayed = this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
 
