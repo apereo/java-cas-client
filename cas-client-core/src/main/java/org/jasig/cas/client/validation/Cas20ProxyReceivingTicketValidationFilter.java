@@ -55,7 +55,6 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     private ProxyGrantingTicketStorage proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
-        super.initInternal(filterConfig);
         setProxyReceptorUrl(getPropertyFromInitParams(filterConfig, "proxyReceptorUrl", null));
 
         final String proxyGrantingTicketStorageClass = getPropertyFromInitParams(filterConfig, "proxyGrantingTicketStorageClass", null);
@@ -71,6 +70,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
         log.trace("Setting proxyReceptorUrl parameter: " + this.proxyReceptorUrl);
         this.millisBetweenCleanUps = Integer.parseInt(getPropertyFromInitParams(filterConfig, "millisBetweenCleanUps", Integer.toString(DEFAULT_MILLIS_BETWEEN_CLEANUPS)));
+        super.initInternal(filterConfig);
     }
 
     public void init() {
@@ -108,7 +108,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             validator = new Cas20ServiceTicketValidator(casServerUrlPrefix);
         }
         validator.setProxyCallbackUrl(getPropertyFromInitParams(filterConfig, "proxyCallbackUrl", null));
-        validator.setProxyGrantingTicketStorage(proxyGrantingTicketStorage);
+        validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
         validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix));
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
 
