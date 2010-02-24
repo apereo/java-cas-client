@@ -9,14 +9,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletRequest;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.net.URL;
 import java.net.HttpURLConnection;
@@ -274,10 +276,23 @@ public final class CommonUtils {
      * @return the response.
      */
     public static String getResponseFromServer(final URL constructedUrl) {
-        HttpURLConnection conn = null;
-        try {
-            conn = (HttpURLConnection) constructedUrl.openConnection();
+        return getResponseFromServer(constructedUrl, HttpsURLConnection.getDefaultHostnameVerifier());
+    }
 
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the url to contact.
+     * @param hostnameVerifier Host name verifier to use for HTTPS connections.
+     * @return the response.
+     */
+    public static String getResponseFromServer(final URL constructedUrl, final HostnameVerifier hostnameVerifier) {
+        URLConnection conn = null;
+        try {
+            conn = constructedUrl.openConnection();
+            if (conn instanceof HttpsURLConnection) {
+                ((HttpsURLConnection)conn).setHostnameVerifier(hostnameVerifier);
+            }
             final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
             String line;
@@ -294,13 +309,12 @@ public final class CommonUtils {
             LOG.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
-            if (conn != null) {
-                conn.disconnect();
+            if (conn != null && conn instanceof HttpURLConnection) {
+                ((HttpURLConnection)conn).disconnect();
             }
         }
 
     }
-
     /**
      * Contacts the remote URL and returns the response.
      *

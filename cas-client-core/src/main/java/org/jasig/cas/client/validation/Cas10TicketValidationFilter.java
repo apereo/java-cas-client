@@ -22,6 +22,7 @@ public class Cas10TicketValidationFilter extends AbstractTicketValidationFilter 
         final String casServerUrlPrefix = getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null);
         final Cas10TicketValidator validator = new Cas10TicketValidator(casServerUrlPrefix);
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+        validator.setHostnameVerifier(getHostnameVerifier(filterConfig));
 
         return validator;
     }

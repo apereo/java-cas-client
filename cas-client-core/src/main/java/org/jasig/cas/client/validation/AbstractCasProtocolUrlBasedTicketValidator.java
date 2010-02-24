@@ -8,10 +8,6 @@ package org.jasig.cas.client.validation;
 import org.jasig.cas.client.util.CommonUtils;
 
 import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
 
 /**
  * Abstract class that knows the protocol for validating a CAS ticket.
@@ -30,6 +26,10 @@ public abstract class AbstractCasProtocolUrlBasedTicketValidator extends Abstrac
      * Retrieves the response from the server by opening a connection and merely reading the response.
      */
     protected final String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-        return CommonUtils.getResponseFromServer(validationUrl);               
+        if (this.hostnameVerifier != null) {
+	        return CommonUtils.getResponseFromServer(validationUrl, this.hostnameVerifier);
+        } else {
+	        return CommonUtils.getResponseFromServer(validationUrl);
+        }
     }
 }

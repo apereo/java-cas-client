@@ -8,6 +8,7 @@ package org.jasig.cas.client.validation;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 
 /**
  * The filter that handles all the work of validating ticket requests.
@@ -55,8 +57,38 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * @param filterConfig the FilterConfiguration that may be needed to construct a validator.
      * @return the ticket validator.
      */
-    protected TicketValidator getTicketValidator(FilterConfig filterConfig) {
+    protected TicketValidator getTicketValidator(final FilterConfig filterConfig) {
         return this.ticketValidator;
+    }
+   
+    /**
+     * Gets the configured {@link HostnameVerifier} to use for HTTPS connections
+     * if one is configured for this filter.
+     * @param filterConfig Servlet filter configuration.
+     * @return Instance of specified host name verifier or null if none specified.
+     */
+    protected HostnameVerifier getHostnameVerifier(final FilterConfig filterConfig) {
+        final String className = getPropertyFromInitParams(filterConfig, "hostnameVerifier", null);
+        log.trace("Using hostnameVerifier parameter: " + className);
+        final String config = getPropertyFromInitParams(filterConfig, "hostnameVerifierConfig", null);
+        log.trace("Using hostnameVerifierConfig parameter: " + config);
+        HostnameVerifier verifier = null;
+        if (className != null) {
+            try {
+                final Class verifierClass = Class.forName(className);
+                if (config != null) {
+                    final Constructor cons = verifierClass.getConstructor(new Class[] {String.class});
+                    verifier = (HostnameVerifier) cons.newInstance(new Object[] {config});
+                } else {
+                    verifier = (HostnameVerifier) verifierClass.newInstance();
+                }
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException("Invalid HostnameVerifier class " + className);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Error creating instance of " + className, e);
+            }
+        }
+        return verifier;
     }
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {

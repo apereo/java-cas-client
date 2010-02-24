@@ -29,6 +29,7 @@ public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter
         final String tolerance = getPropertyFromInitParams(filterConfig, "tolerance", "1000");
         validator.setTolerance(Long.parseLong(tolerance));
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+        validator.setHostnameVerifier(getHostnameVerifier(filterConfig));
         return validator;
     }
 }
