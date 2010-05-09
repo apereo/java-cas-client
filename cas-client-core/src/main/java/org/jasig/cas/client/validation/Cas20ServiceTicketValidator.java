@@ -49,7 +49,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      */
     public Cas20ServiceTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
-        this.proxyRetriever = new Cas20ProxyRetriever(casServerUrlPrefix);
+        this.proxyRetriever = new Cas20ProxyRetriever(casServerUrlPrefix, getEncoding());
     }
 
     /**

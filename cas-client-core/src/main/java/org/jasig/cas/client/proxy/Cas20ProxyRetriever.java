@@ -45,22 +45,24 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
      */
     private final String casServerUrl;
 
+    private final String encoding;
+
     /**
      * Main Constructor.
      *
      * @param casServerUrl the URL to the CAS server (i.e. http://localhost/cas/)
      */
-    public Cas20ProxyRetriever(final String casServerUrl) {
-        CommonUtils.assertNotNull(casServerUrl,
-                "casServerUrl cannot be null.");
+    public Cas20ProxyRetriever(final String casServerUrl, final String encoding) {
+        CommonUtils.assertNotNull(casServerUrl, "casServerUrl cannot be null.");
         this.casServerUrl = casServerUrl;
+        this.encoding = encoding;
     }
 
     public String getProxyTicketIdFor(final String proxyGrantingTicketId,
                                       final String targetService) {
 
         final String url = constructUrl(proxyGrantingTicketId, targetService);
-        final String response = CommonUtils.getResponseFromServer(url);
+        final String response = CommonUtils.getResponseFromServer(url, this.encoding);
         final String error = XmlUtils.getTextForElement(response, "proxyFailure");
 
         if (CommonUtils.isNotEmpty(error)) {

@@ -285,8 +285,8 @@ public final class CommonUtils {
      * @param constructedUrl the url to contact.
      * @return the response.
      */
-    public static String getResponseFromServer(final URL constructedUrl) {
-        return getResponseFromServer(constructedUrl, HttpsURLConnection.getDefaultHostnameVerifier());
+    public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
+        return getResponseFromServer(constructedUrl, HttpsURLConnection.getDefaultHostnameVerifier(), encoding);
     }
 
     /**
@@ -296,14 +296,20 @@ public final class CommonUtils {
      * @param hostnameVerifier Host name verifier to use for HTTPS connections.
      * @return the response.
      */
-    public static String getResponseFromServer(final URL constructedUrl, final HostnameVerifier hostnameVerifier) {
+    public static String getResponseFromServer(final URL constructedUrl, final HostnameVerifier hostnameVerifier, final String encoding) {
         URLConnection conn = null;
         try {
             conn = constructedUrl.openConnection();
             if (conn instanceof HttpsURLConnection) {
                 ((HttpsURLConnection)conn).setHostnameVerifier(hostnameVerifier);
             }
-            final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            final BufferedReader in;
+
+            if (CommonUtils.isEmpty(encoding)) {
+                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                in = new BufferedReader(new InputStreamReader(conn.getInputStream(), encoding));
+            }
 
             String line;
             final StringBuffer stringBuffer = new StringBuffer(255);
@@ -331,9 +337,9 @@ public final class CommonUtils {
      * @param url the url to contact.
      * @return the response.
      */
-    public static String getResponseFromServer(final String url) {
+    public static String getResponseFromServer(final String url, String encoding) {
         try {
-            return getResponseFromServer(new URL(url));
+            return getResponseFromServer(new URL(url), encoding);
         } catch (final MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }

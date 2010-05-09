@@ -55,6 +55,8 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      */
     private Map customParameters;
 
+    private String encoding;
+
     /**
      * Constructs a new TicketValidator with the casServerUrlPrefix.
      *
@@ -198,15 +200,23 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
         }
     }
 
-    public void setRenew(final boolean renew) {
+    public final void setRenew(final boolean renew) {
         this.renew = renew;
     }
 
-    public void setCustomParameters(final Map customParameters) {
+    public final void setCustomParameters(final Map customParameters) {
         this.customParameters = customParameters;
     }
     
-    public void setHostnameVerifier(final HostnameVerifier verifier) {
+    public final void setHostnameVerifier(final HostnameVerifier verifier) {
         this.hostnameVerifier = verifier;
+    }
+
+    public final void setEncoding(final String encoding) {
+        this.encoding = encoding;
+    }
+
+    protected final String getEncoding() {
+        return this.encoding;
     }
 }

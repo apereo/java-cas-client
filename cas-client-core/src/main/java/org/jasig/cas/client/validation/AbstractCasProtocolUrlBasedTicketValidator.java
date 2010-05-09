@@ -27,9 +27,9 @@ public abstract class AbstractCasProtocolUrlBasedTicketValidator extends Abstrac
      */
     protected final String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
         if (this.hostnameVerifier != null) {
-	        return CommonUtils.getResponseFromServer(validationUrl, this.hostnameVerifier);
+	        return CommonUtils.getResponseFromServer(validationUrl, this.hostnameVerifier, getEncoding());
         } else {
-	        return CommonUtils.getResponseFromServer(validationUrl);
+	        return CommonUtils.getResponseFromServer(validationUrl, getEncoding());
         }
     }
 }

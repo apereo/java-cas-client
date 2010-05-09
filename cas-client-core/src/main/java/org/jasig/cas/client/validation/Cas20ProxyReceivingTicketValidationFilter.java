@@ -109,8 +109,9 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         }
         validator.setProxyCallbackUrl(getPropertyFromInitParams(filterConfig, "proxyCallbackUrl", null));
         validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
-        validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix));
+        validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix, getPropertyFromInitParams(filterConfig, "encoding", null)));
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+        validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
 
         final Map additionalParameters = new HashMap();
         final List params = Arrays.asList(RESERVED_INIT_PARAMS);
