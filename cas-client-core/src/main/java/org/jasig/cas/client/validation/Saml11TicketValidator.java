@@ -7,14 +7,13 @@ package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
+import org.jasig.cas.client.util.CommonUtils;
 import org.opensaml.*;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -108,7 +107,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             return false;
         }
 
-        final long currentTime = new Date().getTime();
+        final long currentTime = getCurrentTimeInUtc().getTime();
 
         if (currentTime + tolerance < notBefore.getTime()) {
             log.debug("skipping assertion that's not yet valid...");
@@ -162,14 +161,14 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         return list;
     }
 
-    private static String getFormattedDateAndTime(final Date date) {
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        return dateFormat.format(date);
+    private Date getCurrentTimeInUtc() {
+        final Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return c.getTime();
     }
 
-
     protected String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-        final String MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"" + UUID.randomUUID().toString() + "\" IssueInstant=\"" + getFormattedDateAndTime(new Date()) + "\">"
+        final String MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"" + UUID.randomUUID().toString() + "\" IssueInstant=\"" + CommonUtils.formatForUtcTime(new Date()) + "\">"
                 + "<samlp:AssertionArtifact>" + ticket
                 + "</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>";
 

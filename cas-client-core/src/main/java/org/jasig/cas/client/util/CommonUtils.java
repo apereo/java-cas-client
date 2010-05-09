@@ -23,7 +23,11 @@ import java.net.URLEncoder;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Common utilities so that we don't need to include Commons Lang.
@@ -49,6 +53,12 @@ public final class CommonUtils {
 
     private CommonUtils() {
         // nothing to do
+    }
+
+    public static String formatForUtcTime(final Date date) {
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(date);
     }
 
     /**
