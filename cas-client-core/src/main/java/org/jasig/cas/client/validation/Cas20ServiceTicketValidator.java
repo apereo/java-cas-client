@@ -95,7 +95,20 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
 
         return assertion;
     }
-    
+
+    /**
+     * Default attribute parsing of attributes that look like the following:
+     * &lt;cas:attributes&gt;
+     *  &lt;cas:attribute1&gt;value&lt;/cas:attribute1&gt;
+     *  &lt;cas:attribute2&gt;value&lt;/cas:attribute2&gt;
+     * &lt;/cas:attributes&gt;
+     * <p>
+     * This code is here merely for sample/demonstration purposes for those wishing to modify the CAS2 protocol.  You'll
+     * probably want a more robust implementation or to use SAML 1.1
+     *
+     * @param xml the XML to parse.
+     * @return the map of attributes.
+     */
     protected Map extractCustomAttributes(final String xml) {
     	final int pos1 = xml.indexOf("<cas:attributes>");
     	final int pos2 = xml.indexOf("</cas:attributes>");
