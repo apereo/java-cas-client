@@ -263,7 +263,7 @@ public final class CommonUtils {
      */
     public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
         if ("POST".equals(request.getMethod()) && "logoutRequest".equals(parameter)) {
-            LOG.warn("safeGetParameter called on a POST HttpServletRequest for LogoutRequest.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
+            LOG.debug("safeGetParameter called on a POST HttpServletRequest for LogoutRequest.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
             return request.getParameter(parameter);
         }
         return request.getQueryString() == null || request.getQueryString().indexOf(parameter) == -1 ? null : request.getParameter(parameter);       
