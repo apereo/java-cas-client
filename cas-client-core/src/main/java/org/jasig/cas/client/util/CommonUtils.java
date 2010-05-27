@@ -166,14 +166,11 @@ public final class CommonUtils {
     }
     
     public static void readAndRespondToProxyReceptorRequest(final HttpServletRequest request, final HttpServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage) throws IOException {
-        final String proxyGrantingTicketIou = request
-        .getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+        final String proxyGrantingTicketIou = request.getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
 
-		final String proxyGrantingTicket = request
-		        .getParameter(PARAM_PROXY_GRANTING_TICKET);
+		final String proxyGrantingTicket = request.getParameter(PARAM_PROXY_GRANTING_TICKET);
 
-		if (CommonUtils.isBlank(proxyGrantingTicket)
-		        || CommonUtils.isBlank(proxyGrantingTicketIou)) {
+		if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
 		    response.getWriter().write("");
 		    return;
 		}
@@ -184,8 +181,7 @@ public final class CommonUtils {
 		            + proxyGrantingTicketIou + "]");
 		}
 
-		proxyGrantingTicketStorage.save(proxyGrantingTicketIou,
-		        proxyGrantingTicket);
+		proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
 		
 		response.getWriter().write("<?xml version=\"1.0\"?>");
 		response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");

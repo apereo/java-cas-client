@@ -34,7 +34,7 @@ import org.jasig.cas.client.util.CommonUtils;
  */
 public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketValidationFilter {
 
-    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl", "millisBetweenCleanUps"};
+    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyGrantingTicketStorageClass", "proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl", "millisBetweenCleanUps"};
 
     private static final int DEFAULT_MILLIS_BETWEEN_CLEANUPS = 60 * 1000;
 
@@ -157,7 +157,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             return true;
         }
 
-        CommonUtils.readAndRespondToProxyReceptorRequest(request, response, proxyGrantingTicketStorage);
+        CommonUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
 
         return false;
     }
@@ -167,7 +167,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     }
 
     public void setProxyGrantingTicketStorage(final ProxyGrantingTicketStorage storage) {
-        proxyGrantingTicketStorage = storage;
+        this.proxyGrantingTicketStorage = storage;
     }
 
     public void setTimer(final Timer timer) {
