@@ -161,22 +161,24 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
             }
 
             try {
-                final Assertion assertion = this.ticketValidator.validate(
-                        ticket, constructServiceUrl(request,
-                        response));
+                final Assertion assertion = this.ticketValidator.validate(ticket, constructServiceUrl(request, response));
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Successfully authenticated user: "
-                            + assertion.getPrincipal().getName());
+                    log.debug("Successfully authenticated user: " + assertion.getPrincipal().getName());
                 }
 
                 request.setAttribute(CONST_CAS_ASSERTION, assertion);
 
                 if (this.useSession) {
-                    request.getSession().setAttribute(CONST_CAS_ASSERTION,
-                            assertion);
+                    request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
                 }
                 onSuccessfulValidation(request, response, assertion);
+
+                if (this.redirectAfterValidation) {
+                    log. debug("Redirecting after successful ticket validation.");
+                    response.sendRedirect(response.encodeRedirectURL(constructServiceUrl(request, response)));
+                    return;
+                }
             } catch (final TicketValidationException e) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 log.warn(e, e);
@@ -186,12 +188,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                 if (this.exceptionOnValidationFailure) {
                     throw new ServletException(e);
                 }
-            }
 
-            if (this.redirectAfterValidation) {
-            	log. debug("Redirecting after successful ticket validation.");
-                response.sendRedirect(response
-                        .encodeRedirectURL(constructServiceUrl(request, response)));
                 return;
             }
         }
