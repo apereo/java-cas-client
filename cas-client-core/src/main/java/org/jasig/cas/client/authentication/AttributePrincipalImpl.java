@@ -15,15 +15,12 @@ import java.util.Map;
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class AttributePrincipalImpl implements AttributePrincipal {
+public class AttributePrincipalImpl extends SimplePrincipal implements AttributePrincipal {
 	
-	private static final Log LOG = LogFactory.getLog(AttributePrincipalImpl.class);
+    private static final Log LOG = LogFactory.getLog(AttributePrincipalImpl.class);
 
     /** Unique Id for Serialization */
-	private static final long serialVersionUID = -8810123156070148535L;
-
-	/** The unique identifier for this principal. */
-    private final String name;
+    private static final long serialVersionUID = -1443182634624927187L;
 
     /** Map of key/value pairs about this principal. */
     private final Map attributes;
@@ -73,12 +70,11 @@ public class AttributePrincipalImpl implements AttributePrincipal {
      * @param proxyRetriever the ProxyRetriever implementation to call back to the CAS server.
      */
     public AttributePrincipalImpl(final String name, final Map attributes, final String proxyGrantingTicket, final ProxyRetriever proxyRetriever) {
-        this.name = name;
+        super(name);
         this.attributes = attributes;
         this.proxyGrantingTicket = proxyGrantingTicket;
         this.proxyRetriever = proxyRetriever;
 
-        CommonUtils.assertNotNull(this.name, "name cannot be null.");
         CommonUtils.assertNotNull(this.attributes, "attributes cannot be null.");
     }
 
@@ -93,9 +89,5 @@ public class AttributePrincipalImpl implements AttributePrincipal {
         
        	LOG.debug("No ProxyGrantingTicket was supplied, so no Proxy Ticket can be retrieved.");
         return null;
-    }
-
-    public String getName() {
-        return this.name;
     }
 }

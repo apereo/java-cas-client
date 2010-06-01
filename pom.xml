@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas</groupId>
-    <version>3.1.10</version>
+    <version>3.1.11-SNAPSHOT</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>JA-SIG CAS Client for Java</name>
@@ -20,28 +20,7 @@
 	    <url>https://www.ja-sig.org/svn/cas-clients/java-client</url>
 	</scm>
     <inceptionYear>2006</inceptionYear>
-    <mailingLists>
-        <mailingList>
-            <name>CAS Community Discussion List</name>
-            <subscribe>http://tp.its.yale.edu/mailman/listinfo/cas</subscribe>
-            <unsubscribe>http://tp.its.yale.edu/mailman/listinfo/cas</unsubscribe>
-            <post>cas@tp.its.yale.edu</post>
-            <archive>http://tp.its.yale.edu/pipermail/cas/</archive>
-            <otherArchives>
-                <otherArchive>http://news.gmane.org/gmane.comp.java.jasig.cas.user</otherArchive>
-            </otherArchives>
-        </mailingList>
-        <mailingList>
-            <name>CAS Developers Discussion List</name>
-            <subscribe>http://tp.its.yale.edu/mailman/listinfo/cas-dev</subscribe>
-            <unsubscribe>http://tp.its.yale.edu/mailman/listinfo/cas-dev</unsubscribe>
-            <post>cas-dev@tp.its.yale.edu</post>
-            <archive>http://tp.its.yale.edu/pipermail/cas-dev/</archive>
-            <otherArchives>
-                <otherArchive>http://news.gmane.org/gmane.comp.java.jasig.cas.devel</otherArchive>
-            </otherArchives>
-        </mailingList>
-    </mailingLists>
+
     <developers>
         <developer>
             <id>battags</id>
@@ -66,7 +45,7 @@
     </licenses>
     <organization>
         <name>JA-SIG</name>
-        <url>http://www.ja-sig.org</url>
+        <url>http://www.jasig.org</url>
     </organization>
     <build>
         <plugins>
@@ -88,6 +67,30 @@
 					<target>1.4</target>
 				</configuration>
 			</plugin>
+           <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Tests*</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clover-plugin</artifactId>
+                <configuration>
+                    <licenseLocation>${basedir}/src/test/clover/clover.license</licenseLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>instrument</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -129,6 +132,7 @@
     <modules>
         <module>cas-client-core</module>
         <module>cas-client-integration-atlassian</module>
+        <module>cas-client-integration-jboss</module>
         <module>cas-client-support-distributed-ehcache</module>
         <module>cas-client-support-distributed-memcached</module>
     </modules>

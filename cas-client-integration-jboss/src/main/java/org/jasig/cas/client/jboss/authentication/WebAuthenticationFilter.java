@@ -1,0 +1,77 @@
+/*
+ * Copyright 2010 The JA-SIG Collaborative. All rights reserved. See license
+ * distributed with this file and available online at
+ * http://www.ja-sig.org/products/cas/overview/license/index.html
+ */
+package org.jasig.cas.client.jboss.authentication;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.jasig.cas.client.jaas.AssertionPrincipal;
+import org.jasig.cas.client.util.AbstractCasFilter;
+import org.jasig.cas.client.util.CommonUtils;
+
+import org.jboss.web.tomcat.security.login.WebAuthentication;
+
+/**
+ * This servlet filter performs a programmatic JAAS login using the JBoss
+ * <a href="http://community.jboss.org/wiki/WebAuthentication">WebAuthentication</a> class.
+ * The filter executes when it receives a CAS ticket and expects the
+ * {@link org.jasig.cas.client.jaas.CasLoginModule} JAAS module to perform the CAS
+ * ticket validation in order to produce an {@link AssertionPrincipal} from which
+ * the CAS assertion is obtained and inserted into the session to enable SSO.
+ * <p>
+ * If a <code>service</code> init-param is specified for this filter, it supersedes
+ * the service defined for the {@link org.jasig.cas.client.jaas.CasLoginModule}.
+ *
+ * @author  Daniel Fisher
+ * @author  Marvin S. Addison 
+ * @version  $Revision$
+ * @since 3.1.11
+ */
+public final class WebAuthenticationFilter extends AbstractCasFilter {
+
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain chain) throws IOException, ServletException {
+        final HttpServletRequest request = (HttpServletRequest) servletRequest;
+        final HttpServletResponse response = (HttpServletResponse) servletResponse;
+        final HttpSession session = request.getSession();
+        final String ticket = CommonUtils.safeGetParameter(request, getArtifactParameterName());
+
+        if (session != null && session.getAttribute(CONST_CAS_ASSERTION) == null && ticket != null) {
+            try {
+                final String service = constructServiceUrl(request, response);
+                log.debug("Attempting CAS ticket validation with service=" + service + " and ticket=" + ticket);
+                if (!new WebAuthentication().login(service, ticket)) {
+                    log.debug("JBoss Web authentication failed.");
+                    throw new GeneralSecurityException("JBoss Web authentication failed.");
+                }
+                if (request.getUserPrincipal() instanceof AssertionPrincipal) {
+                    final AssertionPrincipal principal = (AssertionPrincipal) request.getUserPrincipal();
+                    log.debug("Installing CAS assertion into session.");
+                    session.setAttribute(CONST_CAS_ASSERTION, principal.getAssertion());
+                } else {
+                    log.debug("Aborting -- principal is not of type AssertionPrincipal");
+                    throw new GeneralSecurityException("JBoss Web authentication did not produce CAS AssertionPrincipal.");
+                }
+            } catch (final GeneralSecurityException e) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+            }
+        } else if (session != null && request.getUserPrincipal() == null) {
+            // There is evidence that in some cases the principal can disappear
+            // in JBoss despite a valid session.
+            // This block forces consistency between principal and assertion.
+            log.info("User principal not found.  Removing CAS assertion from session to force reauthentication.");
+            session.removeAttribute(CONST_CAS_ASSERTION);
+        }
+        chain.doFilter(request, response);
+    }
+}
