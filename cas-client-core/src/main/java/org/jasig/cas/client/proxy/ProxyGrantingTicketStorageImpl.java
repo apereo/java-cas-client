@@ -25,8 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision: 11729 $ $Date: 2007-09-26 14:22:30 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
-public final class ProxyGrantingTicketStorageImpl implements
-        ProxyGrantingTicketStorage {
+public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicketStorage {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -74,14 +73,14 @@ public final class ProxyGrantingTicketStorageImpl implements
                 .get(proxyGrantingTicketIou);
 
         if (holder == null) {
-        	log.info("No Proxy Ticket found for " + proxyGrantingTicketIou);
+        	log.info("No Proxy Ticket found for [" + proxyGrantingTicketIou + "].");
             return null;
         }
 
         this.cache.remove(holder);
 
         if (log.isDebugEnabled()) {
-        	log.debug("Returned ProxyGrantingTicket of " + holder.getProxyGrantingTicket());
+        	log.debug("Returned ProxyGrantingTicket of [" + holder.getProxyGrantingTicket() + "]");
         }
         return holder.getProxyGrantingTicket();
     }
