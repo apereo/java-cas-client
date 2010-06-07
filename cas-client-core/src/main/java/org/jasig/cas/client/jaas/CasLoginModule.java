@@ -172,7 +172,7 @@ public class CasLoginModule implements LoginModule {
                 final String roles = (String) options.get(key);
                 log.trace("Got defaultRoles value " + roles);
                 this.defaultRoles = roles.split(",\\s*");
-                log.debug("Set defaultRoles=" + this.defaultRoles);
+                log.debug("Set defaultRoles=" + Arrays.asList(this.defaultRoles));
             } else if ("roleAttributeNames".equals(key)) {
                 final String attrNames = (String) options.get(key);
                 log.trace("Got roleAttributeNames value " + attrNames);
@@ -184,7 +184,7 @@ public class CasLoginModule implements LoginModule {
                 log.debug("Set principalGroupName=" + this.principalGroupName);
             } else if ("roleGroupName".equals(key)) {
                 this.roleGroupName = (String) options.get(key);
-                log.debug("Set roleGroupName=" + this.principalGroupName);
+                log.debug("Set roleGroupName=" + this.roleGroupName);
             }
         }
 
