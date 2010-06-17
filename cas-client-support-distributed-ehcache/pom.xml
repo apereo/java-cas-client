@@ -4,20 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cas-client</artifactId>
-        <groupId>org.jasig.cas</groupId>
+        <groupId>org.jasig.cas.client</groupId>
         <version>3.1.11-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Jasig CAS Client for Java - Distributed Proxy Storage Support: EhCache</name>
 
-    <groupId>org.jasig.cas</groupId>
     <artifactId>cas-client-support-distributed-ehcache</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>org.jasig.cas</groupId>
-
+            <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
