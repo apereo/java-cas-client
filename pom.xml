@@ -144,12 +144,4 @@
     <properties>
         <ehcache.version>1.5.0</ehcache.version>
     </properties>
-    
-	<distributionManagement>
-		<repository>
-			<id>acegi.repo</id>
-			<name>Acegi Repository</name>
-			<url>sftp://web.sourceforge.net/home/groups/a/ac/acegisecurity/htdocs/repository/releases</url>
-		</repository>
-	</distributionManagement>
 </project>
