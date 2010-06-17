@@ -19,9 +19,9 @@
         <url>http://www.ja-sig.org/issues</url>
     </issueManagement>
    <scm>
-        <connection>scm:svn:https://source.jasig.org/cas-clients/java-client/tags/cas-client-3.1.11</connection>
-        <developerConnection>scm:svn:https://source.jasig.org/cas-clients/java-client/tags/cas-client-3.1.11</developerConnection>
-        <url>https://source.jasig.org/svn/cas3/tags/cas-client-3.1.11</url>
+        <connection>scm:svn:https://source.jasig.org/cas-clients/java-client/trunk</connection>
+        <developerConnection>scm:svn:https://source.jasig.org/cas-clients/java-client/trunk</developerConnection>
+        <url>https://source.jasig.org/cas-clients/java-client/trunk</url>
     </scm>
     <inceptionYear>2006</inceptionYear>
 
