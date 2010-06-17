@@ -18,12 +18,11 @@
         <system>JIRA</system>
         <url>http://www.ja-sig.org/issues</url>
     </issueManagement>
-	<scm>
-	    <connection>scm:svn:https://svn.sonatype.org/spice/tags/cas-client-3.1.11</connection>
-	    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/cas-client-3.1.11</developerConnection>
-	    <tag>HEAD</tag>
-	    <url>https://svn.sonatype.org/spice/tags/cas-client-3.1.11</url>
-	</scm>
+   <scm>
+        <connection>scm:svn:https://source.jasig.org/svn/cas3/trunk</connection>
+        <developerConnection>scm:svn:https://source.jasig.org/svn/cas3/trunk</developerConnection>
+        <url>https://source.jasig.org/svn/cas3/trunk</url>
+    </scm>
     <inceptionYear>2006</inceptionYear>
 
     <developers>
