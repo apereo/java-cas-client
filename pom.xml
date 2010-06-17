@@ -1,4 +1,4 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>oss-parent</artifactId>
         <groupId>org.sonatype.oss</groupId>
@@ -6,7 +6,7 @@
     </parent> 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas.client</groupId>
-    <version>3.1.11-SNAPSHOT</version>
+    <version>3.1.11</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>JA-SIG CAS Client for Java</name>
@@ -19,10 +19,10 @@
         <url>http://www.ja-sig.org/issues</url>
     </issueManagement>
 	<scm>
-	    <connection>scm:svn:https://www.ja-sig.org/svn/cas-clients/java-client</connection>
-	    <developerConnection>scm:svn:https://www.ja-sig.org/svn/cas-clients/java-client</developerConnection>
+	    <connection>scm:svn:https://svn.sonatype.org/spice/tags/cas-client-3.1.11</connection>
+	    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/cas-client-3.1.11</developerConnection>
 	    <tag>HEAD</tag>
-	    <url>https://www.ja-sig.org/svn/cas-clients/java-client</url>
+	    <url>https://svn.sonatype.org/spice/tags/cas-client-3.1.11</url>
 	</scm>
     <inceptionYear>2006</inceptionYear>
 
