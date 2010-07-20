@@ -176,7 +176,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
                 if (this.redirectAfterValidation) {
                     log. debug("Redirecting after successful ticket validation.");
-                    response.sendRedirect(response.encodeRedirectURL(constructServiceUrl(request, response)));
+                    response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
             } catch (final TicketValidationException e) {
