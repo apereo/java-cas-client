@@ -139,6 +139,7 @@
         <module>cas-client-integration-jboss</module>
         <module>cas-client-support-distributed-ehcache</module>
         <module>cas-client-support-distributed-memcached</module>
+        <module>cas-client-integration-tomcat</module>
     </modules>
 
     <properties>
