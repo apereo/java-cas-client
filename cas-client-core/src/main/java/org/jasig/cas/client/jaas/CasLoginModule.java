@@ -198,12 +198,8 @@ public class CasLoginModule implements LoginModule {
         final PasswordCallback ticketCallback = new PasswordCallback("ticket", false);
         try {
             this.callbackHandler.handle(new Callback[] { ticketCallback, serviceCallback });
-        } catch (final IOException e) {
-            log.info("Login failed due to IO exception in callback handler: " + e);
-            throw new LoginException("IO exception in callback handler: " + e);
-        } catch (final UnsupportedCallbackException e) {
-            log.info("Login failed due to unsupported callback: " + e);
-            throw new LoginException("Callback handler does not support PasswordCallback and TextInputCallback.");
+        } catch (final Exception e) {
+            throw (LoginException) new LoginException(e.getMessage()).initCause(e);
         }
         if (ticketCallback.getPassword() != null) {
             final String ticket = new String(ticketCallback.getPassword());
@@ -217,8 +213,7 @@ public class CasLoginModule implements LoginModule {
 	            log.debug("Attempting ticket validation with service=" + service + " and ticket=" + ticket);
 		        this.assertion = this.ticketValidator.validate(ticket, service);
 	        } catch (final Exception e) {
-	            log.info("Login failed due to CAS ticket validation failure: " + e);
-	            throw new LoginException("CAS ticket validation failed: " + e);
+	            throw (LoginException) new LoginException(e.getMessage()).initCause(e);
 	        }
         } else {
             log.info("Login failed because callback handler did not provide CAS ticket.");
@@ -331,7 +326,7 @@ public class CasLoginModule implements LoginModule {
                 }
             }
         } catch (final IntrospectionException e) {
-            throw new RuntimeException("Error getting bean info for " + validatorClass);
+            throw new RuntimeException("Error getting bean info for " + validatorClass, e);
         }
         
         return validator;
