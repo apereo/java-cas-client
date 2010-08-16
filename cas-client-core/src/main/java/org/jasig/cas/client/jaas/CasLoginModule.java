@@ -12,6 +12,8 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.security.acl.Group;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -58,6 +60,10 @@ import org.jasig.cas.client.validation.TicketValidator;
  * which is suitable for JBoss.</li>
  * <li>roleGroupName (optional) - The name of a group principal containing all role data.
  * The default value is "Roles", which is suitable for JBoss.</li>
+ * <li>cacheAssertions (optional) - Flag to enable assertion caching.  This may be needed
+ * for JAAS providers that attempt to periodically reauthenticate to renew principal.
+ * Since CAS tickets are one-time-use, a cached assertion must be provided on reauthentication.</li>
+ * <li>cacheTimeout (optional) - Assertion cache timeout in minutes.</li>
  * </ul>
  *
  * <p>
@@ -81,7 +87,7 @@ import org.jasig.cas.client.validation.TicketValidator;
  * </pre>
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision$ $Date$
  * @since 3.1.11
  *
  */
@@ -102,6 +108,22 @@ public class CasLoginModule implements LoginModule {
      * support other JEE containers.
      */
     public static final String DEFAULT_ROLE_GROUP_NAME = "Roles";
+
+    /**
+     * Default assertion cache timeout in minutes.  Default is 8 hours.
+     */
+    public static final int DEFAULT_CACHE_TIMEOUT = 480;
+
+    /**
+     * Stores mapping of ticket to assertion to support JAAS providers that
+     * attempt to periodically reauthenticate to renew principal.  Since
+     * CAS tickets are one-time-use, a cached assertion must be provided on
+     * reauthentication.
+     */
+    protected static final Map ASSERTION_CACHE = new HashMap();
+
+    /** Executor responsible for assertion cache cleanup */
+    protected static Executor cacheCleanerExecutor = Executors.newSingleThreadExecutor();
    
     /** Logger instance */
     protected final Log log = LogFactory.getLog(getClass());
@@ -121,6 +143,9 @@ public class CasLoginModule implements LoginModule {
     /** CAS assertion */
     protected Assertion assertion;
    
+    /** CAS ticket credential */
+    protected TicketCredential ticket;
+    
     /** Login module shared state */
     protected Map sharedState;
    
@@ -136,6 +161,12 @@ public class CasLoginModule implements LoginModule {
     /** Name of JAAS Group containing role data */
     protected String roleGroupName = DEFAULT_ROLE_GROUP_NAME;
 
+    /** Enables or disable assertion caching */
+    protected boolean cacheAssertions;
+
+    /** Assertion cache timeout in minutes */
+    protected int cacheTimeout;
+    
 
     /**
      * Initializes the CAS login module.
@@ -144,15 +175,22 @@ public class CasLoginModule implements LoginModule {
      * @param state Shared state map.
      * @param options Login module options.  The following are supported:
      * <ul>
-     *  <li>service - CAS service URL used for service ticket validation</li>
-     *  <li>ticketValidatorClass - fully-qualified class name of service ticket validator component</li>
-     *  <li>defaultRoles (optional) - comma-delimited list of roles to be added to all authenticated principals</li>
-     *  <li>roleAttributeNames (optional) - comma-delimited list of attributes in the CAS assertion that contain role data</li>
-     *  <li>principalGroupName (optional) - name of JAAS Group containing caller principal</li>
+     *  <li>service - CAS service URL used for service ticket validation.</li>
+     *  <li>ticketValidatorClass - fully-qualified class name of service ticket validator component.</li>
+     *  <li>defaultRoles (optional) - comma-delimited list of roles to be added to all authenticated principals.</li>
+     *  <li>roleAttributeNames (optional) - comma-delimited list of attributes in the CAS assertion that contain role data.</li>
+     *  <li>principalGroupName (optional) - name of JAAS Group containing caller principal.</li>
      *  <li>roleGroupName (optional) - name of JAAS Group containing role data</li>
+     *  <li>cacheAssertions (optional) - whether or not to cache assertions.
+     *      Some JAAS providers attempt to reauthenticate users after an indeterminate
+     *      period of time.  Since the credential used for authentication is a CAS ticket,
+     *      which by default are single use, reauthentication fails.  Assertion caching addresses this
+     *      behavior.</li>
+     *  <li>cacheTimeout (optional) - assertion cache timeout in minutes.</li>
      * </ul>
      */
     public void initialize(final Subject subject, final CallbackHandler handler, final Map state, final Map options) {
+        this.assertion = null;
         this.callbackHandler = handler;
         this.subject = subject;
         this.sharedState = state;
@@ -185,7 +223,16 @@ public class CasLoginModule implements LoginModule {
             } else if ("roleGroupName".equals(key)) {
                 this.roleGroupName = (String) options.get(key);
                 log.debug("Set roleGroupName=" + this.roleGroupName);
+            } else if ("cacheAssertions".equals(key)) {
+                this.cacheAssertions = Boolean.parseBoolean((String) options.get(key));
+                log.debug("Set cacheAssertions=" + this.cacheAssertions);
+            } else if ("cacheTimeout".equals(key)) {
+                this.cacheTimeout = Integer.parseInt((String) options.get(key));
+                log.debug("Set cacheTimeout=" + this.cacheTimeout);
             }
+        }
+        if (this.cacheAssertions) {
+            cacheCleanerExecutor.execute(new CacheCleaner());
         }
 
         CommonUtils.assertNotNull(ticketValidatorClass, "ticketValidatorClass is required.");
@@ -198,41 +245,70 @@ public class CasLoginModule implements LoginModule {
         final PasswordCallback ticketCallback = new PasswordCallback("ticket", false);
         try {
             this.callbackHandler.handle(new Callback[] { ticketCallback, serviceCallback });
-        } catch (final Exception e) {
-            throw (LoginException) new LoginException(e.getMessage()).initCause(e);
+        } catch (final IOException e) {
+            log.info("Login failed due to IO exception in callback handler: " + e);
+            throw (LoginException) new LoginException("IO exception in callback handler: " + e).initCause(e);
+        } catch (final UnsupportedCallbackException e) {
+            log.info("Login failed due to unsupported callback: " + e);
+            throw (LoginException) new LoginException("Callback handler does not support PasswordCallback and TextInputCallback.").initCause(e);
         }
+
         if (ticketCallback.getPassword() != null) {
-            final String ticket = new String(ticketCallback.getPassword());
+            this.ticket = new TicketCredential(new String(ticketCallback.getPassword()));
             final String service = CommonUtils.isNotBlank(serviceCallback.getName()) ? serviceCallback.getName() : this.service;
 
-            if (CommonUtils.isBlank(service)) {
-	            log.info("Login failed because required CAS service parameter not provided.");
-                throw new LoginException("Neither login module nor callback handler provided required service parameter.");
+            if (this.cacheAssertions) {
+                synchronized(ASSERTION_CACHE) {
+                    if (ASSERTION_CACHE.get(ticket) != null) {
+                        log.debug("Assertion found in cache.");
+                        this.assertion = (Assertion) ASSERTION_CACHE.get(ticket);
+                    }
+                }
             }
-	        try {
-	            log.debug("Attempting ticket validation with service=" + service + " and ticket=" + ticket);
-		        this.assertion = this.ticketValidator.validate(ticket, service);
-	        } catch (final Exception e) {
-	            throw (LoginException) new LoginException(e.getMessage()).initCause(e);
-	        }
+
+            if (this.assertion == null) {
+                log.debug("CAS assertion is null; ticket validation required.");
+                if (CommonUtils.isBlank(service)) {
+                    log.info("Login failed because required CAS service parameter not provided.");
+                    throw new LoginException("Neither login module nor callback handler provided required service parameter.");
+                }
+                try {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Attempting ticket validation with service=" + service + " and ticket=" + ticket);
+                    }
+                    this.assertion = this.ticketValidator.validate(this.ticket.getTicket(), service);
+
+                } catch (final Exception e) {
+                    log.info("Login failed due to CAS ticket validation failure: " + e);
+                    throw (LoginException) new LoginException("CAS ticket validation failed: " + e).initCause(e);
+                }
+            }
+            log.info("Login succeeded.");
         } else {
             log.info("Login failed because callback handler did not provide CAS ticket.");
             throw new LoginException("Callback handler did not provide CAS ticket.");
         }
-        log.info("Login succeeded.");
         return true;
     }
 
     public boolean abort() throws LoginException {
+        if (this.ticket != null) {
+            this.ticket = null;
+        }
         if (this.assertion != null) {
             this.assertion = null;
-            return true;
         }
-        return false;
+        return true;
     }
 
     public boolean commit() throws LoginException {
         if (this.assertion != null) {
+	        if (this.ticket != null) {
+	            this.subject.getPrivateCredentials().add(this.ticket);
+	        } else {
+	            throw new LoginException("Ticket credential not found.");
+	        }
+            
             final AssertionPrincipal casPrincipal = new AssertionPrincipal(this.assertion.getPrincipal().getName(), this.assertion);
             this.subject.getPrincipals().add(casPrincipal);
 
@@ -270,29 +346,40 @@ public class CasLoginModule implements LoginModule {
             this.sharedState.put(LOGIN_NAME, casPrincipal.getName());
             
             if (log.isDebugEnabled()) {
-                log.debug("Created JAAS subject with principals: " + subject.getPrincipals());
+                if (log.isDebugEnabled()) {
+                    log.debug("Created JAAS subject with principals: " + subject.getPrincipals());
+                }
             }
-            return true;
+            
+            if (this.cacheAssertions) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Caching assertion for principal " + this.assertion.getPrincipal());
+                }
+                ASSERTION_CACHE.put(this.ticket, this.assertion);
+            }
+        } else {
+            // Login must have failed if there is no assertion defined
+            // Need to clean up state
+            if (this.ticket != null) {
+                this.ticket = null;
+            }
         }
-        return false;
+        return true;
     }
 
     public boolean logout() throws LoginException {
-        if (this.assertion != null) {
-	        log.debug("Performing logout.");
-            this.subject.getPrincipals().remove(this.assertion.getPrincipal());
-            // Remove all SimpleGroup principals
-            final Iterator iter = this.subject.getPrincipals().iterator();
-            while (iter.hasNext()) {
-                if (iter.next() instanceof SimpleGroup) {
-                    iter.remove();
-                }
-            }
-            this.assertion = null;
-            log.info("Logout succeeded.");
-            return true;
-        }
-        return false;
+        log.debug("Performing logout.");
+
+        // Remove all CAS principals
+        removePrincipalsOfType(AssertionPrincipal.class);
+        removePrincipalsOfType(SimplePrincipal.class);
+        removePrincipalsOfType(SimpleGroup.class);
+        
+        // Remove all CAS credentials
+        removeCredentialsOfType(TicketCredential.class);
+
+        log.info("Logout succeeded.");
+        return true;
     }
 
 
@@ -352,9 +439,52 @@ public class CasLoginModule implements LoginModule {
         } else if (long.class.equals(pd.getPropertyType())) {
             return new Long(value);
         } else {
-            throw new IllegalArgumentException(
-                    "No conversion strategy exists for property " + pd.getName()
-                        + " of type " + pd.getPropertyType());
+            throw new IllegalArgumentException("No conversion strategy exists for property " + pd.getName() + " of type " + pd.getPropertyType());
+        }
+    }
+
+    /**
+     * Removes all principals of the given type from the JAAS subject.
+     * @param clazz Type of principal to remove.
+     */
+    private void removePrincipalsOfType(final Class clazz) {
+        final Iterator iter = this.subject.getPrincipals(clazz).iterator();
+        while (iter.hasNext()) {
+            this.subject.getPrincipals().remove(iter.next());
+        }
+    }
+
+    /**
+     * Removes all credentials of the given type from the JAAS subject.
+     * @param clazz Type of principal to remove.
+     */
+    private void removeCredentialsOfType(final Class clazz) {
+        final Iterator iter = this.subject.getPrivateCredentials(clazz).iterator();
+        while (iter.hasNext()) {
+            this.subject.getPrivateCredentials().remove(iter.next());
+        }
+    }
+
+    /** Removes expired entries from the assertion cache. */
+    private class CacheCleaner implements Runnable {
+        public void run() {
+            if (log.isDebugEnabled()) {
+                log.debug("Cleaning assertion cache of size " + CasLoginModule.ASSERTION_CACHE.size());
+            }
+            final Iterator iter = CasLoginModule.ASSERTION_CACHE.entrySet().iterator();
+            final Calendar cutoff = Calendar.getInstance();
+            cutoff.add(Calendar.MINUTE, -CasLoginModule.this.cacheTimeout);
+            while (iter.hasNext()) {
+                final Assertion assertion = (Assertion) ((Map.Entry) iter.next()).getValue();
+                final Calendar created = Calendar.getInstance();
+                created.setTime(assertion.getValidFromDate());
+                if (created.before(cutoff)) {
+                    if (log.isDebugEnabled()) {
+		                log.debug("Removing expired assertion for principal " + assertion.getPrincipal());
+                    }
+                    iter.remove();
+                }
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ public class AssertionPrincipal extends SimplePrincipal implements Serializable 
     /** AssertionPrincipal.java */
     private static final long serialVersionUID = 2288520214366461693L;
 
+    /** CAS assertion describing authenticated state */
     private Assertion assertion;
 
     /**
