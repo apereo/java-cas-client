@@ -33,8 +33,7 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
                 " ResponseID=\"_3b62bece2e8da1c10279db04882012ac\"><Status><StatusCode\n" +
                 " Value=\"samlp:Responder\"></StatusCode><StatusMessage>Success</StatusMessage></Status></Response></SOAP-ENV:Body></SOAP-ENV:Envelope>";
 
-        PublicTestHttpServer.instance().content = RESPONSE
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        PublicTestHttpServer.instance().content = RESPONSE.getBytes(PublicTestHttpServer.instance().encoding);
         try {
             this.validator.validate("test", "test");
             fail("ValidationException expected due to 'no' response");

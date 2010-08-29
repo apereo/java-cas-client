@@ -6,6 +6,8 @@
 package org.jasig.cas.client.util;
 
 import junit.framework.TestCase;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,5 +105,19 @@ public final class CommonUtilsTests extends TestCase {
         assertFalse(CommonUtils.isNotBlank(""));
         assertFalse(CommonUtils.isNotBlank(null));
         assertFalse(CommonUtils.isNotBlank("   "));
+    }
+
+    public void testConstructServiceUrlWithTrailingSlash() {
+        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.setScheme("https");
+        request.setSecure(true);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com", "ticket", false);
+
+        assertEquals(CONST_MY_URL, constructedUrl);
+
+
+
     }
 }

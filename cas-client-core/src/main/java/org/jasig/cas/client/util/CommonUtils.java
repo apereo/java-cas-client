@@ -217,12 +217,10 @@ public final class CommonUtils {
             buffer.append(request.getRequestURI());
 
             if (CommonUtils.isNotBlank(request.getQueryString())) {
-                final int location = request.getQueryString().indexOf(
-                        artifactParameterName + "=");
+                final int location = request.getQueryString().indexOf(artifactParameterName + "=");
 
                 if (location == 0) {
-                    final String returnValue = encode ? response.encodeURL(buffer
-                            .toString()): buffer.toString();
+                    final String returnValue = encode ? response.encodeURL(buffer.toString()): buffer.toString();
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("serviceUrl generated: " + returnValue);
                     }
