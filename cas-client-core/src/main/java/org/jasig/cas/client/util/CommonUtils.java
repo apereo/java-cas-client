@@ -8,6 +8,8 @@ package org.jasig.cas.client.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
+import org.jasig.cas.client.validation.ProxyList;
+import org.jasig.cas.client.validation.ProxyListEditor;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -338,4 +340,14 @@ public final class CommonUtils {
             throw new IllegalArgumentException(e);
         }
     }
+
+    public static ProxyList createProxyList(final String proxies) {
+        if (CommonUtils.isBlank(proxies)) {
+            return new ProxyList();
+        }
+
+        final ProxyListEditor editor = new ProxyListEditor();
+        editor.setAsText(proxies);
+        return (ProxyList) editor.getValue();
+     }
 }
