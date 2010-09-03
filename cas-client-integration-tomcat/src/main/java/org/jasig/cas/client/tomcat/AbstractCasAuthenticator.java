@@ -1,3 +1,8 @@
+/*
+ * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
+ * distributed with this file and available online at
+ * http://www.ja-sig.org/products/cas/overview/license/index.html
+ */
 package org.jasig.cas.client.tomcat;
 
 /**
@@ -13,8 +18,6 @@ public abstract class AbstractCasAuthenticator extends AbstractAuthenticator {
 
     private String proxyCallbackUrl;
 
-    private boolean renew;
-
     protected final String getEncoding() {
         return this.encoding;
     }
@@ -29,14 +32,6 @@ public abstract class AbstractCasAuthenticator extends AbstractAuthenticator {
 
     public final void setProxyCallbackUrl(final String proxyCallbackUrl) {
         this.proxyCallbackUrl = proxyCallbackUrl;
-    }
-
-    protected final boolean isRenew() {
-        return this.renew;
-    }
-
-    public void setRenew(final boolean renew) {
-        this.renew = renew;
     }
 
     protected final String getArtifactParameterName() {

@@ -1,8 +1,14 @@
+/*
+ * Copyright 2007 The JA-SIG Collaborative. All rights reserved. See license
+ * distributed with this file and available online at
+ * http://www.ja-sig.org/products/cas/overview/license/index.html
+ */
 package org.jasig.cas.client.tomcat;
 
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.authenticator.AuthenticatorBase;
+import org.apache.catalina.authenticator.Constants;
 import org.apache.catalina.connector.Request;
-import org.apache.catalina.connector.Response;
 import org.apache.catalina.deploy.LoginConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,16 +55,68 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase {
         return this.casServerUrlPrefix;
     }
 
-    public String getInfo() {
+    protected void startInternal() throws LifecycleException {
+        super.startInternal();
+        try {
+            CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
+            CommonUtils.assertNotNull(this.casServerLoginUrl, "casServerLoginUrl cannot be null.");
+            CommonUtils.assertTrue(this.serverName != null || this.serviceUrl != null, "either serverName or serviceUrl must be set.");
+
+        } catch (final Exception e) {
+            throw new LifecycleException(e);
+        }
+    }
+
+    public final void setCasServerUrlPrefix(final String casServerUrlPrefix) {
+        this.casServerUrlPrefix = casServerUrlPrefix;
+    }
+
+    public final void setCasServerLoginUrl(final String casServerLoginUrl) {
+        this.casServerLoginUrl = casServerLoginUrl;
+    }
+
+    public final boolean isEncode() {
+        return this.encode;
+    }
+
+    public final void setEncode(final boolean encode) {
+        this.encode = encode;
+    }
+
+    protected final boolean isRenew() {
+        return this.renew;
+    }
+
+    public void setRenew(final boolean renew) {
+        this.renew = renew;
+    }
+
+
+    public final void setServerName(final String serverName) {
+        this.serverName = serverName;
+    }
+
+    public final void setServiceUrl(final String serviceUrl) {
+        this.serviceUrl = serviceUrl;
+    }
+
+    public final String getInfo() {
         return INFO;
     }
 
     public final boolean authenticate(final Request request, final HttpServletResponse response, final LoginConfig loginConfig) throws IOException {
-        final Assertion assertion = (Assertion) request.getSession(true).getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+        final Principal principal = request.getUserPrincipal();
+        final String ssoId = (String) request.getNote(Constants.REQ_SSOID_NOTE);
 
-        if (assertion != null) {
-            return isKnownUser(assertion, request, response);
+        if (principal != null && ssoId != null) {
+            associate(ssoId, request.getSessionInternal(true));
+            return true;
         }
+
+        if (ssoId != null && reauthenticateFromSSO(ssoId, request)) {
+            return true;
+        }
+
 
         final String token = request.getParameter(getArtifactParameterName());
         final String service = CommonUtils.constructServiceUrl(request, response, this.serviceUrl, this.serverName, getArtifactParameterName(), true);
@@ -72,33 +130,18 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase {
         try {
             final Assertion newAssertion = getTicketValidator().validate(token, service);
             request.getSession(true).setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, newAssertion);
-            return isKnownUser(newAssertion, request, response);
+            final Principal p = context.getRealm().authenticate(newAssertion.getPrincipal().getName(), null);
+
+            if (p != null) {
+                register(request, response, p, Constants.SINGLE_SIGN_ON_COOKIE, p.getName(), null);
+                return true;
+            }
         } catch (final TicketValidationException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return false;
         }
-    }
 
-    protected boolean isKnownUser(final Assertion assertion, final Request request, final HttpServletResponse response) throws IOException {
-        final String userName = assertion.getPrincipal().getName();
-        final Principal principal = request.getUserPrincipal();
-
-         if (principal == null) {
-           // principal not already known; look it up via the configured realm
-           principal = realm.getPrincipal(userName);
-           if (principal != null) {
-             // register it so that Tomcat can reuse it without another realm lookup
-             register(request, response, principal, "CAS", userName, null);
-           }
-         }
-
-         if (principal == null) {
-           log.warn("unknown CAS user " + userName + " for "
-               + request.getRequestURI());
-           response.sendError(Response.SC_UNAUTHORIZED);
-           return false;
-         }
-         request.setUserPrincipal(principal);
-         return true;
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        return false;
     }
 }
