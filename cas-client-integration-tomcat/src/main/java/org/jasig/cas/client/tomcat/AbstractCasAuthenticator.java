@@ -39,6 +39,6 @@ public abstract class AbstractCasAuthenticator extends AbstractAuthenticator {
     }
 
     protected final String getServiceParameterName() {
-        return "Service";
+        return "service";
     }
 }
