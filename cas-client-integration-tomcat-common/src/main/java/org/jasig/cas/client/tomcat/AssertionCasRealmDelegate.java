@@ -6,14 +6,17 @@
 package org.jasig.cas.client.tomcat;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.jasig.cas.client.util.CommonUtils;
 
 /**
- * {@link CasRealm} implementation with prinicpal and role data backed by the {@link Assertion}.
+ * {@link CasRealm} implementation with prinicpal and role data backed by the {@link org.jasig.cas.client.validation.Assertion}.
  * In particular, an {@link AttributePrincipal} is expected from which the values of
  * the role attribute are retrieved.  The default role attribute name is "role",
  * but this can be customized via {@link #setRoleAttributeName(String)}.
@@ -49,40 +52,40 @@ public class AssertionCasRealmDelegate implements CasRealm {
 
     /** {@inheritDoc} */
     public String[] getRoles(final Principal p) {
-        if (p instanceof AttributePrincipal) {
-            final Collection roles = getRoleCollection(p);
-            if (roles != null) {
-                final String[] array = new String[roles.size()];
-                roles.toArray(array);
-                return array;
-            } else {
-                return new String[0];
-            }
-        } else {
-            throw new IllegalArgumentException("Expected instance of AttributePrincipal but got " + p);
-        }
+        CommonUtils.assertTrue(p instanceof AttributePrincipal, "Expected instance of AttributePrincipal but got " + p.getClass());
+
+        final Collection roles = getRoleCollection(p);
+        final String[] array = new String[roles.size()];
+        roles.toArray(array);
+        return array;
     }
 
     /** {@inheritDoc} */
     public boolean hasRole(final Principal principal, final String role) {
-        final Collection roles = getRoleCollection(principal);
-        if (roles != null) {
-            return roles.contains(role);
-        } else {
-            return false;
-        }
+        return getRoleCollection(principal).contains(role);
     }
-    
+
+    /**
+     * Retrieves the attributes for a Principal.  To make life easy this should NEVER return null.
+     *
+     * @param p the principal to check.
+     * @return the list of attribute values that matched this role, or an empty collection if they don't.
+     */
     private Collection getRoleCollection(final Principal p) {
-        if (p instanceof AttributePrincipal) {
-            final Collection attributes =
-                (Collection) ((AttributePrincipal) p).getAttributes().get(roleAttributeName);
-            if (attributes == null) {
-                log.debug(p + " has no attribute named " + roleAttributeName);
-            }
-            return attributes;
-        } else {
-            return null;
+        if (!(p instanceof AttributePrincipal)) {
+            return Collections.emptyList();
         }
+
+        final Object attributes = ((AttributePrincipal) p).getAttributes().get(this.roleAttributeName);
+
+        if (attributes == null) {
+            return Collections.emptyList();
+        }
+
+        if (attributes instanceof Collection) {
+            return (Collection) attributes;
+        }
+
+        return Arrays.asList(new Object[] {attributes});
     }
 }
