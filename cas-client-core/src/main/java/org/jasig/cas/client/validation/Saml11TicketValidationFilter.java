@@ -6,20 +6,33 @@
 package org.jasig.cas.client.validation;
 
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
 
 /**
  * Implementation of TicketValidationFilter that can instanciate a SAML 1.1 Ticket Validator.
  * <p>
  * Deployers can provide the "casServerUrlPrefix" and "tolerance" properties of the Saml11TicketValidator via the
  * context or filter init parameters.
+ * <p>
+ * Note, the "final" on this class helps ensure the compliance required in the initInternal method.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
+public final class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
 
     public Saml11TicketValidationFilter() {
+        setArtifactParameterName("SAMLart");
+        setServiceParameterName("TARGET");
+    }
+
+    protected void initInternal(final FilterConfig filterConfig) throws ServletException {
+        super.initInternal(filterConfig);
+
+        log.warn("SAML1.1 compliance requires the [artifactParameterName] and [serviceParameterName] to be set to specified values.");
+        log.warn("This filter will overwrite any user-provided values (if any are provided)");
+
         setArtifactParameterName("SAMLart");
         setServiceParameterName("TARGET");
     }
