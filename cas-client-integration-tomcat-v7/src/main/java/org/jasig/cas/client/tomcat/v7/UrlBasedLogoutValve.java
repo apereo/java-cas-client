@@ -16,7 +16,7 @@ import org.jasig.cas.client.util.CommonUtils;
  * @version $Revision$ $Date$
  * @since 3.1.12
  */
-public final class UrlBasedLogoutValve extends AbstractLogoutValveBase {
+public final class UrlBasedLogoutValve extends AbstractLogoutValve {
 
     private String logoutUri;
 

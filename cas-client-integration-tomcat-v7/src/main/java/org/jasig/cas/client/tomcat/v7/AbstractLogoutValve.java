@@ -24,7 +24,7 @@ import java.io.IOException;
  * @version $Revision$ $Date$
  * @since 3.1.12
  */
-public abstract class AbstractLogoutValveBase extends ValveBase {
+public abstract class AbstractLogoutValve extends ValveBase {
 
     protected final Log log = LogFactory.getLog(getClass());
 

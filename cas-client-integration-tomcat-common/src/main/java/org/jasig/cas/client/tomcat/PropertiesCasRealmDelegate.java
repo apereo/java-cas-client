@@ -17,6 +17,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.HashSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
 
 /**
@@ -35,6 +37,9 @@ import org.jasig.cas.client.util.CommonUtils;
  *
  */
 public class PropertiesCasRealmDelegate implements CasRealm  {
+    /** Log instance */
+    private final Log log = LogFactory.getLog(getClass());
+    
     /** Path to backing properties file */
     private String propertiesFilePath;
     
@@ -57,7 +62,8 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
             file = new File(System.getProperty("catalina.base"), propertiesFilePath);
         }
         CommonUtils.assertTrue(file.exists(), "File not found " + file);        
-        CommonUtils.assertTrue(file.canRead(), "Cannot read " + file);        
+        CommonUtils.assertTrue(file.canRead(), "Cannot read " + file);
+        log.debug("Loading users/roles from " + file);
         final Properties properties = new Properties();
         try {
             properties.load(new BufferedInputStream(new FileInputStream(file)));

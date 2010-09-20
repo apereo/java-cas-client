@@ -5,7 +5,6 @@
  */
 package org.jasig.cas.client.tomcat.v7;
 
-import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
@@ -56,6 +55,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     protected void startInternal() throws LifecycleException {
         super.startInternal();
+        this.log.debug("Starting...");
         final Realm realm = this.context.getRealm();
         if (!(realm instanceof CasRealm)) {
             throw new LifecycleException("Expected CasRealm but got " + realm.getInfo());
@@ -139,7 +139,8 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     /** {@inheritDoc} */
     public void lifecycleEvent(final LifecycleEvent event) {
-        if (Lifecycle.AFTER_START_EVENT.equals(event.getType())) {
+        if (AFTER_START_EVENT.equals(event.getType())) {
+	        this.log.debug("Processing lifecycle event " + AFTER_START_EVENT);
             this.delegate.setTicketValidator(getTicketValidator());
             this.delegate.setArtifactParameterName(getArtifactParameterName());
             this.delegate.setServiceParameterName(getServiceParameterName());

@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * @version $Revision$ $Date$
  * @since 3.1.12
  */
-public final class RegExpBasedLogoutValue extends AbstractLogoutValveBase {
+public final class RegExpBasedLogoutValve extends AbstractLogoutValve {
 
     private String regexpUri;
 

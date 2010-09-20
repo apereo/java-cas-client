@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.util.CommonUtils;
 
@@ -30,9 +28,6 @@ import org.jasig.cas.client.util.CommonUtils;
 public class AssertionCasRealmDelegate implements CasRealm {
     /** Default role attribute name */
     public static final String DEFAULT_ROLE_NAME = "role";
-    
-    /** Log instance */
-    private final Log log = LogFactory.getLog(getClass());
 
     /** Name of the role attribute in the principal's attributes */
     private String roleAttributeName = DEFAULT_ROLE_NAME;

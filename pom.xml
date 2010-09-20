@@ -140,6 +140,7 @@
         <module>cas-client-support-distributed-ehcache</module>
         <module>cas-client-support-distributed-memcached</module>
         <module>cas-client-integration-tomcat-common</module>
+        <module>cas-client-integration-tomcat-v6</module>
         <module>cas-client-integration-tomcat-v7</module>
     </modules>
 
