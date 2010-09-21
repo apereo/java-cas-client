@@ -8,6 +8,7 @@ package org.jasig.cas.client.tomcat.v6;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.jasig.cas.client.util.AbstractCasFilter;
+import org.jasig.cas.client.validation.Assertion;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
@@ -24,21 +25,29 @@ import java.io.IOException;
 public abstract class AbstractLogoutValve extends AbstractLifecycleValve {
 
     public final void invoke(final Request request, final Response response) throws IOException, ServletException {
-
         if (!isLogoutRequest(request)) {
-            log.debug("Current request URI [ " + request.getRequestURI() + "] is not a logout request.");
+            this.log.debug("URI is not a logout request: " + request.getRequestURI());
             getNext().invoke(request, response);
             return;
         }
+        this.log.debug("Processing logout request from CAS server.");
 
+        Assertion assertion = null;
         final HttpSession httpSession = request.getSession(false);
-
         if (httpSession != null) {
-            httpSession.removeAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+            assertion = (Assertion) httpSession.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+            if (assertion != null) {
+	            httpSession.removeAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+            }
+        }
+
+        if (assertion != null) {
+	        this.log.info("Succesfully logged out " + assertion.getPrincipal());
+        } else {
+            this.log.info("Session already ended.");
         }
 
         final String redirectUrl = constructRedirectUrl(request);
-
         if (redirectUrl != null) {
             response.sendRedirect(redirectUrl);
         }

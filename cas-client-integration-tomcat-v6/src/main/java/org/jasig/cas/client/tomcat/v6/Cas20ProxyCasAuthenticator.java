@@ -54,6 +54,6 @@ public final class Cas20ProxyCasAuthenticator extends AbstractCasAuthenticator {
             this.ticketValidator.setEncoding(getEncoding());
         }
         lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
-        this.log.debug("Startup completed.");
+        this.log.info("Startup completed.");
     }
 }

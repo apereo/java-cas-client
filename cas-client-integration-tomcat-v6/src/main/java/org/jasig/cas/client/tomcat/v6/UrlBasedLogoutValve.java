@@ -48,6 +48,7 @@ public final class UrlBasedLogoutValve extends AbstractLogoutValve {
         } catch (final IllegalArgumentException e) {
             throw new LifecycleException(e);
         }
+        this.log.info("Startup completed.");
     }
 
     protected boolean isLogoutRequest(final Request request) {

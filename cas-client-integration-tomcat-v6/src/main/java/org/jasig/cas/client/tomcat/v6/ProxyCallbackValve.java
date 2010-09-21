@@ -57,6 +57,7 @@ public final class ProxyCallbackValve extends AbstractLifecycleValve {
         } catch (final Exception e) {
             throw new LifecycleException(e);
         }
+        this.log.info("Startup completed.");
     }
 
     public void invoke(final Request request, final Response response) throws IOException, ServletException {

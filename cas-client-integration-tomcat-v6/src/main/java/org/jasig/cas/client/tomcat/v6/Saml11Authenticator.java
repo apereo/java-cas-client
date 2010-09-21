@@ -43,7 +43,7 @@ public class Saml11Authenticator extends AbstractAuthenticator {
         }
         this.ticketValidator.setRenew(isRenew());
         lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
-        this.log.debug("Startup completed.");
+        this.log.info("Startup completed.");
     }
 
     protected TicketValidator getTicketValidator() {

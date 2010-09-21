@@ -8,6 +8,8 @@ package org.jasig.cas.client.tomcat.v6;
 import java.security.Principal;
 
 import org.apache.catalina.realm.RealmBase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.tomcat.CasRealm;
 
 /**
@@ -18,6 +20,10 @@ import org.jasig.cas.client.tomcat.CasRealm;
  *
  */
 public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
+    /** Logger instance */
+    protected final Log log = LogFactory.getLog(getClass());
+
+
     /** {@inheritDoc} */
     public Principal authenticate(final Principal p) {
         return getDelegate().authenticate(p);

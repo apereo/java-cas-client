@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * @version $Revision$ $Date$
  * @since 3.1.12
  */
-public final class RegExpBasedLogoutValue extends AbstractLogoutValve {
+public final class RegExpBasedLogoutValve extends AbstractLogoutValve {
 
     private String regexpUri;
 
@@ -45,6 +45,7 @@ public final class RegExpBasedLogoutValue extends AbstractLogoutValve {
         } catch (final Exception e) {
             throw new LifecycleException(e);
         }
+        this.log.info("Startup completed.");
     }
 
     protected boolean isLogoutRequest(final Request request) {

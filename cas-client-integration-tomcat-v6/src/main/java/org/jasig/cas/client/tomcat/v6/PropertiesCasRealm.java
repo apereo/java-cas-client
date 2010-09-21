@@ -38,6 +38,7 @@ public class PropertiesCasRealm extends AbstractCasRealm {
     public void start() throws LifecycleException {
         super.start();
         delegate.readProperties();
+        this.log.info("Startup completed.");
     }
 
     /** {@inheritDoc} */

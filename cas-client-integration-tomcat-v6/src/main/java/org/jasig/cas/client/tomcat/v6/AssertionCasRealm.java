@@ -5,6 +5,7 @@
  */
 package org.jasig.cas.client.tomcat.v6;
 
+import org.apache.catalina.LifecycleException;
 import org.jasig.cas.client.tomcat.AssertionCasRealmDelegate;
 import org.jasig.cas.client.tomcat.CasRealm;
 
@@ -20,6 +21,12 @@ import org.jasig.cas.client.tomcat.CasRealm;
  */
 public class AssertionCasRealm extends AbstractCasRealm {
     private final AssertionCasRealmDelegate delegate = new AssertionCasRealmDelegate();
+    
+    /** {@inheritDoc} */
+    public void start() throws LifecycleException {
+        super.start();
+        this.log.info("Startup completed.");
+    }
 
     /**
      * @param name Name of the attribute in the principal that contains role data.
