@@ -28,6 +28,7 @@ public interface CasRealm {
     /**
      * Gets the roles defined for the given principal.
      *
+     * @param p the principal to retrieve the roles for.
      * @return  Roles for given principal or empty array if none exist.
      */
     String[] getRoles(Principal p);

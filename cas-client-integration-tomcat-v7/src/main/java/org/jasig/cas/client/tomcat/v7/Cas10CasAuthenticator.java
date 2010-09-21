@@ -16,7 +16,7 @@ import org.jasig.cas.client.validation.TicketValidator;
  * @version $Revision$ $Date$
  * @since 3.1.12
  */
-public class Cas10CasAuthenticator extends AbstractCasAuthenticator {
+public final class Cas10CasAuthenticator extends AbstractCasAuthenticator {
     public static final String AUTH_METHOD = "CAS10";
 
     private Cas10TicketValidator ticketValidator;

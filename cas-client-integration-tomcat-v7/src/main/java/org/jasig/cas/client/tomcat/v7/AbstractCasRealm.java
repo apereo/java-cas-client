@@ -18,6 +18,7 @@ import org.jasig.cas.client.tomcat.CasRealm;
  *
  */
 public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
+
     /** {@inheritDoc} */
     public Principal authenticate(final Principal p) {
         return getDelegate().authenticate(p);
@@ -54,7 +55,7 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
     }
 
     /** {@inheritDoc} */
-    protected Principal getPrincipal(String username) {
+    protected Principal getPrincipal(final String username) {
         throw new UnsupportedOperationException();
     }
 

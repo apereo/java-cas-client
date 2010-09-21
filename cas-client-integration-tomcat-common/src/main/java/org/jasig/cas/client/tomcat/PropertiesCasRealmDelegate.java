@@ -54,8 +54,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
     }
 
     /** {@inheritDoc} */
-    public void readProperties()
-    {
+    public void readProperties() {
         CommonUtils.assertNotNull(propertiesFilePath, "PropertiesFilePath not set.");
         File file = new File(propertiesFilePath);
         if (!file.isAbsolute()) {
