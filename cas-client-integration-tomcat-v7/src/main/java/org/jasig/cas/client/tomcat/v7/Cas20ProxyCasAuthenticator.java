@@ -20,6 +20,8 @@ import org.jasig.cas.client.validation.TicketValidator;
 public final class Cas20ProxyCasAuthenticator extends AbstractCasAuthenticator {
     public static final String AUTH_METHOD = "CAS20-PROXY";
 
+    private static final String NAME = Cas20ProxyCasAuthenticator.class.getName();
+
     private Cas20ProxyTicketValidator ticketValidator;
     
     private boolean acceptAnyProxy;
@@ -40,6 +42,10 @@ public final class Cas20ProxyCasAuthenticator extends AbstractCasAuthenticator {
     
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
+    }
+
+    protected String getName() {
+        return NAME;
     }
 
     protected void startInternal() throws LifecycleException {

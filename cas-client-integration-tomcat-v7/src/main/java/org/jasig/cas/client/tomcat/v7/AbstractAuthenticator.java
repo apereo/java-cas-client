@@ -8,6 +8,7 @@ package org.jasig.cas.client.tomcat.v7;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
+import org.apache.catalina.LifecycleState;
 import org.apache.catalina.Realm;
 import org.apache.catalina.authenticator.AuthenticatorBase;
 import org.apache.catalina.connector.Request;
@@ -70,7 +71,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     protected void startInternal() throws LifecycleException {
         super.startInternal();
-        this.log.debug("Starting...");
+        this.log.debug(getName() + " starting.");
         final Realm realm = this.context.getRealm();
         try {
             CommonUtils.assertTrue(realm instanceof CasRealm, "Expected CasRealm but got " + realm.getInfo());
@@ -152,7 +153,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     /** {@inheritDoc} */
     public void lifecycleEvent(final LifecycleEvent event) {
         if (AFTER_START_EVENT.equals(event.getType())) {
-	        this.log.debug("Processing lifecycle event " + AFTER_START_EVENT);
+            this.log.debug(getName() + " processing lifecycle event " + AFTER_START_EVENT);
             this.delegate.setTicketValidator(getTicketValidator());
             this.delegate.setArtifactParameterName(getArtifactParameterName());
             this.delegate.setServiceParameterName(getServiceParameterName());
@@ -161,6 +162,19 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     /** {@inheritDoc} */
     public String getInfo() {
-        return getClass().getName() + "/1.0";
+        return getName() + "/1.0";
     }
+    
+    /** {@inheritDoc} */
+    protected synchronized void setState(LifecycleState state, Object data) {
+        super.setState(state, data);
+        if (LifecycleState.STARTED.equals(state)) {
+            this.log.info(getName() + " started.");
+        }
+    }
+
+    /**
+     * @return  Authenticator descriptive name.
+     */
+    protected abstract String getName();
 }

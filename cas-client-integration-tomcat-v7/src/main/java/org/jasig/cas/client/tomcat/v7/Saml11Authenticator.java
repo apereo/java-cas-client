@@ -17,8 +17,9 @@ import org.jasig.cas.client.validation.TicketValidator;
  *
  */
 public final class Saml11Authenticator extends AbstractAuthenticator {
-
     public static final String AUTH_METHOD = "SAML11";
+    
+    private static final String NAME = Saml11Authenticator.class.getName();
 
     private Saml11TicketValidator ticketValidator;
     
@@ -63,4 +64,7 @@ public final class Saml11Authenticator extends AbstractAuthenticator {
         return "TARGET";
     }
 
+    protected String getName() {
+        return NAME;
+    }
 }

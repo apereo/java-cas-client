@@ -18,6 +18,8 @@ import org.jasig.cas.client.validation.TicketValidator;
  */
 public final class Cas20CasAuthenticator extends AbstractCasAuthenticator {
     public static final String AUTH_METHOD = "CAS20";
+
+    private static final String NAME = Cas20CasAuthenticator.class.getName();
     
     private Cas20ServiceTicketValidator ticketValidator;
 
@@ -27,6 +29,10 @@ public final class Cas20CasAuthenticator extends AbstractCasAuthenticator {
     
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
+    }
+
+    protected String getName() {
+        return NAME;
     }
 
     protected void startInternal() throws LifecycleException {

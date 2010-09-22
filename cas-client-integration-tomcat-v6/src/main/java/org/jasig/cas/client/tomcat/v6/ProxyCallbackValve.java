@@ -63,6 +63,7 @@ public final class ProxyCallbackValve extends AbstractLifecycleValve {
 
     public void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (this.proxyCallbackUrl.equals(request.getRequestURI())) {
+            this.log.debug("Processing proxy callback request.");
             CommonUtils.readAndRespondToProxyReceptorRequest(request, response, PROXY_GRANTING_TICKET_STORAGE);
             return;
         }

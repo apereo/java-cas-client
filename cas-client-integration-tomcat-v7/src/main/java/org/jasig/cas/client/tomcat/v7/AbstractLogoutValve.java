@@ -10,10 +10,9 @@ import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jasig.cas.client.util.AbstractCasFilter;
+import org.jasig.cas.client.tomcat.LogoutHandler;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -21,47 +20,23 @@ import java.io.IOException;
  * from the session.
  *
  * @author Scott Battaglia
+ * @author Marvin S. Addison
  * @version $Revision$ $Date$
  * @since 3.1.12
  */
 public abstract class AbstractLogoutValve extends ValveBase {
-
     protected final Log log = LogFactory.getLog(getClass());
 
     public final void invoke(final Request request, final Response response) throws IOException, ServletException {
-
-        if (!isLogoutRequest(request)) {
-            log.debug("Current request URI [ " + request.getRequestURI() + "] is not a logout request.");
-            getNext().invoke(request, response);
+        if (getLogoutHandler().isLogoutRequest(request)) {
+            getLogoutHandler().logout(request, response);
+            // Do not proceed up valve chain
             return;
-        }
-
-        final HttpSession httpSession = request.getSession(false);
-
-        if (httpSession != null) {
-            httpSession.removeAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
-        }
-
-        final String redirectUrl = constructRedirectUrl(request);
-
-        if (redirectUrl != null) {
-            response.sendRedirect(redirectUrl);
+        } else {
+            this.log.debug("URI is not a logout request: " + request.getRequestURI());
+            getNext().invoke(request, response);
         }
     }
-
-    /**
-     * Determines if this is a request to destroy the container-managed single sign on session.
-     *
-     * @param request the request.  CANNOT be NULL.
-     * @return true if it is a logout request, false otherwise.
-     */
-    protected abstract boolean isLogoutRequest(Request request);
-
-    /**
-     * Constructs a url to redirect to.
-     *
-     * @param request the original request.
-     * @return the url to redirect to. CAN be NULL.
-     */
-    protected abstract String constructRedirectUrl(Request request);
+    
+    protected abstract LogoutHandler getLogoutHandler();
 }
