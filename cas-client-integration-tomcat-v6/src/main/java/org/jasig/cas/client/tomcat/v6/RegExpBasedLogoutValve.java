@@ -20,19 +20,14 @@ import java.util.regex.Pattern;
  * @since 3.1.12
  */
 public final class RegExpBasedLogoutValve extends AbstractLogoutValve {
+    private static final String NAME = RegExpBasedLogoutValve.class.getName();
 
     private String regexpUri;
 
     private Pattern regexpUriPattern;
 
-    private String redirectUrl;
-
     public void setRegexpUri(final String regexpUri) {
         this.regexpUri = regexpUri;
-    }
-
-    public void setRedirectUrl(final String redirectUrl) {
-        this.redirectUrl = redirectUrl;
     }
 
     public void start() throws LifecycleException {
@@ -52,7 +47,8 @@ public final class RegExpBasedLogoutValve extends AbstractLogoutValve {
         return this.regexpUriPattern.matcher(request.getRequestURI()).matches();
     }
 
-    protected String constructRedirectUrl(final Request request) {
-        return this.redirectUrl;
+    /** {@inheritDoc} */
+    protected String getName() {
+        return NAME;
     }
 }

@@ -70,7 +70,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     public void start() throws LifecycleException {
         super.start();
-        this.log.debug("Starting...");
+        this.log.debug(getName() + " starting.");
         final Realm realm = this.context.getRealm();
         try {
             CommonUtils.assertTrue(realm instanceof CasRealm, "Expected CasRealm but got " + realm.getInfo());
@@ -153,7 +153,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     /** {@inheritDoc} */
     public void lifecycleEvent(final LifecycleEvent event) {
         if (AFTER_START_EVENT.equals(event.getType())) {
-	        this.log.debug("Processing lifecycle event " + AFTER_START_EVENT);
+	        this.log.debug(getName() + " processing lifecycle event " + AFTER_START_EVENT);
             this.delegate.setTicketValidator(getTicketValidator());
             this.delegate.setArtifactParameterName(getArtifactParameterName());
             this.delegate.setServiceParameterName(getServiceParameterName());
@@ -162,6 +162,11 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     /** {@inheritDoc} */
     public String getInfo() {
-        return getClass().getName() + "/1.0";
+        return getName() + "/1.0";
     }
+
+    /**
+     * @return  Authenticator descriptive name.
+     */
+    protected abstract String getName();
 }

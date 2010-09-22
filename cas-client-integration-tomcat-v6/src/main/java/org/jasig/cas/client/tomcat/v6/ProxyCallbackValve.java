@@ -26,6 +26,7 @@ import java.io.IOException;
  * @since 3.1.12
  */
 public final class ProxyCallbackValve extends AbstractLifecycleValve {
+    private static final String NAME = ProxyCallbackValve.class.getName();
 
     private static ProxyGrantingTicketStorage PROXY_GRANTING_TICKET_STORAGE;
 
@@ -67,5 +68,10 @@ public final class ProxyCallbackValve extends AbstractLifecycleValve {
         }
 
         getNext().invoke(request, response);
+    }
+
+    /** {@inheritDoc} */
+    protected String getName() {
+        return NAME;
     }
 }

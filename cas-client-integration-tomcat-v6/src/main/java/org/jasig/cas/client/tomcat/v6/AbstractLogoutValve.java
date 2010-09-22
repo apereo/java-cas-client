@@ -24,6 +24,12 @@ import java.io.IOException;
  */
 public abstract class AbstractLogoutValve extends AbstractLifecycleValve {
 
+    protected String redirectUrl;
+
+    public void setRedirectUrl(final String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
     public final void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (!isLogoutRequest(request)) {
             this.log.debug("URI is not a logout request: " + request.getRequestURI());
@@ -54,6 +60,16 @@ public abstract class AbstractLogoutValve extends AbstractLifecycleValve {
     }
 
     /**
+     * Constructs a url to redirect to.
+     *
+     * @param request the original request.
+     * @return the url to redirect to. CAN be NULL.
+     */
+    protected String constructRedirectUrl(final Request request) {
+        return redirectUrl;
+    }
+    
+    /**
      * Determines if this is a request to destroy the container-managed single sign on session.
      *
      * @param request the request.  CANNOT be NULL.
@@ -61,11 +77,4 @@ public abstract class AbstractLogoutValve extends AbstractLifecycleValve {
      */
     protected abstract boolean isLogoutRequest(Request request);
 
-    /**
-     * Constructs a url to redirect to.
-     *
-     * @param request the original request.
-     * @return the url to redirect to. CAN be NULL.
-     */
-    protected abstract String constructRedirectUrl(Request request);
 }

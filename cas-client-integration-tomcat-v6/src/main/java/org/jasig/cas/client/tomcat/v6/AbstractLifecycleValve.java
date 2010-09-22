@@ -46,12 +46,16 @@ public abstract class AbstractLifecycleValve extends ValveBase implements Lifecy
 
     /** {@inheritDoc} */
     public void start() throws LifecycleException {
-        log.debug("Valve starting.");
+        log.debug(getName() + " starting.");
     }
 
     /** {@inheritDoc} */
     public void stop() throws LifecycleException {
-        log.debug("Valve stopping.");
+        log.debug(getName() + " stopping.");
     }
 
+    /**
+     * @return Descriptive valve name.
+     */
+    protected abstract String getName();
 }

@@ -17,10 +17,9 @@ import org.jasig.cas.client.util.CommonUtils;
  * @since 3.1.12
  */
 public final class UrlBasedLogoutValve extends AbstractLogoutValve {
+    private static final String NAME = UrlBasedLogoutValve.class.getName();
 
     private String logoutUri;
-
-    private String redirectUrl;
 
     /**
      * The logout url to watch for logout requests.
@@ -29,15 +28,6 @@ public final class UrlBasedLogoutValve extends AbstractLogoutValve {
      */
     public void setLogoutUri(final String logoutUri) {
         this.logoutUri = logoutUri;
-    }
-
-    /**
-     * Optional url to redirect to after logout is complete.
-     *
-     * @param redirectUrl the url.  CAN be NULL.
-     */
-    public void setRedirectUrl(final String redirectUrl) {
-        this.redirectUrl = redirectUrl;
     }
 
     public void start() throws LifecycleException {
@@ -55,7 +45,8 @@ public final class UrlBasedLogoutValve extends AbstractLogoutValve {
         return this.logoutUri.equals(request.getRequestURI());
     }
 
-    protected String constructRedirectUrl(final Request request) {
-        return redirectUrl;
+    /** {@inheritDoc} */
+    protected String getName() {
+        return NAME;
     }
 }
