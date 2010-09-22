@@ -42,7 +42,7 @@ public abstract class AbstractLogoutValve extends AbstractLifecycleValve {
         }
 
         if (assertion != null) {
-	        this.log.info("Succesfully logged out " + assertion.getPrincipal());
+	        this.log.info("Successfully logged out " + assertion.getPrincipal());
         } else {
             this.log.info("Session already ended.");
         }

@@ -46,21 +46,34 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     protected abstract String getAuthenticationMethod();
 
+    /**
+     * Abstract method that subclasses should use to provide the name of the artifact parameter (i.e. ticket)
+     *
+     * @return the artifact parameter name.  CANNOT be NULL.
+     */
     protected abstract String getArtifactParameterName();
 
+    /**
+     * Abstract method that subclasses should use to provide the name of the service parameter (i.e. service)
+     *
+     * @return the service parameter name.  CANNOT be NULL.
+     */
     protected abstract String getServiceParameterName();
 
+    /**
+     * Returns the single instance of the ticket validator to use to validate tickets.  Sub classes should include
+     * the one appropriate for the
+     *
+     * @return a fully configured ticket validator.  CANNOT be NULL.
+     */
     protected abstract TicketValidator getTicketValidator();
-
 
     public void start() throws LifecycleException {
         super.start();
         this.log.debug("Starting...");
         final Realm realm = this.context.getRealm();
-        if (!(realm instanceof CasRealm)) {
-            throw new LifecycleException("Expected CasRealm but got " + realm.getInfo());
-        }
         try {
+            CommonUtils.assertTrue(realm instanceof CasRealm, "Expected CasRealm but got " + realm.getInfo());
             CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
             CommonUtils.assertNotNull(this.delegate.getCasServerLoginUrl(), "casServerLoginUrl cannot be null.");
             CommonUtils.assertTrue(
