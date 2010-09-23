@@ -9,9 +9,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Listener to detect when an HTTP session is destroyed and remove it from the map of
  * managed sessions.  Also allows for the programmatic removal of sessions.
@@ -24,19 +21,18 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class SingleSignOutHttpSessionListener implements HttpSessionListener {
 
-	private SessionMappingStorage SESSION_MAPPING_STORAGE;
+	private SessionMappingStorage sessionMappingStorage;
 	
     public void sessionCreated(final HttpSessionEvent event) {
         // nothing to do at the moment
     }
 
     public void sessionDestroyed(final HttpSessionEvent event) {
-    	if (SESSION_MAPPING_STORAGE == null) {
-    		SESSION_MAPPING_STORAGE = getSessionMappingStorage();
+    	if (sessionMappingStorage == null) {
+    	    sessionMappingStorage = getSessionMappingStorage();
     	}
         final HttpSession session = event.getSession();
-              
-        SESSION_MAPPING_STORAGE.removeBySessionById(session.getId());
+        sessionMappingStorage.removeBySessionById(session.getId());
     }
 
     /**
@@ -46,6 +42,6 @@ public final class SingleSignOutHttpSessionListener implements HttpSessionListen
      * @return the SessionMappingStorage
      */
     protected static SessionMappingStorage getSessionMappingStorage() {
-    	return SingleSignOutFilter.getSessionMappingStorage();
+    	return SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage();
     }
 }
