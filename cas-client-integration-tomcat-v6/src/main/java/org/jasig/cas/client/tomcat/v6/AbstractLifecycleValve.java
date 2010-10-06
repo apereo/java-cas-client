@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
  *
  */
 public abstract class AbstractLifecycleValve extends ValveBase implements Lifecycle {
+
     /** Logger instance */
     protected final Log log = LogFactory.getLog(getClass());
     

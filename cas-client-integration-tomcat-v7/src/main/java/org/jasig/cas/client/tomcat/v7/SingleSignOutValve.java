@@ -31,6 +31,7 @@ import org.jasig.cas.client.session.SingleSignOutHandler;
  *
  */
 public class SingleSignOutValve extends ValveBase implements SessionListener {
+
     /** Logger instance */
     private final Log log = LogFactory.getLog(getClass());
     

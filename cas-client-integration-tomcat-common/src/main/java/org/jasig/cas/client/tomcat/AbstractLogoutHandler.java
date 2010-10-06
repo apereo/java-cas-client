@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
+import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
 
 /**
@@ -22,6 +23,7 @@ import org.jasig.cas.client.validation.Assertion;
  *
  */
 public abstract class AbstractLogoutHandler implements LogoutHandler {
+
     protected final Log log = LogFactory.getLog(getClass());
 
     protected String redirectUrl;
@@ -34,16 +36,10 @@ public abstract class AbstractLogoutHandler implements LogoutHandler {
     public void logout(final HttpServletRequest request, final HttpServletResponse response) {
         this.log.debug("Processing logout request from CAS server.");
 
-        Assertion assertion = null;
+        final Assertion assertion;
         final HttpSession httpSession = request.getSession(false);
-        if (httpSession != null) {
-            assertion = (Assertion) httpSession.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
-            if (assertion != null) {
-                httpSession.removeAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
-            }
-        }
-
-        if (assertion != null) {
+        if (httpSession != null && (assertion = (Assertion) httpSession.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION)) != null) {
+            httpSession.removeAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
             this.log.info("Successfully logged out " + assertion.getPrincipal());
         } else {
             this.log.info("Session already ended.");
@@ -51,12 +47,8 @@ public abstract class AbstractLogoutHandler implements LogoutHandler {
 
         final String redirectUrl = constructRedirectUrl(request);
         if (redirectUrl != null) {
-            try {
-                this.log.debug("Redirecting to " + redirectUrl);
-                response.sendRedirect(redirectUrl);
-            } catch (Exception e) {
-                this.log.error("Error redirecting to " + redirectUrl, e);
-            }
+            this.log.debug("Redirecting to " + redirectUrl);
+            CommonUtils.sendRedirect(response, redirectUrl);
         }
     }
 

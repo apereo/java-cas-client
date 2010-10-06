@@ -17,6 +17,7 @@ import org.jasig.cas.client.validation.TicketValidator;
  * @since 3.1.12
  */
 public class Cas10CasAuthenticator extends AbstractCasAuthenticator {
+
     public static final String AUTH_METHOD = "CAS10";
 
     private static final String NAME = Cas10CasAuthenticator.class.getName();

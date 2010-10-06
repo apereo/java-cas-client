@@ -25,6 +25,7 @@ import java.io.IOException;
  * @since 3.1.12
  */
 public abstract class AbstractLogoutValve extends ValveBase {
+
     protected final Log log = LogFactory.getLog(getClass());
 
     public final void invoke(final Request request, final Response response) throws IOException, ServletException {
@@ -32,10 +33,10 @@ public abstract class AbstractLogoutValve extends ValveBase {
             getLogoutHandler().logout(request, response);
             // Do not proceed up valve chain
             return;
-        } else {
-            this.log.debug("URI is not a logout request: " + request.getRequestURI());
-            getNext().invoke(request, response);
         }
+
+        this.log.debug("URI is not a logout request: " + request.getRequestURI());
+        getNext().invoke(request, response);
     }
     
     protected abstract LogoutHandler getLogoutHandler();

@@ -25,6 +25,7 @@ import org.jasig.cas.client.tomcat.PropertiesCasRealmDelegate;
  *
  */
 public class PropertiesCasRealm extends AbstractCasRealm {
+
     private final PropertiesCasRealmDelegate delegate = new PropertiesCasRealmDelegate();
 
     /**

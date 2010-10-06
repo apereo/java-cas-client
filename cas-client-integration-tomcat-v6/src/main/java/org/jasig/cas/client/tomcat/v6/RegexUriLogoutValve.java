@@ -18,6 +18,7 @@ import org.jasig.cas.client.tomcat.RegexUriLogoutHandler;
  * @since 3.1.12
  */
 public final class RegexUriLogoutValve extends AbstractLogoutValve {
+
     private static final String NAME = RegexUriLogoutValve.class.getName();
     
     private RegexUriLogoutHandler logoutHandler = new RegexUriLogoutHandler();

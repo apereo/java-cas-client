@@ -11,7 +11,7 @@ import org.jasig.cas.client.tomcat.CasRealm;
 
 /**
  * Tomcat <code>Realm</code> that implements {@link CasRealm} for principal and
- * role data backed by the CAS {@link Assertion}.
+ * role data backed by the CAS {@link org.jasig.cas.client.validation.Assertion}.
  * <p>
  * Authentication always succeeds and simply returns the given principal.
  *
@@ -20,12 +20,13 @@ import org.jasig.cas.client.tomcat.CasRealm;
  *
  */
 public class AssertionCasRealm extends AbstractCasRealm {
+
     private final AssertionCasRealmDelegate delegate = new AssertionCasRealmDelegate();
     
     /** {@inheritDoc} */
     public void start() throws LifecycleException {
         super.start();
-        this.log.info("Startup completed.");
+        log.info("Startup completed.");
     }
 
     /**

@@ -19,6 +19,7 @@ import org.jasig.cas.client.tomcat.CasRealm;
  *
  */
 public class AssertionCasRealm extends AbstractCasRealm {
+
     private final AssertionCasRealmDelegate delegate = new AssertionCasRealmDelegate();
 
     /**

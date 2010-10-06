@@ -10,12 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +32,7 @@ import org.jasig.cas.client.util.CommonUtils;
  *
  */
 public class PropertiesCasRealmDelegate implements CasRealm  {
+
     /** Log instance */
     private final Log log = LogFactory.getLog(getClass());
     
@@ -76,16 +72,14 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
             // Use TreeSet to sort roles
             final Set roleSet = new HashSet();
             final String[] roles = properties.getProperty(user).split(",\\s*");
-            for (int i = 0; i < roles.length; i++) {
-                roleSet.add(roles[i]);
-            }
-            roleMap.put(user, roleSet); 
+            roleSet.addAll(Arrays.asList(roles));
+            roleMap.put(user, roleSet);
         }
     }
 
     /** {@inheritDoc} */
     public Principal authenticate(final Principal p) {
-        if (roleMap.get(p.getName()) != null) {
+        if (roleMap.containsKey(p.getName())) {
             return p;
         } else {
             return null;
@@ -103,10 +97,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
     /** {@inheritDoc} */
     public boolean hasRole(final Principal principal, final String role) {
         final Set roles = (Set) roleMap.get(principal.getName());
-        if (roles != null) {
-            return roles.contains(role);
-        } else {
-            return false;
-        }
+
+        return roles != null && roles.contains(role);
     }
 }

@@ -20,6 +20,7 @@ import org.jasig.cas.client.tomcat.CasRealm;
  *
  */
 public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
+
     /** Logger instance */
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -60,7 +61,7 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
     }
 
     /** {@inheritDoc} */
-    protected Principal getPrincipal(String username) {
+    protected Principal getPrincipal(final String username) {
         throw new UnsupportedOperationException();
     }
 

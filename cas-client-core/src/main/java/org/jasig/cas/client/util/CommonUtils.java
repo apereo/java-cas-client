@@ -350,4 +350,19 @@ public final class CommonUtils {
         editor.setAsText(proxies);
         return (ProxyList) editor.getValue();
      }
+
+    /**
+     * Sends the redirect message and captures the exceptions that we can't possibly do anything with.
+     *
+     * @param response the HttpServletResponse.  CANNOT be NULL.
+     * @param url the url to redirect to.
+     */
+    public static void sendRedirect(final HttpServletResponse response, final String url) {
+        try {
+            response.sendRedirect(url);
+        } catch (final Exception e) {
+            LOG.warn(e.getMessage(), e);
+        }
+
+    }
 }

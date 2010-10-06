@@ -28,6 +28,7 @@ import org.jasig.cas.client.session.SingleSignOutHandler;
  *
  */
 public class SingleSignOutValve extends AbstractLifecycleValve implements SessionListener {
+
     private static final String NAME = SingleSignOutValve.class.getName();
     
     private final SingleSignOutHandler handler = new SingleSignOutHandler();
@@ -48,7 +49,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
     public void start() throws LifecycleException {
         super.start();
         handler.init();
-        this.log.info("Startup completed.");
+        log.info("Startup completed.");
     }
 
     /** {@inheritDoc} */
@@ -62,7 +63,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
             // Do not proceed up valve chain
             return;
         } else {
-            this.log.debug("Ignoring URI " + request.getRequestURI());
+            log.debug("Ignoring URI " + request.getRequestURI());
         }
         getNext().invoke(request, response);
     }

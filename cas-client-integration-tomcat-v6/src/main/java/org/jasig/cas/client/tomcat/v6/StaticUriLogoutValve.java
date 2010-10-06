@@ -18,6 +18,7 @@ import org.jasig.cas.client.tomcat.StaticUriLogoutHandler;
  * @since 3.1.12
  */
 public final class StaticUriLogoutValve extends AbstractLogoutValve {
+
     private static final String NAME = StaticUriLogoutValve.class.getName();
 
     private StaticUriLogoutHandler logoutHandler = new StaticUriLogoutHandler();

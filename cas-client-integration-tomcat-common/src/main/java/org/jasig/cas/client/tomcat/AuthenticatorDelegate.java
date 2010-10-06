@@ -77,11 +77,7 @@ public class AuthenticatorDelegate {
             if (CommonUtils.isBlank(token)) {
                 final String redirectUrl = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, this.serviceParameterName, service, false, false);
                 log.debug("Redirecting to " + redirectUrl);
-                try {
-	                response.sendRedirect(redirectUrl);
-                } catch (IOException e) {
-                    throw new IllegalStateException("Cannot redirect to " + redirectUrl, e);
-                }
+                CommonUtils.sendRedirect(response, redirectUrl);
                 return null;
             }
             try {

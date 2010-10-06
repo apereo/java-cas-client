@@ -27,12 +27,11 @@ public abstract class AbstractLogoutValve extends AbstractLifecycleValve {
             getLogoutHandler().logout(request, response);
             // Do not proceed up valve chain
             return;
-        } else {
-            this.log.debug("URI is not a logout request: " + request.getRequestURI());
-            getNext().invoke(request, response);
         }
+
+        this.log.debug("URI is not a logout request: " + request.getRequestURI());
+        getNext().invoke(request, response);
     }
     
     protected abstract LogoutHandler getLogoutHandler();
-
 }

@@ -16,9 +16,11 @@ import org.jasig.cas.client.util.CommonUtils;
  *
  * @author Marvin S. Addison
  * @version $Revision$
+ * @since 3.1.12
  *
  */
-public class RegexUriLogoutHandler extends AbstractLogoutHandler {
+public final class RegexUriLogoutHandler extends AbstractLogoutHandler {
+
     private String logoutUriRegex;
 
     private Pattern logoutUriPattern;
@@ -31,7 +33,7 @@ public class RegexUriLogoutHandler extends AbstractLogoutHandler {
     }
 
     /**
-     * Initalializes the component for use.
+     * Initializes the component for use.
      */
     public void init() {
         CommonUtils.assertNotNull(this.logoutUriRegex, "A logout URI regular expression is required.");
