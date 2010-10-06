@@ -184,6 +184,12 @@ public final class CommonUtils {
 		}
 
 		proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Successfully saved proxyGrantingTicketId ["
+		            + proxyGrantingTicket + "] for proxyGrantingTicketIou ["
+		            + proxyGrantingTicketIou + "]");
+        }
 		
 		response.getWriter().write("<?xml version=\"1.0\"?>");
 		response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");

@@ -8,6 +8,8 @@ package org.jasig.cas.client.proxy;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.CacheManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Scott Battaglia
@@ -18,15 +20,18 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl implements ProxyG
 
     public static final String EHCACHE_CACHE_NAME = "org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl.cache";
 
+    private static final Log log = LogFactory.getLog(EhcacheBackedProxyGrantingTicketStorageImpl.class);
+
     final Cache cache;
 
     public EhcacheBackedProxyGrantingTicketStorageImpl() {
-        this(CacheManager.create().getCache(EHCACHE_CACHE_NAME));
-
+        this(CacheManager.getInstance().getCache(EHCACHE_CACHE_NAME));
+        log.info("Created cache with name: " + this.cache.getName());
     }
 
     public EhcacheBackedProxyGrantingTicketStorageImpl(final Cache cache) {
         this.cache = cache;
+
     }
 
     public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
@@ -45,6 +50,6 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl implements ProxyG
     }
 
     public void cleanUp() {
-        return;
+        // nothing to do
     }
 }

@@ -147,7 +147,12 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             return true;
         }
 
-        CommonUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
+        try {
+            CommonUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
+        } catch (final RuntimeException e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
 
         return false;
     }
