@@ -54,6 +54,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
                 throw new TicketValidationException("No assertions found.");
             }
 
+            boolean foundValidAssertion = false;
             for (final Iterator iter = samlResponse.getAssertions(); iter.hasNext();) {
                 final SAMLAssertion assertion = (SAMLAssertion) iter.next();
 
@@ -95,7 +96,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             throw new TicketValidationException(e);
         }
 
-        throw new TicketValidationException("No valid assertions from the SAML response found.");
+        throw new TicketValidationException("No Assertion found within valid time range.  Either there's a replay of the ticket or there's clock drift. Check tolerance range, or server/client synchronization.");
     }
 
     private boolean isValidAssertion(final SAMLAssertion assertion) {
