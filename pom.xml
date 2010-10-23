@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <artifactId>oss-parent</artifactId>
-        <groupId>org.sonatype.oss</groupId>
-        <version>5</version>
-    </parent> 
+        <groupId>org.jasig.parent</groupId>
+        <artifactId>jasig-parent</artifactId>
+        <version>22</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas.client</groupId>
-    <version>3.1.13-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>JA-SIG CAS Client for Java</name>
@@ -18,7 +18,7 @@
         <system>JIRA</system>
         <url>http://www.ja-sig.org/issues</url>
     </issueManagement>
-   <scm>
+    <scm>
         <connection>scm:svn:https://source.jasig.org/cas-clients/java-client/trunk</connection>
         <developerConnection>scm:svn:https://source.jasig.org/cas-clients/java-client/trunk</developerConnection>
         <url>https://source.jasig.org/cas-clients/java-client/trunk</url>
@@ -40,13 +40,6 @@
             <timezone>-5</timezone>
         </developer>
     </developers>
-    <licenses>
-        <license>
-            <name>JA-SIG License for Use</name>
-            <url>http://www.ja-sig.org/products/cas/overview/license/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
     <organization>
         <name>JA-SIG</name>
         <url>http://www.jasig.org</url>
@@ -67,8 +60,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.4</source>
-					<target>1.4</target>
+					<source>1.5</source>
+					<target>1.5</target>
 				</configuration>
 			</plugin>
            <plugin>
@@ -80,22 +73,42 @@
                     </includes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clover-plugin</artifactId>
+<plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-clover2-plugin</artifactId>
+                <version>${clover.version}</version>
                 <configuration>
-                    <licenseLocation>${basedir}/src/test/clover/clover.license</licenseLocation>
+                    <license><![CDATA[QQMPxuslCSrVMvOUVCdRexVKNQNAERoKVMEoQEGVcBOLqn
+mi2KMtcskHum5fq2>4UXb6xR2KpyJJkUM3laUDMilMoRmc
+RrQqsWMNNPqpqNoOPpRxUQnpnnnMpOpQqrwvUwQWsTqsuW
+NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
+97W9kZkUUnmm]]></license>
+                    <jdk>1.5</jdk>
+                    <generateXml>true</generateXml>
+                    <generateHtml>true</generateHtml>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                    <statementContexts>
+                        <iflog>if.*\(log\.is.*\).*</iflog> <!-- NB: must match entire statement, including any semicolons. -->
+                        <log>^.*log\..*</log>
+                    </statementContexts>
+                    <methodContexts>
+                        <toString>public String toString\(\).*</toString>
+                    </methodContexts>
+                    <contextFilters>log,iflog,toString,property</contextFilters>
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>pre-site</phase>
+						<phase>verify</phase>
                         <goals>
                             <goal>instrument</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-        </plugins>
+
+
+            </plugin>        </plugins>
     </build>
 
     <dependencies>
@@ -145,6 +158,7 @@
     </modules>
 
     <properties>
-        <ehcache.version>1.5.0</ehcache.version>
+        <ehcache.version>2.2.0</ehcache.version>
+        <clover.version>3.0.2</clover.version>
     </properties>
 </project>
