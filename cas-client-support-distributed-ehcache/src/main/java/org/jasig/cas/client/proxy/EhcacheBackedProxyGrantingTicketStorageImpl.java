@@ -22,6 +22,7 @@ package org.jasig.cas.client.proxy;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.distribution.RemoteCacheException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -50,7 +51,11 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl implements ProxyG
 
     public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         final Element element = new Element(proxyGrantingTicketIou, proxyGrantingTicket);
-        this.cache.put(element);
+        try {
+            this.cache.put(element);
+        } catch (final RemoteCacheException e) {
+            log.warn("Exception accessing one of the remote servers: " + e.getMessage(), e);
+        }
     }
 
     public String retrieve(final String proxyGrantingTicketIou) {
