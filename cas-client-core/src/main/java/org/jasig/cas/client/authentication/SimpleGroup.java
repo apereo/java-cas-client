@@ -38,7 +38,7 @@ public final class SimpleGroup extends SimplePrincipal implements Group {
 
     private static final long serialVersionUID = 1541943977571896383L;
 
-    private final Set members = new HashSet();
+    private final Set<Principal> members = new HashSet<Principal>();
 
     /**
      * Creates a new group with the given name.
@@ -56,7 +56,7 @@ public final class SimpleGroup extends SimplePrincipal implements Group {
         return this.members.contains(member);
     }
 
-    public Enumeration members() {
+    public Enumeration<? extends Principal> members() {
         return new EnumerationAdapter(this.members.iterator());
     }
 
@@ -71,16 +71,16 @@ public final class SimpleGroup extends SimplePrincipal implements Group {
     /**
      * Adapts a {@link java.util.Iterator} onto an {@link java.util.Enumeration}.
      */
-    private static class EnumerationAdapter implements Enumeration {
+    private static class EnumerationAdapter implements Enumeration<Principal> {
 
         /** Iterator backing enumeration operations */
-        private Iterator iterator;
+        private Iterator<? extends Principal> iterator;
 
         /**
          * Creates a new instance backed by the given iterator.
          * @param i Iterator backing enumeration operations.
          */
-        public EnumerationAdapter(final Iterator i) {
+        public EnumerationAdapter(final Iterator<? extends Principal> i) {
             this.iterator = i;
         }
 
@@ -88,7 +88,7 @@ public final class SimpleGroup extends SimplePrincipal implements Group {
             return this.iterator.hasNext();
         }
 
-        public Object nextElement() {
+        public Principal nextElement() {
             return this.iterator.next();
         }
     }

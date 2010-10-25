@@ -28,7 +28,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
@@ -67,7 +66,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     /**
      * A map containing custom parameters to pass to the validation url.
      */
-    private Map customParameters;
+    private Map<String,String> customParameters;
 
     private String encoding;
 
@@ -86,7 +85,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      *
      * @param urlParameters the map containing the parameters.
      */
-    protected void populateUrlAttributeMap(final Map urlParameters) {
+    protected void populateUrlAttributeMap(final Map<String,String> urlParameters) {
         // nothing to do
     }
 
@@ -104,7 +103,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      * @return the fully constructed URL.
      */
     protected final String constructValidationUrl(final String ticket, final String serviceUrl) {
-        final Map urlParameters = new HashMap();
+        final Map<String,String> urlParameters = new HashMap<String,String>();
 
         log.debug("Placing URL parameters in map.");
         urlParameters.put("ticket", ticket);
@@ -123,31 +122,30 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
         }
 
         final String suffix = getUrlSuffix();
-        final StringBuffer buffer = new StringBuffer(urlParameters.size()*10 + this.casServerUrlPrefix.length() + suffix.length() +1);
+        final StringBuilder buffer = new StringBuilder(urlParameters.size()*10 + this.casServerUrlPrefix.length() + suffix.length() +1);
 
         int i = 0;
-        synchronized (buffer) {
-            buffer.append(this.casServerUrlPrefix);
-            if (!this.casServerUrlPrefix.endsWith("/")) {
-            	buffer.append("/");	
-            }
-            buffer.append(suffix);
 
-            for (final Iterator iter = urlParameters.entrySet().iterator(); iter.hasNext();) {
-                final Map.Entry entry = (Map.Entry) iter.next();
-                final String key = (String) entry.getKey();
-                final String value = (String) entry.getValue();
-
-                if (value != null) {
-                    buffer.append(i++ == 0 ? "?" : "&");
-	                buffer.append(key);
-	                buffer.append("=");
-	                buffer.append(value);
-                }
-            }
-
-            return buffer.toString();
+        buffer.append(this.casServerUrlPrefix);
+        if (!this.casServerUrlPrefix.endsWith("/")) {
+            buffer.append("/");
         }
+        buffer.append(suffix);
+
+        for (Map.Entry<String,String> entry : urlParameters.entrySet()) {
+            final String key = entry.getKey();
+            final String value = entry.getValue();
+
+            if (value != null) {
+                buffer.append(i++ == 0 ? "?" : "&");
+                buffer.append(key);
+                buffer.append("=");
+                buffer.append(value);
+            }
+        }
+
+        return buffer.toString();
+
     }
 
     /**
@@ -218,7 +216,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
         this.renew = renew;
     }
 
-    public final void setCustomParameters(final Map customParameters) {
+    public final void setCustomParameters(final Map<String,String> customParameters) {
         this.customParameters = customParameters;
     }
     

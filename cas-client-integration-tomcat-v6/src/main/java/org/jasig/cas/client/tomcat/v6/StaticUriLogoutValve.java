@@ -58,6 +58,6 @@ public final class StaticUriLogoutValve extends AbstractLogoutValve {
 
     /** {@inheritDoc} */
     protected LogoutHandler getLogoutHandler() {
-        return logoutHandler;
+        return this.logoutHandler;
     }
 }

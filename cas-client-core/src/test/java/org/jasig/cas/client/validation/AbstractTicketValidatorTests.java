@@ -28,7 +28,7 @@ import junit.framework.TestCase;
  * @version $Revision: 11731 $ $Date: 2007-09-27 11:27:21 -0400 (Wed, 27 Sep 2007) $
  * @since 3.0
  */
-public abstract class AbstractTicketValidatorTests extends TestCase {
+public abstract class AbstractTicketValidatorTests {
 
     protected static final String CONST_CAS_SERVER_URL = "http://localhost:8085/";
 

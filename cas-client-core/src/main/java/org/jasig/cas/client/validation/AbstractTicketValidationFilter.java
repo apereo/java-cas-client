@@ -92,7 +92,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                 final Class verifierClass = Class.forName(className);
                 if (config != null) {
                     final Constructor cons = verifierClass.getConstructor(new Class[] {String.class});
-                    verifier = (HostnameVerifier) cons.newInstance(new Object[] {config});
+                    verifier = (HostnameVerifier) cons.newInstance(config);
                 } else {
                     verifier = (HostnameVerifier) verifierClass.newInstance();
                 }

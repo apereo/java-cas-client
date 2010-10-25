@@ -71,7 +71,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      *
      * @param urlParameters the Map containing the existing parameters to send to the server.
      */
-    protected final void populateUrlAttributeMap(final Map urlParameters) {
+    protected final void populateUrlAttributeMap(final Map<String,String> urlParameters) {
         urlParameters.put("pgtUrl", encodeUrl(this.proxyCallbackUrl));
     }
 
@@ -97,7 +97,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         }
 
         final Assertion assertion;
-        final Map attributes = extractCustomAttributes(response);
+        final Map<String,Object> attributes = extractCustomAttributes(response);
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
             final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
             assertion = new AssertionImpl(attributePrincipal);
@@ -123,21 +123,21 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @param xml the XML to parse.
      * @return the map of attributes.
      */
-    protected Map extractCustomAttributes(final String xml) {
+    protected Map<String,Object> extractCustomAttributes(final String xml) {
     	final int pos1 = xml.indexOf("<cas:attributes>");
     	final int pos2 = xml.indexOf("</cas:attributes>");
     	
     	if (pos1 == -1) {
-    		return Collections.EMPTY_MAP;
+    		return Collections.emptyMap();
     	}
     	
     	final String attributesText = xml.substring(pos1+16, pos2);
     	
-    	final Map attributes = new HashMap();
+    	final Map<String,Object> attributes = new HashMap<String,Object>();
     	final BufferedReader br = new BufferedReader(new StringReader(attributesText));
     	
     	String line;
-    	final List attributeNames = new ArrayList();
+    	final List<String> attributeNames = new ArrayList<String>();
     	try {
 	    	while ((line = br.readLine()) != null) {
 	    		final String trimmedLine = line.trim();
@@ -152,8 +152,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     		//ignore
     	}
 
-    	for (final Iterator iter = attributeNames.iterator(); iter.hasNext();) {
-    		final String name = (String) iter.next();
+        for (final String name : attributeNames) {
     		attributes.put(name, XmlUtils.getTextForElement(xml, name));
     	}
     	

@@ -40,12 +40,12 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
     /**
      * Maps the ID from the CAS server to the Session.
      */
-    private final Map MANAGED_SESSIONS = new HashMap();
+    private final Map<String,HttpSession> MANAGED_SESSIONS = new HashMap<String,HttpSession>();
 
     /**
      * Maps the Session ID to the key from the CAS Server.
      */
-    private final Map ID_TO_SESSION_KEY_MAPPING = new HashMap();
+    private final Map<String,String> ID_TO_SESSION_KEY_MAPPING = new HashMap<String,String>();
 
     private final Log log = LogFactory.getLog(getClass());
 
@@ -60,7 +60,7 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
             log.debug("Attempting to remove Session=[" + sessionId + "]");
         }
 
-        final String key = (String) ID_TO_SESSION_KEY_MAPPING.get(sessionId);
+        final String key = ID_TO_SESSION_KEY_MAPPING.get(sessionId);
 
         if (log.isDebugEnabled()) {
             if (key != null) {
@@ -74,7 +74,7 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
 	}
 
 	public synchronized HttpSession removeSessionByMappingId(String mappingId) {
-		final HttpSession session = (HttpSession) MANAGED_SESSIONS.get(mappingId);
+		final HttpSession session = MANAGED_SESSIONS.get(mappingId);
 
         if (session != null) {
         	removeBySessionById(session.getId());

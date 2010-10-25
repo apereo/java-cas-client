@@ -50,15 +50,15 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
     }
 
     protected void customParseResponse(final String response, final Assertion assertion) throws TicketValidationException {
-        final List proxies = XmlUtils.getTextForElements(response, "proxy");
-        final String[] proxiedList = (String[]) proxies.toArray(new String[proxies.size()]);
+        final List<String> proxies = XmlUtils.getTextForElements(response, "proxy");
+        final String[] proxiedList = proxies.toArray(new String[proxies.size()]);
 
         // this means there was nothing in the proxy chain, which is okay
-        if (proxies == null || proxies.isEmpty() || this.acceptAnyProxy) {
+        if (proxies.isEmpty() || this.acceptAnyProxy) {
             return;
         }
 
-        if (allowedProxyChains.contains(proxiedList)) {
+        if (this.allowedProxyChains.contains(proxiedList)) {
             return;
         }
 

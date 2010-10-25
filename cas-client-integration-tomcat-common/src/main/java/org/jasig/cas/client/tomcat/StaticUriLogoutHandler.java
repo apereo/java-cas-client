@@ -46,7 +46,7 @@ public final class StaticUriLogoutHandler extends AbstractLogoutHandler {
     }
 
     /**
-     * Initalializes the component for use.
+     * Initializes the component for use.
      */
     public void init() {
         CommonUtils.assertNotNull(this.logoutUri, "logoutUri cannot be null.");

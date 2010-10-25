@@ -23,11 +23,16 @@ import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.proxy.ProxyRetriever;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Test cases for the {@link Cas20ProxyTicketValidator}.
@@ -45,8 +50,14 @@ public final class Cas20ProxyTicketValidatorTests extends
         super();
     }
 
-    protected void setUp() throws Exception {
-        final List list = new ArrayList();
+    @AfterClass
+    public static void classCleanUp() {
+        PublicTestHttpServer.instance().shutdown();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        final List<String[]> list = new ArrayList<String[]>();
         list.add(new String[] {"proxy1", "proxy2", "proxy3"});
 
         this.ticketValidator = new Cas20ProxyTicketValidator(CONST_CAS_SERVER_URL);
@@ -58,13 +69,11 @@ public final class Cas20ProxyTicketValidatorTests extends
     }
 
     private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
-        final ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
-
-        return proxyGrantingTicketStorageImpl;
+        return new ProxyGrantingTicketStorageImpl();
     }
 
     private ProxyRetriever getProxyRetriever() {
-        final ProxyRetriever proxyRetriever = new ProxyRetriever() {
+        return new ProxyRetriever() {
 
             /** Unique Id For serialization. */
 			private static final long serialVersionUID = 1L;
@@ -73,10 +82,9 @@ public final class Cas20ProxyTicketValidatorTests extends
                 return "test";
             }
         };
-
-        return proxyRetriever;
     }
 
+    @Test
     public void testProxyChainWithValidProxy() throws TicketValidationException,
             UnsupportedEncodingException {
         final String USERNAME = "username";
@@ -89,6 +97,7 @@ public final class Cas20ProxyTicketValidatorTests extends
         assertEquals(USERNAME, assertion.getPrincipal().getName());
     }
 
+    @Test
     public void testProxyChainWithInvalidProxy() throws TicketValidationException,
             UnsupportedEncodingException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy7</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
@@ -102,7 +111,8 @@ public final class Cas20ProxyTicketValidatorTests extends
             // expected
         }
     }
-    
+
+    @Test
     public void testConstructionFromSpringBean() throws TicketValidationException,
     UnsupportedEncodingException {
     	final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:cas20ProxyTicketValidator.xml");

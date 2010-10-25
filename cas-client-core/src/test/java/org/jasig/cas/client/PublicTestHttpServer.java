@@ -40,6 +40,8 @@ public final class PublicTestHttpServer extends Thread {
 
     public final String encoding;
 
+    private ServerSocket server;
+
     private PublicTestHttpServer(String data, String encoding, String MIMEType, int port) throws UnsupportedEncodingException {
         this(data.getBytes(encoding), encoding, MIMEType, port);
     }
@@ -66,10 +68,21 @@ public final class PublicTestHttpServer extends Thread {
         return httpServer;
     }
 
+    public void shutdown() {
+        System.out.println("Shutting down connection on port " + server.getLocalPort());
+        try {
+            this.server.close();
+        } catch (final Exception e) {
+            System.err.println(e);
+        }
+
+        httpServer = null;
+    }
+
     public void run() {
 
         try {
-            ServerSocket server = new ServerSocket(this.port);
+            this.server = new ServerSocket(this.port);
             System.out.println("Accepting connections on port " + server.getLocalPort());
             while (true) {
 

@@ -37,9 +37,11 @@ import org.jasig.cas.client.util.CommonUtils;
  *
  * @author Marvin S. Addison
  * @version $Revision$
+ * @since 3.1.12
  *
  */
 public class AssertionCasRealmDelegate implements CasRealm {
+
     /** Default role attribute name */
     public static final String DEFAULT_ROLE_NAME = "role";
 
@@ -63,7 +65,7 @@ public class AssertionCasRealmDelegate implements CasRealm {
     public String[] getRoles(final Principal p) {
         CommonUtils.assertTrue(p instanceof AttributePrincipal, "Expected instance of AttributePrincipal but got " + p.getClass());
 
-        final Collection roles = getRoleCollection(p);
+        final Collection<String> roles = getRoleCollection(p);
         final String[] array = new String[roles.size()];
         roles.toArray(array);
         return array;
@@ -80,7 +82,7 @@ public class AssertionCasRealmDelegate implements CasRealm {
      * @param p the principal to check.
      * @return the list of attribute values that matched this role, or an empty collection if they don't.
      */
-    private Collection getRoleCollection(final Principal p) {
+    private Collection<String> getRoleCollection(final Principal p) {
         if (!(p instanceof AttributePrincipal)) {
             return Collections.emptyList();
         }
@@ -92,9 +94,9 @@ public class AssertionCasRealmDelegate implements CasRealm {
         }
 
         if (attributes instanceof Collection) {
-            return (Collection) attributes;
+            return (Collection<String>) attributes;
         }
 
-        return Arrays.asList(new Object[] {attributes});
+        return Arrays.asList(attributes.toString());
     }
 }

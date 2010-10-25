@@ -122,7 +122,7 @@ public final class ReflectUtils {
     }
 
     /**
-     * Sets the given property on the target javabean using bean instrospection.
+     * Sets the given property on the target JavaBean using bean instrospection.
      * @param propertyName Property to set.
      * @param value Property value to set.
      * @param target Target java bean on which to set property.
@@ -131,21 +131,21 @@ public final class ReflectUtils {
         try {
             setProperty(propertyName, value, target, Introspector.getBeanInfo(target.getClass()));
         } catch (final IntrospectionException e) {
-            throw new RuntimeException("Failed getting bean info on target javabean " + target, e);
+            throw new RuntimeException("Failed getting bean info on target JavaBean " + target, e);
         }
     }
 
     /**
-     * Sets the given property on the target javabean using bean instrospection.
+     * Sets the given property on the target JavaBean using bean instrospection.
      * @param propertyName Property to set.
      * @param value Property value to set.
-     * @param target Target javabean on which to set property.
-     * @param info BeanInfo describing the target javabean.
+     * @param target Target JavaBean on which to set property.
+     * @param info BeanInfo describing the target JavaBean.
      */
     public static void setProperty(final String propertyName, final Object value, final Object target, final BeanInfo info) {
         try {
             final PropertyDescriptor pd = getPropertyDescriptor(info, propertyName);
-            pd.getWriteMethod().invoke(target, new Object[] { value });
+            pd.getWriteMethod().invoke(target, value);
         } catch (final InvocationTargetException e) {
             throw new RuntimeException("Error setting property " + propertyName, e.getCause());
         } catch (final Exception e) {

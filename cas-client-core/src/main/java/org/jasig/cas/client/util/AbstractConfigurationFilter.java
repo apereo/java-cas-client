@@ -67,7 +67,7 @@ public abstract class AbstractConfigurationFilter implements Filter {
             log.info("Property [" + propertyName + "] loaded from ServletContext.getInitParameter with value [" + value2 + "]");
             return value2;
         }
-        InitialContext context = null;
+        InitialContext context;
         try {
          context = new InitialContext();
         } catch (final NamingException e) {

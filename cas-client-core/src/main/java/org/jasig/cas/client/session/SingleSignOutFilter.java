@@ -39,7 +39,6 @@ import java.io.IOException;
  * @since 3.1
  */
 public final class SingleSignOutFilter extends AbstractConfigurationFilter {
-    private static Log log = LogFactory.getLog(SingleSignOutFilter.class);
 
     private static final SingleSignOutHandler handler = new SingleSignOutHandler();
 

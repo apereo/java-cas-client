@@ -43,6 +43,7 @@ import org.jasig.cas.client.util.CommonUtils;
  *
  * @author Middleware
  * @version $Revision$
+ * @since 3.1.12
  *
  */
 public class PropertiesCasRealmDelegate implements CasRealm  {
@@ -54,7 +55,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
     private String propertiesFilePath;
     
     /** Map of usernames to roles */
-    private Map roleMap;
+    private Map<String, Set<String>> roleMap;
     
     /**
      * @param path Path to properties file container username/role data.
@@ -76,15 +77,15 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
         final Properties properties = new Properties();
         try {
             properties.load(new BufferedInputStream(new FileInputStream(file)));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Error loading users/roles from " + file, e);
         }
-        roleMap = new HashMap(properties.size());
-        final Iterator keys = properties.keySet().iterator();
-        while (keys.hasNext()) {
-            final String user = (String) keys.next();
+        this.roleMap = new HashMap<String,Set<String>>(properties.size());
+        final Set<String> keys = new HashSet(properties.keySet());
+
+        for (final String user : keys) {
             // Use TreeSet to sort roles
-            final Set roleSet = new HashSet();
+            final Set<String> roleSet = new HashSet<String>();
             final String[] roles = properties.getProperty(user).split(",\\s*");
             roleSet.addAll(Arrays.asList(roles));
             roleMap.put(user, roleSet);
@@ -93,7 +94,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
 
     /** {@inheritDoc} */
     public Principal authenticate(final Principal p) {
-        if (roleMap.containsKey(p.getName())) {
+        if (this.roleMap.containsKey(p.getName())) {
             return p;
         } else {
             return null;
@@ -102,7 +103,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
 
     /** {@inheritDoc} */
     public String[] getRoles(final Principal p) {
-        final Set roleSet = (Set) roleMap.get(p.getName());
+        final Set<String> roleSet = this.roleMap.get(p.getName());
         final String[] roles = new String[roleSet.size()];
         roleSet.toArray(roles);
         return roles;
@@ -110,7 +111,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
 
     /** {@inheritDoc} */
     public boolean hasRole(final Principal principal, final String role) {
-        final Set roles = (Set) roleMap.get(principal.getName());
+        final Set<String> roles = this.roleMap.get(principal.getName());
 
         return roles != null && roles.contains(role);
     }

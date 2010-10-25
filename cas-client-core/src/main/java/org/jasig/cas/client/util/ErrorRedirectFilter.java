@@ -54,7 +54,7 @@ public final class ErrorRedirectFilter implements Filter {
 
 	private final Log log = LogFactory.getLog(getClass());
 	
-	private final List errors = new ArrayList();
+	private final List<ErrorHolder> errors = new ArrayList<ErrorHolder>();
 	
 	private String defaultErrorRedirectPage;
 	
@@ -70,8 +70,7 @@ public final class ErrorRedirectFilter implements Filter {
 		} catch (final ServletException e) {
 			final Throwable t = e.getCause();
 			ErrorHolder currentMatch = null;
-			for (final Iterator iter = this.errors.iterator(); iter.hasNext();) {
-				final ErrorHolder errorHolder = (ErrorHolder) iter.next();
+            for (final ErrorHolder errorHolder : this.errors) {
 				if (errorHolder.exactMatch(t)) {
 					currentMatch = errorHolder;
 					break;

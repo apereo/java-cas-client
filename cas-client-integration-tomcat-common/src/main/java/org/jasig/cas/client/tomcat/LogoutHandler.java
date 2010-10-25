@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Marvin S. Addison
  * @version $Revision$
+ * @since 3.1.12
  *
  */
 public interface LogoutHandler {

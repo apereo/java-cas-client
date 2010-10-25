@@ -20,8 +20,6 @@
 package org.jasig.cas.client.tomcat.v7;
 
 import org.apache.catalina.LifecycleException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.tomcat.LogoutHandler;
 import org.jasig.cas.client.tomcat.StaticUriLogoutHandler;
 
@@ -34,9 +32,6 @@ import org.jasig.cas.client.tomcat.StaticUriLogoutHandler;
  * @since 3.1.12
  */
 public final class StaticUriLogoutValve extends AbstractLogoutValve {
-
-    /** Logger instance */
-    private final Log log = LogFactory.getLog(getClass());
 
     private StaticUriLogoutHandler logoutHandler = new StaticUriLogoutHandler();
 
@@ -56,6 +51,6 @@ public final class StaticUriLogoutValve extends AbstractLogoutValve {
 
     /** {@inheritDoc} */
     protected LogoutHandler getLogoutHandler() {
-        return logoutHandler;
+        return this.logoutHandler;
     }
 }

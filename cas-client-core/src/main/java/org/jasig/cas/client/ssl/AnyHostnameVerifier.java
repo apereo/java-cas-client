@@ -18,17 +18,9 @@
  */
 
 /*
-  $Id$
-
-  Copyright (C) 2008-2009 Virginia Tech.
-  All rights reserved.
-
-  SEE LICENSE FOR MORE INFORMATION
-
-  Author:  Middleware
-  Email:   middleware@vt.edu
-  Version: $Revision$
-  Updated: $Date$
+  @author Marvin Addison
+  @version $Revision$ $Date$
+  @since 3.1.10
 */
 package org.jasig.cas.client.ssl;
 

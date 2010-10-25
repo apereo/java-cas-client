@@ -64,5 +64,4 @@ public class RegexHostnameVerifier implements HostnameVerifier {
     public boolean verify(final String hostname, final SSLSession session) {
         return pattern.matcher(hostname).matches();
     }
-
 }

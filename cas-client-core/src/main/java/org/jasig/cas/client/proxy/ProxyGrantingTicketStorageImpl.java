@@ -19,10 +19,9 @@
 
 package org.jasig.cas.client.proxy;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,7 +50,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
     /**
      * Map that stores the PGTIOU to PGT mappings.
      */
-    private final Map cache = Collections.synchronizedMap(new HashMap());
+    private final ConcurrentMap<String,ProxyGrantingTicketHolder> cache = new ConcurrentHashMap<String,ProxyGrantingTicketHolder>();
 
     /**
      * time, in milliseconds, before a {@link ProxyGrantingTicketHolder}
@@ -83,15 +82,14 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * Its removed after retrieval.
      */
     public String retrieve(final String proxyGrantingTicketIou) {
-        final ProxyGrantingTicketHolder holder = (ProxyGrantingTicketHolder) this.cache
-                .get(proxyGrantingTicketIou);
+        final ProxyGrantingTicketHolder holder = this.cache.get(proxyGrantingTicketIou);
 
         if (holder == null) {
         	log.info("No Proxy Ticket found for [" + proxyGrantingTicketIou + "].");
             return null;
         }
 
-        this.cache.remove(holder);
+        this.cache.remove(proxyGrantingTicketIou);
 
         if (log.isDebugEnabled()) {
         	log.debug("Returned ProxyGrantingTicket of [" + holder.getProxyGrantingTicket() + "]");
@@ -99,10 +97,8 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
         return holder.getProxyGrantingTicket();
     }
 
-    public void save(final String proxyGrantingTicketIou,
-                     final String proxyGrantingTicket) {
-        final ProxyGrantingTicketHolder holder = new ProxyGrantingTicketHolder(
-                proxyGrantingTicket);
+    public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
+        final ProxyGrantingTicketHolder holder = new ProxyGrantingTicketHolder(proxyGrantingTicket);
 
         if (log.isDebugEnabled()) {
         	log.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [" + proxyGrantingTicketIou + ", " + proxyGrantingTicket + "]");
@@ -115,16 +111,11 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * called regularly via an external thread or timer.
      */
     public void cleanUp() {
-        synchronized (this.cache) {
-            for (final Iterator iter = this.cache.values().iterator(); iter
-                    .hasNext();) {
-                final ProxyGrantingTicketHolder holder = (ProxyGrantingTicketHolder) iter.next();
-
-                if (holder.isExpired(this.timeout)) {
-                    iter.remove();
-                }
+        for (final Map.Entry<String,ProxyGrantingTicketHolder> holder : this.cache.entrySet()) {
+            if (holder.getValue().isExpired(this.timeout)) {
+                this.cache.remove(holder.getKey());
             }
-        }    	
+        }
     }
     
     private static final class ProxyGrantingTicketHolder {

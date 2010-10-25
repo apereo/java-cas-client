@@ -24,6 +24,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.security.Principal;
 import java.security.acl.Group;
 import java.util.*;
 import java.util.concurrent.Executor;
@@ -130,11 +131,11 @@ public class CasLoginModule implements LoginModule {
 
     /**
      * Stores mapping of ticket to assertion to support JAAS providers that
-     * attempt to periodically reauthenticate to renew principal.  Since
+     * attempt to periodically re-authenticate to renew principal.  Since
      * CAS tickets are one-time-use, a cached assertion must be provided on
-     * reauthentication.
+     * re-authentication.
      */
-    protected static final Map ASSERTION_CACHE = new HashMap();
+    protected static final Map<TicketCredential,Assertion> ASSERTION_CACHE = new HashMap<TicketCredential,Assertion>();
 
     /** Executor responsible for assertion cache cleanup */
     protected static Executor cacheCleanerExecutor = Executors.newSingleThreadExecutor();
@@ -161,13 +162,13 @@ public class CasLoginModule implements LoginModule {
     protected TicketCredential ticket;
     
     /** Login module shared state */
-    protected Map sharedState;
+    protected Map<String,Object> sharedState;
    
     /** Roles to be added to all authenticated principals by default */
     protected String[] defaultRoles;
    
     /** Names of attributes in the CAS assertion that should be used for role data */
-    protected Set roleAttributeNames = new HashSet();
+    protected Set<String> roleAttributeNames = new HashSet<String>();
    
     /** Name of JAAS Group containing caller principal */
     protected String principalGroupName = DEFAULT_PRINCIPAL_GROUP_NAME;
@@ -179,8 +180,7 @@ public class CasLoginModule implements LoginModule {
     protected boolean cacheAssertions;
 
     /** Assertion cache timeout in minutes */
-    protected int cacheTimeout;
-    
+    protected int cacheTimeout = DEFAULT_CACHE_TIMEOUT;
 
     /**
      * Initializes the CAS login module.
@@ -203,16 +203,17 @@ public class CasLoginModule implements LoginModule {
      *  <li>cacheTimeout (optional) - assertion cache timeout in minutes.</li>
      * </ul>
      */
-    public void initialize(final Subject subject, final CallbackHandler handler, final Map state, final Map options) {
+
+
+    public void initialize(final Subject subject, final CallbackHandler handler, final Map<String,?> state, final Map<String, ?> options) {
         this.assertion = null;
         this.callbackHandler = handler;
         this.subject = subject;
-        this.sharedState = state;
+        this.sharedState = new HashMap(state);
       
         String ticketValidatorClass = null;
-        final Iterator iter = options.keySet().iterator();
-        while (iter.hasNext()) {
-            final Object key = iter.next();
+
+        for (final String key : options.keySet()) {
             log.trace("Processing option " + key);
             if ("service".equals(key)) {
                 this.service = (String) options.get(key);
@@ -245,6 +246,7 @@ public class CasLoginModule implements LoginModule {
                 log.debug("Set cacheTimeout=" + this.cacheTimeout);
             }
         }
+
         if (this.cacheAssertions) {
             cacheCleanerExecutor.execute(new CacheCleaner());
         }
@@ -275,7 +277,7 @@ public class CasLoginModule implements LoginModule {
                 synchronized(ASSERTION_CACHE) {
                     if (ASSERTION_CACHE.get(ticket) != null) {
                         log.debug("Assertion found in cache.");
-                        this.assertion = (Assertion) ASSERTION_CACHE.get(ticket);
+                        this.assertion = ASSERTION_CACHE.get(ticket);
                     }
                 }
             }
@@ -290,7 +292,7 @@ public class CasLoginModule implements LoginModule {
                     if (log.isDebugEnabled()) {
                         log.debug("Attempting ticket validation with service=" + service + " and ticket=" + ticket);
                     }
-                    this.assertion = this.ticketValidator.validate(this.ticket.getTicket(), service);
+                    this.assertion = this.ticketValidator.validate(this.ticket.getName(), service);
 
                 } catch (final Exception e) {
                     log.info("Login failed due to CAS ticket validation failure: " + e);
@@ -334,20 +336,19 @@ public class CasLoginModule implements LoginModule {
             
             // Add group principal containing role data
             final Group roleGroup = new SimpleGroup(this.roleGroupName);
-            for (int i = 0; i < defaultRoles.length; i++) {
-                roleGroup.addMember(new SimplePrincipal(defaultRoles[i]));
+
+            for (final String defaultRole : defaultRoles) {
+                roleGroup.addMember(new SimplePrincipal(defaultRole));
             }
-            final Map attributes = this.assertion.getPrincipal().getAttributes();
-            final Iterator nameIterator = attributes.keySet().iterator();
-            while (nameIterator.hasNext()) {
-                final Object key = nameIterator.next();
+
+            final Map<String,Object> attributes = this.assertion.getPrincipal().getAttributes();
+            for (final String key : attributes.keySet()) {
                 if (this.roleAttributeNames.contains(key)) {
                     // Attribute value is Object if singular or Collection if plural
                     final Object value = attributes.get(key);
                     if (value instanceof Collection) {
-                        final Iterator valueIterator = ((Collection) value).iterator();
-                        while (valueIterator.hasNext()) {
-                            roleGroup.addMember(new SimplePrincipal(valueIterator.next().toString()));
+                        for (final Object o : (Collection) value) {
+                            roleGroup.addMember(new SimplePrincipal(o.toString()));
                         }
                     } else {
                         roleGroup.addMember(new SimplePrincipal(value.toString()));
@@ -357,7 +358,7 @@ public class CasLoginModule implements LoginModule {
             this.subject.getPrincipals().add(roleGroup);
             
             // Place principal name in shared state for downstream JAAS modules (module chaining use case)
-            this.sharedState.put(LOGIN_NAME, casPrincipal.getName());
+            this.sharedState.put(LOGIN_NAME, new Object()); // casPrincipal.getName());
             
             if (log.isDebugEnabled()) {
                 if (log.isDebugEnabled()) {
@@ -403,7 +404,7 @@ public class CasLoginModule implements LoginModule {
      * @param propertyMap Map of property name/value pairs to set on validator instance.
      * @return Ticket validator with properties set.
      */
-    private TicketValidator createTicketValidator(final String className, final Map propertyMap) {
+    private TicketValidator createTicketValidator(final String className, final Map<String,?> propertyMap) {
         CommonUtils.assertTrue(propertyMap.containsKey("casServerUrlPrefix"), "Required property casServerUrlPrefix not found.");
 
         final Class validatorClass = ReflectUtils.loadClass(className);
@@ -411,9 +412,8 @@ public class CasLoginModule implements LoginModule {
 
         try {
             final BeanInfo info = Introspector.getBeanInfo(validatorClass);
-            final Iterator iter = propertyMap.keySet().iterator();
-            while (iter.hasNext()) {
-                final String property = (String) iter.next();
+
+            for (final String property : propertyMap.keySet()) {
                 if (!"casServerUrlPrefix".equals(property)) {
                     log.debug("Attempting to set TicketValidator property " + property);
                     final String value = (String) propertyMap.get(property);
@@ -461,22 +461,16 @@ public class CasLoginModule implements LoginModule {
      * Removes all principals of the given type from the JAAS subject.
      * @param clazz Type of principal to remove.
      */
-    private void removePrincipalsOfType(final Class clazz) {
-        final Iterator iter = this.subject.getPrincipals(clazz).iterator();
-        while (iter.hasNext()) {
-            this.subject.getPrincipals().remove(iter.next());
-        }
+    private void removePrincipalsOfType(final Class<? extends Principal> clazz) {
+        this.subject.getPrincipals().removeAll(this.subject.getPrincipals(clazz));
     }
 
     /**
      * Removes all credentials of the given type from the JAAS subject.
      * @param clazz Type of principal to remove.
      */
-    private void removeCredentialsOfType(final Class clazz) {
-        final Iterator iter = this.subject.getPrivateCredentials(clazz).iterator();
-        while (iter.hasNext()) {
-            this.subject.getPrivateCredentials().remove(iter.next());
-        }
+    private void removeCredentialsOfType(final Class<? extends Principal> clazz) {
+        this.subject.getPrivateCredentials().removeAll(this.subject.getPrivateCredentials(clazz));
     }
 
     /** Removes expired entries from the assertion cache. */

@@ -33,7 +33,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Implementation of a filter that wraps the normal HttpServletRequest with a
@@ -125,8 +124,9 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
             final Object value = this.principal.getAttributes().get(roleAttribute);
             
             if (value instanceof Collection) {
-                for (final Iterator iter = ((Collection) value).iterator(); iter.hasNext();) {
-                    if (rolesEqual(role, iter.next())) {
+                final Collection c = (Collection)  value;
+                for (final Object o : c) {
+                    if (rolesEqual(role, o)) {
                         log.debug("User [" + getRemoteUser() + "] is in role [" + role + "]: " + true);
                         return true;
                     }

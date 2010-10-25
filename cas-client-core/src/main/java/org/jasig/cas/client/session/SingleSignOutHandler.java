@@ -31,10 +31,12 @@ import org.jasig.cas.client.util.XmlUtils;
  * Performs CAS single sign-out operations in an API-agnostic fashion.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision$ $Date$
+ * @since 3.1.12
  *
  */
-public class SingleSignOutHandler {
+public final class SingleSignOutHandler {
+
     /** Logger instance */
     private final Log log = LogFactory.getLog(getClass());
 
@@ -55,26 +57,12 @@ public class SingleSignOutHandler {
     public SessionMappingStorage getSessionMappingStorage() {
         return this.sessionMappingStorage;
     }
-    
-    /**
-     * @return Name of the parameter containing the authentication token.
-     */
-    public String getArtifactParameterName() {
-        return artifactParameterName;
-    }
 
     /**
      * @param name Name of the authentication token parameter.
      */
     public void setArtifactParameterName(final String name) {
         this.artifactParameterName = name;
-    }
-    
-    /**
-     * @return Name of parameter containing CAS logout request message.
-     */
-    public String getLogoutParameterName() {
-        return logoutParameterName;
     }
 
     /**

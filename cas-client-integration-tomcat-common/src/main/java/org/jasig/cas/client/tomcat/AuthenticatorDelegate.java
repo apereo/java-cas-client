@@ -43,9 +43,11 @@ import org.jasig.cas.client.validation.TicketValidator;
  *
  * @author Marvin S. Addison
  * @version $Revision$
+ * @since 3.1.12
  *
  */
-public class AuthenticatorDelegate {
+public final class AuthenticatorDelegate {
+
     /** Log instance */
     private final Log log = LogFactory.getLog(getClass());
 
@@ -62,7 +64,6 @@ public class AuthenticatorDelegate {
     private TicketValidator ticketValidator;
     
     private CasRealm realm;
-
 
     /**
      * Performs CAS authentication on the given request and returns the principal
@@ -155,13 +156,6 @@ public class AuthenticatorDelegate {
      */
     public void setCasServerLoginUrl(final String casServerLoginUrl) {
         this.casServerLoginUrl = casServerLoginUrl;
-    }
-
-    /**
-     * @return the ticketValidator
-     */
-    public TicketValidator getTicketValidator() {
-        return ticketValidator;
     }
 
     /**

@@ -21,8 +21,6 @@ package org.jasig.cas.client.proxy;
 
 import java.util.TimerTask;
 
-import org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter;
-
 /**
  * A {@link TimerTask} implementation which performs the
  * actual 'cleaning' by calling {@link ProxyGrantingTicketStorage#cleanUp()}.

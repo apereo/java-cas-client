@@ -66,11 +66,11 @@ public class WhitelistHostnameVerifier implements HostnameVerifier {
         this.allowedHosts = allowedList.split(",\\s*");
     }
 
-
     /** {@inheritDoc} */
     public boolean verify(final String hostname, final SSLSession session) {
-        for (int i = 0; i < this.allowedHosts.length; i++) {
-            if (hostname.equalsIgnoreCase(this.allowedHosts[i])) {
+
+        for (final String allowedHost : this.allowedHosts) {
+            if (hostname.equalsIgnoreCase(allowedHost)) {
                 return true;
             }
         }

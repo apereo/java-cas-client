@@ -30,7 +30,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -57,7 +56,7 @@ public final class DelegatingFilter implements Filter {
     /**
      * The map of filters to delegate to and the criteria (as key).
      */
-    private final Map delegators;
+    private final Map<String,Filter> delegators;
 
     /**
      * The default filter to use if there is no match.
@@ -70,25 +69,13 @@ public final class DelegatingFilter implements Filter {
      */
     private final boolean exactMatch;
 
-    public DelegatingFilter(final String requestParameterName, final Map delegators, final boolean exactMatch) {
+    public DelegatingFilter(final String requestParameterName, final Map<String,Filter> delegators, final boolean exactMatch) {
         this(requestParameterName, delegators, exactMatch, null);
     }
 
-    public DelegatingFilter(final String requestParameterName, final Map delegators, final boolean exactMatch, final Filter defaultFilter) {
-        CommonUtils.assertNotNull(requestParameterName,
-                "requestParameterName cannot be null.");
-        CommonUtils.assertTrue(!delegators.isEmpty(),
-                "delegators cannot be empty.");
-
-        for (final Iterator iter = delegators.keySet().iterator(); iter
-                .hasNext();) {
-            final Object object = delegators.get(iter.next());
-
-            if (!Filter.class.isAssignableFrom(object.getClass())) {
-                throw new IllegalArgumentException(
-                        "All value objects in the delegators map must be filters.");
-            }
-        }
+    public DelegatingFilter(final String requestParameterName, final Map<String,Filter> delegators, final boolean exactMatch, final Filter defaultFilter) {
+        CommonUtils.assertNotNull(requestParameterName, "requestParameterName cannot be null.");
+        CommonUtils.assertTrue(!delegators.isEmpty(), "delegators cannot be empty.");
 
         this.requestParameterName = requestParameterName;
         this.delegators = delegators;
@@ -100,20 +87,14 @@ public final class DelegatingFilter implements Filter {
         // nothing to do here
     }
 
-    public void doFilter(final ServletRequest request,
-                         final ServletResponse response, final FilterChain filterChain)
-            throws IOException, ServletException {
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain) throws IOException, ServletException {
 
         final String parameter = CommonUtils.safeGetParameter((HttpServletRequest) request, this.requestParameterName);
 
         if (CommonUtils.isNotEmpty(parameter)) {
-            for (final Iterator iter = this.delegators.keySet().iterator(); iter
-                    .hasNext();) {
-                final String key = (String) iter.next();
-
-                if ((parameter.equals(key) && this.exactMatch)
-                        || (parameter.matches(key) && !this.exactMatch)) {
-                    final Filter filter = (Filter) this.delegators.get(key);
+            for (final String key : this.delegators.keySet()) {
+                if ((parameter.equals(key) && this.exactMatch) || (parameter.matches(key) && !this.exactMatch)) {
+                    final Filter filter = this.delegators.get(key);
                     if (log.isDebugEnabled()) {
                         log.debug("Match found for parameter ["
                                 + this.requestParameterName + "] with value ["
@@ -126,8 +107,7 @@ public final class DelegatingFilter implements Filter {
             }
         }
 
-        log.debug("No match found for parameter [" + this.requestParameterName
-                + "] with value [" + parameter + "]");
+        log.debug("No match found for parameter [" + this.requestParameterName + "] with value [" + parameter + "]");
 
         if (this.defaultFilter != null) {
             this.defaultFilter.doFilter(request, response, filterChain);

@@ -228,41 +228,40 @@ public final class CommonUtils {
             return encode ? response.encodeURL(service) : service;
         }
 
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
 
-        synchronized (buffer) {
-            if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
-                buffer.append(request.isSecure() ? "https://" : "http://");
+
+        if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
+            buffer.append(request.isSecure() ? "https://" : "http://");
+        }
+
+        buffer.append(serverName);
+        buffer.append(request.getRequestURI());
+
+        if (CommonUtils.isNotBlank(request.getQueryString())) {
+            final int location = request.getQueryString().indexOf(artifactParameterName + "=");
+
+            if (location == 0) {
+                final String returnValue = encode ? response.encodeURL(buffer.toString()): buffer.toString();
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("serviceUrl generated: " + returnValue);
+                }
+                return returnValue;
             }
 
-            buffer.append(serverName);
-            buffer.append(request.getRequestURI());
+            buffer.append("?");
 
-            if (CommonUtils.isNotBlank(request.getQueryString())) {
-                final int location = request.getQueryString().indexOf(artifactParameterName + "=");
+            if (location == -1) {
+                buffer.append(request.getQueryString());
+            } else if (location > 0) {
+                final int actualLocation = request.getQueryString()
+                        .indexOf("&" + artifactParameterName + "=");
 
-                if (location == 0) {
-                    final String returnValue = encode ? response.encodeURL(buffer.toString()): buffer.toString();
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("serviceUrl generated: " + returnValue);
-                    }
-                    return returnValue;
-                }
-
-                buffer.append("?");
-
-                if (location == -1) {
+                if (actualLocation == -1) {
                     buffer.append(request.getQueryString());
-                } else if (location > 0) {
-                    final int actualLocation = request.getQueryString()
-                            .indexOf("&" + artifactParameterName + "=");
-
-                    if (actualLocation == -1) {
-                        buffer.append(request.getQueryString());
-                    } else if (actualLocation > 0) {
-                        buffer.append(request.getQueryString().substring(0,
-                                actualLocation));
-                    }
+                } else if (actualLocation > 0) {
+                    buffer.append(request.getQueryString().substring(0,
+                            actualLocation));
                 }
             }
         }
@@ -299,6 +298,7 @@ public final class CommonUtils {
      * Contacts the remote URL and returns the response.
      *
      * @param constructedUrl the url to contact.
+     * @param encoding the encoding to use.
      * @return the response.
      */
     public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
@@ -310,6 +310,7 @@ public final class CommonUtils {
      *
      * @param constructedUrl the url to contact.
      * @param hostnameVerifier Host name verifier to use for HTTPS connections.
+     * @param encoding the encoding to use.
      * @return the response.
      */
     public static String getResponseFromServer(final URL constructedUrl, final HostnameVerifier hostnameVerifier, final String encoding) {
@@ -328,15 +329,13 @@ public final class CommonUtils {
             }
 
             String line;
-            final StringBuffer stringBuffer = new StringBuffer(255);
+            final StringBuilder stringBuffer = new StringBuilder(255);
 
-            synchronized (stringBuffer) {
-                while ((line = in.readLine()) != null) {
-                    stringBuffer.append(line);
-                    stringBuffer.append("\n");
-                }
-                return stringBuffer.toString();
+            while ((line = in.readLine()) != null) {
+                stringBuffer.append(line);
+                stringBuffer.append("\n");
             }
+            return stringBuffer.toString();
         } catch (final Exception e) {
             LOG.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -351,6 +350,7 @@ public final class CommonUtils {
      * Contacts the remote URL and returns the response.
      *
      * @param url the url to contact.
+     * @param encoding the encoding to use.
      * @return the response.
      */
     public static String getResponseFromServer(final String url, String encoding) {

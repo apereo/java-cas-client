@@ -22,7 +22,7 @@ package org.jasig.cas.client.util;
 import org.jasig.cas.client.validation.Assertion;
 
 /**
- * Static holder that places Assertion in a threadlocal.
+ * Static holder that places Assertion in a ThreadLocal.
  *
  * @author Scott Battaglia
  * @version $Revision: 11728 $ $Date: 2007-09-26 14:20:43 -0400 (Tue, 26 Sep 2007) $
@@ -33,18 +33,22 @@ public class AssertionHolder {
     /**
      * ThreadLocal to hold the Assertion for Threads to access.
      */
-    private static final ThreadLocal threadLocal = new ThreadLocal();
+    private static final ThreadLocal<Assertion> threadLocal = new ThreadLocal<Assertion>();
 
 
     /**
      * Retrieve the assertion from the ThreadLocal.
+     *
+     * @return the Asssertion associated with this thread.
      */
     public static Assertion getAssertion() {
-        return (Assertion) threadLocal.get();
+        return threadLocal.get();
     }
 
     /**
      * Add the Assertion to the ThreadLocal.
+     *
+     * @param assertion the assertion to add.
      */
     public static void setAssertion(final Assertion assertion) {
         threadLocal.set(assertion);

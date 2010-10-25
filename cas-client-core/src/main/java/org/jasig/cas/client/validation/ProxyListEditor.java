@@ -40,7 +40,7 @@ public final class ProxyListEditor extends PropertyEditorSupport {
 
 	public void setAsText(final String text) throws IllegalArgumentException {
 		final BufferedReader reader = new BufferedReader(new StringReader(text));
-		final List proxyChains = new ArrayList();
+		final List<String[]> proxyChains = new ArrayList<String[]>();
 
 		try {
 			String line;

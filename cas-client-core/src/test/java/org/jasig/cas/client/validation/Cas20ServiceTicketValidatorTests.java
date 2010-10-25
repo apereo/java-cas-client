@@ -24,6 +24,11 @@ import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.proxy.ProxyRetriever;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
 
@@ -34,8 +39,7 @@ import java.io.UnsupportedEncodingException;
  * @version $Revision: 11737 $ $Date: 2007-10-03 09:14:02 -0400 (Tue, 03 Oct 2007) $
  * @since 3.0
  */
-public final class Cas20ServiceTicketValidatorTests extends
-        AbstractTicketValidatorTests {
+public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValidatorTests {
 
     private Cas20ServiceTicketValidator ticketValidator;
 
@@ -45,11 +49,13 @@ public final class Cas20ServiceTicketValidatorTests extends
         super();
     }
 
-    public Cas20ServiceTicketValidatorTests(Cas20ServiceTicketValidator ticketValidator) {
-        this.ticketValidator = ticketValidator;
+    @AfterClass
+    public static void classCleanUp() {
+        PublicTestHttpServer.instance().shutdown();
     }
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
         this.ticketValidator = new Cas20ServiceTicketValidator(CONST_CAS_SERVER_URL);
         this.ticketValidator.setProxyCallbackUrl("test");
@@ -59,13 +65,11 @@ public final class Cas20ServiceTicketValidatorTests extends
     }
 
     private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
-        final ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
-
-        return proxyGrantingTicketStorageImpl;
+        return new ProxyGrantingTicketStorageImpl();
     }
 
     private ProxyRetriever getProxyRetriever() {
-        final ProxyRetriever proxyRetriever = new ProxyRetriever() {
+        return new ProxyRetriever() {
 
             /** Unique Id for serialization. */
 			private static final long serialVersionUID = 1L;
@@ -74,10 +78,9 @@ public final class Cas20ServiceTicketValidatorTests extends
                 return "test";
             }
         };
-
-        return proxyRetriever;
     }
 
+    @Test
     public void testNoResponse() throws UnsupportedEncodingException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-1856339-aA5Yuvrxzpv8Tau1cYQ7 not recognized</cas:authenticationFailure></cas:serviceResponse>";
         PublicTestHttpServer.instance().content = RESPONSE
@@ -90,6 +93,7 @@ public final class Cas20ServiceTicketValidatorTests extends
         }
     }
 
+    @Test
     public void testYesResponseButNoPgt() throws TicketValidationException,
             UnsupportedEncodingException {
         final String USERNAME = "username";
@@ -102,8 +106,10 @@ public final class Cas20ServiceTicketValidatorTests extends
         final Assertion assertion = this.ticketValidator.validate("test",
                 "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
+
     }
 
+    @Test
     public void testYesResponseWithPgt() throws TicketValidationException,
             UnsupportedEncodingException {
         final String USERNAME = "username";
@@ -125,7 +131,8 @@ public final class Cas20ServiceTicketValidatorTests extends
         assertEquals(USERNAME, assertion.getPrincipal().getName());
 //        assertEquals(PGT, assertion.getProxyGrantingTicketId());
     }
-    
+
+    @Test
     public void testGetAttributes() throws TicketValidationException,
     UnsupportedEncodingException {
         final String USERNAME = "username";
@@ -146,6 +153,7 @@ public final class Cas20ServiceTicketValidatorTests extends
         //assertEquals(PGT, assertion.getProxyGrantingTicketId());
     }
 
+    @Test
     public void testInvalidResponse() throws Exception {
         final String RESPONSE = "<root />";
         PublicTestHttpServer.instance().content = RESPONSE

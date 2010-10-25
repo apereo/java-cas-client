@@ -21,9 +21,14 @@ package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.util.CommonUtils;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Scott Battaglia
@@ -34,11 +39,18 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
 
     private Saml11TicketValidator validator;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.validator = new Saml11TicketValidator(CONST_CAS_SERVER_URL);
         this.validator.setTolerance(1000L);
     }
 
+    @AfterClass
+    public static void classCleanUp() {
+        PublicTestHttpServer.instance().shutdown();
+    }
+
+    @Test
     public void testValidationFailedResponse() throws UnsupportedEncodingException {
         final String RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope\n" +
                 " xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><Response\n" +
@@ -60,14 +72,14 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
             // expected
         }
     }
-    
+
+    @Test
     public void testValidationSuccessWithNoAttributes() throws UnsupportedEncodingException {
         final Date now = new Date();
         final Date before = new Date(now.getTime() - 5000);
         final Date after = new Date(now.getTime() + 200000000);
         final String RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><Response xmlns=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" IssueInstant=\"" + CommonUtils.formatForUtcTime(now) + "\" MajorVersion=\"1\" MinorVersion=\"1\" Recipient=\"test\" ResponseID=\"_e1e2124c08ab456eab0bbab3e1c0c433\"><Status><StatusCode Value=\"samlp:Success\"></StatusCode></Status><Assertion xmlns=\"urn:oasis:names:tc:SAML:1.0:assertion\" AssertionID=\"_d2fd0d6e4da6a6d7d2ba5274ab570d5c\" IssueInstant=\"" + CommonUtils.formatForUtcTime(now) + "\" Issuer=\"testIssuer\" MajorVersion=\"1\" MinorVersion=\"1\"><Conditions NotBefore=\"" + CommonUtils.formatForUtcTime(before) + "\" NotOnOrAfter=\"" + CommonUtils.formatForUtcTime(after) + "\"><AudienceRestrictionCondition><Audience>test</Audience></AudienceRestrictionCondition></Conditions><AuthenticationStatement AuthenticationInstant=\"2008-06-19T14:34:44.426Z\" AuthenticationMethod=\"urn:ietf:rfc:2246\"><Subject><NameIdentifier>testPrincipal</NameIdentifier><SubjectConfirmation><ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</ConfirmationMethod></SubjectConfirmation></Subject></AuthenticationStatement></Assertion></Response></SOAP-ENV:Body></SOAP-ENV:Envelope>";
-        PublicTestHttpServer.instance().content = RESPONSE
-        .getBytes(PublicTestHttpServer.instance().encoding);
+        PublicTestHttpServer.instance().content = RESPONSE.getBytes(PublicTestHttpServer.instance().encoding);
 		try {
 		    final Assertion a = this.validator.validate("test", "test");
 		    assertEquals("testPrincipal", a.getPrincipal().getName());

@@ -48,6 +48,6 @@ public interface AttributePrincipal extends Principal, Serializable {
      * The Map of key/value pairs associated with this principal.
      * @return the map of key/value pairs associated with this principal.
      */
-    Map getAttributes();
+    Map<String,Object> getAttributes();
 
 }

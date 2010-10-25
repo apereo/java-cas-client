@@ -36,6 +36,7 @@ import org.jasig.cas.client.tomcat.PropertiesCasRealmDelegate;
  *
  * @author Marvin S. Addison
  * @version $Revision$
+ * @since 3.1.12
  *
  */
 public class PropertiesCasRealm extends AbstractCasRealm {
@@ -46,18 +47,18 @@ public class PropertiesCasRealm extends AbstractCasRealm {
      * @param path Path to properties file container username/role data.
      */
     public void setPropertiesFilePath(final String path) {
-        delegate.setPropertiesFilePath(path);
+        this.delegate.setPropertiesFilePath(path);
     }
     
     /** {@inheritDoc} */
     protected void startInternal() throws LifecycleException {
         super.startInternal();
-        delegate.readProperties();
+        this.delegate.readProperties();
     }
 
     /** {@inheritDoc} */
     protected CasRealm getDelegate() {
-        return delegate;
+        return this.delegate;
     }
 
 }

@@ -48,20 +48,20 @@ public abstract class AbstractLogoutHandler implements LogoutHandler {
 
     /** {@inheritDoc} */
     public void logout(final HttpServletRequest request, final HttpServletResponse response) {
-        this.log.debug("Processing logout request from CAS server.");
+        log.debug("Processing logout request from CAS server.");
 
         final Assertion assertion;
         final HttpSession httpSession = request.getSession(false);
         if (httpSession != null && (assertion = (Assertion) httpSession.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION)) != null) {
             httpSession.removeAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
-            this.log.info("Successfully logged out " + assertion.getPrincipal());
+            log.info("Successfully logged out " + assertion.getPrincipal());
         } else {
-            this.log.info("Session already ended.");
+            log.info("Session already ended.");
         }
 
         final String redirectUrl = constructRedirectUrl(request);
         if (redirectUrl != null) {
-            this.log.debug("Redirecting to " + redirectUrl);
+            log.debug("Redirecting to " + redirectUrl);
             CommonUtils.sendRedirect(response, redirectUrl);
         }
     }
@@ -73,6 +73,6 @@ public abstract class AbstractLogoutHandler implements LogoutHandler {
      * @return the url to redirect to. CAN be NULL.
      */
     protected String constructRedirectUrl(final HttpServletRequest request) {
-        return redirectUrl;
+        return this.redirectUrl;
     }
 }

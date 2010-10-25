@@ -47,11 +47,11 @@ public class AssertionCasRealm extends AbstractCasRealm {
      * @param name Name of the attribute in the principal that contains role data.
      */
     public void setRoleAttributeName(final String name) {
-        delegate.setRoleAttributeName(name);
+        this.delegate.setRoleAttributeName(name);
     }
 
     /** {@inheritDoc} */
     protected CasRealm getDelegate() {
-        return delegate;
+        return this.delegate;
     }
 }

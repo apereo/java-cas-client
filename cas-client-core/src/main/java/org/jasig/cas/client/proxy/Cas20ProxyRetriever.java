@@ -24,11 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 
 /**
@@ -65,6 +61,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
      * Main Constructor.
      *
      * @param casServerUrl the URL to the CAS server (i.e. http://localhost/cas/)
+     * @param encoding the encoding to use.
      */
     public Cas20ProxyRetriever(final String casServerUrl, final String encoding) {
         CommonUtils.assertNotNull(casServerUrl, "casServerUrl cannot be null.");

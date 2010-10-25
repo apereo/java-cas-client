@@ -41,7 +41,8 @@ import org.jasig.cas.client.session.SingleSignOutHandler;
  * HTTP session.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision$ $Date$
+ * @since 3.1.12
  *
  */
 public class SingleSignOutValve extends ValveBase implements SessionListener {

@@ -42,7 +42,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
     private static final long serialVersionUID = -1443182634624927187L;
 
     /** Map of key/value pairs about this principal. */
-    private final Map attributes;
+    private final Map<String,Object> attributes;
 
     /** The CAS 2 ticket used to retrieve a proxy ticket. */
     private final String proxyGrantingTicket;
@@ -56,7 +56,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
      * @param name the unique identifier for the principal.
      */
     public AttributePrincipalImpl(final String name) {
-        this(name, Collections.EMPTY_MAP);
+        this(name, Collections.<String, Object>emptyMap());
     }
 
     /**
@@ -65,7 +65,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
      * @param name the unique identifier for the principal.
      * @param attributes the key/value pairs for this principal.
      */
-    public AttributePrincipalImpl(final String name, final Map attributes) {
+    public AttributePrincipalImpl(final String name, final Map<String,Object> attributes) {
         this(name, attributes,  null, null);
     }
 
@@ -77,7 +77,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
      * @param proxyRetriever the ProxyRetriever implementation to call back to the CAS server.
      */
     public AttributePrincipalImpl(final String name, final String proxyGrantingTicket, final ProxyRetriever proxyRetriever) {
-        this(name, Collections.EMPTY_MAP, proxyGrantingTicket, proxyRetriever);
+        this(name, Collections.<String, Object>emptyMap(), proxyGrantingTicket, proxyRetriever);
     }
 
     /**
@@ -88,7 +88,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
      * @param proxyGrantingTicket the ticket associated with this principal.
      * @param proxyRetriever the ProxyRetriever implementation to call back to the CAS server.
      */
-    public AttributePrincipalImpl(final String name, final Map attributes, final String proxyGrantingTicket, final ProxyRetriever proxyRetriever) {
+    public AttributePrincipalImpl(final String name, final Map<String,Object> attributes, final String proxyGrantingTicket, final ProxyRetriever proxyRetriever) {
         super(name);
         this.attributes = attributes;
         this.proxyGrantingTicket = proxyGrantingTicket;
@@ -97,7 +97,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
         CommonUtils.assertNotNull(this.attributes, "attributes cannot be null.");
     }
 
-    public Map getAttributes() {
+    public Map<String,Object> getAttributes() {
         return this.attributes;
     }
 

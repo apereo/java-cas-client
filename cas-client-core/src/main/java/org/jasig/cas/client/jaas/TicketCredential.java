@@ -19,6 +19,8 @@
 
 package org.jasig.cas.client.jaas;
 
+import java.security.Principal;
+
 /**
  * Strongly-typed wrapper for a ticket credential.
  *
@@ -27,7 +29,7 @@ package org.jasig.cas.client.jaas;
  * @since 3.1.12
  *
  */
-public final class TicketCredential {
+public final class TicketCredential implements Principal {
 
     /** Hash code seed value */
     private static final int HASHCODE_SEED = 17;
@@ -43,10 +45,7 @@ public final class TicketCredential {
         this.ticket = ticket;
     }
 
-    /**
-     * @return Ticket identifier string.
-     */
-    public String getTicket() {
+    public String getName() {
         return this.ticket;
     }
 

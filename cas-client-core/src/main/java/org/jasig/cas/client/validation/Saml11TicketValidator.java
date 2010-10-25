@@ -51,8 +51,8 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         return "samlValidate";
     }
 
-    protected void populateUrlAttributeMap(final Map urlParameters) {
-        final String service = (String) urlParameters.get("service");
+    protected void populateUrlAttributeMap(final Map<String, String> urlParameters) {
+        final String service = urlParameters.get("service");
         urlParameters.remove("service");
         urlParameters.remove("ticket");
         urlParameters.put("TARGET", service);

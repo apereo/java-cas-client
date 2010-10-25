@@ -28,6 +28,7 @@ import org.jasig.cas.client.validation.TicketValidator;
  *
  * @author Marvin S. Addison
  * @version $Revision$
+ * @since 3.1.12
  *
  */
 public class Saml11Authenticator extends AbstractAuthenticator {
@@ -40,7 +41,6 @@ public class Saml11Authenticator extends AbstractAuthenticator {
     
     /** SAML protocol clock drift tolerance in ms */
     private int tolerance = -1;
-
 
     /**
      * @param ms SAML clock drift tolerance in milliseconds.

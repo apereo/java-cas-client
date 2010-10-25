@@ -27,6 +27,7 @@ import java.security.Principal;
  *
  * @author Marvin S. Addison
  * @version $Revision$
+ * @since 3.1.12
  *
  */
 public interface CasRealm {

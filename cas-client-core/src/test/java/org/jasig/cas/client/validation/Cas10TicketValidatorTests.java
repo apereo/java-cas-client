@@ -21,8 +21,13 @@ package org.jasig.cas.client.validation;
 
 
 import org.jasig.cas.client.PublicTestHttpServer;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
+
+import static org.junit.Assert.*;
 
 /**
  * Test cases for the {@link Cas10TicketValidator}.
@@ -39,10 +44,17 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
         super();
     }
 
-    protected void setUp() throws Exception {
+    @AfterClass
+    public static void classCleanUp() {
+        PublicTestHttpServer.instance().shutdown();
+    }
+
+    @Before
+    public void setUp() throws Exception {
         this.ticketValidator = new Cas10TicketValidator(CONST_CAS_SERVER_URL);
     }
 
+    @Test
     public void testNoResponse() throws Exception {
         PublicTestHttpServer.instance().content = "no\n\n"
                 .getBytes(PublicTestHttpServer.instance().encoding);
@@ -55,6 +67,7 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
         }
     }
 
+    @Test
     public void testYesResponse() throws TicketValidationException,
             UnsupportedEncodingException {
         PublicTestHttpServer.instance().content = "yes\nusername\n\n"
@@ -64,6 +77,7 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
         assertEquals(CONST_USERNAME, assertion.getPrincipal().getName());
     }
 
+    @Test
     public void testBadResponse() throws UnsupportedEncodingException {
         PublicTestHttpServer.instance().content = "falalala\n\n"
                 .getBytes(PublicTestHttpServer.instance().encoding);

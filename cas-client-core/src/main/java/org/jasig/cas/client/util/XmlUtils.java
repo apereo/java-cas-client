@@ -68,9 +68,9 @@ public final class XmlUtils {
      * @param element     the element to look for
      * @return the list of text from the elements.
      */
-    public static List getTextForElements(final String xmlAsString,
+    public static List<String> getTextForElements(final String xmlAsString,
                                           final String element) {
-        final List elements = new ArrayList(2);
+        final List<String> elements = new ArrayList<String>(2);
         final XMLReader reader = getXmlReader();
 
         final DefaultHandler handler = new DefaultHandler() {

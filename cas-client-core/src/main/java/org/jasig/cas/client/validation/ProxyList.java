@@ -23,7 +23,6 @@ import org.jasig.cas.client.util.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator;
 import java.util.Arrays;
 
 /**
@@ -35,26 +34,20 @@ import java.util.Arrays;
  */
 public final class ProxyList {
 
-    private final List proxyChains;
+    private final List<String[]> proxyChains;
 
-    public ProxyList(final List proxyChains) {
+    public ProxyList(final List<String[]> proxyChains) {
         CommonUtils.assertNotNull(proxyChains, "List of proxy chains cannot be null.");
-
-        // Assert that all entries in the list are String[]
-        for (final Iterator iter = proxyChains.iterator(); iter.hasNext();) {
-            CommonUtils.assertTrue(iter.next() instanceof String[], "Proxy chains must contain String[] items exclusively.");
-        }
-
         this.proxyChains = proxyChains;
     }
 
     public ProxyList() {
-        this(new ArrayList());
+        this(new ArrayList<String[]>());
     }
 
     public boolean contains(String[] proxiedList) {
-        for (Iterator iter = this.proxyChains.iterator(); iter.hasNext();) {
-            if (Arrays.equals(proxiedList, (String[]) iter.next())) {
+        for (final String[] list : this.proxyChains) {
+            if (Arrays.equals(proxiedList, list)) {
                 return true;
             }
         }

@@ -127,7 +127,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
         validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
 
-        final Map additionalParameters = new HashMap();
+        final Map<String,String> additionalParameters = new HashMap<String,String>();
         final List params = Arrays.asList(RESERVED_INIT_PARAMS);
 
         for (final Enumeration e = filterConfig.getInitParameterNames(); e.hasMoreElements();) {

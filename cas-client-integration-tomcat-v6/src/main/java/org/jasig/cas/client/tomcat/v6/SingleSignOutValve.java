@@ -39,6 +39,7 @@ import org.jasig.cas.client.session.SingleSignOutHandler;
  *
  * @author Marvin S. Addison
  * @version $Revision$
+ * @since 3.1.12
  *
  */
 public class SingleSignOutValve extends AbstractLifecycleValve implements SessionListener {

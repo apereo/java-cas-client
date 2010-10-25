@@ -57,13 +57,13 @@ public class ServiceAndTicketCallbackHandler implements CallbackHandler {
     }
 
     public void handle(final Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-        for (int i = 0; i < callbacks.length; i++) {
-            if (callbacks[i] instanceof NameCallback) {
-                ((NameCallback) callbacks[i]).setName(this.service);
-            } else if (callbacks[i] instanceof PasswordCallback) {
-                ((PasswordCallback) callbacks[i]).setPassword(this.ticket.toCharArray());
+        for (final Callback callback : callbacks) {
+            if (callback instanceof NameCallback) {
+                ((NameCallback) callback).setName(this.service);
+            } else if (callback instanceof PasswordCallback) {
+                ((PasswordCallback) callback).setPassword(this.ticket.toCharArray());
             } else {
-                throw new UnsupportedCallbackException(callbacks[i], "Callback not supported.");
+                throw new UnsupportedCallbackException(callback, "Callback not supported.");
             }
         }
     }
