@@ -21,9 +21,9 @@ package org.jasig.cas.client.authentication;
 
 import java.security.Principal;
 import java.security.acl.Group;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -36,8 +36,10 @@ import java.util.Set;
  */
 public final class SimpleGroup extends SimplePrincipal implements Group {
 
-    private static final long serialVersionUID = 1541943977571896383L;
+    /** SimpleGroup.java */
+    private static final long serialVersionUID = 4382154818494550205L;
 
+    /** Group members */
     private final Set<Principal> members = new HashSet<Principal>();
 
     /**
@@ -57,7 +59,7 @@ public final class SimpleGroup extends SimplePrincipal implements Group {
     }
 
     public Enumeration<? extends Principal> members() {
-        return new EnumerationAdapter(this.members.iterator());
+        return Collections.enumeration(this.members);
     }
 
     public boolean removeMember(final Principal user) {
@@ -66,30 +68,5 @@ public final class SimpleGroup extends SimplePrincipal implements Group {
     
     public String toString() {
         return super.toString() + ": " + members.toString();
-    }
-
-    /**
-     * Adapts a {@link java.util.Iterator} onto an {@link java.util.Enumeration}.
-     */
-    private static class EnumerationAdapter implements Enumeration<Principal> {
-
-        /** Iterator backing enumeration operations */
-        private Iterator<? extends Principal> iterator;
-
-        /**
-         * Creates a new instance backed by the given iterator.
-         * @param i Iterator backing enumeration operations.
-         */
-        public EnumerationAdapter(final Iterator<? extends Principal> i) {
-            this.iterator = i;
-        }
-
-        public boolean hasMoreElements() {
-            return this.iterator.hasNext();
-        }
-
-        public Principal nextElement() {
-            return this.iterator.next();
-        }
     }
 }
