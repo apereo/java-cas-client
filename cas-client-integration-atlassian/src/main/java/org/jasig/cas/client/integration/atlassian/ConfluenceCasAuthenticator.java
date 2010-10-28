@@ -42,6 +42,9 @@ import java.security.Principal;
  */
 public final class ConfluenceCasAuthenticator extends ConfluenceAuthenticator {
 
+    /** ConfluenceCasAuthenticator.java */
+    private static final long serialVersionUID = -6097438206488390677L;
+
     private static final Log LOG = LogFactory.getLog(ConfluenceCasAuthenticator.class);
 
     public Principal getUser(final HttpServletRequest request, final HttpServletResponse response) {

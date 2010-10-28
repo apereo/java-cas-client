@@ -42,6 +42,9 @@ import java.security.Principal;
  */
 public final class JiraCasAuthenticator extends DefaultAuthenticator {
 
+    /** JiraCasAuthenticator.java */
+    private static final long serialVersionUID = 3452011252741183166L;
+
     private static final Log LOG = LogFactory.getLog(JiraCasAuthenticator.class);
 
     public Principal getUser(final HttpServletRequest request, final HttpServletResponse response) {
