@@ -20,8 +20,6 @@
 package org.jasig.cas.client.tomcat.v7;
 
 import org.apache.catalina.LifecycleException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.tomcat.LogoutHandler;
 import org.jasig.cas.client.tomcat.RegexUriLogoutHandler;
 

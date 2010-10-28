@@ -81,9 +81,9 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
             throw new IllegalStateException("Error loading users/roles from " + file, e);
         }
         this.roleMap = new HashMap<String,Set<String>>(properties.size());
-        final Set<String> keys = new HashSet(properties.keySet());
 
-        for (final String user : keys) {
+        for (final Object key : properties.keySet()) {
+            final String user = (String) key;
             // Use TreeSet to sort roles
             final Set<String> roleSet = new HashSet<String>();
             final String[] roles = properties.getProperty(user).split(",\\s*");
@@ -104,9 +104,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
     /** {@inheritDoc} */
     public String[] getRoles(final Principal p) {
         final Set<String> roleSet = this.roleMap.get(p.getName());
-        final String[] roles = new String[roleSet.size()];
-        roleSet.toArray(roles);
-        return roles;
+        return roleSet.toArray(new String[roleSet.size()]);
     }
 
     /** {@inheritDoc} */

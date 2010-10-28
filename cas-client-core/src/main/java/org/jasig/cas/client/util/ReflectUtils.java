@@ -45,9 +45,10 @@ public final class ReflectUtils {
      * @return the class.  CANNOT be NULL.
      * @throws IllegalArgumentException if the className does not exist.
      */
-    public static Class loadClass(final String className) throws IllegalArgumentException {
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> loadClass(final String className) throws IllegalArgumentException {
         try {
-            return Class.forName(className);
+            return (Class<T>) Class.forName(className);
         } catch (final ClassNotFoundException e) {
             throw new IllegalArgumentException(className + " class not found.");
         }
@@ -61,12 +62,8 @@ public final class ReflectUtils {
      * @param args Constructor arguments.
      * @return New instance of given class.
      */
-    public static Object newInstance(final String className, final Object[] args) {
-        try {
-            return newInstance(Class.forName(className), args);
-        } catch (final ClassNotFoundException e) {
-            throw new IllegalArgumentException(className + " not found");
-        }
+    public static <T> T newInstance(final String className, final Object ... args) {
+        return newInstance(ReflectUtils.<T>loadClass(className), args);
     }
     
     /**
@@ -76,8 +73,8 @@ public final class ReflectUtils {
      * @param args Constructor arguments.
      * @return New instance of given class.
      */
-    public static Object newInstance(final Class clazz, final Object[] args) {
-        final Class[] argClasses = new Class[args.length];
+    public static <T> T newInstance(final Class<T> clazz, final Object ... args) {
+        final Class<?>[] argClasses = new Class[args.length];
         for (int i = 0; i < args.length; i++) {
             argClasses[i] = args[i].getClass();
         }
@@ -95,7 +92,7 @@ public final class ReflectUtils {
      * @return Property descriptor for given property or null if no property with given
      * name exists in given class.
      */
-    public static PropertyDescriptor getPropertyDescriptor(final Class clazz, final String propertyName) {
+    public static PropertyDescriptor getPropertyDescriptor(final Class<?> clazz, final String propertyName) {
         try {
             return getPropertyDescriptor(Introspector.getBeanInfo(clazz), propertyName);
         } catch (final IntrospectionException e) {

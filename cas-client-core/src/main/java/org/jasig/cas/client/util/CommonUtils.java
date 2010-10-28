@@ -97,7 +97,7 @@ public final class CommonUtils {
      * @param c       the collecion to check.
      * @param message the message to display if the object is null.
      */
-    public static void assertNotEmpty(final Collection c, final String message) {
+    public static void assertNotEmpty(final Collection<?> c, final String message) {
         assertNotNull(c, message);
         if (c.isEmpty()) {
             throw new IllegalArgumentException(message);

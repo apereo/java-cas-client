@@ -22,7 +22,6 @@ package org.jasig.cas.client.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.Filter;
@@ -90,8 +89,7 @@ public final class ErrorRedirectFilter implements Filter {
 	public void init(final FilterConfig filterConfig) throws ServletException {
 		this.defaultErrorRedirectPage = filterConfig.getInitParameter("defaultErrorRedirectPage");
 		
-		final Enumeration enumeration = filterConfig.getInitParameterNames();
-		
+		final Enumeration<?> enumeration = filterConfig.getInitParameterNames();
 		while (enumeration.hasMoreElements()) {
 			final String className = (String) enumeration.nextElement();
 			try {
@@ -106,7 +104,7 @@ public final class ErrorRedirectFilter implements Filter {
 	
 	protected final class ErrorHolder {
 		
-		private Class className;
+		private Class<?> className;
 		
 		private String url;
 		

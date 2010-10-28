@@ -21,7 +21,6 @@ package org.jasig.cas.client.tomcat;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -52,13 +51,12 @@ public class PropertiesCasRealmDelegateTests extends TestCase {
     
     public void testGetRoles() {
         final Principal p = new AttributePrincipalImpl("rosencrantz");
-        final List expected = Arrays.asList(new String[] {"admins", "users"});
-        final List actual = Arrays.asList(realm.getRoles(p));
+        final List<String> expected = Arrays.asList(new String[] {"admins", "users"});
+        final List<String> actual = Arrays.asList(realm.getRoles(p));
         assertEquals(expected.size(), actual.size());
 
-        for (final Iterator iter = expected.iterator(); iter.hasNext();) {
-            final Object value = iter.next();
-            assertTrue(actual.contains(value));
+        for (final String item : expected) {
+            assertTrue(actual.contains(item));
         }
     }
     

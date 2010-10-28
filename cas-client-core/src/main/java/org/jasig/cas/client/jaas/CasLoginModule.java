@@ -209,7 +209,7 @@ public class CasLoginModule implements LoginModule {
         this.assertion = null;
         this.callbackHandler = handler;
         this.subject = subject;
-        this.sharedState = new HashMap(state);
+        this.sharedState = new HashMap<String, Object>(state);
       
         String ticketValidatorClass = null;
 
@@ -346,8 +346,8 @@ public class CasLoginModule implements LoginModule {
                 if (this.roleAttributeNames.contains(key)) {
                     // Attribute value is Object if singular or Collection if plural
                     final Object value = attributes.get(key);
-                    if (value instanceof Collection) {
-                        for (final Object o : (Collection) value) {
+                    if (value instanceof Collection<?>) {
+                        for (final Object o : (Collection<?>) value) {
                             roleGroup.addMember(new SimplePrincipal(o.toString()));
                         }
                     } else {
@@ -407,8 +407,8 @@ public class CasLoginModule implements LoginModule {
     private TicketValidator createTicketValidator(final String className, final Map<String,?> propertyMap) {
         CommonUtils.assertTrue(propertyMap.containsKey("casServerUrlPrefix"), "Required property casServerUrlPrefix not found.");
 
-        final Class validatorClass = ReflectUtils.loadClass(className);
-        final TicketValidator validator = (TicketValidator) ReflectUtils.newInstance(validatorClass, new Object[] {propertyMap.get("casServerUrlPrefix")});
+        final Class<TicketValidator> validatorClass = ReflectUtils.loadClass(className);
+        final TicketValidator validator = ReflectUtils.newInstance(validatorClass, propertyMap.get("casServerUrlPrefix"));
 
         try {
             final BeanInfo info = Introspector.getBeanInfo(validatorClass);
@@ -479,11 +479,12 @@ public class CasLoginModule implements LoginModule {
             if (log.isDebugEnabled()) {
                 log.debug("Cleaning assertion cache of size " + CasLoginModule.ASSERTION_CACHE.size());
             }
-            final Iterator iter = CasLoginModule.ASSERTION_CACHE.entrySet().iterator();
+            final Iterator<Map.Entry<TicketCredential,Assertion>> iter =
+                CasLoginModule.ASSERTION_CACHE.entrySet().iterator();
             final Calendar cutoff = Calendar.getInstance();
             cutoff.add(Calendar.MINUTE, -CasLoginModule.this.cacheTimeout);
             while (iter.hasNext()) {
-                final Assertion assertion = (Assertion) ((Map.Entry) iter.next()).getValue();
+                final Assertion assertion = iter.next().getValue();
                 final Calendar created = Calendar.getInstance();
                 created.setTime(assertion.getValidFromDate());
                 if (created.before(cutoff)) {

@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.ReflectUtils;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -72,8 +73,7 @@ public final class ProxyCallbackValve extends ValveBase {
             CommonUtils.assertNotNull(this.proxyCallbackUrl, "the proxy callback url cannot  be null");
             CommonUtils.assertTrue(this.proxyCallbackUrl.startsWith("/"), "proxy callback url must start with \"/\"");
 
-            final Class proxyGrantingTicketStorage = Class.forName(proxyGrantingTicketStorageClass);
-            PROXY_GRANTING_TICKET_STORAGE = (ProxyGrantingTicketStorage) proxyGrantingTicketStorage.newInstance();
+            PROXY_GRANTING_TICKET_STORAGE = ReflectUtils.newInstance(proxyGrantingTicketStorageClass);
         } catch (final Exception e) {
             throw new LifecycleException(e);
         }

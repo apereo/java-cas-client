@@ -123,9 +123,8 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
 
             final Object value = this.principal.getAttributes().get(roleAttribute);
             
-            if (value instanceof Collection) {
-                final Collection c = (Collection)  value;
-                for (final Object o : c) {
+            if (value instanceof Collection<?>) {
+                for (final Object o : (Collection<?>) value) {
                     if (rolesEqual(role, o)) {
                         log.debug("User [" + getRemoteUser() + "] is in role [" + role + "]: " + true);
                         return true;

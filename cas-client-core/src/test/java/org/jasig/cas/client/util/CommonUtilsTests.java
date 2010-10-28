@@ -63,11 +63,11 @@ public final class CommonUtilsTests extends TestCase {
 
     public void testAssertNotEmpty() {
         final String CONST_MESSAGE = "test";
-        final Collection c = new ArrayList();
+        final Collection<Object> c = new ArrayList<Object>();
         c.add(new Object());
         CommonUtils.assertNotEmpty(c, CONST_MESSAGE);
         try {
-            CommonUtils.assertNotEmpty(new ArrayList(), CONST_MESSAGE);
+            CommonUtils.assertNotEmpty(new ArrayList<Object>(), CONST_MESSAGE);
         } catch (IllegalArgumentException e) {
             assertEquals(CONST_MESSAGE, e.getMessage());
         }

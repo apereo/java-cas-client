@@ -104,7 +104,7 @@ public final class MemcachedBackedProxyGrantingTicketStorageImpl implements Prox
         // we actually don't have anything to do here, yay!
     }
 
-    private void handleSynchronousRequest(final Future f) {
+    private void handleSynchronousRequest(final Future<?> f) {
         try {
             f.get();
         } catch (final Exception e) {

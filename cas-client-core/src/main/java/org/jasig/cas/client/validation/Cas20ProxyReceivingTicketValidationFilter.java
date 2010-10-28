@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.proxy.*;
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.ReflectUtils;
 
 /**
  * Creates either a CAS20ProxyTicketValidator or a CAS20ServiceTicketValidator depending on whether any of the
@@ -74,12 +75,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         final String proxyGrantingTicketStorageClass = getPropertyFromInitParams(filterConfig, "proxyGrantingTicketStorageClass", null);
 
         if (proxyGrantingTicketStorageClass != null) {
-            try {
-                final Class storageClass = Class.forName(proxyGrantingTicketStorageClass);
-                this.proxyGrantingTicketStorage = (ProxyGrantingTicketStorage) storageClass.newInstance();
-            } catch (final Exception e) {
-                throw new RuntimeException(e);
-            }
+            this.proxyGrantingTicketStorage = ReflectUtils.newInstance(proxyGrantingTicketStorageClass);
         }
 
         log.trace("Setting proxyReceptorUrl parameter: " + this.proxyReceptorUrl);
@@ -128,9 +124,9 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
 
         final Map<String,String> additionalParameters = new HashMap<String,String>();
-        final List params = Arrays.asList(RESERVED_INIT_PARAMS);
+        final List<String> params = Arrays.asList(RESERVED_INIT_PARAMS);
 
-        for (final Enumeration e = filterConfig.getInitParameterNames(); e.hasMoreElements();) {
+        for (final Enumeration<?> e = filterConfig.getInitParameterNames(); e.hasMoreElements();) {
             final String s = (String) e.nextElement();
 
             if (!params.contains(s)) {

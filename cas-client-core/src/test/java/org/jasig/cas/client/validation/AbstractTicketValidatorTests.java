@@ -19,8 +19,6 @@
 
 package org.jasig.cas.client.validation;
 
-import junit.framework.TestCase;
-
 /**
  * Base class for all TicketValidator tests to inherit from.
  *

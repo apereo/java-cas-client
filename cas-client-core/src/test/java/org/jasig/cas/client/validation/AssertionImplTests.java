@@ -37,7 +37,7 @@ public final class AssertionImplTests extends TestCase {
 
     private static final AttributePrincipal CONST_PRINCIPAL = new AttributePrincipalImpl("test");
 
-    private static final Map CONST_ATTRIBUTES = new HashMap();
+    private static final Map<String,Object> CONST_ATTRIBUTES = new HashMap<String,Object>();
 
     static {
         CONST_ATTRIBUTES.put("test", "test");

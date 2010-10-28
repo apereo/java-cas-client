@@ -19,8 +19,6 @@
 
 package org.jasig.cas.client.session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractConfigurationFilter;
 
 import javax.servlet.FilterChain;

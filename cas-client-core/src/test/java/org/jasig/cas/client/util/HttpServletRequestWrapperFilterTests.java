@@ -77,7 +77,7 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
         final HttpServletRequestWrapperFilter filter = new HttpServletRequestWrapperFilter();
         filter.init(config);
         
-        final Map attributes = new HashMap();
+        final Map<String,Object> attributes = new HashMap<String,Object>();
         attributes.put("memberOf", "administrators");
         final AttributePrincipal principal = new AttributePrincipalImpl("alice", attributes);
         session.setAttribute(
@@ -106,7 +106,7 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
         final HttpServletRequestWrapperFilter filter = new HttpServletRequestWrapperFilter();
         filter.init(config);
         
-        final Map attributes = new HashMap();
+        final Map<String,Object> attributes = new HashMap<String,Object>();
         attributes.put("groupMembership", Arrays.asList(new Object[] {"animals", "ducks"}));
         final AttributePrincipal principal = new AttributePrincipalImpl("daffy", attributes);
         session.setAttribute(

@@ -82,6 +82,7 @@ public class AssertionCasRealmDelegate implements CasRealm {
      * @param p the principal to check.
      * @return the list of attribute values that matched this role, or an empty collection if they don't.
      */
+    @SuppressWarnings("unchecked")
     private Collection<String> getRoleCollection(final Principal p) {
         if (!(p instanceof AttributePrincipal)) {
             return Collections.emptyList();
@@ -93,7 +94,7 @@ public class AssertionCasRealmDelegate implements CasRealm {
             return Collections.emptyList();
         }
 
-        if (attributes instanceof Collection) {
+        if (attributes instanceof Collection<?>) {
             return (Collection<String>) attributes;
         }
 

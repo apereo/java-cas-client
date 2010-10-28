@@ -22,7 +22,6 @@ package org.jasig.cas.client.jaas;
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,7 +46,7 @@ public class CasLoginModuleTests extends TestCase {
     
     private Subject subject;
     
-    private Map options;
+    private Map<String,String> options;
 
     /** {@inheritDoc} */
     protected void setUp() throws Exception {
@@ -55,7 +54,7 @@ public class CasLoginModuleTests extends TestCase {
         
         module = new CasLoginModule();
         subject = new Subject();
-        options = new HashMap();
+        options = new HashMap<String,String>();
         options.put("service", "https://service.example.com/webapp");
         options.put("ticketValidatorClass", "org.jasig.cas.client.validation.Cas20ServiceTicketValidator");
         options.put("casServerUrlPrefix", CONST_CAS_SERVER_URL);
@@ -83,7 +82,7 @@ public class CasLoginModuleTests extends TestCase {
         module.initialize(
                 subject,
                 new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-                new HashMap(),
+                new HashMap<String,Object>(),
                 options);
         module.login();
         module.commit();
@@ -106,7 +105,7 @@ public class CasLoginModuleTests extends TestCase {
         module.initialize(
                 subject,
                 new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-                new HashMap(),
+                new HashMap<String,Object>(),
                 options);
         try {
             module.login();
@@ -150,7 +149,7 @@ public class CasLoginModuleTests extends TestCase {
         module.initialize(
                 subject,
                 new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-                new HashMap(),
+                new HashMap<String,Object>(),
                 options);
         module.login();
         module.commit();
@@ -165,7 +164,7 @@ public class CasLoginModuleTests extends TestCase {
         module.initialize(
                 subject,
                 new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-                new HashMap(),
+                new HashMap<String,Object>(),
                 options);
         module.login();
         module.commit();
@@ -173,11 +172,9 @@ public class CasLoginModuleTests extends TestCase {
         assertEquals(TICKET, this.subject.getPrivateCredentials().iterator().next().toString());
     }
     
-    private boolean hasPrincipalName(final Subject subject, final Class principalClass, final String name) {
-        final Set principals = subject.getPrincipals(principalClass);
-        final Iterator iter = principals.iterator();
-        while (iter.hasNext()) {
-            final Principal p = (Principal) iter.next();
+    private boolean hasPrincipalName(final Subject subject, final Class<? extends Principal> principalClass, final String name) {
+        final Set<? extends Principal> principals = subject.getPrincipals(principalClass);
+        for (Principal p : principals) {
             if (p.getName().equals(name)) {
                 return true;
             }

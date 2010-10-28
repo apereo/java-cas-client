@@ -68,8 +68,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
                 throw new TicketValidationException("No assertions found.");
             }
 
-            boolean foundValidAssertion = false;
-            for (final Iterator iter = samlResponse.getAssertions(); iter.hasNext();) {
+            for (final Iterator<?> iter = samlResponse.getAssertions(); iter.hasNext();) {
                 final SAMLAssertion assertion = (SAMLAssertion) iter.next();
 
                 if (!isValidAssertion(assertion)) {
@@ -88,20 +87,17 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
                 }
 
                 final SAMLAttribute[] attributes = getAttributesFor(assertion, subject);
-
-                final Map personAttributes = new HashMap();
-
+                final Map<String,Object> personAttributes = new HashMap<String,Object>();
                 for (int i = 0; i < attributes.length; i++) {
                     final SAMLAttribute samlAttribute = attributes[i];
-                    final List values = getValuesFrom(samlAttribute);
+                    final List<?> values = getValuesFrom(samlAttribute);
 
                     personAttributes.put(samlAttribute.getName(), values.size() == 1 ? values.get(0) : values);
                 }
 
                 final AttributePrincipal principal = new AttributePrincipalImpl(subject.getNameIdentifier().getName(), personAttributes);
 
-
-                final Map authenticationAttributes = new HashMap();
+                final Map<String,Object> authenticationAttributes = new HashMap<String,Object>();
                 authenticationAttributes.put("samlAuthenticationStatement::authMethod", authenticationStatement.getAuthMethod());
 
                 return new AssertionImpl(principal, authenticationAttributes);
@@ -138,7 +134,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     }
 
     private SAMLAuthenticationStatement getSAMLAuthenticationStatement(final SAMLAssertion assertion) {
-        for (final Iterator iter = assertion.getStatements(); iter.hasNext();) {
+        for (final Iterator<?> iter = assertion.getStatements(); iter.hasNext();) {
             final SAMLStatement statement = (SAMLStatement) iter.next();
 
             if (statement instanceof SAMLAuthenticationStatement) {
@@ -150,29 +146,28 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     }
 
     private SAMLAttribute[] getAttributesFor(final SAMLAssertion assertion, final SAMLSubject subject) {
-        final List attributes = new ArrayList();
-        for (final Iterator iter = assertion.getStatements(); iter.hasNext();) {
+        final List<SAMLAttribute> attributes = new ArrayList<SAMLAttribute>();
+        for (final Iterator<?> iter = assertion.getStatements(); iter.hasNext();) {
             final SAMLStatement statement = (SAMLStatement) iter.next();
 
             if (statement instanceof SAMLAttributeStatement) {
                 final SAMLAttributeStatement attributeStatement = (SAMLAttributeStatement) statement;
                 // used because SAMLSubject does not implement equals
                 if (subject.getNameIdentifier().getName().equals(attributeStatement.getSubject().getNameIdentifier().getName())) {
-                    for (final Iterator iter2 = attributeStatement.getAttributes(); iter2.hasNext();)
-                    attributes.add(iter2.next());
+                    for (final Iterator<?> iter2 = attributeStatement.getAttributes(); iter2.hasNext();)
+                    attributes.add((SAMLAttribute) iter2.next());
                 }
             }
         }
 
-        return (SAMLAttribute[]) attributes.toArray(new SAMLAttribute[attributes.size()]);
+        return attributes.toArray(new SAMLAttribute[attributes.size()]);
     }
 
-    private List getValuesFrom(final SAMLAttribute attribute) {
-        final List list = new ArrayList();
-        for (final Iterator iter = attribute.getValues(); iter.hasNext();) {
+    private List<?> getValuesFrom(final SAMLAttribute attribute) {
+        final List<Object> list = new ArrayList<Object>();
+        for (final Iterator<?> iter = attribute.getValues(); iter.hasNext();) {
             list.add(iter.next());
         }
-
         return list;
     }
 

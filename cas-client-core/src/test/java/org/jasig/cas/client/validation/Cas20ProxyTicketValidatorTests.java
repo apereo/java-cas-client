@@ -117,7 +117,6 @@ public final class Cas20ProxyTicketValidatorTests extends
     UnsupportedEncodingException {
     	final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:cas20ProxyTicketValidator.xml");
         final Cas20ProxyTicketValidator v = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidator");
-    	final Cas20ProxyTicketValidator v2 = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidatorWithAllowAnyProxy");
     	
         final String USERNAME = "username";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
