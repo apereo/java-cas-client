@@ -87,7 +87,7 @@ public abstract class AbstractConfigurationFilter implements Filter {
         final String value4 = loadFromContext(context, "java:comp/env/cas/" + propertyName); 
         
         if (CommonUtils.isNotBlank(value4)) {
-            log.info("Property [" + propertyName + "] loaded from JNDI with value [" + value3 + "]");
+            log.info("Property [" + propertyName + "] loaded from JNDI with value [" + value4 + "]");
         	return value4;
         }
 
