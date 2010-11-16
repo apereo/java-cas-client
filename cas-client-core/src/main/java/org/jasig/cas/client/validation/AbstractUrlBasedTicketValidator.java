@@ -96,6 +96,14 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     protected abstract String getUrlSuffix();
 
     /**
+     * Disable XML Schema validation.  Note, setting this to true may not be reversable. Defaults to false. Setting it to false
+     * after setting it to true may not have any affect.
+     *
+     * @param disabled whether to disable or not.
+     */
+    protected abstract void setDisableXmlSchemaValidation(boolean disabled);
+
+    /**
      * Constructs the URL to send the validation request to.
      *
      * @param ticket the ticket to be validated.

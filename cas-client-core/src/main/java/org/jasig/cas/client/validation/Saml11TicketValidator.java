@@ -58,6 +58,15 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         urlParameters.put("TARGET", service);
     }
 
+    @Override
+    protected void setDisableXmlSchemaValidation(final boolean disabled) {
+        if (disabled) {
+            // according to our reading of the SAML 1.1 code, this should disable the schema checking.  However, there may be a couple
+            // of error messages that slip through on start up!
+            XML.parserPool.setDefaultSchemas(null, null);
+        }
+    }
+
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         try {
         	final String removeStartOfSoapBody = response.substring(response.indexOf("<SOAP-ENV:Body>") + 15);

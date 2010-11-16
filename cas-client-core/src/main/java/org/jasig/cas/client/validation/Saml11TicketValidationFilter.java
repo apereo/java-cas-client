@@ -58,6 +58,7 @@ public final class Saml11TicketValidationFilter extends AbstractTicketValidation
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
         validator.setHostnameVerifier(getHostnameVerifier(filterConfig));
         validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
+        validator.setDisableXmlSchemaValidation(parseBoolean(getPropertyFromInitParams(filterConfig, "disableXmlSchemaValidation", "false")));
         return validator;
     }
 }

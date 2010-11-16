@@ -123,8 +123,7 @@ public final class SingleSignOutHandler {
         } catch (final Exception e) {
             // ignore if the session is already marked as invalid.  Nothing we can do!
         }
-        sessionMappingStorage.addSessionById(
-                CommonUtils.safeGetParameter(request, this.artifactParameterName), session);
+        sessionMappingStorage.addSessionById(token, session);
     }
    
     /**
