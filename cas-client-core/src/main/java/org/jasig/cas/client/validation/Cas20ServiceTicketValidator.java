@@ -152,7 +152,13 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     	}
 
         for (final String name : attributeNames) {
-    		attributes.put(name, XmlUtils.getTextForElement(xml, name));
+            final List<String> values = XmlUtils.getTextForElements(xml, name);
+
+            if (values.size() == 1) {
+                attributes.put(name, values.get(0));
+            } else {
+                attributes.put(name, values);
+            }
     	}
     	
     	return attributes;

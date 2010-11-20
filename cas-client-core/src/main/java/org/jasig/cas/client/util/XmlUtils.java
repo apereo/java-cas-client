@@ -77,7 +77,7 @@ public final class XmlUtils {
 
             private boolean foundElement = false;
 
-            private StringBuffer buffer = new StringBuffer();
+            private StringBuilder buffer = new StringBuilder();
 
             public void startElement(final String uri, final String localName,
                                      final String qName, final Attributes attributes)
@@ -92,7 +92,7 @@ public final class XmlUtils {
                 if (localName.equals(element)) {
                     this.foundElement = false;
                     elements.add(this.buffer.toString());
-                    this.buffer = new StringBuffer();
+                    this.buffer = new StringBuilder();
                 }
             }
 

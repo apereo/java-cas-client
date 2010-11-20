@@ -97,8 +97,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
                 final SAMLAttribute[] attributes = getAttributesFor(assertion, subject);
                 final Map<String,Object> personAttributes = new HashMap<String,Object>();
-                for (int i = 0; i < attributes.length; i++) {
-                    final SAMLAttribute samlAttribute = attributes[i];
+                for (final SAMLAttribute samlAttribute : attributes) {
                     final List<?> values = getValuesFrom(samlAttribute);
 
                     personAttributes.put(samlAttribute.getName(), values.size() == 1 ? values.get(0) : values);
@@ -212,16 +211,14 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             out.close();
 
             final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            final StringBuffer buffer = new StringBuffer(256);
+            final StringBuilder buffer = new StringBuilder(256);
 
-            synchronized (buffer) {
-                String line;
+            String line;
 
-                while ((line = in.readLine()) != null) {
-                    buffer.append(line);
-                }
-                return buffer.toString();
+            while ((line = in.readLine()) != null) {
+                buffer.append(line);
             }
+            return buffer.toString();
         } catch (final IOException e) {
             throw new RuntimeException(e);       
         } finally {
