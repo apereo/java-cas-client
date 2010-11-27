@@ -35,7 +35,7 @@ import java.util.concurrent.Future;
  * @version $Revision$ $Date$
  * @since 3.1.9
  */
-public final class MemcachedBackedProxyGrantingTicketStorageImpl implements ProxyGrantingTicketStorage {
+public final class MemcachedBackedProxyGrantingTicketStorageImpl extends AbstractEncryptedProxyGrantingTicketStorageImpl {
 
     private final MemcachedClient client;
 
@@ -92,11 +92,11 @@ public final class MemcachedBackedProxyGrantingTicketStorageImpl implements Prox
     }
 
 
-    public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
+    public void saveInternal(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         handleSynchronousRequest(this.client.add(proxyGrantingTicketIou, 120, proxyGrantingTicket));
     }
 
-    public String retrieve(final String proxyGrantingTicketIou) {
+    public String retrieveInternal(final String proxyGrantingTicketIou) {
         return (String) this.client.get(proxyGrantingTicketIou);
     }
 

@@ -26,12 +26,16 @@ import net.sf.ehcache.distribution.RemoteCacheException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
 /**
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.1.9
  */
-public final class EhcacheBackedProxyGrantingTicketStorageImpl implements ProxyGrantingTicketStorage {
+public final class EhcacheBackedProxyGrantingTicketStorageImpl extends AbstractEncryptedProxyGrantingTicketStorageImpl {
 
     public static final String EHCACHE_CACHE_NAME = "org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl.cache";
 
@@ -45,11 +49,15 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl implements ProxyG
     }
 
     public EhcacheBackedProxyGrantingTicketStorageImpl(final Cache cache) {
+        super();
         this.cache = cache;
-
     }
 
-    public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
+    public EhcacheBackedProxyGrantingTicketStorageImpl(final String secret) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException {
+        this.cache = CacheManager.getInstance().getCache(EHCACHE_CACHE_NAME);
+    }
+
+    public void saveInternal(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         final Element element = new Element(proxyGrantingTicketIou, proxyGrantingTicket);
         try {
             this.cache.put(element);
@@ -58,7 +66,7 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl implements ProxyG
         }
     }
 
-    public String retrieve(final String proxyGrantingTicketIou) {
+    public String retrieveInternal(final String proxyGrantingTicketIou) {
         final Element element = this.cache.get(proxyGrantingTicketIou);
 
         if (element == null) {

@@ -28,7 +28,7 @@ package org.jasig.cas.client.validation;
  */
 public abstract class AbstractTicketValidatorTests {
 
-    protected static final String CONST_CAS_SERVER_URL = "http://localhost:8085/";
+    protected static final String CONST_CAS_SERVER_URL_PREFIX = "http://localhost:";
 
     protected static final String CONST_USERNAME = "username";
 }

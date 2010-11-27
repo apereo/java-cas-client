@@ -41,6 +41,8 @@ import java.io.UnsupportedEncodingException;
  */
 public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValidatorTests {
 
+    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8088);
+
     private Cas20ServiceTicketValidator ticketValidator;
 
     private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
@@ -51,13 +53,13 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
 
     @AfterClass
     public static void classCleanUp() {
-        PublicTestHttpServer.instance().shutdown();
+        server.shutdown();
     }
 
     @Before
     public void setUp() throws Exception {
         this.proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
-        this.ticketValidator = new Cas20ServiceTicketValidator(CONST_CAS_SERVER_URL);
+        this.ticketValidator = new Cas20ServiceTicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8088");
         this.ticketValidator.setProxyCallbackUrl("test");
         this.ticketValidator.setProxyGrantingTicketStorage(getProxyGrantingTicketStorage());
         this.ticketValidator.setProxyRetriever(getProxyRetriever());
@@ -83,8 +85,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
     @Test
     public void testNoResponse() throws UnsupportedEncodingException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-1856339-aA5Yuvrxzpv8Tau1cYQ7 not recognized</cas:authenticationFailure></cas:serviceResponse>";
-        PublicTestHttpServer.instance().content = RESPONSE
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE.getBytes(server.encoding);
         try {
             this.ticketValidator.validate("test", "test");
             fail("ValidationException expected due to 'no' response");
@@ -100,8 +101,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
                 + USERNAME
                 + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
-        PublicTestHttpServer.instance().content = RESPONSE
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE.getBytes(server.encoding);
 
         final Assertion assertion = this.ticketValidator.validate("test",
                 "test");
@@ -121,9 +121,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
                 + PGTIOU
                 + "</cas:proxyGrantingTicket></cas:authenticationSuccess></cas:serviceResponse>";
 
-        PublicTestHttpServer.instance().content = RESPONSE
-                .getBytes(PublicTestHttpServer.instance().encoding);
-
+        server.content = RESPONSE.getBytes(server.encoding);
         this.proxyGrantingTicketStorage.save(PGTIOU, PGT);
 
         final Assertion assertion = this.ticketValidator.validate("test",
@@ -143,9 +141,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
             + PGTIOU
             + "</cas:proxyGrantingTicket><cas:attributes>\n<cas:password>test</cas:password>\n<cas:eduPersonId>id</cas:eduPersonId>\n</cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
         
-        PublicTestHttpServer.instance().content = RESPONSE
-        .getBytes(PublicTestHttpServer.instance().encoding);
-
+        server.content = RESPONSE.getBytes(server.encoding);
         final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
         assertEquals("test", assertion.getPrincipal().getAttributes().get("password"));
@@ -156,8 +152,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
     @Test
     public void testInvalidResponse() throws Exception {
         final String RESPONSE = "<root />";
-        PublicTestHttpServer.instance().content = RESPONSE
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE.getBytes(server.encoding);
         try {
             this.ticketValidator.validate("test", "test");
             fail("ValidationException expected due to invalid response.");

@@ -54,18 +54,15 @@ public final class PublicTestHttpServer extends Thread {
         this.header = header.getBytes("ASCII");
     }
 
-    public static synchronized PublicTestHttpServer instance() {
-        if (httpServer == null) {
-            try {
-                httpServer = new PublicTestHttpServer("test", "ASCII", "text/plain", 8085);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            httpServer.start();
+    public static synchronized PublicTestHttpServer instance(final int port) {
+        try {
+            final PublicTestHttpServer server = new PublicTestHttpServer("test", "ASCII", "text/plain", port);
+            server.start();
             Thread.yield();
+            return server;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        return httpServer;
     }
 
     public void shutdown() {

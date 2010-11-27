@@ -76,6 +76,22 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
         if (proxyGrantingTicketStorageClass != null) {
             this.proxyGrantingTicketStorage = ReflectUtils.newInstance(proxyGrantingTicketStorageClass);
+
+            if (this.proxyGrantingTicketStorage instanceof AbstractEncryptedProxyGrantingTicketStorageImpl) {
+                final AbstractEncryptedProxyGrantingTicketStorageImpl p = (AbstractEncryptedProxyGrantingTicketStorageImpl) this.proxyGrantingTicketStorage;
+                final String cipherAlgorithm = getPropertyFromInitParams(filterConfig, "cipherAlgorithm", AbstractEncryptedProxyGrantingTicketStorageImpl.DEFAULT_ENCRYPTION_ALGORITHM);
+                final String secretKey = getPropertyFromInitParams(filterConfig, "secretKey", null);
+
+                p.setCipherAlgorithm(cipherAlgorithm);
+
+                try {
+                    if (secretKey != null) {
+                        p.setSecretKey(secretKey);
+                    }
+                } catch (final Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         log.trace("Setting proxyReceptorUrl parameter: " + this.proxyReceptorUrl);

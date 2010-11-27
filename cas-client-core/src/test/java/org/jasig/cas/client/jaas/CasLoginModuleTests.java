@@ -28,9 +28,12 @@ import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.jasig.cas.client.PublicTestHttpServer;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit test for {@link CasLoginModule} class.
@@ -39,8 +42,11 @@ import org.jasig.cas.client.PublicTestHttpServer;
  * @version $Revision$
  *
  */
-public class CasLoginModuleTests extends TestCase {
-    private static final String CONST_CAS_SERVER_URL = "http://localhost:8085/";
+public class CasLoginModuleTests {
+
+    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8091);
+
+    private static final String CONST_CAS_SERVER_URL = "http://localhost:8091/";
     
     private CasLoginModule module;
     
@@ -48,10 +54,13 @@ public class CasLoginModuleTests extends TestCase {
     
     private Map<String,String> options;
 
-    /** {@inheritDoc} */
-    protected void setUp() throws Exception {
-        super.setUp();
-        
+    @AfterClass
+    public static void classCleanUp() {
+        server.shutdown();
+    }
+
+    @Before
+    public void setUp() throws Exception {
         module = new CasLoginModule();
         subject = new Subject();
         options = new HashMap<String,String>();
@@ -69,6 +78,7 @@ public class CasLoginModuleTests extends TestCase {
      * Test JAAS login success.
      * @throws Exception On errors.
      */
+    @Test
     public void testLoginSuccess() throws Exception {
         final String USERNAME = "username";
         final String SERVICE = "https://example.com/service";
@@ -77,7 +87,7 @@ public class CasLoginModuleTests extends TestCase {
                 + "<cas:authenticationSuccess><cas:user>"
                 + USERNAME
                 + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
-        PublicTestHttpServer.instance().content = RESPONSE.getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE.getBytes(server.encoding);
         
         module.initialize(
                 subject,
@@ -97,11 +107,12 @@ public class CasLoginModuleTests extends TestCase {
      * Test JAAS login failure.
      * @throws Exception On errors.
      */
+    @Test
     public void testLoginFailure() throws Exception {
         final String SERVICE = "https://example.com/service";
         final String TICKET = "ST-200000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-200000-aA5Yuvrxzpv8Tau1cYQ7-srv1 not recognized</cas:authenticationFailure></cas:serviceResponse>";
-        PublicTestHttpServer.instance().content = RESPONSE.getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE.getBytes(server.encoding);
         module.initialize(
                 subject,
                 new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
@@ -122,6 +133,7 @@ public class CasLoginModuleTests extends TestCase {
      * Test JAAS logout after successful login to ensure subject cleanup.
      * @throws Exception On errors.
      */
+    @Test
     public void testLogout() throws Exception {
         testLoginSuccess();
         module.logout();
@@ -132,7 +144,8 @@ public class CasLoginModuleTests extends TestCase {
     /**
      * Test assertion cache allows successive logins with same ticket to succeed.
      * @throws Exception On errors.
-     */    
+     */
+    @Test
     public void testAssertionCaching() throws Exception {
         final String USERNAME = "username";
         final String SERVICE = "https://example.com/service";
@@ -142,7 +155,7 @@ public class CasLoginModuleTests extends TestCase {
                 + USERNAME
                 + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
         final String RESPONSE2 = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-300000-aA5Yuvrxzpv8Tau1cYQ7-srv1 not recognized</cas:authenticationFailure></cas:serviceResponse>";
-        PublicTestHttpServer.instance().content = RESPONSE1.getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE1.getBytes(server.encoding);
         
         options.put("cacheAssertions", "true");
         options.put("cacheTimeout", "1");
@@ -160,7 +173,7 @@ public class CasLoginModuleTests extends TestCase {
         module.logout();
         assertEquals(0, subject.getPrincipals().size());
         assertEquals(0, subject.getPrivateCredentials().size());
-        PublicTestHttpServer.instance().content = RESPONSE2.getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE2.getBytes(server.encoding);
         module.initialize(
                 subject,
                 new ServiceAndTicketCallbackHandler(SERVICE, TICKET),

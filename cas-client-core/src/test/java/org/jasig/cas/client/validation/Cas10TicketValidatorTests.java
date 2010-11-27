@@ -38,6 +38,8 @@ import static org.junit.Assert.*;
  */
 public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTests {
 
+    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8090);
+
     private Cas10TicketValidator ticketValidator;
 
     public Cas10TicketValidatorTests() {
@@ -46,18 +48,17 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
 
     @AfterClass
     public static void classCleanUp() {
-        PublicTestHttpServer.instance().shutdown();
+        server.shutdown();
     }
 
     @Before
     public void setUp() throws Exception {
-        this.ticketValidator = new Cas10TicketValidator(CONST_CAS_SERVER_URL);
+        this.ticketValidator = new Cas10TicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8090");
     }
 
     @Test
     public void testNoResponse() throws Exception {
-        PublicTestHttpServer.instance().content = "no\n\n"
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = "no\n\n".getBytes(server.encoding);
         try {
             this.ticketValidator.validate("testTicket",
                     "myService");
@@ -70,8 +71,7 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
     @Test
     public void testYesResponse() throws TicketValidationException,
             UnsupportedEncodingException {
-        PublicTestHttpServer.instance().content = "yes\nusername\n\n"
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = "yes\nusername\n\n".getBytes(server.encoding);
         final Assertion assertion = this.ticketValidator.validate("testTicket",
                 "myService");
         assertEquals(CONST_USERNAME, assertion.getPrincipal().getName());
@@ -79,8 +79,8 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
 
     @Test
     public void testBadResponse() throws UnsupportedEncodingException {
-        PublicTestHttpServer.instance().content = "falalala\n\n"
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = "falalala\n\n"
+                .getBytes(server.encoding);
         try {
             this.ticketValidator.validate("testTicket",
                     "myService");

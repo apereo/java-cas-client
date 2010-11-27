@@ -41,8 +41,9 @@ import static org.junit.Assert.*;
  * @version $Revision: 11737 $ $Date: 2007-10-03 09:14:02 -0400 (Tue, 03 Oct 2007) $
  * @since 3.0
  */
-public final class Cas20ProxyTicketValidatorTests extends
-        AbstractTicketValidatorTests {
+public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidatorTests {
+
+    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8089);
 
     private Cas20ProxyTicketValidator ticketValidator;
 
@@ -52,7 +53,7 @@ public final class Cas20ProxyTicketValidatorTests extends
 
     @AfterClass
     public static void classCleanUp() {
-        PublicTestHttpServer.instance().shutdown();
+        server.shutdown();
     }
 
     @Before
@@ -60,7 +61,7 @@ public final class Cas20ProxyTicketValidatorTests extends
         final List<String[]> list = new ArrayList<String[]>();
         list.add(new String[] {"proxy1", "proxy2", "proxy3"});
 
-        this.ticketValidator = new Cas20ProxyTicketValidator(CONST_CAS_SERVER_URL);
+        this.ticketValidator = new Cas20ProxyTicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8089");
         this.ticketValidator.setRenew(true);
         this.ticketValidator.setProxyCallbackUrl("test");
         this.ticketValidator.setProxyGrantingTicketStorage(getProxyGrantingTicketStorage());
@@ -89,8 +90,7 @@ public final class Cas20ProxyTicketValidatorTests extends
             UnsupportedEncodingException {
         final String USERNAME = "username";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
-        PublicTestHttpServer.instance().content = RESPONSE
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE.getBytes(server.encoding);
 
         final Assertion assertion = this.ticketValidator.validate("test",
                 "test");
@@ -101,8 +101,7 @@ public final class Cas20ProxyTicketValidatorTests extends
     public void testProxyChainWithInvalidProxy() throws TicketValidationException,
             UnsupportedEncodingException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy7</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
-        PublicTestHttpServer.instance().content = RESPONSE
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE.getBytes(server.encoding);
 
         try {
             this.ticketValidator.validate("test", "test");
@@ -113,18 +112,15 @@ public final class Cas20ProxyTicketValidatorTests extends
     }
 
     @Test
-    public void testConstructionFromSpringBean() throws TicketValidationException,
-    UnsupportedEncodingException {
+    public void testConstructionFromSpringBean() throws TicketValidationException, UnsupportedEncodingException {
     	final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:cas20ProxyTicketValidator.xml");
         final Cas20ProxyTicketValidator v = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidator");
     	
         final String USERNAME = "username";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
-        PublicTestHttpServer.instance().content = RESPONSE
-                .getBytes(PublicTestHttpServer.instance().encoding);
+        server.content = RESPONSE.getBytes(server.encoding);
 
-        final Assertion assertion = v.validate("test",
-                "test");
+        final Assertion assertion = v.validate("test","test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
 
     }

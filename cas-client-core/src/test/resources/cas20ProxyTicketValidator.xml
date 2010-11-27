@@ -26,7 +26,7 @@
 
 	<bean id="proxyTicketValidator"
 		class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
-		<constructor-arg index="0" value="http://localhost:8085/" />
+		<constructor-arg index="0" value="http://localhost:8089/" />
 		<property name="allowedProxyChains">
 			<value>
 				test test2 test3 test4 test5
@@ -41,6 +41,6 @@
 	<bean id="proxyTicketValidatorWithAllowAnyProxy"
 		class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator"
 		p:acceptAnyProxy="true">
-		<constructor-arg index="0" value="http://localhost:8085/" />
+		<constructor-arg index="0" value="http://localhost:8089/" />
 	</bean>      
 </beans>
