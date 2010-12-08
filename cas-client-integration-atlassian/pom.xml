@@ -14,7 +14,7 @@
 		<dependency>
 			<artifactId>atlassian-seraph</artifactId>
 			<groupId>com.atlassian.seraph</groupId>
-			<version>0.37</version>
+			<version>2.3.3</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -22,12 +22,14 @@
 					<artifactId>propertyset</artifactId>
 				</exclusion>
 			</exclusions>
+            <!-- https://maven.atlassian.com/content/groups/m1/com.atlassian.seraph/jars/ -->
 		</dependency>
 
         <dependency>
+            <!-- https://maven.atlassian.com/content/groups/m1/com.atlassian.confluence/jars/ -->
             <groupId>com.atlassian.confluence</groupId>
             <artifactId>confluence</artifactId>
-            <version>2.7.3</version>
+            <version>3.4.4</version>
             <scope>provided</scope>
             <exclusions>
                <exclusion>
