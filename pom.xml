@@ -9,14 +9,14 @@
     <version>3.2.0-SNAPSHOT</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
-    <name>JA-SIG CAS Client for Java</name>
-    <description>JA-SIG CAS Client for Java is the integration point for applications that want to speak with a CAS
+    <name>Jasig CAS Client for Java</name>
+    <description>Jasig CAS Client for Java is the integration point for applications that want to speak with a CAS
         server, either via the CAS 1.0 or CAS 2.0 protocol.
     </description>
-    <url>http://www.ja-sig.org/products/cas/</url>
+    <url>http://www.Jasig.org/products/cas/</url>
     <issueManagement>
         <system>JIRA</system>
-        <url>http://www.ja-sig.org/issues</url>
+        <url>http://www.Jasig.org/issues</url>
     </issueManagement>
     <scm>
         <connection>scm:svn:https://source.jasig.org/cas-clients/java-client/trunk</connection>
@@ -41,7 +41,7 @@
         </developer>
     </developers>
     <organization>
-        <name>JA-SIG</name>
+        <name>Jasig</name>
         <url>http://www.jasig.org</url>
     </organization>
     <build>

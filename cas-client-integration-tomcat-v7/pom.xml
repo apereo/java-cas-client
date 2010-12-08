@@ -10,7 +10,7 @@
     <groupId>org.jasig.cas.client</groupId>
     <artifactId>cas-client-integration-tomcat-v7</artifactId>
     <packaging>jar</packaging>
-    <name>JA-SIG CAS Client for Java - Tomcat 7.x Integration</name>
+    <name>Jasig CAS Client for Java - Tomcat 7.x Integration</name>
 
     <dependencies>
         <dependency>
