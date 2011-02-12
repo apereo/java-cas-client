@@ -87,8 +87,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         }
 
         final String principal = XmlUtils.getTextForElement(response, "user");
-        final String proxyGrantingTicketIou = XmlUtils.getTextForElement(
-                response, "proxyGrantingTicket");
+        final String proxyGrantingTicketIou = XmlUtils.getTextForElement(response, "proxyGrantingTicket");
         final String proxyGrantingTicket = this.proxyGrantingTicketStorage != null ? this.proxyGrantingTicketStorage.retrieve(proxyGrantingTicketIou) : null;
 
         if (CommonUtils.isEmpty(principal)) {

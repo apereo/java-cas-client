@@ -128,7 +128,7 @@ public final class XmlUtils {
     public static String getTextForElement(final String xmlAsString,
                                            final String element) {
         final XMLReader reader = getXmlReader();
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder builder = new StringBuilder();
 
         final DefaultHandler handler = new DefaultHandler() {
 
@@ -152,7 +152,7 @@ public final class XmlUtils {
             public void characters(char[] ch, int start, int length)
                     throws SAXException {
                 if (this.foundElement) {
-                    buffer.append(ch, start, length);
+                    builder.append(ch, start, length);
                 }
             }
         };
@@ -167,6 +167,6 @@ public final class XmlUtils {
             return null;
         }
 
-        return buffer.toString();
+        return builder.toString();
     }
 }
