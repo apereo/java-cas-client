@@ -87,7 +87,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         final String config = getPropertyFromInitParams(filterConfig, "hostnameVerifierConfig", null);
         log.trace("Using hostnameVerifierConfig parameter: " + config);
         if (className != null) {
-            return ReflectUtils.newInstance(className, config);
+            if (config != null) {
+                return ReflectUtils.newInstance(className, config);
+            } else {
+                return ReflectUtils.newInstance(className);
+            }
         }
         return null;
     }

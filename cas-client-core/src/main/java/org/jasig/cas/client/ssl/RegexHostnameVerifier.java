@@ -16,20 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-/*
-  $Id$
-
-  Copyright (C) 2008-2009 Virginia Tech.
-  All rights reserved.
-
-  SEE LICENSE FOR MORE INFORMATION
-
-  Author:  Middleware
-  Email:   middleware@vt.edu
-  Version: $Revision$
-  Updated: $Date$
-*/
 package org.jasig.cas.client.ssl;
 
 import java.util.regex.Pattern;
@@ -41,11 +27,13 @@ import javax.net.ssl.SSLSession;
  * Validates an SSL peer's hostname using a regular expression that a candidate
  * host must match in order to be verified.
  *
- * @author Middleware
- * @version $Revision$
+ * @author Marvin Addison
+ * @version $Revision$ $Date$
+ * @since 3.1.10
  *
  */
-public class RegexHostnameVerifier implements HostnameVerifier {
+public final class RegexHostnameVerifier implements HostnameVerifier {
+
     /** Allowed hostname pattern */
     private Pattern pattern;
     

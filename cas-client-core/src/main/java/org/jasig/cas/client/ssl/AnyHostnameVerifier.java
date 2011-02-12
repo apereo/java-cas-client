@@ -17,11 +17,6 @@
  * under the License.
  */
 
-/*
-  @author Marvin Addison
-  @version $Revision$ $Date$
-  @since 3.1.10
-*/
 package org.jasig.cas.client.ssl;
 
 import javax.net.ssl.HostnameVerifier;
@@ -31,11 +26,11 @@ import javax.net.ssl.SSLSession;
  * Hostname verifier that performs no host name verification for an SSL peer
  * such that all hosts are allowed.
  *
- * @author Middleware
- * @version $Revision$
- *
+ * @author Marvin Addison
+ * @version $Revision$ $Date$
+ * @since 3.1.10
  */
-public class AnyHostnameVerifier implements HostnameVerifier {
+public final class AnyHostnameVerifier implements HostnameVerifier {
 
     /** {@inheritDoc} */
     public boolean verify(final String hostname, final SSLSession session) {

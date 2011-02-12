@@ -17,19 +17,6 @@
  * under the License.
  */
 
-/*
-  $Id$
-
-  Copyright (C) 2008-2009 Virginia Tech.
-  All rights reserved.
-
-  SEE LICENSE FOR MORE INFORMATION
-
-  Author:  Middleware
-  Email:   middleware@vt.edu
-  Version: $Revision$
-  Updated: $Date$
-*/
 package org.jasig.cas.client.ssl;
 
 import javax.net.ssl.HostnameVerifier;
@@ -38,11 +25,13 @@ import javax.net.ssl.SSLSession;
 /**
  * Verifies a SSL peer host name based on an explicit whitelist of allowed hosts.
  *
- * @author Middleware
- * @version $Revision$
+ * @author Marvin Addison
+ * @version $Revision$ $Date$
+ * @since 3.1.10
  *
  */
-public class WhitelistHostnameVerifier implements HostnameVerifier {
+public final class WhitelistHostnameVerifier implements HostnameVerifier {
+
     /** Allowed hosts */
     private String[] allowedHosts;
 
