@@ -21,6 +21,7 @@ package org.jasig.cas.client.tomcat.v7;
 
 import java.security.Principal;
 
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.realm.RealmBase;
 import org.jasig.cas.client.tomcat.CasRealm;
 
@@ -43,9 +44,15 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
         return getDelegate().getRoles(p);
     }
 
-    /** {@inheritDoc} */
     public boolean hasRole(final Principal principal, final String role) {
         return getDelegate().hasRole(principal, role);
+    }
+
+    /**
+     * Tomcat 7.0.8 changed their APIs so {@link #hasRole(java.security.Principal, String)} is only valid for 7.0.7 and below.
+     */
+    public boolean hasRole(final Wrapper wrapper, final Principal principal, final String role) {
+        return hasRole(principal, role);
     }
 
     /** {@inheritDoc} */
@@ -64,12 +71,12 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
     }
 
     /** {@inheritDoc} */
-    protected String getPassword(final String username) {
+    protected String getPassword(final String userName) {
         throw new UnsupportedOperationException();
     }
 
     /** {@inheritDoc} */
-    protected Principal getPrincipal(final String username) {
+    protected Principal getPrincipal(final String userName) {
         throw new UnsupportedOperationException();
     }
 

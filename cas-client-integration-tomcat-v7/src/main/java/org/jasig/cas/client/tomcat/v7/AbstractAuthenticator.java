@@ -62,6 +62,15 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     protected abstract String getAuthenticationMethod();
 
     /**
+     * Provided for Tomcat 7.0.8 support.
+     *
+     * @return the authentication method.
+     */
+    protected String getAuthMethod() {
+        return  getAuthenticationMethod();
+    }
+
+    /**
      * Abstract method that subclasses should use to provide the name of the artifact parameter (i.e. ticket)
      *
      * @return the artifact parameter name.  CANNOT be NULL.
