@@ -186,9 +186,16 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     }
 
     protected String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-        final String MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"" + UUID.randomUUID().toString() + "\" IssueInstant=\"" + CommonUtils.formatForUtcTime(new Date()) + "\">"
+
+        String MESSAGE_TO_SEND;
+
+        try {
+            MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"" + SAMLIdentifierFactory.getInstance().getIdentifier() + "\" IssueInstant=\"" + CommonUtils.formatForUtcTime(new Date()) + "\">"
                 + "<samlp:AssertionArtifact>" + ticket
                 + "</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>";
+        } catch (final SAMLException e) {
+            throw new RuntimeException(e);
+        }
 
         HttpURLConnection conn = null;
 
