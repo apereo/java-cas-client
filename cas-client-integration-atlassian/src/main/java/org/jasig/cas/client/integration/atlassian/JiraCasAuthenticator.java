@@ -21,6 +21,9 @@ package org.jasig.cas.client.integration.atlassian;
 
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.atlassian.seraph.auth.AuthenticatorException;
+import com.opensymphony.user.EntityNotFoundException;
+import com.opensymphony.user.User;
+import com.opensymphony.user.UserManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
@@ -46,6 +49,21 @@ public final class JiraCasAuthenticator extends DefaultAuthenticator {
     private static final long serialVersionUID = 3452011252741183166L;
 
     private static final Log LOG = LogFactory.getLog(JiraCasAuthenticator.class);
+
+    @Override
+    protected boolean authenticate(final Principal principal, final String password) throws AuthenticatorException {
+        return ((User) principal).authenticate(password);
+    }
+
+    @Override
+    protected Principal getUser(final String username) {
+        try {
+            return UserManager.getInstance().getUser(username);
+        } catch (final EntityNotFoundException e) {
+            LOG.warn("Could not find user '" + username + "' in UserManager : " + e);
+        }
+        return null;
+    }
 
     public Principal getUser(final HttpServletRequest request, final HttpServletResponse response) {
         final HttpSession session = request.getSession();

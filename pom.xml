@@ -64,6 +64,7 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -72,6 +73,8 @@
                     <includes>
                         <include>**/*Tests*</include>
                     </includes>
+                    <useUnlimitedThreads>false</useUnlimitedThreads>
+                    <threadCount>1</threadCount>
                 </configuration>
             </plugin>
             <!--

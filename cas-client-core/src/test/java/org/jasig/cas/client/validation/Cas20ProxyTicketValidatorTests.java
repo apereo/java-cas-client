@@ -51,10 +51,10 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
         super();
     }
 
-    @AfterClass
+    /*@AfterClass
     public static void classCleanUp() {
         server.shutdown();
-    }
+    } */
 
     @Before
     public void setUp() throws Exception {

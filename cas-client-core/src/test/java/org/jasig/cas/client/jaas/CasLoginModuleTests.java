@@ -54,10 +54,10 @@ public class CasLoginModuleTests {
     
     private Map<String,String> options;
 
-    @AfterClass
+   /* @AfterClass
     public static void classCleanUp() {
         server.shutdown();
-    }
+    }*/
 
     @Before
     public void setUp() throws Exception {

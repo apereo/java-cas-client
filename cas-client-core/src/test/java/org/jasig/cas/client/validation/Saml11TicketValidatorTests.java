@@ -48,10 +48,10 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
         this.validator.setTolerance(1000L);
     }
 
-    @AfterClass
+    /*@AfterClass
     public static void cleanUp() throws Exception {
         server.shutdown();
-    }
+    }*/
 
     @Test
     public void testValidationFailedResponse() throws UnsupportedEncodingException {

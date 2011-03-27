@@ -22,6 +22,8 @@ package org.jasig.cas.client;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Scott Battaglia
@@ -42,6 +44,8 @@ public final class PublicTestHttpServer extends Thread {
 
     private ServerSocket server;
 
+    private static Map<Integer, PublicTestHttpServer> serverMap = new HashMap<Integer, PublicTestHttpServer>();
+
     private PublicTestHttpServer(String data, String encoding, String MIMEType, int port) throws UnsupportedEncodingException {
         this(data.getBytes(encoding), encoding, MIMEType, port);
     }
@@ -55,9 +59,14 @@ public final class PublicTestHttpServer extends Thread {
     }
 
     public static synchronized PublicTestHttpServer instance(final int port) {
+        if (serverMap.containsKey(port)) {
+            return serverMap.get(port);
+        }
+
         try {
             final PublicTestHttpServer server = new PublicTestHttpServer("test", "ASCII", "text/plain", port);
             server.start();
+            serverMap.put(port, server);
             Thread.yield();
             return server;
         } catch (Exception e) {

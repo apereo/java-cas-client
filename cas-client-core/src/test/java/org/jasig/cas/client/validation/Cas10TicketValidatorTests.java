@@ -46,10 +46,10 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
         super();
     }
 
-    @AfterClass
+    /*@AfterClass
     public static void classCleanUp() {
         server.shutdown();
-    }
+    } */
 
     @Before
     public void setUp() throws Exception {

@@ -51,10 +51,10 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         super();
     }
 
-    @AfterClass
+    /*@AfterClass
     public static void classCleanUp() {
         server.shutdown();
-    }
+    } */
 
     @Before
     public void setUp() throws Exception {
