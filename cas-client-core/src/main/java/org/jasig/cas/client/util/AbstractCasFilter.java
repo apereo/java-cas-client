@@ -113,7 +113,11 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     }
 
     public final void setServerName(final String serverName) {
-        this.serverName = serverName;
+        if (serverName != null && serverName.endsWith("/")) {
+            this.serverName = serverName.substring(0, serverName.length()-1);
+        } else {
+            this.serverName = serverName;
+        }
     }
 
     public final void setService(final String service) {
