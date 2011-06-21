@@ -45,7 +45,18 @@ public abstract class AbstractConfigurationFilter implements Filter {
      * has a value.
      * If it does, it returns that, otherwise it retrieves the ServletContext's initParameters and returns that value if any.
      * <p>
-     * Finally, it will check JNDI if all other methods fail.  All the JNDI properties should be stored under java:comp/env/cas/{propertyName}
+     * Finally, it will check JNDI if all other methods fail.  All the JNDI properties should be stored under either java:comp/env/cas/SHORTFILTERNAME/{propertyName}
+     * or java:comp/env/cas/{propertyName}
+     * <p>
+     * Essentially the documented order is:
+     * <ol>
+     *     <li>FilterConfig.getInitParameter</li>
+     *     <li>ServletContext.getInitParameter</li>
+     *     <li>java:comp/env/cas/SHORTFILTERNAME/{propertyName}</li>
+     *     <li>java:comp/env/cas/{propertyName}</li>
+     *     <li>Default Value</li>
+     * </ol>
+     *
      *
      * @param filterConfig the Filter Configuration.
      * @param propertyName the property to retrieve.
