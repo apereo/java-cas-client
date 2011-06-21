@@ -27,6 +27,7 @@ import org.opensaml.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -71,7 +72,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         try {
         	final String removeStartOfSoapBody = response.substring(response.indexOf("<SOAP-ENV:Body>") + 15);
         	final String removeEndOfSoapBody = removeStartOfSoapBody.substring(0, removeStartOfSoapBody.indexOf("</SOAP-ENV:Body>"));
-            final SAMLResponse samlResponse = new SAMLResponse(new ByteArrayInputStream(removeEndOfSoapBody.getBytes()));
+            final SAMLResponse samlResponse = new SAMLResponse(new ByteArrayInputStream(CommonUtils.isNotBlank(getEncoding()) ? removeEndOfSoapBody.getBytes(Charset.forName(getEncoding())) : removeEndOfSoapBody.getBytes()));
 
             if (!samlResponse.getAssertions().hasNext()) {
                 throw new TicketValidationException("No assertions found.");
@@ -217,7 +218,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             out.flush();
             out.close();
 
-            final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            final BufferedReader in = new BufferedReader(CommonUtils.isNotBlank(getEncoding()) ? new InputStreamReader(conn.getInputStream(), Charset.forName(getEncoding())) : new InputStreamReader(conn.getInputStream()));
             final StringBuilder buffer = new StringBuilder(256);
 
             String line;
