@@ -112,9 +112,16 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName, this.artifactParameterName, this.encodeServiceUrl);
     }
 
+    /**
+     * Note that trailing slashes should not be used in the serverName.  As a convenience for this common misconfiguration, we strip them from the provided
+     * value.
+     *
+     * @param serverName the serverName. If this method is called, this should not be null.  This AND service should not be both configured.
+     */
     public final void setServerName(final String serverName) {
         if (serverName != null && serverName.endsWith("/")) {
             this.serverName = serverName.substring(0, serverName.length()-1);
+            log.info(String.format("Eliminated extra slash from serverName [%s].  It is now [%s]", serverName, this.serverName));
         } else {
             this.serverName = serverName;
         }
