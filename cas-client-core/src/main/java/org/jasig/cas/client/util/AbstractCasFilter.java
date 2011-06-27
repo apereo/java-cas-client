@@ -101,6 +101,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
         CommonUtils.assertNotNull(this.serviceParameterName, "serviceParameterName cannot be null.");
         CommonUtils.assertTrue(CommonUtils.isNotEmpty(this.serverName) || CommonUtils.isNotEmpty(this.service), "serverName or service must be set.");
+        CommonUtils.assertTrue(CommonUtils.isBlank(this.serverName) || CommonUtils.isBlank(this.service), "serverName and service cannot both be set.  You MUST ONLY set one.");
     }
 
     // empty implementation as most filters won't need this.
