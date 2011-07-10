@@ -6,7 +6,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas.client</groupId>
-    <version>3.2.1</version>
+    <version>3.2.2-SNAPSHOT</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>Jasig CAS Client for Java</name>
@@ -19,9 +19,9 @@
         <url>http://www.Jasig.org/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:svn:https://source.jasig.org/cas-clients/java-client/tags/cas-client-3.2.1</connection>
-        <developerConnection>scm:svn:https://source.jasig.org/cas-clients/java-client/tags/cas-client-3.2.1</developerConnection>
-        <url>https://source.jasig.org/cas-clients/java-client/tags/cas-client-3.2.1</url>
+        <connection>scm:svn:https://source.jasig.org/cas-clients/java-client/trunk</connection>
+        <developerConnection>scm:svn:https://source.jasig.org/cas-clients/java-client/trunk</developerConnection>
+        <url>https://source.jasig.org/cas-clients/java-client/trunk</url>
     </scm>
     <inceptionYear>2006</inceptionYear>
 
