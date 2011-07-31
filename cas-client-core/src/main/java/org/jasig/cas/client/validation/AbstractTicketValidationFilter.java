@@ -194,6 +194,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     throw new ServletException(e);
                 }
 
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+
                 return;
             }
         }
