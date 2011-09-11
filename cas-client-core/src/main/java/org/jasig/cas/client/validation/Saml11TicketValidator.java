@@ -68,11 +68,19 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         }
     }
 
+    protected byte[] getBytes(final String text) {
+        try {
+            return CommonUtils.isNotBlank(getEncoding()) ? text.getBytes(getEncoding()) : text.getBytes();
+        } catch (final Exception e) {
+            return text.getBytes();
+        }
+    }
+
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         try {
         	final String removeStartOfSoapBody = response.substring(response.indexOf("<SOAP-ENV:Body>") + 15);
         	final String removeEndOfSoapBody = removeStartOfSoapBody.substring(0, removeStartOfSoapBody.indexOf("</SOAP-ENV:Body>"));
-            final SAMLResponse samlResponse = new SAMLResponse(new ByteArrayInputStream(CommonUtils.isNotBlank(getEncoding()) ? removeEndOfSoapBody.getBytes(Charset.forName(getEncoding())) : removeEndOfSoapBody.getBytes()));
+            final SAMLResponse samlResponse = new SAMLResponse(new ByteArrayInputStream(getBytes(removeEndOfSoapBody)));
 
             if (!samlResponse.getAssertions().hasNext()) {
                 throw new TicketValidationException("No assertions found.");
