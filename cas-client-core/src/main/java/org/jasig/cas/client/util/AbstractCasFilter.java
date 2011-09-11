@@ -151,4 +151,14 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     public final String getServiceParameterName() {
         return this.serviceParameterName;
     }
+
+    /**
+     * Template method to allow you to change how you retrieve the ticket.
+     *
+     * @param request the HTTP ServletRequest.  CANNOT be NULL.
+     * @return the ticket if its found, null otherwise.
+     */
+    protected String retrieveTicketFromRequest(final HttpServletRequest request) {
+        return CommonUtils.safeGetParameter(request,getArtifactParameterName());
+    }
 }

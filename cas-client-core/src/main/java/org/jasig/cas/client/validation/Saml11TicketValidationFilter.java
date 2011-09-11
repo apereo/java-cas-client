@@ -27,21 +27,19 @@ import javax.servlet.ServletException;
  * <p>
  * Deployers can provide the "casServerUrlPrefix" and "tolerance" properties of the Saml11TicketValidator via the
  * context or filter init parameters.
- * <p>
- * Note, the "final" on this class helps ensure the compliance required in the initInternal method.
  *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.1
  */
-public final class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
+public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
 
     public Saml11TicketValidationFilter() {
         setArtifactParameterName("SAMLart");
         setServiceParameterName("TARGET");
     }
 
-    protected void initInternal(final FilterConfig filterConfig) throws ServletException {
+    protected final void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
 
         log.warn("SAML1.1 compliance requires the [artifactParameterName] and [serviceParameterName] to be set to specified values.");

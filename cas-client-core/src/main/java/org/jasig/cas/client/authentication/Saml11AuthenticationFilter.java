@@ -25,15 +25,15 @@ import javax.servlet.ServletException;
 /**
  * Extension to the default Authentication filter that sets the required SAML1.1 artifact parameter name and service parameter name.
  * <p>
- * Note, the "final" on this class helps ensure the compliance required in the initInternal method.
+ * Note, as of 3.3, the final keyword was removed to allow you to override the method to retrieve tickets, per CASC-154s
  *
  * @author Scott Battaglia
  * @since 3.1.12
  * @version $Revision$ $Date$
  */
-public final class Saml11AuthenticationFilter extends AuthenticationFilter {
+public class Saml11AuthenticationFilter extends AuthenticationFilter {
 
-    protected void initInternal(final FilterConfig filterConfig) throws ServletException {
+    protected final void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
 
         log.warn("SAML1.1 compliance requires the [artifactParameterName] and [serviceParameterName] to be set to specified values.");

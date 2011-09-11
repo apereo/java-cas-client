@@ -158,7 +158,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        final String ticket = CommonUtils.safeGetParameter(request, getArtifactParameterName());
+        final String ticket = retrieveTicketFromRequest(request);
 
         if (CommonUtils.isNotBlank(ticket)) {
             if (log.isDebugEnabled()) {
@@ -219,8 +219,4 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     public final void setUseSession(final boolean useSession) {
         this.useSession = useSession;
     }
-
-
-
-
 }
