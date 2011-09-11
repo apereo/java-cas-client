@@ -83,7 +83,7 @@ public final class WebAuthenticationFilter extends AbstractCasFilter {
             // There is evidence that in some cases the principal can disappear
             // in JBoss despite a valid session.
             // This block forces consistency between principal and assertion.
-            log.info("User principal not found.  Removing CAS assertion from session to force reauthentication.");
+            log.info("User principal not found.  Removing CAS assertion from session to force re-authentication.");
             session.removeAttribute(CONST_CAS_ASSERTION);
         }
         chain.doFilter(request, response);

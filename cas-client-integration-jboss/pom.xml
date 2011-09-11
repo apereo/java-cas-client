@@ -27,7 +27,7 @@
         </dependency>
     </dependencies>
 
-    <!--
+    <!-- This must be disabled before releasing a production-ready version. -->
     <repositories>
       <repository>
         <id>jboss</id>
@@ -35,7 +35,6 @@
         <url>http://repository.jboss.com/maven2/</url>
       </repository>
     </repositories>
-    -->
 
     <properties>
         <jboss.version>5.1.0.GA</jboss.version>
