@@ -24,6 +24,28 @@
             <artifactId>jboss-as-tomcat</artifactId>
             <version>${jboss.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>trove</groupId>
+                    <artifactId>trove</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>apache-log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jpl-pattern</groupId>
+                    <artifactId>jpl-pattern</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jpl-util</groupId>
+                    <artifactId>jpl-util</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.security</groupId>
+                    <artifactId>jacc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -32,11 +54,13 @@
       <repository>
         <id>jboss</id>
         <name>JBoss Repository</name>
-        <url>http://repository.jboss.com/maven2/</url>
+        <url>https://repository.jboss.org/nexus/content/groups/public//</url>
       </repository>
     </repositories>
 
+
+
     <properties>
-        <jboss.version>5.1.0.GA</jboss.version>
+        <jboss.version>6.1.0.Final</jboss.version>
     </properties>  
 </project>
