@@ -52,7 +52,7 @@ public final class JiraCasAuthenticator extends DefaultAuthenticator {
 
     @Override
     protected boolean authenticate(final Principal principal, final String password) throws AuthenticatorException {
-        return ((User) principal).authenticate(password);
+        return true;
     }
 
     @Override
