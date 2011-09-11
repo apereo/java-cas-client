@@ -53,10 +53,6 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl extends AbstractE
         this.cache = cache;
     }
 
-    public EhcacheBackedProxyGrantingTicketStorageImpl(final String secret) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException {
-        this.cache = CacheManager.getInstance().getCache(EHCACHE_CACHE_NAME);
-    }
-
     public void saveInternal(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         final Element element = new Element(proxyGrantingTicketIou, proxyGrantingTicket);
         try {

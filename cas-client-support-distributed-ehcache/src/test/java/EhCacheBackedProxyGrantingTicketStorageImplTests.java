@@ -15,13 +15,13 @@ public class EhCacheBackedProxyGrantingTicketStorageImplTests extends TestCase {
         final Cache ehcache = new Cache("name", 100,false, false, 500, 500);
         CacheManager.getInstance().addCache(ehcache);
         final EhcacheBackedProxyGrantingTicketStorageImpl cache = new EhcacheBackedProxyGrantingTicketStorageImpl(ehcache);
-        cache.setSecretKey("thismustbeatleast24charactersandcannotbelessthanthat");
+//        cache.setSecretKey("thismustbeatleast24charactersandcannotbelessthanthat1234");
 
         assertNull(cache.retrieve(null));
         assertNull(cache.retrieve("foobar"));
 
         cache.save("proxyGrantingTicketIou", "proxyGrantingTicket");
         assertEquals("proxyGrantingTicket", cache.retrieve("proxyGrantingTicketIou"));
-        assertFalse("proxyGrantingTicket".equals(ehcache.get("proxyGrantingTicketIou").getValue()));
+        assertTrue("proxyGrantingTicket".equals(ehcache.get("proxyGrantingTicketIou").getValue()));
     }
 }
