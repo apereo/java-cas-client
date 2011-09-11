@@ -94,7 +94,7 @@ public final class CommonUtils {
      * Check whether the collection is null or empty. If it is, throw an
      * exception and display the message.
      *
-     * @param c       the collecion to check.
+     * @param c       the collection to check.
      * @param message the message to display if the object is null.
      */
     public static void assertNotEmpty(final Collection<?> c, final String message) {
@@ -172,7 +172,7 @@ public final class CommonUtils {
      */
     public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName, final String serviceUrl, final boolean renew, final boolean gateway) {
         try {
-        return casServerLoginUrl + (casServerLoginUrl.indexOf("?") != -1 ? "&" : "?") + serviceParameterName + "="
+            return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="
                     + URLEncoder.encode(serviceUrl, "UTF-8")
                     + (renew ? "&renew=true" : "")
                     + (gateway ? "&gateway=true" : "");
@@ -208,6 +208,26 @@ public final class CommonUtils {
 		response.getWriter().write("<?xml version=\"1.0\"?>");
 		response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
     }
+
+    protected static String findMatchingServerName(final HttpServletRequest request, final String serverName) {
+        final String[] serverNames = serverName.split(" ");
+
+        if (serverNames == null || serverNames.length == 0) {
+            return serverName;
+        }
+
+        final String comparisonHost = request.getHeader("Host");
+
+        for (final String server : serverNames) {
+            final String lowerCaseServer = server.toLowerCase();
+
+            if (lowerCaseServer.contains(comparisonHost)) {
+                return server;
+            }
+        }
+
+        return serverNames[0];
+    }
     
 /**
      * Constructs a service url from the HttpServletRequest or from the given
@@ -217,19 +237,21 @@ public final class CommonUtils {
      * @param request  the HttpServletRequest
      * @param response the HttpServletResponse
      * @param service the configured service url (this will be used if not null)
-     * @param serverName the server name to  use to constuct the service url if the service param is empty
+     * @param serverNames the server name to  use to constuct the service url if the service param is empty.  Note, prior to CAS Client 3.3, this was a single value.
+     *           As of 3.3, it can be a space-separated value.  We keep it as a single value, but will convert it to an array internally to get the matching value. This keeps backward compatability with anything using this public
+     *           method.
      * @param artifactParameterName the artifact parameter name to remove (i.e. ticket)
      * @param encode whether to encode the url or not (i.e. Jsession).    
      * @return the service url to use.
      */
-    public static String constructServiceUrl(final HttpServletRequest request,
-                                               final HttpServletResponse response, final String service, final String serverName, final String artifactParameterName, final boolean encode) {
+    public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response, final String service, final String serverNames, final String artifactParameterName, final boolean encode) {
         if (CommonUtils.isNotBlank(service)) {
             return encode ? response.encodeURL(service) : service;
         }
 
         final StringBuilder buffer = new StringBuilder();
 
+        final String serverName = findMatchingServerName(request, serverNames);
 
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
             buffer.append(request.isSecure() ? "https://" : "http://");
@@ -291,7 +313,7 @@ public final class CommonUtils {
             LOG.debug("safeGetParameter called on a POST HttpServletRequest for LogoutRequest.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
             return request.getParameter(parameter);
         }
-        return request.getQueryString() == null || request.getQueryString().indexOf(parameter) == -1 ? null : request.getParameter(parameter);       
+        return request.getQueryString() == null || !request.getQueryString().contains(parameter) ? null : request.getParameter(parameter);
     }
 
     /**

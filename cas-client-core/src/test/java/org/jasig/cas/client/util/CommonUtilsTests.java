@@ -130,8 +130,27 @@ public final class CommonUtilsTests extends TestCase {
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com", "ticket", false);
 
         assertEquals(CONST_MY_URL, constructedUrl);
+    }
 
+    public void testConstructUrlWithMultipleHostsNoPortsOrProtocol() {
+        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.addHeader("Host", "www.myserver.com");
+        request.setScheme("https");
+        request.setSecure(true);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.amazon.com www.bestbuy.com www.myserver.com", "ticket", false);
+        assertEquals(CONST_MY_URL, constructedUrl);
+    }
 
-
+    public void testConstructURlWithMultipleHostsAndPorts() {
+        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.addHeader("Host", "www.myserver.com");
+        request.setScheme("https");
+        request.setSecure(true);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "ticket", false);
+        assertEquals(CONST_MY_URL, constructedUrl);
     }
 }
