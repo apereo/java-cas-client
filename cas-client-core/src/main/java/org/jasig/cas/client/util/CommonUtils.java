@@ -212,11 +212,15 @@ public final class CommonUtils {
     protected static String findMatchingServerName(final HttpServletRequest request, final String serverName) {
         final String[] serverNames = serverName.split(" ");
 
-        if (serverNames == null || serverNames.length == 0) {
+        if (serverNames == null || serverNames.length == 0 || serverNames.length == 1) {
             return serverName;
         }
 
         final String comparisonHost = request.getHeader("Host");
+
+        if (comparisonHost == null) {
+            return serverName;
+        }
 
         for (final String server : serverNames) {
             final String lowerCaseServer = server.toLowerCase();
