@@ -41,7 +41,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         super(casServerUrlPrefix);
     }
 
-    public ProxyList getAllowedProxyChains() {
+    protected final ProxyList getAllowedProxyChains() {
         return this.allowedProxyChains;
     }
 
@@ -65,11 +65,15 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         throw new InvalidProxyChainTicketValidationException("Invalid proxy chain: " + proxies.toString());
     }
 
-    public void setAcceptAnyProxy(final boolean acceptAnyProxy) {
+    public final void setAcceptAnyProxy(final boolean acceptAnyProxy) {
         this.acceptAnyProxy = acceptAnyProxy;
     }
 
-    public void setAllowedProxyChains(final ProxyList allowedProxyChains) {
+    public final void setAllowedProxyChains(final ProxyList allowedProxyChains) {
         this.allowedProxyChains = allowedProxyChains;
+    }
+
+    protected boolean isAcceptAnyProxy() {
+        return this.acceptAnyProxy;
     }
 }

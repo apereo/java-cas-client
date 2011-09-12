@@ -184,5 +184,17 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
 
     public final void setProxyRetriever(final ProxyRetriever proxyRetriever) {
         this.proxyRetriever = proxyRetriever;
-    }    
+    }
+
+    protected final String getProxyCallbackUrl() {
+        return this.proxyCallbackUrl;
+    }
+
+    protected final ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
+        return this.proxyGrantingTicketStorage;
+    }
+
+    protected final ProxyRetriever getProxyRetriever() {
+        return this.proxyRetriever;
+    }
 }

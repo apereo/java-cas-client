@@ -194,7 +194,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     protected abstract String retrieveResponseFromServer(URL validationUrl, String ticket);
 
-    public Assertion validate(final String ticket, final String service) throws TicketValidationException {
+    public final Assertion validate(final String ticket, final String service) throws TicketValidationException {
 
 
         final String validationUrl = constructValidationUrl(ticket, service);
@@ -238,5 +238,17 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     protected final String getEncoding() {
         return this.encoding;
+    }
+
+    protected final boolean isRenew() {
+        return this.renew;
+    }
+
+    protected final String getCasServerUrlPrefix() {
+        return this.casServerUrlPrefix;
+    }
+
+    protected final Map<String, String> getCustomParameters() {
+        return this.customParameters;
     }
 }
