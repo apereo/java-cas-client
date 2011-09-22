@@ -110,7 +110,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
         final String serviceUrl = constructServiceUrl(request, response);
         final String ticket = retrieveTicketFromRequest(request);
-        final boolean wasGatewayed = this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
+        final boolean wasGatewayed = this.gateway && this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
 
         if (CommonUtils.isNotBlank(ticket) || wasGatewayed) {
             filterChain.doFilter(request, response);
