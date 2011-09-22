@@ -27,6 +27,9 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Performs CAS single sign-out operations in an API-agnostic fashion.
  *
@@ -49,9 +52,17 @@ public final class SingleSignOutHandler {
     /** Parameter name that stores logout request */
     private String logoutParameterName = "logoutRequest";
 
+    private boolean artifactParameterOverPost = false;
+
+    private List<String> safeParameters;
+
 
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         this.sessionMappingStorage = storage;
+    }
+
+    public void setArtifactParameterOverPost(final boolean artifactParameterOverPost) {
+        this.artifactParameterOverPost = artifactParameterOverPost;
     }
 
     public SessionMappingStorage getSessionMappingStorage() {
@@ -78,7 +89,13 @@ public final class SingleSignOutHandler {
     public void init() {
         CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
         CommonUtils.assertNotNull(this.logoutParameterName, "logoutParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannote be null."); 
+        CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannot be null.");
+
+        if (this.artifactParameterOverPost) {
+            this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
+        } else {
+            this.safeParameters = Arrays.asList(this.logoutParameterName);
+        }
     }
     
     /**
@@ -89,7 +106,7 @@ public final class SingleSignOutHandler {
      * @return True if request contains authentication token, false otherwise.
      */
     public boolean isTokenRequest(final HttpServletRequest request) {
-        return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.artifactParameterName));
+        return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters));
     }
 
     /**
@@ -101,7 +118,7 @@ public final class SingleSignOutHandler {
      */
     public boolean isLogoutRequest(final HttpServletRequest request) {
         return "POST".equals(request.getMethod()) && !isMultipartRequest(request) &&
-            CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName));
+            CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters));
     }
 
     /**
@@ -113,7 +130,7 @@ public final class SingleSignOutHandler {
     public void recordSession(final HttpServletRequest request) {
         final HttpSession session = request.getSession(true);
 
-        final String token = CommonUtils.safeGetParameter(request, this.artifactParameterName);
+        final String token = CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters);
         if (log.isDebugEnabled()) {
             log.debug("Recording session for token " + token);
         }
@@ -132,7 +149,7 @@ public final class SingleSignOutHandler {
      * @param request HTTP request containing a CAS logout message.
      */
     public void destroySession(final HttpServletRequest request) {
-        final String logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName);
+        final String logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
         if (log.isTraceEnabled()) {
             log.trace ("Logout request:\n" + logoutMessage);
         }

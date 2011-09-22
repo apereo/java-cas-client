@@ -41,9 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Common utilities so that we don't need to include Commons Lang.
@@ -307,17 +305,24 @@ public final class CommonUtils {
      * parameter is ALWAYS in the GET request.
      * <p>
      * If we see the "logoutRequest" parameter we MUST treat it as if calling the standard request.getParameter.
+     * <p>
+     *     Note, that as of 3.3.0, we've made it more generic.
+     * </p>
      *
      * @param request the request to check.
      * @param parameter the parameter to look for.
      * @return the value of the parameter.
      */
-    public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
-        if ("POST".equals(request.getMethod()) && "logoutRequest".equals(parameter)) {
-            LOG.debug("safeGetParameter called on a POST HttpServletRequest for LogoutRequest.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
+    public static String safeGetParameter(final HttpServletRequest request, final String parameter, final List<String> parameters) {
+        if ("POST".equals(request.getMethod()) && parameters.contains(parameter)) {
+            LOG.debug("safeGetParameter called on a POST HttpServletRequest for Restricted Parameters.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
             return request.getParameter(parameter);
         }
         return request.getQueryString() == null || !request.getQueryString().contains(parameter) ? null : request.getParameter(parameter);
+    }
+
+    public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
+        return safeGetParameter(request, parameter, Arrays.asList("logoutRequest"));
     }
 
     /**

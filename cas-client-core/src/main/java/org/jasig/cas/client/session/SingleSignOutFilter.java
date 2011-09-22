@@ -44,6 +44,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         if (!isIgnoreInitConfiguration()) {
             handler.setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
             handler.setLogoutParameterName(getPropertyFromInitParams(filterConfig, "logoutParameterName", "logoutRequest"));
+            handler.setArtifactParameterOverPost(parseBoolean(getPropertyFromInitParams(filterConfig, "artifactParameterOverPost", "false")));
         }
         handler.init();
     }
