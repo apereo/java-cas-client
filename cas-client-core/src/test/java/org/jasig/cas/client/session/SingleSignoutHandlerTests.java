@@ -21,6 +21,7 @@ public final class SingleSignoutHandlerTests {
     public void setUp() throws Exception {
         handler = new SingleSignOutHandler();
         handler.setLogoutParameterName(logoutParameterName);
+        handler.init();
         request = new MockHttpServletRequest();
     }
 

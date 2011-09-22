@@ -205,7 +205,7 @@ public class CasLoginModule implements LoginModule {
      */
 
 
-    public void initialize(final Subject subject, final CallbackHandler handler, final Map<String,?> state, final Map<String, ?> options) {
+    public final void initialize(final Subject subject, final CallbackHandler handler, final Map<String,?> state, final Map<String, ?> options) {
         this.assertion = null;
         this.callbackHandler = handler;
         this.subject = subject;
@@ -255,59 +255,89 @@ public class CasLoginModule implements LoginModule {
         this.ticketValidator = createTicketValidator(ticketValidatorClass, options);
     }
 
-    public boolean login() throws LoginException {
-        log.debug("Performing login.");
-        final NameCallback serviceCallback = new NameCallback("service");
-        final PasswordCallback ticketCallback = new PasswordCallback("ticket", false);
-        try {
-            this.callbackHandler.handle(new Callback[] { ticketCallback, serviceCallback });
-        } catch (final IOException e) {
-            log.info("Login failed due to IO exception in callback handler: " + e);
-            throw (LoginException) new LoginException("IO exception in callback handler: " + e).initCause(e);
-        } catch (final UnsupportedCallbackException e) {
-            log.info("Login failed due to unsupported callback: " + e);
-            throw (LoginException) new LoginException("Callback handler does not support PasswordCallback and TextInputCallback.").initCause(e);
-        }
-
-        if (ticketCallback.getPassword() != null) {
-            this.ticket = new TicketCredential(new String(ticketCallback.getPassword()));
-            final String service = CommonUtils.isNotBlank(serviceCallback.getName()) ? serviceCallback.getName() : this.service;
-
-            if (this.cacheAssertions) {
-                synchronized(ASSERTION_CACHE) {
-                    if (ASSERTION_CACHE.get(ticket) != null) {
-                        log.debug("Assertion found in cache.");
-                        this.assertion = ASSERTION_CACHE.get(ticket);
-                    }
-                }
-            }
-
-            if (this.assertion == null) {
-                log.debug("CAS assertion is null; ticket validation required.");
-                if (CommonUtils.isBlank(service)) {
-                    log.info("Login failed because required CAS service parameter not provided.");
-                    throw new LoginException("Neither login module nor callback handler provided required service parameter.");
-                }
-                try {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Attempting ticket validation with service=" + service + " and ticket=" + ticket);
-                    }
-                    this.assertion = this.ticketValidator.validate(this.ticket.getName(), service);
-
-                } catch (final Exception e) {
-                    log.info("Login failed due to CAS ticket validation failure: " + e);
-                    throw (LoginException) new LoginException("CAS ticket validation failed: " + e).initCause(e);
-                }
-            }
-            log.info("Login succeeded.");
-        } else {
-            log.info("Login failed because callback handler did not provide CAS ticket.");
-            throw new LoginException("Callback handler did not provide CAS ticket.");
-        }
+    /**
+     * Operations to perform before doing login.
+     *
+     * @return true if you'd like login to continue, false otherwise.
+     */
+    protected boolean preLogin() {
         return true;
     }
 
-    public boolean abort() throws LoginException {
+    /**
+     * This occurs after logout is processed.
+     *
+     * @param result the result from the login attempt.
+     */
+    protected void postLogin(final boolean result) {
+        // template method
+    }
+
+    public final boolean login() throws LoginException {
+        log.debug("Performing login.");
+
+        if (!preLogin()) {
+            log.debug("preLogin failed.");
+            return false;
+        }
+
+        final NameCallback serviceCallback = new NameCallback("service");
+        final PasswordCallback ticketCallback = new PasswordCallback("ticket", false);
+        boolean result = false;
+        try {
+            try {
+                this.callbackHandler.handle(new Callback[] { ticketCallback, serviceCallback });
+            } catch (final IOException e) {
+                log.info("Login failed due to IO exception in callback handler: " + e);
+                throw (LoginException) new LoginException("IO exception in callback handler: " + e).initCause(e);
+            } catch (final UnsupportedCallbackException e) {
+                log.info("Login failed due to unsupported callback: " + e);
+                throw (LoginException) new LoginException("Callback handler does not support PasswordCallback and TextInputCallback.").initCause(e);
+            }
+
+            if (ticketCallback.getPassword() != null) {
+                this.ticket = new TicketCredential(new String(ticketCallback.getPassword()));
+                final String service = CommonUtils.isNotBlank(serviceCallback.getName()) ? serviceCallback.getName() : this.service;
+
+                if (this.cacheAssertions) {
+                    synchronized(ASSERTION_CACHE) {
+                        if (ASSERTION_CACHE.get(ticket) != null) {
+                            log.debug("Assertion found in cache.");
+                            this.assertion = ASSERTION_CACHE.get(ticket);
+                        }
+                    }
+                }
+
+                if (this.assertion == null) {
+                    log.debug("CAS assertion is null; ticket validation required.");
+                    if (CommonUtils.isBlank(service)) {
+                        log.info("Login failed because required CAS service parameter not provided.");
+                        throw new LoginException("Neither login module nor callback handler provided required service parameter.");
+                    }
+                    try {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Attempting ticket validation with service=" + service + " and ticket=" + ticket);
+                        }
+                        this.assertion = this.ticketValidator.validate(this.ticket.getName(), service);
+
+                    } catch (final Exception e) {
+                        log.info("Login failed due to CAS ticket validation failure: " + e);
+                        throw (LoginException) new LoginException("CAS ticket validation failed: " + e).initCause(e);
+                    }
+                }
+                log.info("Login succeeded.");
+            } else {
+                log.info("Login failed because callback handler did not provide CAS ticket.");
+                throw new LoginException("Callback handler did not provide CAS ticket.");
+            }
+            result = true;
+        } finally {
+            postLogin(result);
+        }
+        return result;
+    }
+
+    public final boolean abort() throws LoginException {
         if (this.ticket != null) {
             this.ticket = null;
         }
@@ -317,73 +347,105 @@ public class CasLoginModule implements LoginModule {
         return true;
     }
 
-    public boolean commit() throws LoginException {
-        if (this.assertion != null) {
-	        if (this.ticket != null) {
-	            this.subject.getPrivateCredentials().add(this.ticket);
-	        } else {
-	            throw new LoginException("Ticket credential not found.");
-	        }
-            
-            final AssertionPrincipal casPrincipal = new AssertionPrincipal(this.assertion.getPrincipal().getName(), this.assertion);
-            this.subject.getPrincipals().add(casPrincipal);
-
-            // Add group containing principal as sole member
-            // Supports JBoss JAAS use case
-            final Group principalGroup = new SimpleGroup(this.principalGroupName);
-            principalGroup.addMember(casPrincipal);
-            this.subject.getPrincipals().add(principalGroup);
-            
-            // Add group principal containing role data
-            final Group roleGroup = new SimpleGroup(this.roleGroupName);
-
-            for (final String defaultRole : defaultRoles) {
-                roleGroup.addMember(new SimplePrincipal(defaultRole));
-            }
-
-            final Map<String,Object> attributes = this.assertion.getPrincipal().getAttributes();
-            for (final String key : attributes.keySet()) {
-                if (this.roleAttributeNames.contains(key)) {
-                    // Attribute value is Object if singular or Collection if plural
-                    final Object value = attributes.get(key);
-                    if (value instanceof Collection<?>) {
-                        for (final Object o : (Collection<?>) value) {
-                            roleGroup.addMember(new SimplePrincipal(o.toString()));
-                        }
-                    } else {
-                        roleGroup.addMember(new SimplePrincipal(value.toString()));
-                    }
-                }
-            }
-            this.subject.getPrincipals().add(roleGroup);
-            
-            // Place principal name in shared state for downstream JAAS modules (module chaining use case)
-            this.sharedState.put(LOGIN_NAME, new Object()); // casPrincipal.getName());
-            
-            if (log.isDebugEnabled()) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Created JAAS subject with principals: " + subject.getPrincipals());
-                }
-            }
-            
-            if (this.cacheAssertions) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Caching assertion for principal " + this.assertion.getPrincipal());
-                }
-                ASSERTION_CACHE.put(this.ticket, this.assertion);
-            }
-        } else {
-            // Login must have failed if there is no assertion defined
-            // Need to clean up state
-            if (this.ticket != null) {
-                this.ticket = null;
-            }
-        }
+    /**
+     * Operations to perform before doing commit.
+     *
+     * @return true if you'd like commit to continue, false otherwise.
+     */
+    protected boolean preCommit() {
         return true;
     }
 
-    public boolean logout() throws LoginException {
+    /**
+     * This occurs after commit is processed.
+     *
+     * @param result the result from the login attempt.
+     */
+    protected void postCommit(final boolean result) {
+        // template method
+    }
+
+    public final boolean commit() throws LoginException {
+
+        if (!preCommit()) {
+            return false;
+        }
+        boolean result = false;
+        try {
+            if (this.assertion != null) {
+                if (this.ticket != null) {
+                    this.subject.getPrivateCredentials().add(this.ticket);
+                } else {
+                    throw new LoginException("Ticket credential not found.");
+                }
+
+                final AssertionPrincipal casPrincipal = new AssertionPrincipal(this.assertion.getPrincipal().getName(), this.assertion);
+                this.subject.getPrincipals().add(casPrincipal);
+
+                // Add group containing principal as sole member
+                // Supports JBoss JAAS use case
+                final Group principalGroup = new SimpleGroup(this.principalGroupName);
+                principalGroup.addMember(casPrincipal);
+                this.subject.getPrincipals().add(principalGroup);
+
+                // Add group principal containing role data
+                final Group roleGroup = new SimpleGroup(this.roleGroupName);
+
+                for (final String defaultRole : defaultRoles) {
+                    roleGroup.addMember(new SimplePrincipal(defaultRole));
+                }
+
+                final Map<String,Object> attributes = this.assertion.getPrincipal().getAttributes();
+                for (final String key : attributes.keySet()) {
+                    if (this.roleAttributeNames.contains(key)) {
+                        // Attribute value is Object if singular or Collection if plural
+                        final Object value = attributes.get(key);
+                        if (value instanceof Collection<?>) {
+                            for (final Object o : (Collection<?>) value) {
+                                roleGroup.addMember(new SimplePrincipal(o.toString()));
+                            }
+                        } else {
+                            roleGroup.addMember(new SimplePrincipal(value.toString()));
+                        }
+                    }
+                }
+                this.subject.getPrincipals().add(roleGroup);
+
+                // Place principal name in shared state for downstream JAAS modules (module chaining use case)
+                this.sharedState.put(LOGIN_NAME, new Object()); // casPrincipal.getName());
+
+                if (log.isDebugEnabled()) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Created JAAS subject with principals: " + subject.getPrincipals());
+                    }
+                }
+
+                if (this.cacheAssertions) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Caching assertion for principal " + this.assertion.getPrincipal());
+                    }
+                    ASSERTION_CACHE.put(this.ticket, this.assertion);
+                }
+            } else {
+                // Login must have failed if there is no assertion defined
+                // Need to clean up state
+                if (this.ticket != null) {
+                    this.ticket = null;
+                }
+            }
+            result = true;
+        } finally {
+            postCommit(result);
+        }
+        return result;
+    }
+
+    public final boolean logout() throws LoginException {
         log.debug("Performing logout.");
+
+        if (!preLogout()) {
+            return false;
+        }
 
         // Remove all CAS principals
         removePrincipalsOfType(AssertionPrincipal.class);
@@ -394,7 +456,25 @@ public class CasLoginModule implements LoginModule {
         removeCredentialsOfType(TicketCredential.class);
 
         log.info("Logout succeeded.");
+
+        postLogout();
         return true;
+    }
+
+    /**
+     * Happens before logout occurs.
+     *
+     * @return true if we should continue, false otherwise.
+     */
+    protected boolean preLogout() {
+        return true;
+    }
+
+    /**
+     * Happens after logout.
+     */
+    protected void postLogout() {
+        // template method
     }
 
 
