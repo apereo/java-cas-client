@@ -53,7 +53,9 @@ public final class XmlUtils {
      */
     public static XMLReader getXmlReader() {
         try {
-            return XMLReaderFactory.createXMLReader();
+            final XMLReader reader = XMLReaderFactory.createXMLReader();
+            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            return reader;
         } catch (final SAXException e) {
             throw new RuntimeException("Unable to create XMLReader", e);
         }
