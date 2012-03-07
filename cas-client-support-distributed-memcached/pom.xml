@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>cas-client</artifactId>
-        <groupId>org.jasig.cas.client</groupId>
-        <version>3.3-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>cas-client</artifactId>
     <groupId>org.jasig.cas.client</groupId>
-    <packaging>jar</packaging>
-    <artifactId>cas-client-support-distributed-memcached</artifactId>
-    <name>Jasig CAS Client for Java - Distributed Proxy Storage Support: Memcached</name>
+    <version>3.3-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jasig.cas.client</groupId>
-            <artifactId>cas-client-core</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-            <type>jar</type>
-        </dependency>
+  <groupId>org.jasig.cas.client</groupId>
+  <packaging>jar</packaging>
+  <artifactId>cas-client-support-distributed-memcached</artifactId>
+  <name>Jasig CAS Client for Java - Distributed Proxy Storage Support:
+    Memcached
+  </name>
 
-        <!-- available from http://code.google.com/p/spymemcached/ -->
-        <dependency>
-            <groupId>spy</groupId>
-            <artifactId>spymemcached</artifactId>
-            <version>2.6</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.jasig.cas.client</groupId>
+      <artifactId>cas-client-core</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <type>jar</type>
+    </dependency>
 
-<repositories>
+    <!-- available from http://code.google.com/p/spymemcached/ -->
+    <dependency>
+      <groupId>spy</groupId>
+      <artifactId>spymemcached</artifactId>
+      <version>2.6</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
     <repository>
       <id>spy</id>
       <name>Spy Repository</name>
