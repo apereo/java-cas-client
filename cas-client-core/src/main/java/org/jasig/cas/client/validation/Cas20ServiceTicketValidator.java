@@ -26,14 +26,10 @@ import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
+import org.w3c.dom.NodeList;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -122,45 +118,25 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @return the map of attributes.
      */
     protected Map<String,Object> extractCustomAttributes(final String xml) {
-    	final int pos1 = xml.indexOf("<cas:attributes>");
-    	final int pos2 = xml.indexOf("</cas:attributes>");
-    	
-    	if (pos1 == -1) {
+
+    	if (!xml.contains("<cas:attributes>")) {
     		return Collections.emptyMap();
     	}
-    	
-    	final String attributesText = xml.substring(pos1+16, pos2);
-    	
-    	final Map<String,Object> attributes = new HashMap<String,Object>();
-    	final BufferedReader br = new BufferedReader(new StringReader(attributesText));
-    	
-    	String line;
-    	final List<String> attributeNames = new ArrayList<String>();
-    	try {
-	    	while ((line = br.readLine()) != null) {
-	    		final String trimmedLine = line.trim();
-	    		if (trimmedLine.length() > 0) {
-		    		final int leftPos = trimmedLine.indexOf(":");
-		    		final int rightPos = trimmedLine.indexOf(">");
-		    		attributeNames.add(trimmedLine.substring(leftPos+1, rightPos));
-	    		}
-	    	}
-	    	br.close();
-    	} catch (final IOException e) {
-    		//ignore
-    	}
 
-        for (final String name : attributeNames) {
-            final List<String> values = XmlUtils.getTextForElements(xml, name);
+        final Map<String, Object> attributes = new HashMap<String, Object>();
 
-            if (values.size() == 1) {
-                attributes.put(name, values.get(0));
-            } else {
-                attributes.put(name, values);
+        try {
+            NodeList nodeList = XmlUtils.getNodeListForElements(xml,"cas:attributes");
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                String attributeName = nodeList.item(i).getNodeName().substring(4); // remove the "cas:" prefix from node name
+                Object attributeValue = nodeList.item(i).getTextContent();
+                attributes.put(attributeName, attributeValue);
             }
-    	}
-    	
-    	return attributes;
+            return attributes;
+
+        } catch (Exception e) {
+            return Collections.emptyMap();
+        }
     }
 
     /**

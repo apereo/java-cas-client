@@ -21,6 +21,8 @@ package org.jasig.cas.client.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -28,6 +30,10 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,5 +176,28 @@ public final class XmlUtils {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Retrieve the child nodes for a specific element
+     *
+     * @param xmlAsString  the xml response
+     * @param tagName      the element to look for
+     * @return the node list.
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static NodeList getNodeListForElements(final String xmlAsString, final String tagName)
+            throws ParserConfigurationException,
+            IOException,
+            SAXException {
+
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        InputSource inStream = new InputSource();
+        inStream.setCharacterStream(new StringReader(xmlAsString));
+        Document document = documentBuilder.parse(inStream);
+
+        return document.getElementsByTagName(tagName).item(0).getChildNodes();
     }
 }
