@@ -19,11 +19,8 @@
 
 package org.jasig.cas.client.integration.atlassian;
 
-import com.atlassian.seraph.auth.DefaultAuthenticator;
+import com.atlassian.jira.security.login.JiraSeraphAuthenticator;
 import com.atlassian.seraph.auth.AuthenticatorException;
-import com.opensymphony.user.EntityNotFoundException;
-import com.opensymphony.user.User;
-import com.opensymphony.user.UserManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
@@ -35,7 +32,7 @@ import javax.servlet.http.HttpSession;
 import java.security.Principal;
 
 /**
- * Extension of ConfluenceAuthenticator to allow people to configure Confluence to authenticate
+ * Extension of JiraSeraphAuthenticator to allow people to configure JIRA to authenticate
  * via CAS.
  *
  * @author Scott Battaglia
@@ -43,27 +40,12 @@ import java.security.Principal;
  * @version $Revision$ $Date$
  * @since 3.1.3
  */
-public final class JiraCasAuthenticator extends DefaultAuthenticator {
+public final class JiraCasAuthenticator extends JiraSeraphAuthenticator {
 
     /** JiraCasAuthenticator.java */
     private static final long serialVersionUID = 3452011252741183166L;
 
     private static final Log LOG = LogFactory.getLog(JiraCasAuthenticator.class);
-
-    @Override
-    protected boolean authenticate(final Principal principal, final String password) throws AuthenticatorException {
-        return true;
-    }
-
-    @Override
-    protected Principal getUser(final String username) {
-        try {
-            return UserManager.getInstance().getUser(username);
-        } catch (final EntityNotFoundException e) {
-            LOG.warn("Could not find user '" + username + "' in UserManager : " + e);
-        }
-        return null;
-    }
 
     public Principal getUser(final HttpServletRequest request, final HttpServletResponse response) {
         final HttpSession session = request.getSession();
