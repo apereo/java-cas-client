@@ -518,6 +518,23 @@
     </dependency>
 
     <dependency>
+      <groupId>com.atlassian.jira</groupId>
+      <artifactId>jira-core</artifactId>
+      <version>4.4</version>
+      <scope>provided</scope>
+      <type>jar</type>
+      <exclusions>
+        <exclusion>
+          <groupId>jta</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>jndi</groupId>
+          <artifactId>jndi</artifactId>
+        </exclusion>               
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.jasig.cas.client</groupId>
       <artifactId>cas-client-core</artifactId>
       <version>${project.version}</version>
