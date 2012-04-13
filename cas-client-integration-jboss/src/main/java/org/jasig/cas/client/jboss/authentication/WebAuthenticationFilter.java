@@ -48,7 +48,7 @@ import org.jboss.web.tomcat.security.login.WebAuthentication;
  * the service defined for the {@link org.jasig.cas.client.jaas.CasLoginModule}.
  *
  * @author  Daniel Fisher
- * @author  Marvin S. Addison 
+ * @author  Marvin S. Addison
  * @version  $Revision$
  * @since 3.1.11
  */
@@ -71,7 +71,7 @@ public final class WebAuthenticationFilter extends AbstractCasFilter {
                 if (request.getUserPrincipal() instanceof AssertionPrincipal) {
                     final AssertionPrincipal principal = (AssertionPrincipal) request.getUserPrincipal();
                     log.debug("Installing CAS assertion into session.");
-                    session.setAttribute(CONST_CAS_ASSERTION, principal.getAssertion());
+                    request.getSession().setAttribute(CONST_CAS_ASSERTION, principal.getAssertion());
                 } else {
                     log.debug("Aborting -- principal is not of type AssertionPrincipal");
                     throw new GeneralSecurityException("JBoss Web authentication did not produce CAS AssertionPrincipal.");
