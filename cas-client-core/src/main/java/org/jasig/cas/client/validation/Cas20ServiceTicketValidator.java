@@ -75,8 +75,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     }
 
     protected final Assertion parseResponseFromServer(final String response) throws TicketValidationException {
-        final String error = XmlUtils.getTextForElement(response,
-                "authenticationFailure");
+        final String error = XmlUtils.getTextForElement(response, "authenticationFailure");
 
         if (CommonUtils.isNotBlank(error)) {
             throw new TicketValidationException(error);
@@ -84,7 +83,13 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
 
         final String principal = XmlUtils.getTextForElement(response, "user");
         final String proxyGrantingTicketIou = XmlUtils.getTextForElement(response, "proxyGrantingTicket");
-        final String proxyGrantingTicket = this.proxyGrantingTicketStorage != null ? this.proxyGrantingTicketStorage.retrieve(proxyGrantingTicketIou) : null;
+        
+        final String proxyGrantingTicket;
+        if (CommonUtils.isBlank(proxyGrantingTicketIou) || this.proxyGrantingTicketStorage == null) {
+        	proxyGrantingTicket = null;
+        } else {
+        	proxyGrantingTicket = this.proxyGrantingTicketStorage.retrieve(proxyGrantingTicketIou);
+        }
 
         if (CommonUtils.isEmpty(principal)) {
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
