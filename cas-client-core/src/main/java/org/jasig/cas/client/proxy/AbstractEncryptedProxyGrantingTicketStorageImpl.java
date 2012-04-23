@@ -2,7 +2,6 @@ package org.jasig.cas.client.proxy;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import java.security.InvalidKeyException;
 import java.security.Key;

@@ -209,6 +209,7 @@ public class CasLoginModule implements LoginModule {
         this.assertion = null;
         this.callbackHandler = handler;
         this.subject = subject;
+        this.sharedState = (Map<String,Object>) state;
         this.sharedState = new HashMap<String, Object>(state);
       
         String ticketValidatorClass = null;
@@ -412,7 +413,7 @@ public class CasLoginModule implements LoginModule {
                 this.subject.getPrincipals().add(roleGroup);
 
                 // Place principal name in shared state for downstream JAAS modules (module chaining use case)
-                this.sharedState.put(LOGIN_NAME, new Object()); // casPrincipal.getName());
+                this.sharedState.put(LOGIN_NAME, assertion.getPrincipal().getName());
 
                 if (log.isDebugEnabled()) {
                     if (log.isDebugEnabled()) {
