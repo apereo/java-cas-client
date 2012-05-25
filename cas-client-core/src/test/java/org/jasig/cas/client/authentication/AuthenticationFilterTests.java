@@ -19,19 +19,19 @@
 
 package org.jasig.cas.client.authentication;
 
-import junit.framework.TestCase;
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.AssertionImpl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import java.io.IOException;
 import java.net.URLEncoder;
 
 /**
@@ -41,7 +41,7 @@ import java.net.URLEncoder;
  * @version $Revision: 11753 $ $Date: 2007-01-03 13:37:26 -0500 (Wed, 03 Jan 2007) $
  * @since 3.0
  */
-public final class AuthenticationFilterTests extends TestCase {
+public final class AuthenticationFilterTests {
 
     private static final String CAS_SERVICE_URL = "https://localhost:8443/service";
 
@@ -49,55 +49,39 @@ public final class AuthenticationFilterTests extends TestCase {
 
     private AuthenticationFilter filter;
 
-    protected void setUp() throws Exception {
-        // TODO CAS_SERVICE_URL, false, CAS_LOGIN_URL
+    final MockHttpSession session = new MockHttpSession();
+    final MockHttpServletRequest request = new MockHttpServletRequest();
+    final MockHttpServletResponse response = new MockHttpServletResponse();
+    final FilterChain filterChain = mock(FilterChain.class);
+
+    @Before
+    public void setUp() throws Exception {
         this.filter = new AuthenticationFilter();
         final MockFilterConfig config = new MockFilterConfig();
         config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         config.addInitParameter("service", "https://localhost:8443/service");
+        request.setSession(session);
         this.filter.init(config);
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         this.filter.destroy();
     }
 
+    @Test
     public void testRedirect() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
-
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
-                // nothing to do
-            }
-        };
-
-        request.setSession(session);
         this.filter.doFilter(request, response, filterChain);
 
-        assertEquals(CAS_LOGIN_URL + "?service="
-                + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"), response
-                .getRedirectedUrl());
+        assertEquals(CAS_LOGIN_URL + "?service=" + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"),
+                response.getRedirectedUrl());
     }
 
+    @Test
     public void testRedirectWithQueryString() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
         request.setQueryString("test=12456");
         request.setRequestURI("/test");
         request.setSecure(true);
-        final FilterChain filterChain = new FilterChain() {
-
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
-                // nothing to do
-            }
-        };
-
-        request.setSession(session);
         this.filter = new AuthenticationFilter();
 
         final MockFilterConfig config = new MockFilterConfig();
@@ -107,66 +91,32 @@ public final class AuthenticationFilterTests extends TestCase {
 
         this.filter.doFilter(request, response, filterChain);
 
-        assertEquals(CAS_LOGIN_URL
-                + "?service="
-                + URLEncoder.encode("https://localhost:8443"
-                + request.getRequestURI() + "?" + request.getQueryString(),
-                "UTF-8"), response.getRedirectedUrl());
+        assertEquals(
+                CAS_LOGIN_URL
+                        + "?service="
+                        + URLEncoder.encode("https://localhost:8443" + request.getRequestURI() + "?"
+                                + request.getQueryString(), "UTF-8"), response.getRedirectedUrl());
     }
 
+    @Test
     public void testAssertion() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
-
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
-                // nothing to do
-            }
-        };
-
-        request.setSession(session);
-        session.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION,
-                new AssertionImpl("test"));
+        session.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, new AssertionImpl("test"));
         this.filter.doFilter(request, response, filterChain);
 
         assertNull(response.getRedirectedUrl());
     }
 
+    @Test
     public void testRenew() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
-
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
-                // nothing to do
-            }
-        };
-
         this.filter.setRenew(true);
-        request.setSession(session);
         this.filter.doFilter(request, response, filterChain);
 
         assertNotNull(response.getRedirectedUrl());
         assertTrue(response.getRedirectedUrl().indexOf("renew=true") != -1);
     }
 
+    @Test
     public void testGateway() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
-
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
-                // nothing to do
-            }
-        };
-
-        request.setSession(session);
         this.filter.setRenew(true);
         this.filter.setGateway(true);
         this.filter.doFilter(request, response, filterChain);
@@ -177,5 +127,55 @@ public final class AuthenticationFilterTests extends TestCase {
         this.filter.doFilter(request, response2, filterChain);
         assertNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNull(response2.getRedirectedUrl());
+    }
+
+    @Test
+    public void testInitExcludeURL_SinglePattern() throws Exception {
+        final MockFilterConfig config = new MockFilterConfig();
+        config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        config.addInitParameter("serverName", "localhost:8443");
+        config.addInitParameter(AuthenticationFilter.EXCLUDE_PARAMETERS_INIT_PARAM, "*\\.action");
+        this.filter.init(config);
+
+        assertNotNull(filter.getExcludePatterns());
+        assertEquals("Expected a single pattern but received: " + filter.getExcludePatterns(), 1,
+                filter.getExcludePatterns().length);
+    }
+
+    @Test
+    public void testInitExcludeURL_MultiplePattern() throws Exception {
+        final MockFilterConfig config = new MockFilterConfig();
+        config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        config.addInitParameter("serverName", "localhost:8443");
+        config.addInitParameter(AuthenticationFilter.EXCLUDE_PARAMETERS_INIT_PARAM, ".*\\.action,.*/ajax/.*");
+        this.filter.init(config);
+
+        assertNotNull(filter.getExcludePatterns());
+        assertEquals("Expected a two patterns but received: " + filter.getExcludePatterns(), 2,
+                filter.getExcludePatterns().length);
+    }
+
+    @Test
+    public void testExcludedUrl_SingleException() throws Exception {
+        request.setServletPath("/ajax/details.action");
+        filter.setExcludePatterns(new String[]{".*/ajax/.*"});
+        filter.doFilter(request, response, filterChain);
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
+    public void testExcludedUrl_MultipleException() throws Exception {
+        request.setServletPath("/ajax/details.action");
+        filter.setExcludePatterns(new String[]{".*\\.jsp", ".*/ajax/.*"});
+        filter.doFilter(request, response, filterChain);
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
+    public void testNotExcludedUrl() throws Exception {
+        request.setServletPath("/ajax/details.action");
+        filter.setExcludePatterns(new String[]{".*\\.jsp", ".*/protected/.*"});
+        filter.doFilter(request, response, filterChain);
+        verify(filterChain, never()).doFilter(request, response);
     }
 }

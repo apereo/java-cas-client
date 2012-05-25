@@ -42,6 +42,8 @@ import java.io.IOException;
  * <li><code>casServerLoginUrl</code> - the url to log into CAS, i.e. https://cas.rutgers.edu/login</li>
  * <li><code>renew</code> - true/false on whether to use renew or not.</li>
  * <li><code>gateway</code> - true/false on whether to use gateway or not.</li>
+ * <li><code>excludePatterns</code> - A Comma Separated (as init parameter) list of Regex expressions
+ * denoting url patters that should not be forwarded to CAS</li>
  * </ul>
  *
  * <p>Please see AbstractCasFilter for additional properties.</p>
@@ -51,6 +53,8 @@ import java.io.IOException;
  * @since 3.0
  */
 public class AuthenticationFilter extends AbstractCasFilter {
+
+    static final String EXCLUDE_PARAMETERS_INIT_PARAM = "excludePatterns";
 
     /**
      * The URL to the CAS Server login.
@@ -66,7 +70,12 @@ public class AuthenticationFilter extends AbstractCasFilter {
      * Whether to send the gateway request or not.
      */
     private boolean gateway = false;
-    
+
+    /**
+     * URL Regex patterns which should be ignored.
+     */
+    private String[] excludePatterns;
+
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
@@ -78,6 +87,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
             log.trace("Loaded renew parameter: " + this.renew);
             setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
             log.trace("Loaded gateway parameter: " + this.gateway);
+            String[] excludeUrls = parseExcludePatterns(getPropertyFromInitParams(filterConfig,
+                    EXCLUDE_PARAMETERS_INIT_PARAM, "false"));
+            setExcludePatterns(excludeUrls);
+            log.trace("exclude patterns: " + excludePatterns);
 
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
@@ -89,6 +102,14 @@ public class AuthenticationFilter extends AbstractCasFilter {
                     throw new ServletException(e);
                 }
             }
+        }
+    }
+
+    private String[] parseExcludePatterns(String patterns) {
+        if (patterns == null || patterns.trim().isEmpty()) {
+            return new String[0];
+        } else {
+            return patterns.split(",");
         }
     }
 
@@ -112,7 +133,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String ticket = retrieveTicketFromRequest(request);
         final boolean wasGatewayed = this.gateway && this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
 
-        if (CommonUtils.isNotBlank(ticket) || wasGatewayed) {
+        if (CommonUtils.isNotBlank(ticket) || wasGatewayed || isExcludedUrl(request)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -140,6 +161,16 @@ public class AuthenticationFilter extends AbstractCasFilter {
         response.sendRedirect(urlToRedirectTo);
     }
 
+    private boolean isExcludedUrl(HttpServletRequest request) {
+        String servletPath = request.getServletPath();
+        for (String pattern : this.excludePatterns) {
+            if (servletPath.matches(pattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public final void setRenew(final boolean renew) {
         this.renew = renew;
     }
@@ -151,8 +182,19 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void setCasServerLoginUrl(final String casServerLoginUrl) {
         this.casServerLoginUrl = casServerLoginUrl;
     }
-    
+
     public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
     	this.gatewayStorage = gatewayStorage;
+    }
+
+    /**
+     * @param excludePatterns parsed regex patterns to exclude from filtering.
+     */
+    public final void setExcludePatterns(final String[] excludePatterns) {
+        this.excludePatterns = excludePatterns;
+    }
+
+    public String[] getExcludePatterns() {
+        return excludePatterns;
     }
 }
