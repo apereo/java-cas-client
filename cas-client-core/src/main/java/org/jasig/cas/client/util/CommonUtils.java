@@ -34,7 +34,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.URL;
 import java.net.HttpURLConnection;
@@ -252,55 +255,59 @@ public final class CommonUtils {
      *           method.
      * @param artifactParameterName the artifact parameter name to remove (i.e. ticket)
      * @param encode whether to encode the url or not (i.e. Jsession).    
-     * @return the service url to use.
+     * @return the service url to use or <code>null</code>
      */
-    public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response, final String service, final String serverNames, final String artifactParameterName, final boolean encode) {
+    public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response, final String service, 
+                                             final String serverNames, final String artifactParameterName, final boolean encode) {
         if (CommonUtils.isNotBlank(service)) {
             return encode ? response.encodeURL(service) : service;
         }
-
         final StringBuilder buffer = new StringBuilder();
-
+        
         final String serverName = findMatchingServerName(request, serverNames);
-
-        if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
-            buffer.append(request.isSecure() ? "https://" : "http://");
-        }
-
-        buffer.append(serverName);
-        buffer.append(request.getRequestURI());
-
-        if (CommonUtils.isNotBlank(request.getQueryString())) {
-            final int location = request.getQueryString().indexOf(artifactParameterName + "=");
-
-            if (location == 0) {
-                final String returnValue = encode ? response.encodeURL(buffer.toString()): buffer.toString();
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("serviceUrl generated: " + returnValue);
-                }
-                return returnValue;
-            }
-
-            buffer.append("?");
-
-            if (location == -1) {
-                buffer.append(request.getQueryString());
-            } else if (location > 0) {
-                final int actualLocation = request.getQueryString()
-                        .indexOf("&" + artifactParameterName + "=");
-
-                if (actualLocation == -1) {
-                    buffer.append(request.getQueryString());
-                } else if (actualLocation > 0) {
-                    buffer.append(request.getQueryString().substring(0,
-                            actualLocation));
-                }
-            }
-        }
-
-        final String returnValue = encode ? response.encodeURL(buffer.toString()) : buffer.toString();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("serviceUrl generated: " + returnValue);
+        
+        String returnValue = null;
+        
+        try {
+          URI serviceUri = new URI(serverName);
+          
+          String scheme = serviceUri.getScheme();
+          if (CommonUtils.isBlank(scheme)) {
+              buffer.append(request.isSecure() ? "https://" : "http://");
+          } 
+  
+          buffer.append(serverName);
+          buffer.append(request.getRequestURI());
+  
+          if (CommonUtils.isNotBlank(request.getQueryString())) {
+              
+              Map<String,String> params = getUrlQueryStringParameters(request.getQueryString());
+              
+              buffer.append("?");
+              Iterator<String> it = params.keySet().iterator();
+              while (it.hasNext()) {
+                String key = it.next();
+                String value = params.get(key);
+                
+                buffer.append(key);
+                buffer.append("=");
+                buffer.append(value);  
+                
+                if (it.hasNext())
+                  buffer.append("&");
+              }
+          }
+  
+          returnValue = encode ? response.encodeURL(buffer.toString()) : buffer.toString();
+          if (LOG.isDebugEnabled()) {
+              LOG.debug("serviceUrl generated: " + returnValue);
+          }
+         
+        } catch (URISyntaxException e) {
+          if (LOG.isErrorEnabled()) {
+            LOG.error(serverName, e);
+          }
+          returnValue = null;
         }
         return returnValue;
     }
@@ -423,5 +430,38 @@ public final class CommonUtils {
             LOG.warn(e.getMessage(), e);
         }
 
+    }
+    
+    /**
+     * Extracts the request query string into a map where key-value pairs
+     * correspond to parameter name/value entries in the url. 
+     *
+     * @param requestQueryString the query string segment of the request
+     * @return {@link Map} instance containing query string parameters, or <code>null</code> if a given parameter 
+     *         name/value cannot be decoded based on <code>UTF-8</code>.
+     */
+    private static Map<String, String> getUrlQueryStringParameters(String requestQueryString) {
+        Map<String, String> params = null;
+
+        try {
+            params = new LinkedHashMap<String, String>();
+            for (String param : requestQueryString.split("&")) {
+                String pair[] = param.split("=");
+                String key = URLDecoder.decode(pair[0], "UTF-8");
+                String value = "";
+                if (pair.length > 1) {
+                    value = URLDecoder.decode(pair[1], "UTF-8");
+                }
+
+                params.put(key, value);
+            }
+        } catch (UnsupportedEncodingException e) {
+            if (LOG.isErrorEnabled())
+                LOG.error(e.getMessage(), e);
+
+            throw new RuntimeException(e);
+        }
+
+        return params;
     }
 }

@@ -153,4 +153,23 @@ public final class CommonUtilsTests extends TestCase {
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
+    
+    public void testConstructServiceUrlSamlValidation() {
+      final String CONST_URL_QUERY_STRING = "TARGET=https://some.server.edu/app&SAMLart=AAFSsPYAkNKN6Mb0Q6Li8D8gawrtLOizOxy2XEk5KCjuI93RyPdHXJXl";
+      final String CONST_MY_URL = "https://www.myserver.com/hello?" + CONST_URL_QUERY_STRING;
+      
+      final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello");
+      request.setScheme("https");
+      request.setSecure(true);
+      request.setQueryString(CONST_URL_QUERY_STRING);
+      final MockHttpServletResponse response = new MockHttpServletResponse();
+      
+      String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com", "SAMLart", false);
+      assertEquals(CONST_MY_URL, constructedUrl);
+      assertTrue(constructedUrl.contains("SAMLart"));
+      
+      constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.myserver.com", "SAMLart", false);
+      assertEquals(CONST_MY_URL, constructedUrl);
+      assertTrue(constructedUrl.contains("SAMLart"));      
+  }
 }
