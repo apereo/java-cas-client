@@ -105,9 +105,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         log.trace("Setting useSession parameter: " + this.useSession);
         
         if (!this.useSession && this.redirectAfterValidation) {
-            log.warn("redirectAfterValidation parameter may not be true when useSession parameter is false.");
+            log.warn("redirectAfterValidation parameter may not be true when useSession parameter is false. Resetting it to false in order to prevent infinite redirects.");
             setRedirectAfterValidation(false);
-            log.warn("Setting redirectAfterValidation parameter to " + this.redirectAfterValidation);
         }
         
         setTicketValidator(getTicketValidator(filterConfig));
