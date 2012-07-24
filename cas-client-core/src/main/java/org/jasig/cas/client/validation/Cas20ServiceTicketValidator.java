@@ -130,7 +130,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     protected Map<String,Object> extractCustomAttributes(final String xml) {
 
     	if (!xml.contains("<cas:attributes>")) {
-    		return Collections.emptyMap();
+    		return new HashMap<String, Object>();
     	}
 
         final Map<String, Object> attributes = new HashMap<String, Object>();
