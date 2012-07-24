@@ -24,10 +24,9 @@
     <dependency>
       <groupId>org.opensaml</groupId>
       <artifactId>opensaml</artifactId>
-      <version>1.1</version>
+      <version>${opensaml.version}</version>
       <type>jar</type>
-      <scope>provided</scope>
-      <optional>true</optional>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -90,5 +89,6 @@
 
   <properties>
     <spring.version>2.5.6.SEC01</spring.version>
+    <opensaml.version>2.5.1-1</opensaml.version>
   </properties>
 </project>
