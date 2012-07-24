@@ -22,7 +22,18 @@ package org.jasig.cas.client.validation;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.util.CommonUtils;
+import org.joda.time.DateTime;
 import org.opensaml.*;
+import org.opensaml.common.IdentifierGenerator;
+import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.saml1.core.*;
+import org.opensaml.xml.io.Unmarshaller;
+import org.opensaml.xml.io.UnmarshallerFactory;
+import org.opensaml.xml.io.UnmarshallingException;
+import org.opensaml.xml.parse.BasicParserPool;
+import org.opensaml.xml.parse.XMLParserException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -44,8 +55,21 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     /** Time tolerance to allow for time drifting. */
     private long tolerance = 1000L;
 
+    private final BasicParserPool basicParserPool;
+
+    private final IdentifierGenerator identifierGenerator;
+
+
     public Saml11TicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
+        try {
+            DefaultBootstrap.bootstrap();
+            this.basicParserPool = new BasicParserPool();
+            this.basicParserPool.setNamespaceAware(true);
+            this.identifierGenerator = new SecureRandomIdentifierGenerator();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected String getUrlSuffix() {
@@ -62,9 +86,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     @Override
     protected void setDisableXmlSchemaValidation(final boolean disabled) {
         if (disabled) {
-            // according to our reading of the SAML 1.1 code, this should disable the schema checking.  However, there may be a couple
-            // of error messages that slip through on start up!
-            XML.parserPool.setDefaultSchemas(null, null);
+            this.basicParserPool.setSchema(null);
         }
     }
 
@@ -80,69 +102,76 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         try {
         	final String removeStartOfSoapBody = response.substring(response.indexOf("<SOAP-ENV:Body>") + 15);
         	final String removeEndOfSoapBody = removeStartOfSoapBody.substring(0, removeStartOfSoapBody.indexOf("</SOAP-ENV:Body>"));
-            final SAMLResponse samlResponse = new SAMLResponse(new ByteArrayInputStream(getBytes(removeEndOfSoapBody)));
+            final Document responseDocument = this.basicParserPool.parse(new ByteArrayInputStream(getBytes(removeEndOfSoapBody)));
+            final Element responseRoot = responseDocument.getDocumentElement();
+            final UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
+            final Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(responseRoot);
 
-            if (!samlResponse.getAssertions().hasNext()) {
+            final Response samlResponse = (Response) unmarshaller.unmarshall(responseRoot);
+
+            final List<org.opensaml.saml1.core.Assertion> assertions = samlResponse.getAssertions();
+            if (assertions.isEmpty()) {
                 throw new TicketValidationException("No assertions found.");
             }
 
-            for (final Iterator<?> iter = samlResponse.getAssertions(); iter.hasNext();) {
-                final SAMLAssertion assertion = (SAMLAssertion) iter.next();
+            for (final org.opensaml.saml1.core.Assertion assertion : assertions) {
 
                 if (!isValidAssertion(assertion)) {
                     continue;
                 }
 
-                final SAMLAuthenticationStatement authenticationStatement = getSAMLAuthenticationStatement(assertion);
+                final AuthenticationStatement authenticationStatement = getSAMLAuthenticationStatement(assertion);
 
                 if (authenticationStatement == null) {
                     throw new TicketValidationException("No AuthentiationStatement found in SAML Assertion.");
                 }
-                final SAMLSubject subject = authenticationStatement.getSubject();
+                final Subject subject = authenticationStatement.getSubject();
 
                 if (subject == null) {
                     throw new TicketValidationException("No Subject found in SAML Assertion.");
                 }
 
-                final SAMLAttribute[] attributes = getAttributesFor(assertion, subject);
+                final List<Attribute> attributes = getAttributesFor(assertion, subject);
                 final Map<String,Object> personAttributes = new HashMap<String,Object>();
-                for (final SAMLAttribute samlAttribute : attributes) {
+                for (final Attribute samlAttribute : attributes) {
                     final List<?> values = getValuesFrom(samlAttribute);
 
-                    personAttributes.put(samlAttribute.getName(), values.size() == 1 ? values.get(0) : values);
+                    personAttributes.put(samlAttribute.getAttributeName(), values.size() == 1 ? values.get(0) : values);
                 }
 
-                final AttributePrincipal principal = new AttributePrincipalImpl(subject.getNameIdentifier().getName(), personAttributes);
+                final AttributePrincipal principal = new AttributePrincipalImpl(subject.getNameIdentifier().getNameIdentifier(), personAttributes);
 
                 final Map<String,Object> authenticationAttributes = new HashMap<String,Object>();
-                authenticationAttributes.put("samlAuthenticationStatement::authMethod", authenticationStatement.getAuthMethod());
+                authenticationAttributes.put("samlAuthenticationStatement::authMethod", authenticationStatement.getAuthenticationMethod());
 
                 return new AssertionImpl(principal, authenticationAttributes);
             }
-       } catch (final SAMLException e) {
+       } catch (final UnmarshallingException e) {
+            throw new TicketValidationException(e);
+        } catch (final XMLParserException e) {
             throw new TicketValidationException(e);
         }
 
         throw new TicketValidationException("No Assertion found within valid time range.  Either there's a replay of the ticket or there's clock drift. Check tolerance range, or server/client synchronization.");
     }
 
-    private boolean isValidAssertion(final SAMLAssertion assertion) {
-        final Date notBefore = assertion.getNotBefore();
-        final Date notOnOrAfter = assertion.getNotOnOrAfter();
+    private boolean isValidAssertion(final org.opensaml.saml1.core.Assertion assertion) {
+        final DateTime notBefore = assertion.getConditions().getNotBefore();
+        final DateTime notOnOrAfter = assertion.getConditions().getNotOnOrAfter();
 
-        if (assertion.getNotBefore() == null || assertion.getNotOnOrAfter() == null) {
+        if (notBefore == null || notOnOrAfter == null) {
             log.debug("Assertion has no bounding dates. Will not process.");
             return false;
         }
 
         final long currentTime = getCurrentTimeInUtc().getTime();
 
-        if (currentTime + tolerance < notBefore.getTime()) {
+        if (currentTime + tolerance < notBefore.getMillis()) {
             log.debug("skipping assertion that's not yet valid...");
             return false;
         }
 
-        if (notOnOrAfter.getTime() <= currentTime - tolerance) {
+        if (notOnOrAfter.getMillis() <= currentTime - tolerance) {
             log.debug("skipping expired assertion...");
             return false;
         }
@@ -150,40 +179,32 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         return true;
     }
 
-    private SAMLAuthenticationStatement getSAMLAuthenticationStatement(final SAMLAssertion assertion) {
-        for (final Iterator<?> iter = assertion.getStatements(); iter.hasNext();) {
-            final SAMLStatement statement = (SAMLStatement) iter.next();
+    private AuthenticationStatement getSAMLAuthenticationStatement(final org.opensaml.saml1.core.Assertion assertion) {
+        final List<AuthenticationStatement> statements = assertion.getAuthenticationStatements();
 
-            if (statement instanceof SAMLAuthenticationStatement) {
-                return (SAMLAuthenticationStatement) statement;
+        if (statements.isEmpty()) {
+            return null;
+        }
+
+        return statements.get(0);
+    }
+
+    private List<Attribute> getAttributesFor(final org.opensaml.saml1.core.Assertion assertion, final Subject subject) {
+        final List<Attribute> attributes = new ArrayList<Attribute>();
+        for (final AttributeStatement attribute : assertion.getAttributeStatements()) {
+            if (subject.getNameIdentifier().getNameIdentifier().equals(attribute.getSubject().getNameIdentifier().getNameIdentifier())) {
+                attributes.addAll(attribute.getAttributes());
             }
         }
 
-        return null;
+        return attributes;
     }
 
-    private SAMLAttribute[] getAttributesFor(final SAMLAssertion assertion, final SAMLSubject subject) {
-        final List<SAMLAttribute> attributes = new ArrayList<SAMLAttribute>();
-        for (final Iterator<?> iter = assertion.getStatements(); iter.hasNext();) {
-            final SAMLStatement statement = (SAMLStatement) iter.next();
-
-            if (statement instanceof SAMLAttributeStatement) {
-                final SAMLAttributeStatement attributeStatement = (SAMLAttributeStatement) statement;
-                // used because SAMLSubject does not implement equals
-                if (subject.getNameIdentifier().getName().equals(attributeStatement.getSubject().getNameIdentifier().getName())) {
-                    for (final Iterator<?> iter2 = attributeStatement.getAttributes(); iter2.hasNext();)
-                    attributes.add((SAMLAttribute) iter2.next());
-                }
-            }
-        }
-
-        return attributes.toArray(new SAMLAttribute[attributes.size()]);
-    }
-
-    private List<?> getValuesFrom(final SAMLAttribute attribute) {
+    private List<?> getValuesFrom(final Attribute attribute) {
         final List<Object> list = new ArrayList<Object>();
-        for (final Iterator<?> iter = attribute.getValues(); iter.hasNext();) {
-            list.add(iter.next());
+        // TODO I'm not actually sure if this is safe!
+        for (final Object o : attribute.getAttributeValues()) {
+            list.add(o.toString());
         }
         return list;
     }
@@ -195,16 +216,10 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     }
 
     protected String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-
-        String MESSAGE_TO_SEND;
-
-        try {
-            MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"" + SAMLIdentifierFactory.getInstance().getIdentifier() + "\" IssueInstant=\"" + CommonUtils.formatForUtcTime(new Date()) + "\">"
+        final String MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"" + this.identifierGenerator.generateIdentifier() + "\" IssueInstant=\"" + CommonUtils.formatForUtcTime(new Date()) + "\">"
                 + "<samlp:AssertionArtifact>" + ticket
                 + "</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>";
-        } catch (final SAMLException e) {
-            throw new RuntimeException(e);
-        }
+
 
         HttpURLConnection conn = null;
 
