@@ -156,7 +156,10 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
                 final Map<String,Object> authenticationAttributes = new HashMap<String,Object>();
                 authenticationAttributes.put("samlAuthenticationStatement::authMethod", authenticationStatement.getAuthenticationMethod());
 
-                return new AssertionImpl(principal, authenticationAttributes);
+                final DateTime notBefore = assertion.getConditions().getNotBefore();
+                final DateTime notOnOrAfter = assertion.getConditions().getNotOnOrAfter();
+                final DateTime authenticationInstant = authenticationStatement.getAuthenticationInstant();
+                return new AssertionImpl(principal, notBefore.toDate(), notOnOrAfter.toDate(), authenticationInstant.toDate(), authenticationAttributes);
             }
        } catch (final UnmarshallingException e) {
             throw new TicketValidationException(e);
