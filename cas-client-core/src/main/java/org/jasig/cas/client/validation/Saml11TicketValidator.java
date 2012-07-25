@@ -23,10 +23,14 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.util.CommonUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.opensaml.*;
 import org.opensaml.common.IdentifierGenerator;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml1.core.*;
+import org.opensaml.ws.soap.soap11.Envelope;
+import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallerFactory;
 import org.opensaml.xml.io.UnmarshallingException;
@@ -52,6 +56,15 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator {
 
+    static {
+        try {
+            // we really only need to do this once, so this is why its here.
+            DefaultBootstrap.bootstrap();
+        } catch (final ConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /** Time tolerance to allow for time drifting. */
     private long tolerance = 1000L;
 
@@ -62,10 +75,10 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
     public Saml11TicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
+        this.basicParserPool = new BasicParserPool();
+        this.basicParserPool.setNamespaceAware(true);
+
         try {
-            DefaultBootstrap.bootstrap();
-            this.basicParserPool = new BasicParserPool();
-            this.basicParserPool.setNamespaceAware(true);
             this.identifierGenerator = new SecureRandomIdentifierGenerator();
         } catch (final Exception e) {
             throw new RuntimeException(e);
@@ -100,14 +113,13 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         try {
-        	final String removeStartOfSoapBody = response.substring(response.indexOf("<SOAP-ENV:Body>") + 15);
-        	final String removeEndOfSoapBody = removeStartOfSoapBody.substring(0, removeStartOfSoapBody.indexOf("</SOAP-ENV:Body>"));
-            final Document responseDocument = this.basicParserPool.parse(new ByteArrayInputStream(getBytes(removeEndOfSoapBody)));
+
+            final Document responseDocument = this.basicParserPool.parse(new ByteArrayInputStream(getBytes(response)));
             final Element responseRoot = responseDocument.getDocumentElement();
             final UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
             final Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(responseRoot);
-
-            final Response samlResponse = (Response) unmarshaller.unmarshall(responseRoot);
+            final Envelope envelope = (Envelope) unmarshaller.unmarshall(responseRoot);
+            final Response samlResponse = (Response) envelope.getBody().getOrderedChildren().get(0);
 
             final List<org.opensaml.saml1.core.Assertion> assertions = samlResponse.getAssertions();
             if (assertions.isEmpty()) {
@@ -164,19 +176,21 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             return false;
         }
 
-        final long currentTime = getCurrentTimeInUtc().getTime();
+        final DateTime currentTime = new DateTime(DateTimeZone.UTC);
+        final Interval validityRange = new Interval(notBefore.minus(this.tolerance), notOnOrAfter.plus(this.tolerance));
 
-        if (currentTime + tolerance < notBefore.getMillis()) {
+        if (validityRange.contains(currentTime)) {
+            log.debug("Current time is within the interval validity.");
+            return true;
+        }
+
+        if (currentTime.isBefore(validityRange.getStart())) {
             log.debug("skipping assertion that's not yet valid...");
             return false;
         }
 
-        if (notOnOrAfter.getMillis() <= currentTime - tolerance) {
-            log.debug("skipping expired assertion...");
-            return false;
-        }
-
-        return true;
+        log.debug("skipping expired assertion...");
+        return false;
     }
 
     private AuthenticationStatement getSAMLAuthenticationStatement(final org.opensaml.saml1.core.Assertion assertion) {
@@ -202,17 +216,10 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
     private List<?> getValuesFrom(final Attribute attribute) {
         final List<Object> list = new ArrayList<Object>();
-        // TODO I'm not actually sure if this is safe!
         for (final Object o : attribute.getAttributeValues()) {
             list.add(o.toString());
         }
         return list;
-    }
-
-    private Date getCurrentTimeInUtc() {
-        final Calendar c = Calendar.getInstance();
-        c.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return c.getTime();
     }
 
     protected String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
