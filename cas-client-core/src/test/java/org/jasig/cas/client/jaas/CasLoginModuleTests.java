@@ -208,8 +208,8 @@ public class CasLoginModuleTests {
         final String FAILURE_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-12345-ABCDEFGHIJKLMNOPQRSTUVWXYZ-hosta not recognized</cas:authenticationFailure></cas:serviceResponse>";
 
         options.put("cacheAssertions", "true");
-        // Cache timeout is 1 second (Calendar.SECOND=13)
-        options.put("cacheTimeoutUnits", "13");
+        // Cache timeout is 1 second
+        options.put("cacheTimeoutUnit", "SECONDS");
         options.put("cacheTimeout", "1");
 
         server.content = SUCCESS_RESPONSE.getBytes(server.encoding);
