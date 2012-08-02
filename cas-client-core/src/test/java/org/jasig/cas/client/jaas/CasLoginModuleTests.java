@@ -28,12 +28,15 @@ import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 
-import static org.junit.Assert.*;
-
 import org.jasig.cas.client.PublicTestHttpServer;
-import org.junit.AfterClass;
+import org.jasig.cas.client.validation.TicketValidationException;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Unit test for {@link CasLoginModule} class.
@@ -150,15 +153,16 @@ public class CasLoginModuleTests {
         final String USERNAME = "username";
         final String SERVICE = "https://example.com/service";
         final String TICKET = "ST-300000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
-        final String RESPONSE1 = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
+        final String SUCCESS_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
                 + "<cas:authenticationSuccess><cas:user>"
                 + USERNAME
                 + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
-        final String RESPONSE2 = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-300000-aA5Yuvrxzpv8Tau1cYQ7-srv1 not recognized</cas:authenticationFailure></cas:serviceResponse>";
-        server.content = RESPONSE1.getBytes(server.encoding);
-        
+        final String FAILURE_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-300000-aA5Yuvrxzpv8Tau1cYQ7-srv1 not recognized</cas:authenticationFailure></cas:serviceResponse>";
+
         options.put("cacheAssertions", "true");
         options.put("cacheTimeout", "1");
+
+        server.content = SUCCESS_RESPONSE.getBytes(server.encoding);
         module.initialize(
                 subject,
                 new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
@@ -173,7 +177,7 @@ public class CasLoginModuleTests {
         module.logout();
         assertEquals(0, subject.getPrincipals().size());
         assertEquals(0, subject.getPrivateCredentials().size());
-        server.content = RESPONSE2.getBytes(server.encoding);
+        server.content = FAILURE_RESPONSE.getBytes(server.encoding);
         module.initialize(
                 subject,
                 new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
@@ -183,6 +187,54 @@ public class CasLoginModuleTests {
         module.commit();
         assertEquals(this.subject.getPrincipals().size(), 3);
         assertEquals(TICKET, this.subject.getPrivateCredentials().iterator().next().toString());
+    }
+
+
+    /**
+     * Verify that cached assertions that are expired are never be accessible
+     * by {@link org.jasig.cas.client.jaas.CasLoginModule#login()} method.
+     *
+     * @throws Exception On errors.
+     */
+    @Test
+    public void testAssertionCachingExpiration() throws Exception {
+        final String USERNAME = "hizzy";
+        final String SERVICE = "https://example.com/service";
+        final String TICKET = "ST-12345-ABCDEFGHIJKLMNOPQRSTUVWXYZ-hosta";
+        final String SUCCESS_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
+                + "<cas:authenticationSuccess><cas:user>"
+                + USERNAME
+                + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
+        final String FAILURE_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-12345-ABCDEFGHIJKLMNOPQRSTUVWXYZ-hosta not recognized</cas:authenticationFailure></cas:serviceResponse>";
+
+        options.put("cacheAssertions", "true");
+        // Cache timeout is 1 second
+        options.put("cacheTimeoutUnit", "SECONDS");
+        options.put("cacheTimeout", "1");
+
+        server.content = SUCCESS_RESPONSE.getBytes(server.encoding);
+        module.initialize(
+                subject,
+                new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
+                new HashMap<String, Object>(),
+                options);
+        assertTrue(module.login());
+        module.commit();
+
+        Thread.sleep(1100);
+        // Assertion should now be expired from cache
+        server.content = FAILURE_RESPONSE.getBytes(server.encoding);
+        module.initialize(
+                subject,
+                new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
+                new HashMap<String, Object>(),
+                options);
+        try {
+            module.login();
+            fail("Should have thrown login exception.");
+        } catch (LoginException e) {
+            assertTrue(e.getCause() instanceof TicketValidationException);
+        }
     }
     
     private boolean hasPrincipalName(final Subject subject, final Class<? extends Principal> principalClass, final String name) {
