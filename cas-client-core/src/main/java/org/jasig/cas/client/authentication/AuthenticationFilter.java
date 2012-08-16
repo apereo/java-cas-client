@@ -103,6 +103,14 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final HttpSession session = request.getSession(false);
         final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
 
+        //yuan add 2012-8-16 begin
+        //if the request is authenticated,ignore it!
+        if(isAuthAllow(request, response)){
+        	filterChain.doFilter(request, response);
+        	return;
+        }
+        //yuan add 2012-8-16 end
+        
         if (assertion != null) {
             filterChain.doFilter(request, response);
             return;

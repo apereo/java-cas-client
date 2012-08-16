@@ -157,7 +157,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     }
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
-
+        
         if (!preFilter(servletRequest, servletResponse, filterChain)) {
             return;
         }
@@ -166,6 +166,15 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final String ticket = retrieveTicketFromRequest(request);
 
+        //yuan add 2012-8-16 begin
+        //if the request is authenticated,ignore it!
+    	if(isAuthAllow(request, response)){
+    		filterChain.doFilter(servletRequest, servletResponse);
+    		return;
+    	}
+    	//yuan add 2012-8-16 end
+    	
+    	
         if (CommonUtils.isNotBlank(ticket)) {
             if (log.isDebugEnabled()) {
                 log.debug("Attempting to validate ticket: " + ticket);
