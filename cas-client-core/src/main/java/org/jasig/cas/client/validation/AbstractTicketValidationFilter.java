@@ -38,10 +38,12 @@ import java.io.IOException;
  * <p>
  * This filter can be configured with the following values:
  * <ul>
- * <li><code>redirectAfterValidation</code> - redirect the CAS client to the same URL without the ticket.</li>
+ * <li><code>redirectAfterValidation</code> - redirect the CAS client to the same URL without the ticket. (default: true)</li>
  * <li><code>exceptionOnValidationFailure</code> - throw an exception if the validation fails.  Otherwise, continue
- *  processing.</li>
- * <li><code>useSession</code> - store any of the useful information in a session attribute.</li>
+ *  processing. (default: true)</li>
+ * <li><code>useSession</code> - store any of the useful information in a session attribute. (default: true)</li>
+ * <li><code>hostnameVerifier</code> - name of class implementing a {@link HostnameVerifier}.</li>
+ * <li><code>hostnameVerifierConfig</code> - name of configuration class (constructor argument of verifier).</li>
  * </ul>
  *
  * @author Scott Battaglia
@@ -56,13 +58,17 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     /**
      * Specify whether the filter should redirect the user agent after a
      * successful validation to remove the ticket parameter from the query
-     * string.
+     * string. Will be forced to true when {@link #useSession} is false.
      */
-    private boolean redirectAfterValidation = false;
+    private boolean redirectAfterValidation = true;
 
     /** Determines whether an exception is thrown when there is a ticket validation failure. */
     private boolean exceptionOnValidationFailure = true;
 
+    /**
+     * Specify whether the Assertion should be stored in a session
+     * attribute {@link AbstractCasFilter#CONST_CAS_ASSERTION}
+     */
     private boolean useSession = true;
 
     /**
