@@ -73,6 +73,9 @@ public class AssertionCasRealmDelegate implements CasRealm {
 
     /** {@inheritDoc} */
     public boolean hasRole(final Principal principal, final String role) {
+        if ("*".equals(role)) {
+            return true;
+        }
         return getRoleCollection(principal).contains(role);
     }
 
