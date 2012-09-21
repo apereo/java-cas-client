@@ -109,6 +109,10 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
 
     /** {@inheritDoc} */
     public boolean hasRole(final Principal principal, final String role) {
+        if ("*".equals(role)) {
+            return true;
+        }
+
         final Set<String> roles = this.roleMap.get(principal.getName());
 
         return roles != null && roles.contains(role);
