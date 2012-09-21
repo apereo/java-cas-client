@@ -82,6 +82,25 @@ public final class AuthenticationFilterTests extends TestCase {
                 .getRedirectedUrl());
     }
 
+    public void testRedirectNoSession() throws Exception {
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final FilterChain filterChain = new FilterChain() {
+
+            public void doFilter(ServletRequest arg0, ServletResponse arg1)
+                    throws IOException, ServletException {
+                // nothing to do
+            }
+        };
+
+        this.filter.doFilter(request, response, filterChain);
+
+        assertEquals(CAS_LOGIN_URL + "?service="
+                + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"), response
+                .getRedirectedUrl());
+        assertNull("There should be no new session created after the filter", request.getSession(false));
+    }
+
     public void testRedirectWithQueryString() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
@@ -114,7 +133,7 @@ public final class AuthenticationFilterTests extends TestCase {
                 "UTF-8"), response.getRedirectedUrl());
     }
 
-    public void testAssertion() throws Exception {
+    public void testAssertionSession() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
@@ -132,6 +151,45 @@ public final class AuthenticationFilterTests extends TestCase {
         this.filter.doFilter(request, response, filterChain);
 
         assertNull(response.getRedirectedUrl());
+    }
+
+    public void testAssertionRequestNoSession() throws Exception {
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final FilterChain filterChain = new FilterChain() {
+
+            public void doFilter(ServletRequest arg0, ServletResponse arg1)
+                    throws IOException, ServletException {
+                // nothing to do
+            }
+        };
+
+        request.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION,
+                new AssertionImpl("test"));
+        this.filter.doFilter(request, response, filterChain);
+
+        assertNull(response.getRedirectedUrl());
+        assertNull("There should be no new session created after the filter", request.getSession(false));
+    }
+
+    public void testAssertionRequestEmptySession() throws Exception {
+        final MockHttpSession session = new MockHttpSession();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final FilterChain filterChain = new FilterChain() {
+
+            public void doFilter(ServletRequest arg0, ServletResponse arg1)
+                    throws IOException, ServletException {
+                // nothing to do
+            }
+        };
+
+        request.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION,
+                new AssertionImpl("test"));
+        this.filter.doFilter(request, response, filterChain);
+
+        assertNull(response.getRedirectedUrl());
+        // should we require/forbid that the assertion is copied to session?
     }
 
     public void testRenew() throws Exception {

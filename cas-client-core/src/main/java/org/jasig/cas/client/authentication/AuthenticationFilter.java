@@ -37,14 +37,18 @@ import java.io.IOException;
  * Filter implementation to intercept all requests and attempt to authenticate
  * the user by redirecting them to CAS (unless the user has a ticket).
  * <p>
+ * This filter checks the HTTPRequest and optionally the HTTPSession for a attribute
+ * {@value AbstractCasFilter#CONST_CAS_ASSERTION} which implements {@link Assertion}.
+ * <p>
  * This filter allows you to specify the following parameters (at either the context-level or the filter-level):
  * <ul>
  * <li><code>casServerLoginUrl</code> - the url to log into CAS, i.e. https://cas.rutgers.edu/login</li>
  * <li><code>renew</code> - true/false on whether to use renew or not.</li>
  * <li><code>gateway</code> - true/false on whether to use gateway or not.</li>
+ * <li><code>gatewayStorageClass</code> - name of the class implementing GatewayResolver. (Default: DefaultGatewayResolverImpl)</li>
  * </ul>
- *
- * <p>Please see AbstractCasFilter for additional properties.</p>
+ * <p>
+ * Please see AbstractCasFilter for additional properties.
  *
  * @author Scott Battaglia
  * @version $Revision: 11768 $ $Date: 2007-02-07 15:44:16 -0500 (Wed, 07 Feb 2007) $
@@ -100,8 +104,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        final HttpSession session = request.getSession(false);
-        final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
+        final Assertion assertion = getAssertionFromRequest(request);
 
         if (assertion != null) {
             filterChain.doFilter(request, response);
@@ -139,6 +142,23 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
         response.sendRedirect(urlToRedirectTo);
     }
+
+    private Assertion getAssertionFromRequest(HttpServletRequest request) {
+    	Object assertion = request.getAttribute(CONST_CAS_ASSERTION);
+    	if (assertion instanceof Assertion) {
+    		return (Assertion)assertion;
+    	}
+
+    	final HttpSession session = request.getSession(false);
+    	assertion = (session != null) ? session.getAttribute(CONST_CAS_ASSERTION) : null;
+
+    	if (assertion instanceof Assertion) {
+    		return (Assertion)assertion;
+    	}
+
+    	// if no assertion was found OR it was of the wrong type
+    	return null;
+	}
 
     public final void setRenew(final boolean renew) {
         this.renew = renew;
