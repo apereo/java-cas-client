@@ -38,7 +38,8 @@ import java.io.IOException;
  * <p>
  * This filter can be configured with the following values:
  * <ul>
- * <li><code>redirectAfterValidation</code> - redirect the CAS client to the same URL without the ticket. (default: true)</li>
+ * <li><code>redirectAfterValidation</code> - redirect the CAS client to the same URL without the ticket.
+ * (default: true, Will be forced to false when {@link #useSession} is false.)</li>
  * <li><code>exceptionOnValidationFailure</code> - throw an exception if the validation fails.  Otherwise, continue
  *  processing. (default: true)</li>
  * <li><code>useSession</code> - store any of the useful information in a session attribute. (default: true)</li>
@@ -58,7 +59,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     /**
      * Specify whether the filter should redirect the user agent after a
      * successful validation to remove the ticket parameter from the query
-     * string. Will be forced to true when {@link #useSession} is false.
+     * string.
      */
     private boolean redirectAfterValidation = true;
 
@@ -67,7 +68,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
     /**
      * Specify whether the Assertion should be stored in a session
-     * attribute {@link AbstractCasFilter#CONST_CAS_ASSERTION}
+     * attribute {@link AbstractCasFilter#CONST_CAS_ASSERTION}.
      */
     private boolean useSession = true;
 
@@ -80,7 +81,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     protected TicketValidator getTicketValidator(final FilterConfig filterConfig) {
         return this.ticketValidator;
     }
-   
+
     /**
      * Gets the configured {@link HostnameVerifier} to use for HTTPS connections
      * if one is configured for this filter.
@@ -109,12 +110,12 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         log.trace("Setting redirectAfterValidation parameter: " + this.redirectAfterValidation);
         setUseSession(parseBoolean(getPropertyFromInitParams(filterConfig, "useSession", "true")));
         log.trace("Setting useSession parameter: " + this.useSession);
-        
+
         if (!this.useSession && this.redirectAfterValidation) {
             log.warn("redirectAfterValidation parameter may not be true when useSession parameter is false. Resetting it to false in order to prevent infinite redirects.");
             setRedirectAfterValidation(false);
         }
-        
+
         setTicketValidator(getTicketValidator(filterConfig));
         super.initInternal(filterConfig);
     }
@@ -148,7 +149,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * @param assertion the successful Assertion from the server.
      */
     protected void onSuccessfulValidation(final HttpServletRequest request, final HttpServletResponse response, final Assertion assertion) {
-        // nothing to do here.                                                                                            
+        // nothing to do here.
     }
 
     /**
