@@ -106,7 +106,7 @@ public final class AssertionImpl implements Assertion {
         this.authenticationDate = authenticationDate;
     }
 
-	public Date getAuthenticationDate() {
+    public Date getAuthenticationDate() {
         return this.authenticationDate;
     }
 
