@@ -24,6 +24,7 @@ import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.proxy.ProxyRetriever;
+import org.jasig.cas.client.util.CommonUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 /**
  * Test cases for the {@link Cas20ServiceTicketValidator}.
@@ -159,5 +161,20 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         } catch (final TicketValidationException e) {
             // expected
         }
+    }
+
+    @Test
+    public void testAuthenticationDate() throws Exception {
+        final String USERNAME = "username";
+        final String DATE = CommonUtils.formatForUtcTime(new Date());
+        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
+                + USERNAME
+                + "</cas:user><cas:authenticationDate>"
+                + DATE
+                + "</cas:authenticationDate></cas:authenticationSuccess></cas:serviceResponse>";
+        server.content = RESPONSE.getBytes(server.encoding);
+        final Assertion assertion = this.ticketValidator.validate("test", "test");
+        assertEquals(USERNAME, assertion.getPrincipal().getName());
+        assertEquals(DATE, CommonUtils.formatForUtcTime(assertion.getAuthenticationDate()));
     }
 }

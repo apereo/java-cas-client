@@ -23,8 +23,10 @@ import junit.framework.TestCase;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Tests for the CommonUtils.
@@ -152,5 +154,24 @@ public final class CommonUtilsTests extends TestCase {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
+    }
+
+    public void testParseFormatDate() {
+        String DATE = CommonUtils.formatForUtcTime(new Date());
+        Date date = null;
+        try {
+            date = CommonUtils.parseFromUtcTime(DATE);
+        } catch (ParseException e) {
+            fail("Parsing date should be successful here : " + e.getMessage());
+        }
+        assertEquals(DATE, CommonUtils.formatForUtcTime(date));
+    }
+
+    public void testParseDateFailed() {
+        try {
+            CommonUtils.parseFromUtcTime("this is obviously not a date");
+            fail("Parsing date should never be successfull here");
+        } catch (ParseException e) {
+        }
     }
 }

@@ -46,7 +46,7 @@ public final class AssertionImpl implements Assertion {
     /** The date the assertion is valid until. */
     private final Date validUntilDate;
 
-    private final Date authenticationDate;
+    private Date authenticationDate;
 
     /** Map of key/value pairs associated with this assertion. I.e. authentication type. */
     private final Map<String,Object> attributes;
@@ -102,7 +102,11 @@ public final class AssertionImpl implements Assertion {
         CommonUtils.assertNotNull(this.attributes, "attributes cannot be null.");
     }
 
-    public Date getAuthenticationDate() {
+    public void setAuthenticationDate(final Date authenticationDate) {
+        this.authenticationDate = authenticationDate;
+    }
+
+	public Date getAuthenticationDate() {
         return this.authenticationDate;
     }
 

@@ -28,7 +28,9 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.w3c.dom.NodeList;
 
+import java.text.ParseException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,13 +97,23 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
         }
 
-        final Assertion assertion;
+        final AssertionImpl assertion;
         final Map<String,Object> attributes = extractCustomAttributes(response);
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
             final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
             assertion = new AssertionImpl(attributePrincipal);
         } else {
             assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
+        }
+
+        final String stringAuthenticationDate = XmlUtils.getTextForElement(response, "authenticationDate");
+        if (CommonUtils.isNotBlank(stringAuthenticationDate)) {
+            try {
+                Date authenticationDate = CommonUtils.parseFromUtcTime(stringAuthenticationDate);
+                assertion.setAuthenticationDate(authenticationDate);
+            } catch (ParseException e) {
+                log.warn("Unexpected format of authentication date", e);
+            }
         }
 
         customParseResponse(response, assertion);

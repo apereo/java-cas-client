@@ -40,6 +40,7 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -65,14 +66,30 @@ public final class CommonUtils {
      */
     private static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
 
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+    private static final String TIMEZONE = "UTC";
+
     private CommonUtils() {
         // nothing to do
     }
 
     public static String formatForUtcTime(final Date date) {
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        dateFormat.setTimeZone(TimeZone.getTimeZone(TIMEZONE));
         return dateFormat.format(date);
+    }
+
+    /**
+     * Parse a string formatted as a UTC date.
+     * @param date the UTC string date to parse
+     * @return the date
+     * @throws ParseException
+     */
+    public static Date parseFromUtcTime(final String date) throws ParseException {
+        final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        dateFormat.setTimeZone(TimeZone.getTimeZone(TIMEZONE));
+        return dateFormat.parse(date);
     }
 
     /**
