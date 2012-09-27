@@ -97,24 +97,26 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
         }
 
-        final AssertionImpl assertion;
-        final Map<String,Object> attributes = extractCustomAttributes(response);
-        if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
-            final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
-            assertion = new AssertionImpl(attributePrincipal);
-        } else {
-            assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
-        }
-
+        Date authenticationDate = null;
         final String stringAuthenticationDate = XmlUtils.getTextForElement(response, "authenticationDate");
         if (CommonUtils.isNotBlank(stringAuthenticationDate)) {
             try {
-                Date authenticationDate = CommonUtils.parseFromUtcTime(stringAuthenticationDate);
-                assertion.setAuthenticationDate(authenticationDate);
+                authenticationDate = CommonUtils.parseFromUtcTime(stringAuthenticationDate);
             } catch (ParseException e) {
                 log.warn("Unexpected format of authentication date", e);
             }
         }
+
+        final Assertion assertion;
+        final Map<String,Object> attributes = extractCustomAttributes(response);
+        final AttributePrincipal attributePrincipal;
+        if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
+            attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
+        } else {
+            attributePrincipal = new AttributePrincipalImpl(principal, attributes);
+        }
+        assertion = new AssertionImpl(attributePrincipal, new Date(), null, authenticationDate, Collections.<String, Object>emptyMap());
+
 
         customParseResponse(response, assertion);
 
