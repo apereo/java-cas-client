@@ -19,14 +19,36 @@
   </description>
   <url>http://www.jasig.org/cas</url>
 
+<repositories>
+    <repository>
+      <id>eontime-public</id>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <url>http://repo.yongtai.com.cn/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>nexus-snapshots</id>
+      <url>http://192.168.250.231:8080/nexus/content/repositories/snapshots/</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+    <repository>
+      <id>nexus-releases</id>
+      <url>http://192.168.250.231:8080/nexus/content/repositories/releases/</url>
+    </repository>
+  </distributionManagement>
+  
   <issueManagement>
     <system>JIRA</system>
     <url>https://issues.jasig.org/browse/CASC</url>
   </issueManagement>
 
   <scm>
-    <connection>scm:git:git@github.com:Jasig/java-cas-client.git</connection>
-    <developerConnection>scm:git:git@github.com:Jasig/java-cas-client.git</developerConnection>
+    <connection>scm:git:git@192.168.250.231:bdp/java-cas-client.git</connection>
+    <developerConnection>scm:git:git@192.168.250.231:bdp/java-cas-client.git</developerConnection>
     <url>https://github.com/Jasig/java-cas-client</url>
   </scm>
 
@@ -191,6 +213,7 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
 
   <modules>
     <module>cas-client-core</module>
+    <!--
     <module>cas-client-integration-atlassian</module>
     <module>cas-client-integration-jboss</module>
     <module>cas-client-support-distributed-ehcache</module>
@@ -198,6 +221,7 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
     <module>cas-client-integration-tomcat-common</module>
     <module>cas-client-integration-tomcat-v6</module>
     <module>cas-client-integration-tomcat-v7</module>
+    -->
   </modules>
 
   <properties>

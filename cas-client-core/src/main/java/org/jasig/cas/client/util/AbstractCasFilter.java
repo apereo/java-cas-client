@@ -19,6 +19,8 @@
 
 package org.jasig.cas.client.util;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,15 +30,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *  Abstract filter that contains code that is common to all CAS filters.
- *  <p>
- * The following filter options can be configured (either at the context-level or filter-level).
+ * Abstract filter that contains code that is common to all CAS filters.
+ * <p>
+ * The following filter options can be configured (either at the context-level
+ * or filter-level).
  * <ul>
- * <li><code>serverName</code> - the name of the CAS client server, in the format: localhost:8080 or localhost:8443 or localhost or https://localhost:8443</li>
- * <li><code>service</code> - the completely qualified service url, i.e. https://localhost/cas-client/app</li>
+ * <li><code>serverName</code> - the name of the CAS client server, in the
+ * format: localhost:8080 or localhost:8443 or localhost or
+ * https://localhost:8443</li>
+ * <li><code>service</code> - the completely qualified service url, i.e.
+ * https://localhost/cas-client/app</li>
  * </ul>
- * <p>Please note that one of the two above parameters must be set.</p>
- *
+ * <p>
+ * Please note that one of the two above parameters must be set.
+ * </p>
+ * 
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.1
@@ -66,6 +74,9 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     /** The exact url of the service. */
     private String service;
 
+	// The allow authentication request match patten List
+	private List<String> authAllowList;
+	
     public final void init(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             setServerName(getPropertyFromInitParams(filterConfig, "serverName", null));
@@ -79,6 +90,12 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
             setEncodeServiceUrl(parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
             log.trace("Loading encodeServiceUrl property: " + this.encodeServiceUrl);
 
+            //yuan add 2012-08-16 begin
+			String authAllowStr = getPropertyFromInitParams(filterConfig, "auth-allow", null);
+            log.info("Loaded auth-allow parameter:"+authAllowStr);
+            authAllowList = Strings.csvToList(authAllowStr);
+			//yuan add 2012-08-16 end
+            
             initInternal(filterConfig);
         }
         init();
@@ -161,4 +178,31 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     protected String retrieveTicketFromRequest(final HttpServletRequest request) {
         return CommonUtils.safeGetParameter(request,getArtifactParameterName());
     }
+    
+    /**
+	 * Is the request authenticated in the auth-allow pattern setting.
+	 * @author yuan
+	 * @since 2012-8-16
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	protected boolean isAuthAllow(final HttpServletRequest request,
+			final HttpServletResponse response) {
+		String ctxPath = request.getContextPath();
+		String uriPath = request.getRequestURI();
+//		String servletPath = request.getServletPath();
+		if (authAllowList != null && !authAllowList.isEmpty()) {
+			for (String authStr : authAllowList) {
+				WildcardPattern wp = new WildcardPattern(ctxPath + authStr);
+				StringMatchingMatcher mat = wp.matcher(uriPath);
+				if (mat.find()) {
+					log.info("Allow path pattern:" + authStr);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 }
