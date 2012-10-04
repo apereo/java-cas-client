@@ -66,7 +66,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
      * Whether to send the gateway request or not.
      */
     private boolean gateway = false;
-
+    
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
@@ -139,8 +139,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         response.sendRedirect(urlToRedirectTo);
     }
 
-
-	public final void setRenew(final boolean renew) {
+    public final void setRenew(final boolean renew) {
         this.renew = renew;
     }
 
@@ -151,7 +150,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void setCasServerLoginUrl(final String casServerLoginUrl) {
         this.casServerLoginUrl = casServerLoginUrl;
     }
-
+    
     public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
     	this.gatewayStorage = gatewayStorage;
     }

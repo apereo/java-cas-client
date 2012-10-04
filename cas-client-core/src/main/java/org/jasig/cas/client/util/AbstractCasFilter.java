@@ -56,7 +56,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     /** Defines the parameter to look for for the service. */
     private String serviceParameterName = "service";
-
+    
     /** Sets where response.encodeUrl should be called on service urls when constructed. */
     private boolean encodeServiceUrl = true;
 
@@ -141,7 +141,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     public final void setServiceParameterName(final String serviceParameterName) {
         this.serviceParameterName = serviceParameterName;
     }
-
+    
     public final void setEncodeServiceUrl(final boolean encodeServiceUrl) {
     	this.encodeServiceUrl = encodeServiceUrl;
     }
