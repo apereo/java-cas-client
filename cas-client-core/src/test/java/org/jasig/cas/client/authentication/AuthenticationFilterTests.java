@@ -38,7 +38,6 @@ import java.net.URLEncoder;
  * Tests for the AuthenticationFilter.
  *
  * @author Scott Battaglia
- * @version $Revision: 11753 $ $Date: 2007-01-03 13:37:26 -0500 (Wed, 03 Jan 2007) $
  * @since 3.0
  */
 public final class AuthenticationFilterTests extends TestCase {
@@ -70,7 +69,7 @@ public final class AuthenticationFilterTests extends TestCase {
 
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
                     throws IOException, ServletException {
-                // nothing to do
+                fail("This filter must redirect.");
             }
         };
 
@@ -80,6 +79,25 @@ public final class AuthenticationFilterTests extends TestCase {
         assertEquals(CAS_LOGIN_URL + "?service="
                 + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"), response
                 .getRedirectedUrl());
+    }
+
+    public void testRedirectNoSession() throws Exception {
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final FilterChain filterChain = new FilterChain() {
+
+            public void doFilter(ServletRequest arg0, ServletResponse arg1)
+                    throws IOException, ServletException {
+                fail("This filter must redirect.");
+            }
+        };
+
+        this.filter.doFilter(request, response, filterChain);
+
+        assertEquals(CAS_LOGIN_URL + "?service="
+                + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"), response
+                .getRedirectedUrl());
+        assertNull("There should be no new session created after the filter", request.getSession(false));
     }
 
     public void testRedirectWithQueryString() throws Exception {
@@ -93,7 +111,7 @@ public final class AuthenticationFilterTests extends TestCase {
 
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
                     throws IOException, ServletException {
-                // nothing to do
+                fail("This filter must redirect.");
             }
         };
 
@@ -114,7 +132,7 @@ public final class AuthenticationFilterTests extends TestCase {
                 "UTF-8"), response.getRedirectedUrl());
     }
 
-    public void testAssertion() throws Exception {
+    public void testAssertionSession() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
@@ -134,7 +152,26 @@ public final class AuthenticationFilterTests extends TestCase {
         assertNull(response.getRedirectedUrl());
     }
 
-    public void testRenew() throws Exception {
+    public void testAssertionRequestNoSession() throws Exception {
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final FilterChain filterChain = new FilterChain() {
+
+            public void doFilter(ServletRequest arg0, ServletResponse arg1)
+                    throws IOException, ServletException {
+                // nothing to do
+            }
+        };
+
+        request.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION,
+                new AssertionImpl("test"));
+        this.filter.doFilter(request, response, filterChain);
+
+        assertNull(response.getRedirectedUrl());
+        assertNull("There should be no new session created after the filter", request.getSession(false));
+    }
+
+    public void testAssertionRequestEmptySession() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
@@ -143,6 +180,27 @@ public final class AuthenticationFilterTests extends TestCase {
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
                     throws IOException, ServletException {
                 // nothing to do
+            }
+        };
+
+        request.setSession(session); // session with no Assertion
+        request.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION,
+                new AssertionImpl("test"));
+        this.filter.doFilter(request, response, filterChain);
+
+        assertNull(response.getRedirectedUrl());
+        // should we require/forbid that the assertion is copied to session?
+    }
+
+    public void testRenew() throws Exception {
+        final MockHttpSession session = new MockHttpSession();
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final FilterChain filterChain = new FilterChain() {
+
+            public void doFilter(ServletRequest arg0, ServletResponse arg1)
+                    throws IOException, ServletException {
+                fail("This filter must redirect.");
             }
         };
 
@@ -158,23 +216,29 @@ public final class AuthenticationFilterTests extends TestCase {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
+        final FilterChain rejectingFilterChain = new FilterChain() {
 
             public void doFilter(ServletRequest arg0, ServletResponse arg1)
                     throws IOException, ServletException {
-                // nothing to do
+                fail("This filter must redirect.");
             }
         };
 
         request.setSession(session);
         this.filter.setRenew(true);
         this.filter.setGateway(true);
-        this.filter.doFilter(request, response, filterChain);
+        this.filter.doFilter(request, response, rejectingFilterChain);
         assertNotNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNotNull(response.getRedirectedUrl());
 
         final MockHttpServletResponse response2 = new MockHttpServletResponse();
-        this.filter.doFilter(request, response2, filterChain);
+        final FilterChain acceptingFilterChain = new FilterChain() {
+
+            public void doFilter(ServletRequest arg0, ServletResponse arg1)
+                    throws IOException, ServletException {
+            }
+        };
+        this.filter.doFilter(request, response2, acceptingFilterChain);
         assertNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNull(response2.getRedirectedUrl());
     }
