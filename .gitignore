@@ -2,6 +2,7 @@
 !/.project
 .project
 .settings
+bin
 target
 *.ipr
 *.iml
