@@ -163,7 +163,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      * @param request the HTTP ServletRequest. CANNOT be NULL.
      * @return the Assertion found (in request or session), null otherwise.
      */
-    protected Assertion retrieveAssertionFromRequest(HttpServletRequest request) {
+    protected Assertion retrieveAssertion(HttpServletRequest request) {
         final Object requestAssertion = request.getAttribute(CONST_CAS_ASSERTION);
         if (requestAssertion instanceof Assertion) {
             return (Assertion)requestAssertion;
