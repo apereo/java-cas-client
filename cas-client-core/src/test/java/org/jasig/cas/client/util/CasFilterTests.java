@@ -1,11 +1,11 @@
 package org.jasig.cas.client.util;
 
-import org.jasig.cas.client.validation.Assertion;
-import org.jasig.cas.client.validation.AssertionImpl;
-import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,9 +14,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import java.io.IOException;
-
-import static org.junit.Assert.*;
+import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.validation.AssertionImpl;
+import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Scott Battaglia, Bernd Eckenfels
@@ -77,7 +79,7 @@ public final class CasFilterTests {
     }
 
     @Test
-    public void retrieveAssertionRequest() {
+    public void retrieveAssertionRequestNoSession() {
         final TestCasFilter testCasFilter = new TestCasFilter();
         final HttpServletRequest request = new MockHttpServletRequest();
         final Assertion testAssertion = new AssertionImpl("testprincipal");
@@ -85,8 +87,27 @@ public final class CasFilterTests {
         request.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, testAssertion);
 
         final Object value = testCasFilter.retrieveAssertion(request);
+
         assertSame(testAssertion, value);
+        assertNull(request.getSession(false));
     }
+
+    @Test
+    public void retrieveAssertionRequestEmptySession() {
+        final TestCasFilter testCasFilter = new TestCasFilter();
+        final HttpServletRequest request = new MockHttpServletRequest();
+        final Assertion testAssertion = new AssertionImpl("testprincipal");
+        final HttpSession session = request.getSession(true);
+        assertNotNull("The MockHTTPServlerRequest does not work like a real session.", session);
+
+        request.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, testAssertion);
+
+        final Object value = testCasFilter.retrieveAssertion(request);
+        assertSame(testAssertion, value);
+        assertSame(session, request.getSession());
+        // Do we want to allow/forbid/require that assertion is propagated to session
+    }
+
 
     /** Make sure AbstractCasFilter#retrieveAssertion() prefers request */
     @Test
@@ -105,7 +126,7 @@ public final class CasFilterTests {
         assertSame(testAssertionRequest, value);
     }
 
-    /** Make sure AbstractCasFilter#retrieveAssertion() prefers request */
+    /** Make sure AbstractCasFilter#retrieveAssertion() ignores casting problems. */
     @Test
     public void retrieveAssertionIllegalObjectsIgnored() {
         final TestCasFilter testCasFilter = new TestCasFilter();
