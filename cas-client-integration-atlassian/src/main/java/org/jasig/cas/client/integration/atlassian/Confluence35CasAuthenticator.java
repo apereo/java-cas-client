@@ -57,6 +57,7 @@ public final class Confluence35CasAuthenticator extends ConfluenceAuthenticator 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Session found; user already logged in.");
             }
+            LoginReason.OK.stampRequestResponse(request, response);
             return existingUser;
         }
 
@@ -72,7 +73,7 @@ public final class Confluence35CasAuthenticator extends ConfluenceAuthenticator 
             if (user != null) {
                 putPrincipalInSessionContext(request, user);
                 getElevatedSecurityGuard().onSuccessfulLoginAttempt(request, username);
-                // Firing this event is necessary to ensure the user's personal information is intialised correctly.
+                // Firing this event is necessary to ensure the user's personal information is initialised correctly.
                 getEventPublisher().publish(new LoginEvent(this, username, request.getSession().getId(), remoteHost, remoteIP));
                 LoginReason.OK.stampRequestResponse(request, response);
                 if (LOG.isDebugEnabled()) {
