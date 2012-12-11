@@ -27,7 +27,6 @@ import java.util.List;
  * Extension to the traditional Service Ticket validation that will validate service tickets and proxy tickets.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
  * @since 3.1
  */
 public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
@@ -37,6 +36,9 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
     /** This should be a list of an array of Strings */
     private ProxyList allowedProxyChains = new ProxyList();
 
+    /** Allows for an empty chain of proxy callback urls. **/
+    private boolean allowEmptyProxyChain = true;
+    
     public Cas20ProxyTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
     }
@@ -51,13 +53,13 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
 
     protected void customParseResponse(final String response, final Assertion assertion) throws TicketValidationException {
         final List<String> proxies = XmlUtils.getTextForElements(response, "proxy");
-        final String[] proxiedList = proxies.toArray(new String[proxies.size()]);
-
+        
         // this means there was nothing in the proxy chain, which is okay
-        if (proxies.isEmpty() || this.acceptAnyProxy) {
+        if ((this.allowEmptyProxyChain && proxies.isEmpty()) || this.acceptAnyProxy) {
             return;
         }
 
+        final String[] proxiedList = proxies.toArray(new String[proxies.size()]);
         if (this.allowedProxyChains.contains(proxiedList)) {
             return;
         }
@@ -75,5 +77,18 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
 
     protected boolean isAcceptAnyProxy() {
         return this.acceptAnyProxy;
+    }
+
+    protected boolean isAllowEmptyProxyChain() {
+      return this.allowEmptyProxyChain;
+    }
+
+    /**
+     * Set to determine whether empty proxy chains are allowed.
+     * @see #customParseResponse(String, Assertion)
+     * @param allowEmptyProxyChain
+     */
+    public void setAllowEmptyProxyChain(final boolean allowEmptyProxyChain) {
+      this.allowEmptyProxyChain = allowEmptyProxyChain;
     }
 }
