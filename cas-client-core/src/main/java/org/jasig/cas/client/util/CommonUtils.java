@@ -27,18 +27,24 @@ import org.jasig.cas.client.validation.ProxyListEditor;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.security.KeyStore;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -341,7 +347,7 @@ public final class CommonUtils {
      * @return the response.
      */
     public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
-        return getResponseFromServer(constructedUrl, HttpsURLConnection.getDefaultHostnameVerifier(), encoding);
+        return getResponseFromServer(constructedUrl, HttpsURLConnection.getDefaultHostnameVerifier(), null, encoding);
     }
 
     /**
@@ -352,12 +358,22 @@ public final class CommonUtils {
      * @param encoding the encoding to use.
      * @return the response.
      */
-    public static String getResponseFromServer(final URL constructedUrl, final HostnameVerifier hostnameVerifier, final String encoding) {
+    public static String getResponseFromServer(final URL constructedUrl, final HostnameVerifier hostnameVerifier, final Properties sslConfig, final String encoding) {
+
         URLConnection conn = null;
         try {
             conn = constructedUrl.openConnection();
             if (conn instanceof HttpsURLConnection) {
-                ((HttpsURLConnection)conn).setHostnameVerifier(hostnameVerifier);
+		HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
+		SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
+		if (socketFactory != null) {
+		   httpsConnection.setSSLSocketFactory(socketFactory);
+		}
+		if (hostnameVerifier != null) {
+                    httpsConnection.setHostnameVerifier(hostnameVerifier);
+		} else {
+		    httpsConnection.setHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier());
+		}
             }
             final BufferedReader in;
 
@@ -385,6 +401,37 @@ public final class CommonUtils {
         }
 
     }
+
+    public static SSLSocketFactory createSslSocketFactory(Properties sslConfig) {
+	if (sslConfig != null ) {
+	    try {
+		// TLS, SSL, SSLv3
+	    	SSLContext sslContext = SSLContext.getInstance( sslConfig.getProperty( "protocol", "SSL" ) );
+
+	    	if (sslConfig.getProperty( "keyStoreType" ) != null) {
+	    	    KeyStore keyStore = KeyStore.getInstance( sslConfig.getProperty( "keyStoreType" ) );
+	    	    if (sslConfig.getProperty( "keyStorePath" ) != null) {
+	    		InputStream keyStoreIS = new FileInputStream( sslConfig.getProperty( "keyStorePath" ) );
+			if (sslConfig.getProperty( "keyStorePass" ) != null){
+		    	    keyStore.load( keyStoreIS, sslConfig.getProperty( "keyStorePass" ).toCharArray() );
+		    	    if (LOG.isDebugEnabled()) {
+                    		LOG.debug( "Keystore has " + keyStore.size() + " keys" );
+		    	    }
+			    KeyManagerFactory keyManager = KeyManagerFactory.getInstance(sslConfig.getProperty( "keyManagerType", "SunX509"));
+			    keyManager.init(keyStore, sslConfig.getProperty("certificatePassword").toCharArray());
+			    sslContext.init(keyManager.getKeyManagers(), null, null);
+			}
+	    	    }
+		}
+
+		return sslContext.getSocketFactory();
+	    } catch (final Exception e) {
+		LOG.error(e.getMessage(), e);
+	    }
+	}	
+	return null;
+    }
+
     /**
      * Contacts the remote URL and returns the response.
      *

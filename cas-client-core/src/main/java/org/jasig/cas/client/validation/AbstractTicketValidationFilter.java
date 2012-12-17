@@ -32,6 +32,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 /**
  * The filter that handles all the work of validating ticket requests.
@@ -80,6 +82,27 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      */
     protected TicketValidator getTicketValidator(final FilterConfig filterConfig) {
         return this.ticketValidator;
+    }
+
+    /**
+     * Gets the ssl config to use for HTTPS connections
+     * if one is configured for this filter.
+     * @param filterConfig Servlet filter configuration.
+     * @return Properties
+     */
+    protected Properties getSslConfig(final FilterConfig filterConfig) {
+	Properties properties = new Properties();
+	final String fileName = getPropertyFromInitParams(filterConfig, "sslConfigFile", null);	
+	if(fileName != null) {
+	    try {
+		FileInputStream fis = new FileInputStream(fileName);
+		properties.load(fis);
+		log.trace("Loaded " + properties.size() + " entries from " + fileName);	
+	    } catch(java.io.IOException ioe) {
+		log.warn(ioe, ioe);
+	    }
+	}
+	return properties;
     }
 
     /**
