@@ -91,18 +91,18 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * @return Properties
      */
     protected Properties getSslConfig(final FilterConfig filterConfig) {
-	Properties properties = new Properties();
-	final String fileName = getPropertyFromInitParams(filterConfig, "sslConfigFile", null);	
-	if(fileName != null) {
-	    try {
-		FileInputStream fis = new FileInputStream(fileName);
-		properties.load(fis);
-		log.trace("Loaded " + properties.size() + " entries from " + fileName);	
-	    } catch(java.io.IOException ioe) {
-		log.warn(ioe, ioe);
-	    }
-	}
-	return properties;
+        Properties properties = new Properties();
+        final String fileName = getPropertyFromInitParams(filterConfig, "sslConfigFile", null);	
+        if(fileName != null) {
+            try {
+                FileInputStream fis = new FileInputStream(fileName);
+                properties.load(fis);
+                log.trace("Loaded " + properties.size() + " entries from " + fileName);	
+            } catch(java.io.IOException ioe) {
+                log.warn(ioe, ioe);
+            }
+        }
+        return properties;
     }
 
     /**

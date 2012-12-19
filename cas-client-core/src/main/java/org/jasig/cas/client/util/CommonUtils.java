@@ -364,16 +364,16 @@ public final class CommonUtils {
         try {
             conn = constructedUrl.openConnection();
             if (conn instanceof HttpsURLConnection) {
-		HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
-		SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
-		if (socketFactory != null) {
-		   httpsConnection.setSSLSocketFactory(socketFactory);
-		}
-		if (hostnameVerifier != null) {
+                HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
+                SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
+                if (socketFactory != null) {
+                    httpsConnection.setSSLSocketFactory(socketFactory);
+                }
+                if (hostnameVerifier != null) {
                     httpsConnection.setHostnameVerifier(hostnameVerifier);
-		} else {
-		    httpsConnection.setHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier());
-		}
+                } else {
+                    httpsConnection.setHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier());
+                }
             }
             final BufferedReader in;
 
@@ -403,33 +403,33 @@ public final class CommonUtils {
     }
 
     public static SSLSocketFactory createSslSocketFactory(Properties sslConfig) {
-	if (sslConfig != null ) {
-	    try {
-		// TLS, SSL, SSLv3
-	    	SSLContext sslContext = SSLContext.getInstance( sslConfig.getProperty( "protocol", "SSL" ) );
+        if (sslConfig != null ) {
+            try {
+                // TLS, SSL, SSLv3
+                SSLContext sslContext = SSLContext.getInstance( sslConfig.getProperty( "protocol", "SSL" ) );
 
-	    	if (sslConfig.getProperty( "keyStoreType" ) != null) {
-	    	    KeyStore keyStore = KeyStore.getInstance( sslConfig.getProperty( "keyStoreType" ) );
-	    	    if (sslConfig.getProperty( "keyStorePath" ) != null) {
-	    		InputStream keyStoreIS = new FileInputStream( sslConfig.getProperty( "keyStorePath" ) );
-			if (sslConfig.getProperty( "keyStorePass" ) != null){
-		    	    keyStore.load( keyStoreIS, sslConfig.getProperty( "keyStorePass" ).toCharArray() );
-		    	    if (LOG.isDebugEnabled()) {
-                    		LOG.debug( "Keystore has " + keyStore.size() + " keys" );
-		    	    }
-			    KeyManagerFactory keyManager = KeyManagerFactory.getInstance(sslConfig.getProperty( "keyManagerType", "SunX509"));
-			    keyManager.init(keyStore, sslConfig.getProperty("certificatePassword").toCharArray());
-			    sslContext.init(keyManager.getKeyManagers(), null, null);
-			}
-	    	    }
-		}
+                if (sslConfig.getProperty( "keyStoreType" ) != null) {
+                    KeyStore keyStore = KeyStore.getInstance( sslConfig.getProperty( "keyStoreType" ) );
+                    if (sslConfig.getProperty( "keyStorePath" ) != null) {
+                        InputStream keyStoreIS = new FileInputStream( sslConfig.getProperty( "keyStorePath" ) );
+                        if (sslConfig.getProperty( "keyStorePass" ) != null){
+                            keyStore.load( keyStoreIS, sslConfig.getProperty( "keyStorePass" ).toCharArray() );
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug( "Keystore has " + keyStore.size() + " keys" );
+                            }
+                            KeyManagerFactory keyManager = KeyManagerFactory.getInstance(sslConfig.getProperty( "keyManagerType", "SunX509"));
+                            keyManager.init(keyStore, sslConfig.getProperty("certificatePassword").toCharArray());
+                            sslContext.init(keyManager.getKeyManagers(), null, null);
+                        }
+                    }
+                }
 
-		return sslContext.getSocketFactory();
-	    } catch (final Exception e) {
-		LOG.error(e.getMessage(), e);
-	    }
-	}	
-	return null;
+                return sslContext.getSocketFactory();
+            } catch (final Exception e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+        return null;
     }
 
     /**

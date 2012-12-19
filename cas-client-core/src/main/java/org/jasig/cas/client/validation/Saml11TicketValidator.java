@@ -237,14 +237,14 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         try {
             conn = (HttpURLConnection) validationUrl.openConnection();
             if (conn instanceof HttpsURLConnection) {
-		HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
-		SSLSocketFactory socketFactory = CommonUtils.createSslSocketFactory(this.sslConfig);
-		if (socketFactory != null) {
-		    httpsConnection.setSSLSocketFactory(socketFactory);
-		}
-		if (hostnameVerifier != null) {
-		    httpsConnection.setHostnameVerifier(this.hostnameVerifier);
-		}
+                HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
+                SSLSocketFactory socketFactory = CommonUtils.createSslSocketFactory(this.sslConfig);
+                if (socketFactory != null) {
+                    httpsConnection.setSSLSocketFactory(socketFactory);
+                }
+                if (hostnameVerifier != null) {
+                    httpsConnection.setHostnameVerifier(this.hostnameVerifier);
+                }
             }
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "text/xml"); 

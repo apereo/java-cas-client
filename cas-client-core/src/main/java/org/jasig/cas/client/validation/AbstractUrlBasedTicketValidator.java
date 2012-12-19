@@ -235,7 +235,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     }
 
     public final void setSslConfig(final Properties config) {
-	this.sslConfig = config;
+        this.sslConfig = config;
     }
     
     public final void setHostnameVerifier(final HostnameVerifier verifier) {
