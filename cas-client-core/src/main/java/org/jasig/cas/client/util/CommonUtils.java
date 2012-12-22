@@ -402,6 +402,21 @@ public final class CommonUtils {
 
     }
 
+    /**
+     * Creates a {@link SSLSocketFactory} based on the configuration specified
+     * <p>
+     * Sample properties file:
+     * <pre>
+     * protocol=TLS
+     * keyStoreType=JKS
+     * keyStorePath=/var/secure/location/.keystore
+     * keyStorePass=changeit
+     * certificatePassword=aGoodPass
+     * </pre>
+     *
+     * @param sslConfig {@link Properties} 
+     * @return the {@link SSLSocketFactory}
+     */
     public static SSLSocketFactory createSslSocketFactory(Properties sslConfig) {
         if (sslConfig != null ) {
             try {
