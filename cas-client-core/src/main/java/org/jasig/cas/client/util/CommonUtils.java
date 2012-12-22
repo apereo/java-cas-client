@@ -364,8 +364,8 @@ public final class CommonUtils {
         try {
             conn = constructedUrl.openConnection();
             if (conn instanceof HttpsURLConnection) {
-                HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
-                SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
+                final HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
+                final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
                 if (socketFactory != null) {
                     httpsConnection.setSSLSocketFactory(socketFactory);
                 }
@@ -406,20 +406,24 @@ public final class CommonUtils {
         if (sslConfig != null ) {
             try {
                 // TLS, SSL, SSLv3
-                SSLContext sslContext = SSLContext.getInstance( sslConfig.getProperty( "protocol", "SSL" ) );
+                final SSLContext sslContext = SSLContext.getInstance( sslConfig.getProperty( "protocol", "SSL" ) );
 
                 if (sslConfig.getProperty( "keyStoreType" ) != null) {
-                    KeyStore keyStore = KeyStore.getInstance( sslConfig.getProperty( "keyStoreType" ) );
+                    final KeyStore keyStore = KeyStore.getInstance( sslConfig.getProperty( "keyStoreType" ) );
                     if (sslConfig.getProperty( "keyStorePath" ) != null) {
-                        InputStream keyStoreIS = new FileInputStream( sslConfig.getProperty( "keyStorePath" ) );
-                        if (sslConfig.getProperty( "keyStorePass" ) != null){
-                            keyStore.load( keyStoreIS, sslConfig.getProperty( "keyStorePass" ).toCharArray() );
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug( "Keystore has " + keyStore.size() + " keys" );
+                        final InputStream keyStoreIS = new FileInputStream( sslConfig.getProperty( "keyStorePath" ) );
+                        try {
+                            if (sslConfig.getProperty( "keyStorePass" ) != null){
+                                keyStore.load( keyStoreIS, sslConfig.getProperty( "keyStorePass" ).toCharArray() );
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug( "Keystore has " + keyStore.size() + " keys" );
+                                }
+                                KeyManagerFactory keyManager = KeyManagerFactory.getInstance(sslConfig.getProperty( "keyManagerType", "SunX509"));
+                                keyManager.init(keyStore, sslConfig.getProperty("certificatePassword").toCharArray());
+                                sslContext.init(keyManager.getKeyManagers(), null, null);
                             }
-                            KeyManagerFactory keyManager = KeyManagerFactory.getInstance(sslConfig.getProperty( "keyManagerType", "SunX509"));
-                            keyManager.init(keyStore, sslConfig.getProperty("certificatePassword").toCharArray());
-                            sslContext.init(keyManager.getKeyManagers(), null, null);
+                        } finally {
+                            keyStoreIS.close();
                         }
                     }
                 }
