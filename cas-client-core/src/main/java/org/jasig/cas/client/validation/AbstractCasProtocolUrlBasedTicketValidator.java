@@ -44,6 +44,6 @@ public abstract class AbstractCasProtocolUrlBasedTicketValidator extends Abstrac
      * Retrieves the response from the server by opening a connection and merely reading the response.
      */
     protected final String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-        return CommonUtils.getResponseFromServer(validationUrl, this.hostnameVerifier, this.sslConfig, getEncoding());
+        return CommonUtils.getResponseFromServer(validationUrl, this.hostnameVerifier, this.getSslConfig(), getEncoding());
     }
 }

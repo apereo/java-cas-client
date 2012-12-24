@@ -19,6 +19,7 @@
 
 package org.jasig.cas.client.validation;
 
+import org.apache.commons.io.IOUtils;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
@@ -88,21 +89,24 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * Gets the ssl config to use for HTTPS connections
      * if one is configured for this filter.
      * @param filterConfig Servlet filter configuration.
-     * @return Properties
+     * @return Properties that can contains key/trust info for Client Side Certificates
      */
     protected Properties getSslConfig(final FilterConfig filterConfig) {
         final Properties properties = new Properties();
         final String fileName = getPropertyFromInitParams(filterConfig, "sslConfigFile", null);	
         if(fileName != null) {
             try {
-                final FileInputStream fis = new FileInputStream(fileName);
+                FileInputStream fis = null;
                 try {
+                    fis = new FileInputStream(fileName);
                     properties.load(fis);
                     log.trace("Loaded " + properties.size() + " entries from " + fileName);	
                 } finally {
-                    fis.close();
+                    if(fis != null) {
+                        IOUtils.closeQuietly(fis);
+                    }
                 }
-            } catch(java.io.IOException ioe) {
+            } catch(final IOException ioe) {
                 log.warn(ioe, ioe);
             }
         }

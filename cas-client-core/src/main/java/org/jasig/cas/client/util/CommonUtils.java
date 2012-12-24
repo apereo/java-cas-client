@@ -19,6 +19,7 @@
 
 package org.jasig.cas.client.util;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
@@ -347,7 +348,7 @@ public final class CommonUtils {
      * @return the response.
      */
     public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
-        return getResponseFromServer(constructedUrl, HttpsURLConnection.getDefaultHostnameVerifier(), null, encoding);
+        return getResponseFromServer(constructedUrl, HttpsURLConnection.getDefaultHostnameVerifier(), new Properties(), encoding);
     }
 
     /**
@@ -355,6 +356,7 @@ public final class CommonUtils {
      *
      * @param constructedUrl the url to contact.
      * @param hostnameVerifier Host name verifier to use for HTTPS connections.
+     * @param sslConfig Properties that can contains key/trust info for Client Side Certificates
      * @param encoding the encoding to use.
      * @return the response.
      */
@@ -417,36 +419,35 @@ public final class CommonUtils {
      * @param sslConfig {@link Properties} 
      * @return the {@link SSLSocketFactory}
      */
-    public static SSLSocketFactory createSslSocketFactory(Properties sslConfig) {
-        if (sslConfig != null ) {
-            try {
-                // TLS, SSL, SSLv3
-                final SSLContext sslContext = SSLContext.getInstance( sslConfig.getProperty( "protocol", "SSL" ) );
+    public static SSLSocketFactory createSslSocketFactory(final Properties sslConfig) {
+        try {
+            // TLS, SSL, SSLv3
+            final SSLContext sslContext = SSLContext.getInstance(sslConfig.getProperty("protocol", "SSL"));
 
-                if (sslConfig.getProperty( "keyStoreType" ) != null) {
-                    final KeyStore keyStore = KeyStore.getInstance( sslConfig.getProperty( "keyStoreType" ) );
-                    if (sslConfig.getProperty( "keyStorePath" ) != null) {
-                        final InputStream keyStoreIS = new FileInputStream( sslConfig.getProperty( "keyStorePath" ) );
-                        try {
-                            if (sslConfig.getProperty( "keyStorePass" ) != null){
-                                keyStore.load( keyStoreIS, sslConfig.getProperty( "keyStorePass" ).toCharArray() );
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug( "Keystore has " + keyStore.size() + " keys" );
-                                }
-                                KeyManagerFactory keyManager = KeyManagerFactory.getInstance(sslConfig.getProperty( "keyManagerType", "SunX509"));
-                                keyManager.init(keyStore, sslConfig.getProperty("certificatePassword").toCharArray());
-                                sslContext.init(keyManager.getKeyManagers(), null, null);
-                            }
-                        } finally {
-                            keyStoreIS.close();
+            if (sslConfig.getProperty("keyStoreType") != null) {
+                final KeyStore keyStore = KeyStore.getInstance(sslConfig.getProperty("keyStoreType"));
+                if (sslConfig.getProperty("keyStorePath") != null) {
+                    InputStream keyStoreIS = null;
+                    try {
+                        keyStoreIS = new FileInputStream(sslConfig.getProperty("keyStorePath"));
+                        if (sslConfig.getProperty( "keyStorePass" ) != null){
+                            keyStore.load(keyStoreIS, sslConfig.getProperty("keyStorePass").toCharArray());
+                            LOG.debug("Keystore has " + keyStore.size() + " keys");
+                            KeyManagerFactory keyManager = KeyManagerFactory.getInstance(sslConfig.getProperty("keyManagerType", "SunX509"));
+                            keyManager.init(keyStore, sslConfig.getProperty("certificatePassword").toCharArray());
+                            sslContext.init(keyManager.getKeyManagers(), null, null);
+                        }
+                    } finally {
+                        if(keyStoreIS != null) {
+                            IOUtils.closeQuietly(keyStoreIS);
                         }
                     }
                 }
-
-                return sslContext.getSocketFactory();
-            } catch (final Exception e) {
-                LOG.error(e.getMessage(), e);
             }
+
+            return sslContext.getSocketFactory();
+        } catch (final Exception e) {
+            LOG.error(e.getMessage(), e);
         }
         return null;
     }

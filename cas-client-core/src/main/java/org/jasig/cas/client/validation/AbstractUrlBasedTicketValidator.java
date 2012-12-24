@@ -50,7 +50,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     /**
      * Properties file that can contains key/trust info for Client Side Certificates
      */
-    protected Properties sslConfig; 
+    private Properties sslConfig; 
    
     /**
      * Hostname verifier used when making an SSL request to the CAS server.
@@ -236,6 +236,10 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     public final void setSslConfig(final Properties config) {
         this.sslConfig = config;
+    }
+
+    protected final Properties getSslConfig() {
+        return this.sslConfig;
     }
     
     public final void setHostnameVerifier(final HostnameVerifier verifier) {
