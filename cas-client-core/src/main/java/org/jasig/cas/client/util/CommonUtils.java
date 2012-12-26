@@ -365,18 +365,7 @@ public final class CommonUtils {
         URLConnection conn = null;
         try {
             conn = constructedUrl.openConnection();
-            if (conn instanceof HttpsURLConnection) {
-                final HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
-                final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
-                if (socketFactory != null) {
-                    httpsConnection.setSSLSocketFactory(socketFactory);
-                }
-                if (hostnameVerifier != null) {
-                    httpsConnection.setHostnameVerifier(hostnameVerifier);
-                } else {
-                    httpsConnection.setHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier());
-                }
-            }
+            configureHttpsConnection(conn,sslConfig,hostnameVerifier);
             final BufferedReader in;
 
             if (CommonUtils.isEmpty(encoding)) {
@@ -403,6 +392,29 @@ public final class CommonUtils {
         }
 
     }
+
+    /**
+     * Configures the connection with specific settings for secure http connections
+     *
+     * @param conn the http connection
+     * @param sslConfig Properties that can contains key/trust info for Client Side Certificates
+     * @param hostnameVerifier Host name verifier to use for HTTPS connections.
+     */
+    public static void configureHttpsConnection(final URLConnection conn, final Properties sslConfig, final HostnameVerifier hostnameVerifier) {
+        if (conn instanceof HttpsURLConnection) {
+            final HttpsURLConnection httpsConnection = (HttpsURLConnection)conn;
+            final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
+            if (socketFactory != null) {
+                httpsConnection.setSSLSocketFactory(socketFactory);
+            }
+            if (hostnameVerifier != null) {
+                httpsConnection.setHostnameVerifier(hostnameVerifier);
+            } else {
+                httpsConnection.setHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier());
+            }
+        }
+    }
+
 
     /**
      * Creates a {@link SSLSocketFactory} based on the configuration specified
