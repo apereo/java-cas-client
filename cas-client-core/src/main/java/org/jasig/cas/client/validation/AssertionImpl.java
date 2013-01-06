@@ -121,4 +121,13 @@ public final class AssertionImpl implements Assertion {
     public AttributePrincipal getPrincipal() {
         return this.principal;
     }
+
+    public boolean isValid() {
+        if (this.validFromDate == null) {
+            return true;
+        }
+
+        final Date now = new Date();
+        return this.validFromDate.before(now) && (this.validUntilDate == null || this.validUntilDate.after(now));
+    }
 }
