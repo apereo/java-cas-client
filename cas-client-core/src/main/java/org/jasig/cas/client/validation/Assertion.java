@@ -69,4 +69,12 @@ public interface Assertion extends Serializable {
      * @return the principal.
      */
     AttributePrincipal getPrincipal();
+
+    /**
+     * Determines whether an Assertion is considered usable or not.  A naive implementation may just check the date validity.
+     *
+     * @return true if its valid, false otherwise.
+     * @since 3.3.0 (though in 3.3.0, no one actually calls this)
+     */
+    boolean isValid();
 }
