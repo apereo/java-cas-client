@@ -49,7 +49,7 @@ import org.jasig.cas.client.util.ReflectUtils;
  */
 public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketValidationFilter {
 
-    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyGrantingTicketStorageClass", "proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl", "millisBetweenCleanUps", "hostnameVerifier", "encoding", "config"};
+    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyGrantingTicketStorageClass", "proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl", "millisBetweenCleanUps", "hostnameVerifier", "encoding", "config", "ticketValidatorClass"};
 
     private static final int DEFAULT_MILLIS_BETWEEN_CLEANUPS = 60 * 1000;
 
@@ -113,6 +113,14 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         this.timer.schedule(this.timerTask, this.millisBetweenCleanUps, this.millisBetweenCleanUps);
     }
 
+    private <T> T createNewTicketValidator(final String ticketValidatorClass, final String casServerUrlPrefix, final Class<T> clazz) {
+        if (CommonUtils.isBlank(ticketValidatorClass)) {
+            return ReflectUtils.newInstance(clazz, casServerUrlPrefix);
+        }
+
+        return ReflectUtils.newInstance(ticketValidatorClass, casServerUrlPrefix);
+    }
+
     /**
      * Constructs a Cas20ServiceTicketValidator or a Cas20ProxyTicketValidator based on supplied parameters.
      *
@@ -123,15 +131,16 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         final String allowAnyProxy = getPropertyFromInitParams(filterConfig, "acceptAnyProxy", null);
         final String allowedProxyChains = getPropertyFromInitParams(filterConfig, "allowedProxyChains", null);
         final String casServerUrlPrefix = getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null);
+        final String ticketValidatorClass = getPropertyFromInitParams(filterConfig, "ticketValidatorClass", null);
         final Cas20ServiceTicketValidator validator;
 
         if (CommonUtils.isNotBlank(allowAnyProxy) || CommonUtils.isNotBlank(allowedProxyChains)) {
-            final Cas20ProxyTicketValidator v = new Cas20ProxyTicketValidator(casServerUrlPrefix);
+            final Cas20ProxyTicketValidator v = createNewTicketValidator(ticketValidatorClass, casServerUrlPrefix, Cas20ProxyTicketValidator.class);
             v.setAcceptAnyProxy(parseBoolean(allowAnyProxy));
             v.setAllowedProxyChains(CommonUtils.createProxyList(allowedProxyChains));
             validator = v;
         } else {
-            validator = new Cas20ServiceTicketValidator(casServerUrlPrefix);
+            validator = createNewTicketValidator(ticketValidatorClass, casServerUrlPrefix, Cas20ServiceTicketValidator.class);
         }
         validator.setProxyCallbackUrl(getPropertyFromInitParams(filterConfig, "proxyCallbackUrl", null));
         validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
