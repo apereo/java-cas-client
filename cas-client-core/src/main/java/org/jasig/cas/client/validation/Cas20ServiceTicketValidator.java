@@ -27,7 +27,16 @@ import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -128,27 +137,18 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @return the map of attributes.
      */
     protected Map<String,Object> extractCustomAttributes(final String xml) {
-
-    	if (!xml.contains("<cas:attributes>")) {
-    		return new HashMap<String, Object>();
-    	}
-
-        final Map<String, Object> attributes = new HashMap<String, Object>();
-
+        final SAXParserFactory spf = SAXParserFactory.newInstance();
+        spf.setNamespaceAware(true);
+        spf.setValidating(false);
         try {
-            NodeList nodeList = XmlUtils.getNodeListForElements(xml,"cas:attributes");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                final String nodeName = nodeList.item(i).getNodeName();
-                final int beginIndex = nodeName.indexOf(":") + 1;
-                final int endIndex = nodeList.item(i).getNodeName().length();
-
-                final String attributeName = nodeName.substring(beginIndex, endIndex); // remove the "cas:" prefix from node name
-                final Object attributeValue = nodeList.item(i).getTextContent();
-                attributes.put(attributeName, attributeValue);
-            }
-            return attributes;
-
-        } catch (Exception e) {
+            final SAXParser saxParser = spf.newSAXParser();
+            final XMLReader xmlReader = saxParser.getXMLReader();
+            final CustomAttributeHandler handler = new CustomAttributeHandler();
+            xmlReader.setContentHandler(handler);
+            xmlReader.parse(new InputSource(new StringReader(xml)));
+            return handler.getAttributes();
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
             return Collections.emptyMap();
         }
     }
@@ -186,5 +186,52 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
 
     protected final ProxyRetriever getProxyRetriever() {
         return this.proxyRetriever;
+    }
+
+    private class CustomAttributeHandler extends DefaultHandler {
+
+        private Map<String, Object> attributes;
+
+        private boolean foundAttributes;
+
+        private String currentAttribute;
+
+        private StringBuilder value;
+
+        @Override
+        public void startDocument() throws SAXException {
+            this.attributes = new HashMap<String, Object>();
+        }
+
+        @Override
+        public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attributes) throws SAXException {
+            if ("attributes".equals(localName)) {
+                this.foundAttributes = true;
+            } else if (this.foundAttributes) {
+                this.value = new StringBuilder();
+                this.currentAttribute = localName;
+            }
+        }
+
+        @Override
+        public void characters(final char[] chars, final int start, final int length) throws SAXException {
+            if (this.currentAttribute != null) {
+                value.append(chars, start, length);
+            }
+        }
+
+        @Override
+        public void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException {
+            if ("attributes".equals(localName)) {
+                this.foundAttributes = false;
+                this.currentAttribute = null;
+            } else if (this.foundAttributes) {
+                this.attributes.put(currentAttribute, value.toString());
+            }
+        }
+
+        public Map<String, Object> getAttributes() {
+            return this.attributes;
+        }
     }
 }
