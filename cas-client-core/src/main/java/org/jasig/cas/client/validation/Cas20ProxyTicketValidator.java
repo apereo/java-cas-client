@@ -75,20 +75,20 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         this.allowedProxyChains = allowedProxyChains;
     }
 
-    protected boolean isAcceptAnyProxy() {
+    protected final boolean isAcceptAnyProxy() {
         return this.acceptAnyProxy;
     }
 
-    protected boolean isAllowEmptyProxyChain() {
+    protected final boolean isAllowEmptyProxyChain() {
       return this.allowEmptyProxyChain;
     }
 
     /**
      * Set to determine whether empty proxy chains are allowed.
      * @see #customParseResponse(String, Assertion)
-     * @param allowEmptyProxyChain
+     * @param allowEmptyProxyChain whether to allow empty proxy chains or not.  True if so, false otherwise.
      */
-    public void setAllowEmptyProxyChain(final boolean allowEmptyProxyChain) {
+    public final void setAllowEmptyProxyChain(final boolean allowEmptyProxyChain) {
       this.allowEmptyProxyChain = allowEmptyProxyChain;
     }
 }
