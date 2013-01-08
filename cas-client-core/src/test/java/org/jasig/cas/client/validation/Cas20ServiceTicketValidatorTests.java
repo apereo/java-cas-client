@@ -139,13 +139,14 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
             + USERNAME
             + "</cas:user><cas:proxyGrantingTicket>"
             + PGTIOU
-            + "</cas:proxyGrantingTicket><cas:attributes><cas:password>test</cas:password><cas:eduPersonId>id</cas:eduPersonId></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
+            + "</cas:proxyGrantingTicket><cas:attributes><cas:password>test</cas:password><cas:eduPersonId>id</cas:eduPersonId><cas:longAttribute>test1\n\ntest</cas:longAttribute></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
         
         server.content = RESPONSE.getBytes(server.encoding);
         final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
         assertEquals("test", assertion.getPrincipal().getAttributes().get("password"));
         assertEquals("id", assertion.getPrincipal().getAttributes().get("eduPersonId"));
+        assertEquals("test1\n\ntest", assertion.getPrincipal().getAttributes().get("longAttribute"));
         //assertEquals(PGT, assertion.getProxyGrantingTicketId());
     }
 
