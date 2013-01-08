@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.cas.client.util.CommonUtils;
 
 /**
  * Implementation of {@link ProxyGrantingTicketStorage} that is backed by a
@@ -82,6 +83,10 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * Its removed after retrieval.
      */
     public String retrieve(final String proxyGrantingTicketIou) {
+        if (CommonUtils.isBlank(proxyGrantingTicketIou)) {
+            return null;
+        }
+
         final ProxyGrantingTicketHolder holder = this.cache.get(proxyGrantingTicketIou);
 
         if (holder == null) {

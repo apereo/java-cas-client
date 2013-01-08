@@ -20,25 +20,37 @@
 package org.jasig.cas.client.proxy;
 
 import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Unit test for {@link ProxyGrantingTicketStorageImpl}
  * 
  * @author Brad Cupit (brad [at] lsu {dot} edu)
  */
-public class ProxyGrantingTicketStorageImplTest extends TestCase {
-    public void testCleanUp() throws Exception {
+public class ProxyGrantingTicketStorageImplTest {
+
+    private static final int TIME_OUT = 250;
+
+    private ProxyGrantingTicketStorage storage = new ProxyGrantingTicketStorageImpl(TIME_OUT);
+
+    @Test
+    public void cleanUp() throws Exception {
         String proxyGrantingTicketIou = "proxyGrantingTicketIou";
         
         int timeout = 250;
-        ProxyGrantingTicketStorageImpl storage = new ProxyGrantingTicketStorageImpl(timeout);
-        storage.save(proxyGrantingTicketIou, "proxyGrantingTicket");
+        this.storage.save(proxyGrantingTicketIou, "proxyGrantingTicket");
         
         // sleep long enough for the ticket to timeout
         Thread.sleep(timeout * 2);
         
-        storage.cleanUp();
+        this.storage.cleanUp();
         
-        assertNull(storage.retrieve(proxyGrantingTicketIou));
+        Assert.assertNull(this.storage.retrieve(proxyGrantingTicketIou));
+    }
+
+    @Test
+    public void nullPGTIOU() {
+        Assert.assertNull(this.storage.retrieve(null));
     }
 }
