@@ -36,6 +36,7 @@ import org.opensaml.xml.io.UnmarshallerFactory;
 import org.opensaml.xml.io.UnmarshallingException;
 import org.opensaml.xml.parse.BasicParserPool;
 import org.opensaml.xml.parse.XMLParserException;
+import org.opensaml.xml.schema.XSAny;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -220,7 +221,11 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     private List<?> getValuesFrom(final Attribute attribute) {
         final List<Object> list = new ArrayList<Object>();
         for (final Object o : attribute.getAttributeValues()) {
-            list.add(o.toString());
+            if (o instanceof XSAny) {
+                list.add(((XSAny) o).getTextContent());
+            } else {
+                list.add(o.toString());
+            }
         }
         return list;
     }
