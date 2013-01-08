@@ -36,10 +36,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of the TicketValidator that will validate Service Tickets in compliance with the CAS 2.
@@ -226,7 +223,21 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
                 this.foundAttributes = false;
                 this.currentAttribute = null;
             } else if (this.foundAttributes) {
-                this.attributes.put(currentAttribute, value.toString());
+                final Object o = this.attributes.get(this.currentAttribute);
+
+                if (o == null) {
+                    this.attributes.put(this.currentAttribute, this.value.toString());
+                } else {
+                    final List<Object> items;
+                    if (o instanceof List) {
+                        items = (List<Object>) o;
+                    } else {
+                        items = new LinkedList<Object>();
+                        items.add(o);
+                        this.attributes.put(this.currentAttribute, items);
+                    }
+                    items.add(this.value.toString());
+                }
             }
         }
 
