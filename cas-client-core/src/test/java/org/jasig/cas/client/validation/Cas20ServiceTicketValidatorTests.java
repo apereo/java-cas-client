@@ -139,13 +139,20 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
             + USERNAME
             + "</cas:user><cas:proxyGrantingTicket>"
             + PGTIOU
-            + "</cas:proxyGrantingTicket><cas:attributes><cas:password>test</cas:password><cas:eduPersonId>id</cas:eduPersonId></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
+            + "</cas:proxyGrantingTicket><cas:attributes><cas:password>test</cas:password><cas:eduPersonId>id</cas:eduPersonId><cas:longAttribute>test1\n\ntest</cas:longAttribute><cas:multivaluedAttribute>value1</cas:multivaluedAttribute><cas:multivaluedAttribute>value2</cas:multivaluedAttribute></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
         
         server.content = RESPONSE.getBytes(server.encoding);
         final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
         assertEquals("test", assertion.getPrincipal().getAttributes().get("password"));
         assertEquals("id", assertion.getPrincipal().getAttributes().get("eduPersonId"));
+        assertEquals("test1\n\ntest", assertion.getPrincipal().getAttributes().get("longAttribute"));
+        try {
+            List<?> multivalued = (List<?>) assertion.getPrincipal().getAttributes().get("multivaluedAttribute");
+            assertArrayEquals(new String[]{"value1", "value2"}, multivalued.toArray());
+        } catch (Exception e) {
+            fail("'multivaluedAttribute' attribute expected as List<Object> object.");
+        }
         //assertEquals(PGT, assertion.getProxyGrantingTicketId());
     }
 
