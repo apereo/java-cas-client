@@ -22,10 +22,10 @@ package org.jasig.cas.client.session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +41,7 @@ import java.util.List;
 public final class SingleSignOutHandler {
 
     /** Logger instance */
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** Mapping of token IDs and session IDs to HTTP sessions */
     private SessionMappingStorage sessionMappingStorage = new HashMapBackedSessionMappingStorage();
@@ -131,9 +131,7 @@ public final class SingleSignOutHandler {
         final HttpSession session = request.getSession(true);
 
         final String token = CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters);
-        if (log.isDebugEnabled()) {
-            log.debug("Recording session for token " + token);
-        }
+        logger.debug("Recording session for token {}", token);
 
         try {
             this.sessionMappingStorage.removeBySessionById(session.getId());
@@ -150,10 +148,8 @@ public final class SingleSignOutHandler {
      */
     public void destroySession(final HttpServletRequest request) {
         final String logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
-        if (log.isTraceEnabled()) {
-            log.trace ("Logout request:\n" + logoutMessage);
-        }
-        
+        logger.trace ("Logout request:\n{}", logoutMessage);
+
         final String token = XmlUtils.getTextForElement(logoutMessage, "SessionIndex");
         if (CommonUtils.isNotBlank(token)) {
             final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(token);
@@ -161,13 +157,12 @@ public final class SingleSignOutHandler {
             if (session != null) {
                 String sessionID = session.getId();
 
-                if (log.isDebugEnabled()) {
-                    log.debug ("Invalidating session [" + sessionID + "] for token [" + token + "]");
-                }
+                 logger.debug ("Invalidating session [{}] for token [{}]", sessionID, token);
+
                 try {
                     session.invalidate();
                 } catch (final IllegalStateException e) {
-                    log.debug("Error invalidating session.", e);
+                    logger.debug("Error invalidating session.", e);
                 }
             }
         }

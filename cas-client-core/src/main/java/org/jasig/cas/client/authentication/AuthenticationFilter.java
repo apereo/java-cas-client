@@ -73,11 +73,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
             setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
-            log.trace("Loaded CasServerLoginUrl parameter: " + this.casServerLoginUrl);
+            logger.trace("Loaded CasServerLoginUrl parameter: {}", this.casServerLoginUrl);
             setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
-            log.trace("Loaded renew parameter: " + this.renew);
+            logger.trace("Loaded renew parameter: {}", this.renew);
             setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
-            log.trace("Loaded gateway parameter: " + this.gateway);
+            logger.trace("Loaded gateway parameter: {}", this.gateway);
 
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
@@ -85,7 +85,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
                 try {
                     this.gatewayStorage = (GatewayResolver) Class.forName(gatewayStorageClass).newInstance();
                 } catch (final Exception e) {
-                    log.error(e,e);
+                    logger.error(e.getMessage(),e);
                     throw new ServletException(e);
                 }
             }
@@ -119,23 +119,19 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
         final String modifiedServiceUrl;
 
-        log.debug("no ticket and no assertion found");
+        logger.debug("no ticket and no assertion found");
         if (this.gateway) {
-            log.debug("setting gateway attribute in session");
+            logger.debug("setting gateway attribute in session");
             modifiedServiceUrl = this.gatewayStorage.storeGatewayInformation(request, serviceUrl);
         } else {
             modifiedServiceUrl = serviceUrl;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Constructed service url: " + modifiedServiceUrl);
-        }
+         logger.debug("Constructed service url: {}", modifiedServiceUrl);
 
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
-        if (log.isDebugEnabled()) {
-            log.debug("redirecting to \"" + urlToRedirectTo + "\"");
-        }
+        logger.debug("redirecting to \"{}\"", urlToRedirectTo);
 
         response.sendRedirect(urlToRedirectTo);
     }

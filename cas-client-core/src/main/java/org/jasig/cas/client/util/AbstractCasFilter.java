@@ -19,8 +19,8 @@
 
 package org.jasig.cas.client.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -46,9 +46,6 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     /** Represents the constant for where the assertion will be located in memory. */
     public static final String CONST_CAS_ASSERTION = "_const_cas_assertion_";
 
-    /** Instance of commons logging for logging purposes. */
-    protected final Log log = LogFactory.getLog(getClass());
-
     /** Defines the parameter to look for for the artifact. */
     private String artifactParameterName = "ticket";
 
@@ -69,15 +66,15 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     public final void init(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             setServerName(getPropertyFromInitParams(filterConfig, "serverName", null));
-            log.trace("Loading serverName property: " + this.serverName);
+            logger.trace("Loading serverName property: {}", this.serverName);
             setService(getPropertyFromInitParams(filterConfig, "service", null));
-            log.trace("Loading service property: " + this.service);
+            logger.trace("Loading service property: {}", this.service);
             setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
-            log.trace("Loading artifact parameter name property: " + this.artifactParameterName);
+            logger.trace("Loading artifact parameter name property: {}", this.artifactParameterName);
             setServiceParameterName(getPropertyFromInitParams(filterConfig, "serviceParameterName", "service"));
-            log.trace("Loading serviceParameterName property: " + this.serviceParameterName);
+            logger.trace("Loading serviceParameterName property: {} ", this.serviceParameterName);
             setEncodeServiceUrl(parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
-            log.trace("Loading encodeServiceUrl property: " + this.encodeServiceUrl);
+            logger.trace("Loading encodeServiceUrl property: {}", this.encodeServiceUrl);
 
             initInternal(filterConfig);
         }
@@ -122,7 +119,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     public final void setServerName(final String serverName) {
         if (serverName != null && serverName.endsWith("/")) {
             this.serverName = serverName.substring(0, serverName.length()-1);
-            log.info(String.format("Eliminated extra slash from serverName [%s].  It is now [%s]", serverName, this.serverName));
+            logger.info("Eliminated extra slash from serverName [{}].  It is now [{}]", serverName, this.serverName);
         } else {
             this.serverName = serverName;
         }
