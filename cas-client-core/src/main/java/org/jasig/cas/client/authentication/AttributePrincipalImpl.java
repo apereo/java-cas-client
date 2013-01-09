@@ -19,10 +19,10 @@
 
 package org.jasig.cas.client.authentication;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Map;
@@ -35,8 +35,8 @@ import java.util.Map;
  * @since 3.1
  */
 public class AttributePrincipalImpl extends SimplePrincipal implements AttributePrincipal {
-	
-    private static final Log LOG = LogFactory.getLog(AttributePrincipalImpl.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttributePrincipalImpl.class);
 
     /** Unique Id for Serialization */
     private static final long serialVersionUID = -1443182634624927187L;
@@ -106,7 +106,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
             return this.proxyRetriever.getProxyTicketIdFor(this.proxyGrantingTicket, service);
         }
         
-       	LOG.debug("No ProxyGrantingTicket was supplied, so no Proxy Ticket can be retrieved.");
+       	LOGGER.debug("No ProxyGrantingTicket was supplied, so no Proxy Ticket can be retrieved.");
         return null;
     }
 }

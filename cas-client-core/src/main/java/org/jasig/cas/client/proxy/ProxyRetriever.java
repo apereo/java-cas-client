@@ -38,6 +38,5 @@ public interface ProxyRetriever extends Serializable {
      * @param targetService         the service we want to proxy.
      * @return the ProxyTicket Id if Granted, null otherwise.
      */
-    String getProxyTicketIdFor(String proxyGrantingTicketId,
-                               String targetService);
+    String getProxyTicketIdFor(String proxyGrantingTicketId, String targetService);
 }

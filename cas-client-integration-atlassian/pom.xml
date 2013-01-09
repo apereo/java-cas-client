@@ -531,7 +531,11 @@
         <exclusion>
           <groupId>jndi</groupId>
           <artifactId>jndi</artifactId>
-        </exclusion>               
+        </exclusion>
+          <exclusion>
+              <artifactId>commons-logging</artifactId>
+              <groupId>commons-logging</groupId>
+          </exclusion>
       </exclusions>
     </dependency>
     <dependency>

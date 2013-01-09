@@ -36,8 +36,8 @@ public class Saml11AuthenticationFilter extends AuthenticationFilter {
     protected final void initInternal(final FilterConfig filterConfig) throws ServletException {
         super.initInternal(filterConfig);
 
-        log.warn("SAML1.1 compliance requires the [artifactParameterName] and [serviceParameterName] to be set to specified values.");
-        log.warn("This filter will overwrite any user-provided values (if any are provided)");
+        logger.warn("SAML1.1 compliance requires the [artifactParameterName] and [serviceParameterName] to be set to specified values.");
+        logger.warn("This filter will overwrite any user-provided values (if any are provided)");
 
         setArtifactParameterName("SAMLart");
         setServiceParameterName("TARGET");

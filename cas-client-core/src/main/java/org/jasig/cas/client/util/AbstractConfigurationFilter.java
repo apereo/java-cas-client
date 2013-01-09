@@ -24,8 +24,8 @@ import javax.naming.NamingException;
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstracts out the ability to configure the filters from the initial properties provided.
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractConfigurationFilter implements Filter {
 	
-	protected final Log log = LogFactory.getLog(getClass());
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private boolean ignoreInitConfiguration = false;
 
@@ -68,21 +68,21 @@ public abstract class AbstractConfigurationFilter implements Filter {
         final String value = filterConfig.getInitParameter(propertyName);
 
         if (CommonUtils.isNotBlank(value)) {
-            log.info("Property [" + propertyName + "] loaded from FilterConfig.getInitParameter with value [" + value + "]");
+            logger.info("Property [{}] loaded from FilterConfig.getInitParameter with value [{}]", propertyName, value);
             return value;
         }
 
         final String value2 = filterConfig.getServletContext().getInitParameter(propertyName);
 
         if (CommonUtils.isNotBlank(value2)) {
-            log.info("Property [" + propertyName + "] loaded from ServletContext.getInitParameter with value [" + value2 + "]");
+            logger.info("Property [{}] loaded from ServletContext.getInitParameter with value [{}]", propertyName, value2);
             return value2;
         }
         InitialContext context;
         try {
          context = new InitialContext();
         } catch (final NamingException e) {
-        	log.warn(e,e);
+        	logger.warn(e.getMessage(), e);
         	return defaultValue;
         }
         
@@ -91,18 +91,18 @@ public abstract class AbstractConfigurationFilter implements Filter {
         final String value3 = loadFromContext(context, "java:comp/env/cas/" + shortName + "/" + propertyName);
         
         if (CommonUtils.isNotBlank(value3)) {
-            log.info("Property [" + propertyName + "] loaded from JNDI Filter Specific Property with value [" + value3 + "]");
+            logger.info("Property [{}] loaded from JNDI Filter Specific Property with value [{}]", propertyName, value3);
         	return value3;
         }
         
         final String value4 = loadFromContext(context, "java:comp/env/cas/" + propertyName); 
         
         if (CommonUtils.isNotBlank(value4)) {
-            log.info("Property [" + propertyName + "] loaded from JNDI with value [" + value4 + "]");
+            logger.info("Property [{}] loaded from JNDI with value [{}]", propertyName, value4);
         	return value4;
         }
 
-        log.info("Property [" + propertyName + "] not found.  Using default value [" + defaultValue + "]");
+        logger.info("Property [{}] not found.  Using default value [{}]", propertyName, defaultValue);
         return defaultValue;
     }
     

@@ -19,9 +19,9 @@
 
 package org.jasig.cas.client.validation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -44,7 +44,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     /**
      * Commons Logging instance.
      */
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
    
     /**
      * Hostname verifier used when making an SSL request to the CAS server.
@@ -113,7 +113,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     protected final String constructValidationUrl(final String ticket, final String serviceUrl) {
         final Map<String,String> urlParameters = new HashMap<String,String>();
 
-        log.debug("Placing URL parameters in map.");
+        logger.debug("Placing URL parameters in map.");
         urlParameters.put("ticket", ticket);
         urlParameters.put("service", encodeUrl(serviceUrl));
 
@@ -121,10 +121,10 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
             urlParameters.put("renew", "true");
         }
 
-        log.debug("Calling template URL attribute map.");
+        logger.debug("Calling template URL attribute map.");
         populateUrlAttributeMap(urlParameters);
 
-        log.debug("Loading custom parameters from configuration.");
+        logger.debug("Loading custom parameters from configuration.");
         if (this.customParameters != null) {
             urlParameters.putAll(this.customParameters);
         }
@@ -198,21 +198,17 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
 
         final String validationUrl = constructValidationUrl(ticket, service);
-        if (log.isDebugEnabled()) {
-            log.debug("Constructing validation url: " + validationUrl);
-        }
+         logger.debug("Constructing validation url: {}", validationUrl);
 
         try {
-        	log.debug("Retrieving response from server.");
+        	logger.debug("Retrieving response from server.");
             final String serverResponse = retrieveResponseFromServer(new URL(validationUrl), ticket);
 
             if (serverResponse == null) {
                 throw new TicketValidationException("The CAS server returned no response.");
             }
             
-            if (log.isDebugEnabled()) {
-            	log.debug("Server response: " + serverResponse);
-            }
+           	logger.debug("Server response: {}", serverResponse);
 
             return parseResponseFromServer(serverResponse);
         } catch (final MalformedURLException e) {

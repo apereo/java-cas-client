@@ -19,10 +19,10 @@
 
 package org.jasig.cas.client.proxy;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -48,7 +48,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
 	/**
      * Instance of Commons Logging.
      */
-    private final Log log = LogFactory.getLog(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Url to CAS server.
@@ -77,7 +77,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
         final String error = XmlUtils.getTextForElement(response, "proxyFailure");
 
         if (CommonUtils.isNotEmpty(error)) {
-            log.debug(error);
+            logger.debug(error);
             return null;
         }
 

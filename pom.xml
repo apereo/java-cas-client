@@ -162,24 +162,10 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>logkit</groupId>
-          <artifactId>logkit</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>avalon-framework</groupId>
-          <artifactId>avalon-framework</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -189,19 +175,20 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
     </dependency>
   </dependencies>
 
-  <modules>
-    <module>cas-client-core</module>
-    <module>cas-client-integration-atlassian</module>
-    <module>cas-client-integration-jboss</module>
-    <module>cas-client-support-distributed-ehcache</module>
-    <module>cas-client-support-distributed-memcached</module>
-    <module>cas-client-integration-tomcat-common</module>
-    <module>cas-client-integration-tomcat-v6</module>
-    <module>cas-client-integration-tomcat-v7</module>
-  </modules>
+    <modules>
+        <module>cas-client-core</module>
+        <module>cas-client-integration-atlassian</module>
+        <module>cas-client-integration-jboss</module>
+        <module>cas-client-support-distributed-ehcache</module>
+        <module>cas-client-support-distributed-memcached</module>
+        <module>cas-client-integration-tomcat-common</module>
+        <module>cas-client-integration-tomcat-v6</module>
+        <module>cas-client-integration-tomcat-v7</module>
+    </modules>
 
-  <properties>
-    <ehcache.version>2.2.0</ehcache.version>
-    <clover.version>3.0.2</clover.version>
-  </properties>
+    <properties>
+        <ehcache.version>2.2.0</ehcache.version>
+        <clover.version>3.0.2</clover.version>
+        <slf4j.version>1.7.1</slf4j.version>
+    </properties>
 </project>
