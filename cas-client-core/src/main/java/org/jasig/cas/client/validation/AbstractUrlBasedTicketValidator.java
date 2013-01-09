@@ -29,6 +29,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.net.ssl.HostnameVerifier;
 
@@ -45,6 +46,11 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      * Commons Logging instance.
      */
     protected final Log log = LogFactory.getLog(getClass());
+
+    /**
+     * Properties file that can contains key/trust info for Client Side Certificates
+     */
+    private Properties sslConfig; 
    
     /**
      * Hostname verifier used when making an SSL request to the CAS server.
@@ -226,6 +232,14 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     public final void setCustomParameters(final Map<String,String> customParameters) {
         this.customParameters = customParameters;
+    }
+
+    public final void setSslConfig(final Properties config) {
+        this.sslConfig = config;
+    }
+
+    protected final Properties getSslConfig() {
+        return this.sslConfig;
     }
     
     public final void setHostnameVerifier(final HostnameVerifier verifier) {

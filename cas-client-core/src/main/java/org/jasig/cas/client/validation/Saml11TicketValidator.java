@@ -47,6 +47,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * TicketValidator that can understand validating a SAML artifact.  This includes the SOAP request/response.
@@ -240,9 +241,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
         try {
             conn = (HttpURLConnection) validationUrl.openConnection();
-            if (this.hostnameVerifier != null && conn instanceof HttpsURLConnection) {
-                ((HttpsURLConnection)conn).setHostnameVerifier(this.hostnameVerifier);
-            }
+            CommonUtils.configureHttpsConnection(conn,this.getSslConfig(),this.hostnameVerifier);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "text/xml"); 
             conn.setRequestProperty("Content-Length", Integer.toString(MESSAGE_TO_SEND.length()));

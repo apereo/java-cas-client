@@ -161,6 +161,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
         validator.setCustomParameters(additionalParameters);
         validator.setHostnameVerifier(getHostnameVerifier(filterConfig));
+        validator.setSslConfig(getSslConfig(filterConfig));
 
         return validator;
     }
