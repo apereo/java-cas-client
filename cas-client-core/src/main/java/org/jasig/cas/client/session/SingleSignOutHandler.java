@@ -54,6 +54,8 @@ public final class SingleSignOutHandler {
 
     private boolean artifactParameterOverPost = false;
 
+    private boolean eagerlyCreateSessions = true;
+
     private List<String> safeParameters;
 
 
@@ -81,6 +83,10 @@ public final class SingleSignOutHandler {
      */
     public void setLogoutParameterName(final String name) {
         this.logoutParameterName = name;
+    }
+
+    public void setEagerlyCreateSessions(final boolean eagerlyCreateSessions) {
+        this.eagerlyCreateSessions = eagerlyCreateSessions;
     }
 
     /**
@@ -128,7 +134,12 @@ public final class SingleSignOutHandler {
      * @param request HTTP request containing an authentication token.
      */
     public void recordSession(final HttpServletRequest request) {
-        final HttpSession session = request.getSession(true);
+        final HttpSession session = request.getSession(this.eagerlyCreateSessions);
+
+        if (session == null) {
+            log.debug("No session currently exists (and none created).  Cannot record session information for single sign out.");
+            return;
+        }
 
         final String token = CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters);
         logger.debug("Recording session for token {}", token);
