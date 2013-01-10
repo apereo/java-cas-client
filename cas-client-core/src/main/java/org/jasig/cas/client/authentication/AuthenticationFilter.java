@@ -100,8 +100,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        final HttpSession session = request.getSession(false);
-        final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
+        final Assertion assertion = retrieveAssertion(request);
 
         if (assertion != null) {
             filterChain.doFilter(request, response);

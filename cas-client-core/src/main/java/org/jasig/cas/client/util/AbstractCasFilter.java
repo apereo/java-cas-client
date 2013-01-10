@@ -21,11 +21,13 @@ package org.jasig.cas.client.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.cas.client.validation.Assertion;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *  Abstract filter that contains code that is common to all CAS filters.
@@ -150,6 +152,29 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     public final String getServiceParameterName() {
         return this.serviceParameterName;
+    }
+
+    /**
+     * Template method to allow you to change how you retrieve the Assertion from request.
+     * <P>
+     * This implementation will look for the Assertion in the HTTPRequest attribute
+     * {@value #CONST_CAS_ASSERTION} and after that in the session.
+     *
+     * @param request the HTTP ServletRequest. CANNOT be NULL.
+     * @return the Assertion found (in request or session), null otherwise.
+     */
+    protected Assertion retrieveAssertion(HttpServletRequest request) {
+        final Object requestAssertion = request.getAttribute(CONST_CAS_ASSERTION);
+        if (requestAssertion instanceof Assertion) {
+            return (Assertion)requestAssertion;
+        }
+
+        final HttpSession session = request.getSession(false);
+        final Object sessionAssertion = (session != null) ? session.getAttribute(CONST_CAS_ASSERTION) : null;
+        if (sessionAssertion instanceof Assertion) {
+            return (Assertion)sessionAssertion;
+        }
+        return null;
     }
 
     /**
