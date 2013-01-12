@@ -26,13 +26,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.jasig.cas.client.validation.TicketValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Version-agnostic authenticator which encapsulates the core CAS workflow of
@@ -49,7 +49,7 @@ import org.jasig.cas.client.validation.TicketValidator;
 public final class AuthenticatorDelegate {
 
     /** Log instance */
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String serviceUrl;
     
@@ -86,19 +86,19 @@ public final class AuthenticatorDelegate {
             assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
         }
         if (assertion == null) {
-            log.debug("CAS assertion not found in session -- authentication required.");
+            logger.debug("CAS assertion not found in session -- authentication required.");
             final String token = request.getParameter(this.artifactParameterName);
             final String service = CommonUtils.constructServiceUrl(request, response, this.serviceUrl, this.serverName, this.artifactParameterName, true);
             if (CommonUtils.isBlank(token)) {
                 final String redirectUrl = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, this.serviceParameterName, service, false, false);
-                log.debug("Redirecting to " + redirectUrl);
+                logger.debug("Redirecting to {}", redirectUrl);
                 CommonUtils.sendRedirect(response, redirectUrl);
                 return null;
             }
             try {
-                log.debug("Attempting to validate " + token + " for " + service);
+                logger.debug("Attempting to validate {} for {}", token, service);
                 assertion = this.ticketValidator.validate(token, service);
-                log.debug("CAS authentication succeeded.");
+                logger.debug("CAS authentication succeeded.");
                 if (session == null) {
                     session = request.getSession(true);
                 }
@@ -110,7 +110,7 @@ public final class AuthenticatorDelegate {
         }
         Principal p = realm.authenticate(assertion.getPrincipal());
         if (p == null) {
-            log.debug(assertion.getPrincipal().getName() + " failed to authenticate to " + realm);
+            logger.debug("{} failed to authenticate to {}", assertion.getPrincipal().getName(), realm);
             setUnauthorized(response, null);
         }
         return p;

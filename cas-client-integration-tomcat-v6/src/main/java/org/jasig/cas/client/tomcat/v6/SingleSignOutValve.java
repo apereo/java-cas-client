@@ -64,7 +64,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
     public void start() throws LifecycleException {
         super.start();
         handler.init();
-        log.info("Startup completed.");
+        logger.info("Startup completed.");
     }
 
     /** {@inheritDoc} */
@@ -78,7 +78,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
             // Do not proceed up valve chain
             return;
         } else {
-            log.debug("Ignoring URI " + request.getRequestURI());
+            logger.debug("Ignoring URI {}", request.getRequestURI());
         }
         getNext().invoke(request, response);
     }
@@ -87,7 +87,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
     /** {@inheritDoc} */
     public void sessionEvent(final SessionEvent event) {
         if (Session.SESSION_DESTROYED_EVENT.equals(event.getType())) {
-            this.log.debug("Cleaning up SessionMappingStorage on destroySession event");
+            logger.debug("Cleaning up SessionMappingStorage on destroySession event");
 	        this.handler.getSessionMappingStorage().removeBySessionById(event.getSession().getId());
         }
     }

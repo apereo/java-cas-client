@@ -22,9 +22,9 @@ package org.jasig.cas.client.tomcat.v6;
 import java.security.Principal;
 
 import org.apache.catalina.realm.RealmBase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.tomcat.CasRealm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base <code>Realm</code> implementation for all CAS realms.
@@ -36,7 +36,7 @@ import org.jasig.cas.client.tomcat.CasRealm;
 public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
 
     /** Logger instance */
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
     /** {@inheritDoc} */

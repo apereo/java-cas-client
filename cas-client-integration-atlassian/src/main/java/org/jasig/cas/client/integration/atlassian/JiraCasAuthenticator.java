@@ -28,6 +28,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.Assertion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +50,7 @@ public final class JiraCasAuthenticator extends DefaultAuthenticator {
     /** JiraCasAuthenticator.java */
     private static final long serialVersionUID = 3452011252741183166L;
 
-    private static final Log LOG = LogFactory.getLog(JiraCasAuthenticator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JiraCasAuthenticator.class);
 
     @Override
     protected boolean authenticate(final Principal principal, final String password) throws AuthenticatorException {
@@ -60,7 +62,7 @@ public final class JiraCasAuthenticator extends DefaultAuthenticator {
         try {
             return UserManager.getInstance().getUser(username);
         } catch (final EntityNotFoundException e) {
-            LOG.warn("Could not find user '" + username + "' in UserManager : " + e);
+            LOGGER.warn("Could not find user '{}' in UserManager : {}", username, e);
         }
         return null;
     }
@@ -70,9 +72,7 @@ public final class JiraCasAuthenticator extends DefaultAuthenticator {
 
         // user already exists
         if (session.getAttribute(LOGGED_IN_KEY) != null) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Session found; user already logged in.");
-            }
+            LOGGER.debug("Session found; user already logged in.");
             return (Principal) session.getAttribute(LOGGED_IN_KEY);
         }
 
@@ -81,9 +81,7 @@ public final class JiraCasAuthenticator extends DefaultAuthenticator {
         if (assertion != null) {
             final Principal p = getUser(assertion.getPrincipal().getName());
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Logging in [" + p.getName() + "] from CAS.");
-            }
+            LOGGER.debug("Logging in [{}] from CAS.", p.getName());
 
             session.setAttribute(LOGGED_IN_KEY, p);
             session.setAttribute(LOGGED_OUT_KEY, null);
@@ -97,9 +95,7 @@ public final class JiraCasAuthenticator extends DefaultAuthenticator {
         final HttpSession session = request.getSession();
         final Principal p = (Principal) session.getAttribute(LOGGED_IN_KEY);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Logging out [" + p.getName() + "] from CAS.");
-        }
+        LOGGER.debug("Logging out [{}] from CAS.", p.getName());
 
         session.setAttribute(LOGGED_OUT_KEY, p);
         session.setAttribute(LOGGED_IN_KEY, null);

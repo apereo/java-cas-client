@@ -176,7 +176,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         final DateTime notOnOrAfter = assertion.getConditions().getNotOnOrAfter();
 
         if (notBefore == null || notOnOrAfter == null) {
-            log.debug("Assertion has no bounding dates. Will not process.");
+            logger.debug("Assertion has no bounding dates. Will not process.");
             return false;
         }
 
@@ -184,16 +184,16 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         final Interval validityRange = new Interval(notBefore.minus(this.tolerance), notOnOrAfter.plus(this.tolerance));
 
         if (validityRange.contains(currentTime)) {
-            log.debug("Current time is within the interval validity.");
+            logger.debug("Current time is within the interval validity.");
             return true;
         }
 
         if (currentTime.isBefore(validityRange.getStart())) {
-            log.debug("skipping assertion that's not yet valid...");
+            logger.debug("skipping assertion that's not yet valid...");
             return false;
         }
 
-        log.debug("skipping expired assertion...");
+        logger.debug("skipping expired assertion...");
         return false;
     }
 

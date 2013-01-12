@@ -63,17 +63,17 @@ public final class WebAuthenticationFilter extends AbstractCasFilter {
         if (session != null && session.getAttribute(CONST_CAS_ASSERTION) == null && ticket != null) {
             try {
                 final String service = constructServiceUrl(request, response);
-                log.debug("Attempting CAS ticket validation with service=" + service + " and ticket=" + ticket);
+                logger.debug("Attempting CAS ticket validation with service={} and ticket={}", service, ticket);
                 if (!new WebAuthentication().login(service, ticket)) {
-                    log.debug("JBoss Web authentication failed.");
+                    logger.debug("JBoss Web authentication failed.");
                     throw new GeneralSecurityException("JBoss Web authentication failed.");
                 }
                 if (request.getUserPrincipal() instanceof AssertionPrincipal) {
                     final AssertionPrincipal principal = (AssertionPrincipal) request.getUserPrincipal();
-                    log.debug("Installing CAS assertion into session.");
+                    logger.debug("Installing CAS assertion into session.");
                     request.getSession().setAttribute(CONST_CAS_ASSERTION, principal.getAssertion());
                 } else {
-                    log.debug("Aborting -- principal is not of type AssertionPrincipal");
+                    logger.debug("Aborting -- principal is not of type AssertionPrincipal");
                     throw new GeneralSecurityException("JBoss Web authentication did not produce CAS AssertionPrincipal.");
                 }
             } catch (final GeneralSecurityException e) {
@@ -83,7 +83,7 @@ public final class WebAuthenticationFilter extends AbstractCasFilter {
             // There is evidence that in some cases the principal can disappear
             // in JBoss despite a valid session.
             // This block forces consistency between principal and assertion.
-            log.info("User principal not found.  Removing CAS assertion from session to force re-authentication.");
+            logger.info("User principal not found.  Removing CAS assertion from session to force re-authentication.");
             session.removeAttribute(CONST_CAS_ASSERTION);
         }
         chain.doFilter(request, response);

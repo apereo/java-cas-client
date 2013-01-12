@@ -40,7 +40,7 @@ public class AssertionCasRealm extends AbstractCasRealm {
     /** {@inheritDoc} */
     public void start() throws LifecycleException {
         super.start();
-        log.info("Startup completed.");
+        logger.info("Startup completed.");
     }
 
     /**

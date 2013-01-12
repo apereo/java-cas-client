@@ -24,8 +24,8 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.util.LifecycleSupport;
 import org.apache.catalina.valves.ValveBase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base <code>Valve</code> implementation for valves that need Catalina lifecycle
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractLifecycleValve extends ValveBase implements Lifecycle {
 
     /** Logger instance */
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
     
     /** Lifecycle listeners */
     private LifecycleSupport lifecycle = new LifecycleSupport(this);
@@ -61,12 +61,12 @@ public abstract class AbstractLifecycleValve extends ValveBase implements Lifecy
 
     /** {@inheritDoc} */
     public void start() throws LifecycleException {
-        log.debug(getName() + " starting.");
+        logger.debug("{} starting.", getName());
     }
 
     /** {@inheritDoc} */
     public void stop() throws LifecycleException {
-        log.debug(getName() + " stopping.");
+        logger.debug("{} stopping.", getName());
     }
 
     /**

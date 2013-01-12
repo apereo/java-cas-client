@@ -19,8 +19,8 @@
 
 package org.jasig.cas.client.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -46,7 +46,7 @@ public final class DelegatingFilter implements Filter {
     /**
      * Instance of Commons Logging.
      */
-    private final Log log = LogFactory.getLog(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * The request parameter to look for in the Request object.
@@ -95,19 +95,14 @@ public final class DelegatingFilter implements Filter {
             for (final String key : this.delegators.keySet()) {
                 if ((parameter.equals(key) && this.exactMatch) || (parameter.matches(key) && !this.exactMatch)) {
                     final Filter filter = this.delegators.get(key);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Match found for parameter ["
-                                + this.requestParameterName + "] with value ["
-                                + parameter + "]. Delegating to filter ["
-                                + filter.getClass().getName() + "]");
-                    }
+                    logger.debug("Match found for parameter [{}] with value [{}]. Delegating to filter [{}]", this.requestParameterName, parameter, filter.getClass().getName());
                     filter.doFilter(request, response, filterChain);
                     return;
                 }
             }
         }
 
-        log.debug("No match found for parameter [" + this.requestParameterName + "] with value [" + parameter + "]");
+        logger.debug("No match found for parameter [{}] with value [{}]", this.requestParameterName , parameter);
 
         if (this.defaultFilter != null) {
             this.defaultFilter.doFilter(request, response, filterChain);

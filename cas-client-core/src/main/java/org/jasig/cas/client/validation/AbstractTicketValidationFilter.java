@@ -90,9 +90,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      */
     protected HostnameVerifier getHostnameVerifier(final FilterConfig filterConfig) {
         final String className = getPropertyFromInitParams(filterConfig, "hostnameVerifier", null);
-        log.trace("Using hostnameVerifier parameter: " + className);
+        logger.trace("Using hostnameVerifier parameter: {}", className);
         final String config = getPropertyFromInitParams(filterConfig, "hostnameVerifierConfig", null);
-        log.trace("Using hostnameVerifierConfig parameter: " + config);
+        logger.trace("Using hostnameVerifierConfig parameter: {}", config);
         if (className != null) {
             if (config != null) {
                 return ReflectUtils.newInstance(className, config);
@@ -105,14 +105,14 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         setExceptionOnValidationFailure(parseBoolean(getPropertyFromInitParams(filterConfig, "exceptionOnValidationFailure", "true")));
-        log.trace("Setting exceptionOnValidationFailure parameter: " + this.exceptionOnValidationFailure);
+        logger.trace("Setting exceptionOnValidationFailure parameter: {}", this.exceptionOnValidationFailure);
         setRedirectAfterValidation(parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation", "true")));
-        log.trace("Setting redirectAfterValidation parameter: " + this.redirectAfterValidation);
+        logger.trace("Setting redirectAfterValidation parameter: {}", this.redirectAfterValidation);
         setUseSession(parseBoolean(getPropertyFromInitParams(filterConfig, "useSession", "true")));
-        log.trace("Setting useSession parameter: " + this.useSession);
+        logger.trace("Setting useSession parameter: {}", this.useSession);
 
         if (!this.useSession && this.redirectAfterValidation) {
-            log.warn("redirectAfterValidation parameter may not be true when useSession parameter is false. Resetting it to false in order to prevent infinite redirects.");
+            logger.warn("redirectAfterValidation parameter may not be true when useSession parameter is false. Resetting it to false in order to prevent infinite redirects.");
             setRedirectAfterValidation(false);
         }
 
@@ -174,16 +174,12 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         final String ticket = retrieveTicketFromRequest(request);
 
         if (CommonUtils.isNotBlank(ticket)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Attempting to validate ticket: " + ticket);
-            }
+            logger.debug("Attempting to validate ticket: {}", ticket);
 
             try {
                 final Assertion assertion = this.ticketValidator.validate(ticket, constructServiceUrl(request, response));
 
-                if (log.isDebugEnabled()) {
-                    log.debug("Successfully authenticated user: " + assertion.getPrincipal().getName());
-                }
+                logger.debug("Successfully authenticated user: {}", assertion.getPrincipal().getName());
 
                 request.setAttribute(CONST_CAS_ASSERTION, assertion);
 
@@ -193,13 +189,13 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                 onSuccessfulValidation(request, response, assertion);
 
                 if (this.redirectAfterValidation) {
-                    log. debug("Redirecting after successful ticket validation.");
+                    logger. debug("Redirecting after successful ticket validation.");
                     response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
             } catch (final TicketValidationException e) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                log.warn(e, e);
+                logger.warn(e.getMessage(), e);
 
                 onFailedValidation(request, response);
 

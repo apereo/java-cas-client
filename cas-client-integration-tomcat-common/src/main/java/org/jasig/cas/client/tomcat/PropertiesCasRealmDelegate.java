@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link CasRealm} implementation with users and roles defined by a properties
@@ -49,7 +49,7 @@ import org.jasig.cas.client.util.CommonUtils;
 public class PropertiesCasRealmDelegate implements CasRealm  {
 
     /** Log instance */
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     
     /** Path to backing properties file */
     private String propertiesFilePath;
@@ -73,7 +73,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
         }
         CommonUtils.assertTrue(file.exists(), "File not found " + file);        
         CommonUtils.assertTrue(file.canRead(), "Cannot read " + file);
-        log.debug("Loading users/roles from " + file);
+        logger.debug("Loading users/roles from {}", file);
         final Properties properties = new Properties();
         try {
             properties.load(new BufferedInputStream(new FileInputStream(file)));

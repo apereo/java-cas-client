@@ -32,8 +32,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class ErrorRedirectFilter implements Filter {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	private final List<ErrorHolder> errors = new ArrayList<ErrorHolder>();
 	
@@ -97,7 +97,7 @@ public final class ErrorRedirectFilter implements Filter {
 					this.errors.add(new ErrorHolder(className, filterConfig.getInitParameter(className)));
 				}
 			} catch (final ClassNotFoundException e) {
-				log.warn("Class [" + className + "] cannot be found in ClassLoader.  Ignoring.");
+				logger.warn("Class [{}] cannot be found in ClassLoader.  Ignoring.", className);
 			}
 		}
 	}

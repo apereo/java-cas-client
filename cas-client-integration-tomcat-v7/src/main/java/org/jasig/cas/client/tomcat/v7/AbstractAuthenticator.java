@@ -27,12 +27,12 @@ import org.apache.catalina.Realm;
 import org.apache.catalina.authenticator.AuthenticatorBase;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.deploy.LoginConfig;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.tomcat.AuthenticatorDelegate;
 import org.jasig.cas.client.tomcat.CasRealm;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.TicketValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -47,7 +47,7 @@ import java.security.Principal;
  */
 public abstract class AbstractAuthenticator extends AuthenticatorBase implements LifecycleListener {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
     
     private final AuthenticatorDelegate delegate = new AuthenticatorDelegate();
 
@@ -94,7 +94,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     protected void startInternal() throws LifecycleException {
         super.startInternal();
-        this.log.debug(getName() + " starting.");
+        logger.debug("{} starting.", getName());
         final Realm realm = this.context.getRealm();
         try {
             CommonUtils.assertTrue(realm instanceof CasRealm, "Expected CasRealm but got " + realm.getInfo());
@@ -175,7 +175,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     /** {@inheritDoc} */
     public void lifecycleEvent(final LifecycleEvent event) {
         if (AFTER_START_EVENT.equals(event.getType())) {
-            this.log.debug(getName() + " processing lifecycle event " + AFTER_START_EVENT);
+            logger.debug("{} processing lifecycle event {}", getName(), AFTER_START_EVENT);
             this.delegate.setTicketValidator(getTicketValidator());
             this.delegate.setArtifactParameterName(getArtifactParameterName());
             this.delegate.setServiceParameterName(getServiceParameterName());
@@ -191,7 +191,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     protected synchronized void setState(LifecycleState state, Object data) {
         super.setState(state, data);
         if (LifecycleState.STARTED.equals(state)) {
-            this.log.info(getName() + " started.");
+            logger.info("{} started.", getName());
         }
     }
 
