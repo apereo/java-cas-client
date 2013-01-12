@@ -520,6 +520,10 @@
           <groupId>bouncycastle</groupId>
           <artifactId>bcprov-jdk14</artifactId>
         </exclusion>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 

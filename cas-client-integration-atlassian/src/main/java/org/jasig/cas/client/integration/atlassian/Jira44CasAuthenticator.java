@@ -22,8 +22,6 @@ package org.jasig.cas.client.integration.atlassian;
 import com.atlassian.jira.security.login.JiraSeraphAuthenticator;
 import com.atlassian.seraph.auth.AuthenticatorException;
 import com.atlassian.seraph.auth.LoginReason;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.Assertion;
 import org.slf4j.Logger;

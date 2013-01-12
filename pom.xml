@@ -166,7 +166,6 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
                             <bannedDependencies>
                                 <excludes>
                                     <exclude>commons-logging</exclude>
-                                    <exclude>cglib:cglib</exclude>
                                 </excludes>
                             </bannedDependencies>
                         </rules>
@@ -180,23 +179,35 @@ NwXMoqnmqmUUnosrspqmmmmmmUUnosrspqmmmmmmUUA1jJ
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.2</version>
-      <scope>test</scope>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8.2</version>
+        <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>compile</scope>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
-      <scope>provided</scope>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.4</version>
+        <scope>provided</scope>
     </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>test</scope>
+    </dependency>
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+          <version>${slf4j.version}</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 
     <modules>
