@@ -47,6 +47,10 @@
           <groupId>javax.security</groupId>
           <artifactId>jacc</artifactId>
         </exclusion>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
   </dependencies>

@@ -41,9 +41,6 @@ import javax.net.ssl.HostnameVerifier;
  */
 public abstract class AbstractUrlBasedTicketValidator implements TicketValidator {
 
-    /**
-     * Commons Logging instance.
-     */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
    
     /**

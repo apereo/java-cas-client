@@ -94,7 +94,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             }
         }
 
-        log.trace("Setting proxyReceptorUrl parameter: " + this.proxyReceptorUrl);
+        logger.trace("Setting proxyReceptorUrl parameter: {}", this.proxyReceptorUrl);
         this.millisBetweenCleanUps = Integer.parseInt(getPropertyFromInitParams(filterConfig, "millisBetweenCleanUps", Integer.toString(DEFAULT_MILLIS_BETWEEN_CLEANUPS)));
         super.initInternal(filterConfig);
     }
@@ -185,7 +185,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         try {
             CommonUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
         } catch (final RuntimeException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             throw e;
         }
 

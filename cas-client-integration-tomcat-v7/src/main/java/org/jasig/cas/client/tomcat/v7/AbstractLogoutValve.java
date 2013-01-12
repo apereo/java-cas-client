@@ -22,9 +22,9 @@ package org.jasig.cas.client.tomcat.v7;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.tomcat.LogoutHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.io.IOException;
  */
 public abstract class AbstractLogoutValve extends ValveBase {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public final void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (getLogoutHandler().isLogoutRequest(request)) {
@@ -49,7 +49,7 @@ public abstract class AbstractLogoutValve extends ValveBase {
             return;
         }
 
-        this.log.debug("URI is not a logout request: " + request.getRequestURI());
+        logger.debug("URI is not a logout request: {}", request.getRequestURI());
         getNext().invoke(request, response);
     }
     

@@ -46,7 +46,7 @@ public final class RegexUriLogoutValve extends AbstractLogoutValve {
     protected void startInternal() throws LifecycleException {
         super.startInternal();
         this.logoutHandler.init();
-        this.log.info("Startup completed.");
+        logger.info("Startup completed.");
     }
 
     /** {@inheritDoc} */

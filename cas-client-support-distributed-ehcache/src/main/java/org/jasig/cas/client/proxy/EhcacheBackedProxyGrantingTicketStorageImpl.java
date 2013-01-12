@@ -23,12 +23,8 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.distribution.RemoteCacheException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Scott Battaglia
@@ -39,13 +35,13 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl extends AbstractE
 
     public static final String EHCACHE_CACHE_NAME = "org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl.cache";
 
-    private static final Log log = LogFactory.getLog(EhcacheBackedProxyGrantingTicketStorageImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(EhcacheBackedProxyGrantingTicketStorageImpl.class);
 
     final Cache cache;
 
     public EhcacheBackedProxyGrantingTicketStorageImpl() {
         this(CacheManager.getInstance().getCache(EHCACHE_CACHE_NAME));
-        log.info("Created cache with name: " + this.cache.getName());
+        logger.info("Created cache with name: {}", this.cache.getName());
     }
 
     public EhcacheBackedProxyGrantingTicketStorageImpl(final Cache cache) {
@@ -58,7 +54,7 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl extends AbstractE
         try {
             this.cache.put(element);
         } catch (final RemoteCacheException e) {
-            log.warn("Exception accessing one of the remote servers: " + e.getMessage(), e);
+            logger.warn("Exception accessing one of the remote servers: {}", e.getMessage(), e);
         }
     }
 

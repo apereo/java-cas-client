@@ -54,6 +54,6 @@ public class Cas10CasAuthenticator extends AbstractCasAuthenticator {
         super.start();
         this.ticketValidator = new Cas10TicketValidator(getCasServerUrlPrefix());
         lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
-        log.info("Startup completed.");
+        logger.info("Startup completed.");
     }
 }

@@ -107,17 +107,17 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
 
         public boolean isUserInRole(final String role) {
             if (CommonUtils.isBlank(role)) {
-                log.debug("No valid role provided.  Returning false.");
+                logger.debug("No valid role provided.  Returning false.");
                 return false;
             }
 
             if (this.principal == null) {
-                log.debug("No Principal in Request.  Returning false.");
+                logger.debug("No Principal in Request.  Returning false.");
                 return false;
             }
 
             if (CommonUtils.isBlank(roleAttribute)) {
-                log.debug("No Role Attribute Configured. Returning false.");
+                logger.debug("No Role Attribute Configured. Returning false.");
                 return false;
             }
 
@@ -126,14 +126,14 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
             if (value instanceof Collection<?>) {
                 for (final Object o : (Collection<?>) value) {
                     if (rolesEqual(role, o)) {
-                        log.debug("User [" + getRemoteUser() + "] is in role [" + role + "]: " + true);
+                        logger.debug("User [{}] is in role [{}]: true", getRemoteUser(), role);
                         return true;
                     }
                 }
             }
 
             final boolean isMember = rolesEqual(role, value);
-            log.debug("User [" + getRemoteUser() + "] is in role [" + role + "]: " + isMember);
+            logger.debug("User [{}] is in role [{}]: {}", getRemoteUser(), role, isMember);
             return isMember;
         }
         

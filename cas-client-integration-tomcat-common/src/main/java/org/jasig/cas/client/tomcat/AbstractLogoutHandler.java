@@ -23,11 +23,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all logout handlers.
@@ -38,7 +38,7 @@ import org.jasig.cas.client.validation.Assertion;
  */
 public abstract class AbstractLogoutHandler implements LogoutHandler {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected String redirectUrl;
 
@@ -48,20 +48,20 @@ public abstract class AbstractLogoutHandler implements LogoutHandler {
 
     /** {@inheritDoc} */
     public void logout(final HttpServletRequest request, final HttpServletResponse response) {
-        log.debug("Processing logout request from CAS server.");
+        logger.debug("Processing logout request from CAS server.");
 
         final Assertion assertion;
         final HttpSession httpSession = request.getSession(false);
         if (httpSession != null && (assertion = (Assertion) httpSession.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION)) != null) {
             httpSession.removeAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
-            log.info("Successfully logged out " + assertion.getPrincipal());
+            logger.info("Successfully logged out {}", assertion.getPrincipal());
         } else {
-            log.info("Session already ended.");
+            logger.info("Session already ended.");
         }
 
         final String redirectUrl = constructRedirectUrl(request);
         if (redirectUrl != null) {
-            log.debug("Redirecting to " + redirectUrl);
+            logger.debug("Redirecting to {}", redirectUrl);
             CommonUtils.sendRedirect(response, redirectUrl);
         }
     }

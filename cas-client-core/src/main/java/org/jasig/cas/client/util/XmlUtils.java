@@ -19,8 +19,8 @@
 
 package org.jasig.cas.client.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -50,7 +50,7 @@ public final class XmlUtils {
     /**
      * Static instance of Commons Logging.
      */
-    private final static Log LOG = LogFactory.getLog(XmlUtils.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(XmlUtils.class);
 
     /**
      * Get an instance of an XML reader from the XMLReaderFactory.
@@ -118,7 +118,7 @@ public final class XmlUtils {
         try {
             reader.parse(new InputSource(new StringReader(xmlAsString)));
         } catch (final Exception e) {
-            LOG.error(e, e);
+            LOGGER.error(e.getMessage(), e);
             return null;
         }
 
@@ -171,33 +171,10 @@ public final class XmlUtils {
         try {
             reader.parse(new InputSource(new StringReader(xmlAsString)));
         } catch (final Exception e) {
-            LOG.error(e, e);
+            LOGGER.error(e.getMessage(), e);
             return null;
         }
 
         return builder.toString();
-    }
-
-    /**
-     * Retrieve the child nodes from xml string, for a specific element.
-     *
-     * @param xmlAsString  the xml response
-     * @param tagName      the element to look for
-     * @return the {@link org.w3c.dom.NodeList NodeList} containing the child nodes.
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public static NodeList getNodeListForElements(final String xmlAsString, final String tagName)
-            throws ParserConfigurationException,
-            IOException,
-            SAXException {
-
-        final DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        final InputSource inStream = new InputSource();
-        inStream.setCharacterStream(new StringReader(xmlAsString));
-        final Document document = documentBuilder.parse(inStream);
-
-        return document.getElementsByTagName(tagName).item(0).getChildNodes();
     }
 }

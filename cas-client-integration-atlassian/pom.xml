@@ -36,6 +36,12 @@
       <scope>provided</scope>
       <type>jar</type>
       <optional>true</optional>
+        <exclusions>
+            <exclusion>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
 
     <dependency>

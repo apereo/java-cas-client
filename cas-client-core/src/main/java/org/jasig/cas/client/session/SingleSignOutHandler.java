@@ -137,7 +137,7 @@ public final class SingleSignOutHandler {
         final HttpSession session = request.getSession(this.eagerlyCreateSessions);
 
         if (session == null) {
-            log.debug("No session currently exists (and none created).  Cannot record session information for single sign out.");
+            logger.debug("No session currently exists (and none created).  Cannot record session information for single sign out.");
             return;
         }
 

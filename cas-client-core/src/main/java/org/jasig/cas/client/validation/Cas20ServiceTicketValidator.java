@@ -145,7 +145,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
             xmlReader.parse(new InputSource(new StringReader(xml)));
             return handler.getAttributes();
         } catch (final Exception e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return Collections.emptyMap();
         }
     }
