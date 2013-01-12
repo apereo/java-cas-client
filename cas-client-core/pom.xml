@@ -77,13 +77,6 @@
       <scope>test</scope>
     </dependency>
 
-      <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>jcl-over-slf4j</artifactId>
-          <version>${slf4j.version}</version>
-          <scope>test</scope>
-      </dependency>
-
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
