@@ -36,6 +36,12 @@
       <scope>provided</scope>
       <type>jar</type>
       <optional>true</optional>
+        <exclusions>
+            <exclusion>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
 
     <dependency>
@@ -514,6 +520,10 @@
           <groupId>bouncycastle</groupId>
           <artifactId>bcprov-jdk14</artifactId>
         </exclusion>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -531,7 +541,11 @@
         <exclusion>
           <groupId>jndi</groupId>
           <artifactId>jndi</artifactId>
-        </exclusion>               
+        </exclusion>
+          <exclusion>
+              <artifactId>commons-logging</artifactId>
+              <groupId>commons-logging</groupId>
+          </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -542,8 +556,6 @@
     </dependency>
 
   </dependencies>
-
-
   <repositories>
     <repository>
       <id>atlassian</id>
@@ -551,6 +563,4 @@
       <url>http://repository.atlassian.com/maven2/</url>
     </repository>
   </repositories>
-
-
 </project>

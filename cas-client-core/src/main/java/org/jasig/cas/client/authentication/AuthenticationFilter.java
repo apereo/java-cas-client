@@ -1,22 +1,21 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.authentication;
 
 import org.jasig.cas.client.util.AbstractCasFilter;
@@ -73,11 +72,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
             setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
-            log.trace("Loaded CasServerLoginUrl parameter: " + this.casServerLoginUrl);
+            logger.trace("Loaded CasServerLoginUrl parameter: {}", this.casServerLoginUrl);
             setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
-            log.trace("Loaded renew parameter: " + this.renew);
+            logger.trace("Loaded renew parameter: {}", this.renew);
             setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
-            log.trace("Loaded gateway parameter: " + this.gateway);
+            logger.trace("Loaded gateway parameter: {}", this.gateway);
 
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
@@ -85,7 +84,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
                 try {
                     this.gatewayStorage = (GatewayResolver) Class.forName(gatewayStorageClass).newInstance();
                 } catch (final Exception e) {
-                    log.error(e,e);
+                    logger.error(e.getMessage(),e);
                     throw new ServletException(e);
                 }
             }
@@ -119,23 +118,19 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
         final String modifiedServiceUrl;
 
-        log.debug("no ticket and no assertion found");
+        logger.debug("no ticket and no assertion found");
         if (this.gateway) {
-            log.debug("setting gateway attribute in session");
+            logger.debug("setting gateway attribute in session");
             modifiedServiceUrl = this.gatewayStorage.storeGatewayInformation(request, serviceUrl);
         } else {
             modifiedServiceUrl = serviceUrl;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Constructed service url: " + modifiedServiceUrl);
-        }
+         logger.debug("Constructed service url: {}", modifiedServiceUrl);
 
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
-        if (log.isDebugEnabled()) {
-            log.debug("redirecting to \"" + urlToRedirectTo + "\"");
-        }
+        logger.debug("redirecting to \"{}\"", urlToRedirectTo);
 
         response.sendRedirect(urlToRedirectTo);
     }

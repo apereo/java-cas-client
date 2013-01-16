@@ -1,31 +1,30 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.proxy;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link ProxyGrantingTicketStorage} that is backed by a
@@ -41,7 +40,7 @@ import org.jasig.cas.client.util.CommonUtils;
  */
 public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicketStorage {
 	
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Default timeout in milliseconds.
@@ -90,24 +89,20 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
         final ProxyGrantingTicketHolder holder = this.cache.get(proxyGrantingTicketIou);
 
         if (holder == null) {
-        	log.info("No Proxy Ticket found for [" + proxyGrantingTicketIou + "].");
+        	logger.info("No Proxy Ticket found for [{}].", proxyGrantingTicketIou);
             return null;
         }
 
         this.cache.remove(proxyGrantingTicketIou);
 
-        if (log.isDebugEnabled()) {
-        	log.debug("Returned ProxyGrantingTicket of [" + holder.getProxyGrantingTicket() + "]");
-        }
+        logger.debug("Returned ProxyGrantingTicket of [{}]", holder.getProxyGrantingTicket());
         return holder.getProxyGrantingTicket();
     }
 
     public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         final ProxyGrantingTicketHolder holder = new ProxyGrantingTicketHolder(proxyGrantingTicket);
 
-        if (log.isDebugEnabled()) {
-        	log.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [" + proxyGrantingTicketIou + ", " + proxyGrantingTicket + "]");
-        }
+        logger.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [{}, {}]", proxyGrantingTicketIou, proxyGrantingTicket);
         this.cache.put(proxyGrantingTicketIou, holder);
     }
 

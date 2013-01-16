@@ -1,29 +1,28 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -52,8 +51,7 @@ import java.util.*;
  */
 public final class CommonUtils {
 
-    /** Instance of Commons Logging. */
-    private static final Log LOG = LogFactory.getLog(CommonUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtils.class);
     
     /**
      * Constant representing the ProxyGrantingTicket IOU Request Parameter.
@@ -189,20 +187,12 @@ public final class CommonUtils {
 		    return;
 		}
 
-		if (LOG.isDebugEnabled()) {
-		    LOG.debug("Received proxyGrantingTicketId ["
-		            + proxyGrantingTicket + "] for proxyGrantingTicketIou ["
-		            + proxyGrantingTicketIou + "]");
-		}
+        LOGGER.debug("Received proxyGrantingTicketId [{}] for proxyGrantingTicketIou [{}]", proxyGrantingTicket, proxyGrantingTicketIou);
 
 		proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Successfully saved proxyGrantingTicketId ["
-		            + proxyGrantingTicket + "] for proxyGrantingTicketIou ["
-		            + proxyGrantingTicketIou + "]");
-        }
-		
+        LOGGER.debug("Successfully saved proxyGrantingTicketId [{}] for proxyGrantingTicketIou [{}]", proxyGrantingTicket, proxyGrantingTicketIou);
+
 		response.getWriter().write("<?xml version=\"1.0\"?>");
 		response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
     }
@@ -275,9 +265,7 @@ public final class CommonUtils {
 
             if (location == 0) {
                 final String returnValue = encode ? response.encodeURL(buffer.toString()): buffer.toString();
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("serviceUrl generated: " + returnValue);
-                }
+                LOGGER.debug("serviceUrl generated: {}", returnValue);
                 return returnValue;
             }
 
@@ -299,9 +287,7 @@ public final class CommonUtils {
         }
 
         final String returnValue = encode ? response.encodeURL(buffer.toString()) : buffer.toString();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("serviceUrl generated: " + returnValue);
-        }
+        LOGGER.debug("serviceUrl generated: {}", returnValue);
         return returnValue;
     }
 
@@ -323,7 +309,7 @@ public final class CommonUtils {
      */
     public static String safeGetParameter(final HttpServletRequest request, final String parameter, final List<String> parameters) {
         if ("POST".equals(request.getMethod()) && parameters.contains(parameter)) {
-            LOG.debug("safeGetParameter called on a POST HttpServletRequest for Restricted Parameters.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
+            LOGGER.debug("safeGetParameter called on a POST HttpServletRequest for Restricted Parameters.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
             return request.getParameter(parameter);
         }
         return request.getQueryString() == null || !request.getQueryString().contains(parameter) ? null : request.getParameter(parameter);
@@ -376,7 +362,7 @@ public final class CommonUtils {
             }
             return stringBuffer.toString();
         } catch (final Exception e) {
-            LOG.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
             if (conn != null && conn instanceof HttpURLConnection) {
@@ -420,7 +406,7 @@ public final class CommonUtils {
         try {
             response.sendRedirect(url);
         } catch (final Exception e) {
-            LOG.warn(e.getMessage(), e);
+            LOGGER.warn(e.getMessage(), e);
         }
 
     }
