@@ -1,22 +1,21 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.tomcat.v6;
 
 import java.io.IOException;
@@ -64,7 +63,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
     public void start() throws LifecycleException {
         super.start();
         handler.init();
-        log.info("Startup completed.");
+        logger.info("Startup completed.");
     }
 
     /** {@inheritDoc} */
@@ -78,7 +77,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
             // Do not proceed up valve chain
             return;
         } else {
-            log.debug("Ignoring URI " + request.getRequestURI());
+            logger.debug("Ignoring URI {}", request.getRequestURI());
         }
         getNext().invoke(request, response);
     }
@@ -87,7 +86,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
     /** {@inheritDoc} */
     public void sessionEvent(final SessionEvent event) {
         if (Session.SESSION_DESTROYED_EVENT.equals(event.getType())) {
-            this.log.debug("Cleaning up SessionMappingStorage on destroySession event");
+            logger.debug("Cleaning up SessionMappingStorage on destroySession event");
 	        this.handler.getSessionMappingStorage().removeBySessionById(event.getSession().getId());
         }
     }

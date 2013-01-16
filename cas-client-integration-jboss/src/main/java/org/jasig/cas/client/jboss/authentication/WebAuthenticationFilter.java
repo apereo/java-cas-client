@@ -1,22 +1,21 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.jboss.authentication;
 
 import java.io.IOException;
@@ -63,17 +62,17 @@ public final class WebAuthenticationFilter extends AbstractCasFilter {
         if (session != null && session.getAttribute(CONST_CAS_ASSERTION) == null && ticket != null) {
             try {
                 final String service = constructServiceUrl(request, response);
-                log.debug("Attempting CAS ticket validation with service=" + service + " and ticket=" + ticket);
+                logger.debug("Attempting CAS ticket validation with service={} and ticket={}", service, ticket);
                 if (!new WebAuthentication().login(service, ticket)) {
-                    log.debug("JBoss Web authentication failed.");
+                    logger.debug("JBoss Web authentication failed.");
                     throw new GeneralSecurityException("JBoss Web authentication failed.");
                 }
                 if (request.getUserPrincipal() instanceof AssertionPrincipal) {
                     final AssertionPrincipal principal = (AssertionPrincipal) request.getUserPrincipal();
-                    log.debug("Installing CAS assertion into session.");
+                    logger.debug("Installing CAS assertion into session.");
                     request.getSession().setAttribute(CONST_CAS_ASSERTION, principal.getAssertion());
                 } else {
-                    log.debug("Aborting -- principal is not of type AssertionPrincipal");
+                    logger.debug("Aborting -- principal is not of type AssertionPrincipal");
                     throw new GeneralSecurityException("JBoss Web authentication did not produce CAS AssertionPrincipal.");
                 }
             } catch (final GeneralSecurityException e) {
@@ -83,7 +82,7 @@ public final class WebAuthenticationFilter extends AbstractCasFilter {
             // There is evidence that in some cases the principal can disappear
             // in JBoss despite a valid session.
             // This block forces consistency between principal and assertion.
-            log.info("User principal not found.  Removing CAS assertion from session to force re-authentication.");
+            logger.info("User principal not found.  Removing CAS assertion from session to force re-authentication.");
             session.removeAttribute(CONST_CAS_ASSERTION);
         }
         chain.doFilter(request, response);
