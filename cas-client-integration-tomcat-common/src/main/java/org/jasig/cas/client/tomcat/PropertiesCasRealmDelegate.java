@@ -1,22 +1,21 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.tomcat;
 
 import java.io.BufferedInputStream;
@@ -26,9 +25,9 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link CasRealm} implementation with users and roles defined by a properties
@@ -49,7 +48,7 @@ import org.jasig.cas.client.util.CommonUtils;
 public class PropertiesCasRealmDelegate implements CasRealm  {
 
     /** Log instance */
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     
     /** Path to backing properties file */
     private String propertiesFilePath;
@@ -73,7 +72,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
         }
         CommonUtils.assertTrue(file.exists(), "File not found " + file);        
         CommonUtils.assertTrue(file.canRead(), "Cannot read " + file);
-        log.debug("Loading users/roles from " + file);
+        logger.debug("Loading users/roles from {}", file);
         final Properties properties = new Properties();
         try {
             properties.load(new BufferedInputStream(new FileInputStream(file)));
