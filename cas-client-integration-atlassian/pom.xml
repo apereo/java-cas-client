@@ -556,8 +556,6 @@
     </dependency>
 
   </dependencies>
-
-
   <repositories>
     <repository>
       <id>atlassian</id>
@@ -565,6 +563,4 @@
       <url>http://repository.atlassian.com/maven2/</url>
     </repository>
   </repositories>
-
-
 </project>
