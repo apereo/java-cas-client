@@ -21,8 +21,8 @@ package org.jasig.cas.client.validation;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
-import org.jasig.cas.client.util.HttpsURLConnectionFactory;
-import org.jasig.cas.client.util.URLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
+import org.jasig.cas.client.ssl.URLConnectionFactory;
 
 /**
  * Implementation of TicketValidationFilter that can instanciate a SAML 1.1 Ticket Validator.

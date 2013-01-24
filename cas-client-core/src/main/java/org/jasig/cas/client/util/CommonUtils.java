@@ -19,6 +19,8 @@
 package org.jasig.cas.client.util;
 
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
+import org.jasig.cas.client.ssl.URLConnectionFactory;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
