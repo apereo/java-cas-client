@@ -19,6 +19,8 @@
 package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.HttpsURLConnectionFactory;
+import org.jasig.cas.client.util.URLConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,24 +31,22 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
-
 /**
  * Abstract validator implementation for tickets that must be validated against a server.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
  * @since 3.1
  */
 public abstract class AbstractUrlBasedTicketValidator implements TicketValidator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-   
+    
     /**
-     * Hostname verifier used when making an SSL request to the CAS server.
+     * URLConnection factory instance to use when making validation requests to the CAS server.
+     * Defaults to {@link HttpsURLConnectionFactory}
      */
-    protected HostnameVerifier hostnameVerifier;
-
+    private URLConnectionFactory urlConnectionFactory = new HttpsURLConnectionFactory();
+    
     /**
      * Prefix for the CAS server.   Should be everything up to the url endpoint, including the /.
      *
@@ -217,10 +217,6 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     public final void setCustomParameters(final Map<String,String> customParameters) {
         this.customParameters = customParameters;
     }
-    
-    public final void setHostnameVerifier(final HostnameVerifier verifier) {
-        this.hostnameVerifier = verifier;
-    }
 
     public final void setEncoding(final String encoding) {
         this.encoding = encoding;
@@ -240,5 +236,13 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     protected final Map<String, String> getCustomParameters() {
         return this.customParameters;
+    }
+
+    protected URLConnectionFactory getURLConnectionFactory() {
+        return this.urlConnectionFactory;
+    }
+    
+    public void setURLConnectionFactory(final URLConnectionFactory urlConnectionFactory) {
+        this.urlConnectionFactory = urlConnectionFactory;
     }
 }

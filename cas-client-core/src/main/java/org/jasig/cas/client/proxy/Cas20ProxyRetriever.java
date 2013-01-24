@@ -29,20 +29,19 @@ import java.net.URLEncoder;
 /**
  * Implementation of a ProxyRetriever that follows the CAS 2.0 specification.
  * For more information on the CAS 2.0 specification, please see the <a
- * href="http://www.ja-sig.org/products/cas/overview/protocol/index.html">specification
+ * href="http://www.jasig.org/cas/protocol">specification
  * document</a>.
  * <p/>
  * In general, this class will make a call to the CAS server with some specified
  * parameters and receive an XML response to parse.
  *
  * @author Scott Battaglia
- * @version $Revision: 11729 $ $Date: 2007-09-26 14:22:30 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
 public final class Cas20ProxyRetriever implements ProxyRetriever {
 
     /** Unique Id for serialization. */
-	private static final long serialVersionUID = 560409469568911791L;
+	  private static final long serialVersionUID = 560409469568911791L;
 
 	/**
      * Instance of Commons Logging.

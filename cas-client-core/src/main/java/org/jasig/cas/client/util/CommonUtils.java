@@ -24,20 +24,20 @@ import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.net.URL;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -323,28 +323,16 @@ public final class CommonUtils {
      * Contacts the remote URL and returns the response.
      *
      * @param constructedUrl the url to contact.
+     * @param factory connection factory to prepare the URL connection instance
      * @param encoding the encoding to use.
      * @return the response.
      */
-    public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
-        return getResponseFromServer(constructedUrl, HttpsURLConnection.getDefaultHostnameVerifier(), encoding);
-    }
+    public static String getResponseFromServer(final URL constructedUrl, final URLConnectionFactory factory, final String encoding) {
 
-    /**
-     * Contacts the remote URL and returns the response.
-     *
-     * @param constructedUrl the url to contact.
-     * @param hostnameVerifier Host name verifier to use for HTTPS connections.
-     * @param encoding the encoding to use.
-     * @return the response.
-     */
-    public static String getResponseFromServer(final URL constructedUrl, final HostnameVerifier hostnameVerifier, final String encoding) {
         URLConnection conn = null;
         try {
-            conn = constructedUrl.openConnection();
-            if (conn instanceof HttpsURLConnection) {
-                ((HttpsURLConnection)conn).setHostnameVerifier(hostnameVerifier);
-            }
+            conn = factory.getURLConnection(constructedUrl.openConnection());
+            
             final BufferedReader in;
 
             if (CommonUtils.isEmpty(encoding)) {
@@ -371,6 +359,7 @@ public final class CommonUtils {
         }
 
     }
+
     /**
      * Contacts the remote URL and returns the response.
      *
@@ -380,12 +369,12 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final String url, String encoding) {
         try {
-            return getResponseFromServer(new URL(url), encoding);
+            return getResponseFromServer(new URL(url), new HttpsURLConnectionFactory(), encoding);
         } catch (final MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }
     }
-
+         
     public static ProxyList createProxyList(final String proxies) {
         if (CommonUtils.isBlank(proxies)) {
             return new ProxyList();
@@ -409,5 +398,20 @@ public final class CommonUtils {
             LOGGER.warn(e.getMessage(), e);
         }
 
+    }
+
+    /**
+     * Unconditionally close a {@link Closeable}. Equivalent to {@link java.io.Closeable#close()}close(), except any exceptions 
+     * will be ignored. This is typically used in finally blocks.
+     * @param resource
+     */
+    public static void closeQuietly(final Closeable resource) {
+        try {
+            if (resource != null) {
+                resource.close();
+            }
+        } catch (final IOException e) {
+            //ignore
+        }
     }
 }
