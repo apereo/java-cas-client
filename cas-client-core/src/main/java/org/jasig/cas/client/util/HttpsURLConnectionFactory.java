@@ -92,7 +92,6 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
      * keyStorePass=changeit
      * certificatePassword=aGoodPass
      * </pre>
-     * @param sslConfig {@link Properties} 
      * @return the {@link SSLSocketFactory}
      */
     private SSLSocketFactory createSSLSocketFactory() {
