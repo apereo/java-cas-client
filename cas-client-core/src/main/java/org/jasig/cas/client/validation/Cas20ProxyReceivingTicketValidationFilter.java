@@ -31,7 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.proxy.*;
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.HttpsURLConnectionFactory;
 import org.jasig.cas.client.util.ReflectUtils;
+import org.jasig.cas.client.util.URLConnectionFactory;
 
 /**
  * Creates either a CAS20ProxyTicketValidator or a CAS20ServiceTicketValidator depending on whether any of the
@@ -159,7 +161,8 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         }
 
         validator.setCustomParameters(additionalParameters);
-        validator.setHostnameVerifier(getHostnameVerifier(filterConfig));
+        final URLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig), getSSLConfig(filterConfig));
+        validator.setURLConnectionFactory(factory);
 
         return validator;
     }

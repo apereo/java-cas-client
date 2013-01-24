@@ -21,6 +21,9 @@ package org.jasig.cas.client.validation;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
+import org.jasig.cas.client.util.HttpsURLConnectionFactory;
+import org.jasig.cas.client.util.URLConnectionFactory;
+
 /**
  * Implementation of TicketValidationFilter that can instanciate a SAML 1.1 Ticket Validator.
  * <p>
@@ -53,7 +56,10 @@ public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter
         final String tolerance = getPropertyFromInitParams(filterConfig, "tolerance", "1000");
         validator.setTolerance(Long.parseLong(tolerance));
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
-        validator.setHostnameVerifier(getHostnameVerifier(filterConfig));
+        
+        final URLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig), getSSLConfig(filterConfig));
+        validator.setURLConnectionFactory(factory);
+        
         validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
         validator.setDisableXmlSchemaValidation(parseBoolean(getPropertyFromInitParams(filterConfig, "disableXmlSchemaValidation", "false")));
         return validator;
