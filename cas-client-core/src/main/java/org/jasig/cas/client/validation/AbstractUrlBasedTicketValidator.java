@@ -18,9 +18,9 @@
  */
 package org.jasig.cas.client.validation;
 
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
+import org.jasig.cas.client.ssl.URLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.HttpsURLConnectionFactory;
-import org.jasig.cas.client.util.URLConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

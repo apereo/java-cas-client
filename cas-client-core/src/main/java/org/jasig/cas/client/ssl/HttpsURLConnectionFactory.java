@@ -1,4 +1,4 @@
-package org.jasig.cas.client.util;
+package org.jasig.cas.client.ssl;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -12,6 +12,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.jasig.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,13 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
         this.sslConfiguration = config;
     }
     
+    /**
+     * Set the host name verifier for the https connection received.
+     * 
+     * @see AnyHostnameVerifier
+     * @see RegexHostnameVerifier
+     * @see WhitelistHostnameVerifier
+     */
     public final void setHostnameVerifier(final HostnameVerifier verifier) {
         this.hostnameVerifier = verifier;
     }

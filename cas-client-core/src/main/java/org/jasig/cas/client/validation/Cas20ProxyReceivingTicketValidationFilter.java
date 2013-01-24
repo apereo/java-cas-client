@@ -30,10 +30,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.proxy.*;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
+import org.jasig.cas.client.ssl.URLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.HttpsURLConnectionFactory;
 import org.jasig.cas.client.util.ReflectUtils;
-import org.jasig.cas.client.util.URLConnectionFactory;
 
 /**
  * Creates either a CAS20ProxyTicketValidator or a CAS20ServiceTicketValidator depending on whether any of the

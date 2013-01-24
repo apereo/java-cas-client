@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jasig.cas.client.util;
+package org.jasig.cas.client.ssl;
 
 import java.net.URL;
 import java.net.URLConnection;
