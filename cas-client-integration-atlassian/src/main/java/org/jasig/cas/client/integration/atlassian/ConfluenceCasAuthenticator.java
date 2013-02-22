@@ -49,10 +49,10 @@ public final class ConfluenceCasAuthenticator extends ConfluenceAuthenticator {
     public Principal getUser(final HttpServletRequest request, final HttpServletResponse response) {
         final HttpSession session = request.getSession();
 
-        // user already exists
-        if (session.getAttribute(LOGGED_IN_KEY) != null) {
-            LOGGER.debug("Session found; user already logged in.");
-            return (Principal) session.getAttribute(LOGGED_IN_KEY);
+        Principal loggedUser = getUserFromSession(request);
+        if (loggedUser != null) {
+            // user already exists - is logged in
+            return loggedUser;
         }
 
         final Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
@@ -62,8 +62,8 @@ public final class ConfluenceCasAuthenticator extends ConfluenceAuthenticator {
 
             LOGGER.debug("Logging in [{}] from CAS.", p.getName());
 
-            session.setAttribute(LOGGED_IN_KEY, p);
-            session.setAttribute(LOGGED_OUT_KEY, null);
+            putPrincipalInSessionContext(request, p);
+
             return p;
         }
 
@@ -73,13 +73,12 @@ public final class ConfluenceCasAuthenticator extends ConfluenceAuthenticator {
     public boolean logout(final HttpServletRequest request, final HttpServletResponse response) throws AuthenticatorException {
         final HttpSession session = request.getSession();
 
-        final Principal principal = (Principal) session.getAttribute(LOGGED_IN_KEY);
+        final Principal principal = getUserFromSession(request);
 
         LOGGER.debug("Logging out [{}] from CAS.", principal.getName());
 
-        session.setAttribute(LOGGED_OUT_KEY, principal);
-        session.setAttribute(LOGGED_IN_KEY, null);
         session.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, null);
+        putPrincipalInSessionContext(request, null);
         return true;
     }
 }

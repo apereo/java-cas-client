@@ -48,7 +48,7 @@
       <!-- https://maven.atlassian.com/content/groups/m1/com.atlassian.confluence/jars/ -->
       <groupId>com.atlassian.confluence</groupId>
       <artifactId>confluence</artifactId>
-      <version>3.5</version>
+      <version>4.2.8</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
