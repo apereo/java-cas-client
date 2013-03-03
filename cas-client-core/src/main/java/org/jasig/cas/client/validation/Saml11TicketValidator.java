@@ -45,13 +45,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import javax.net.ssl.HttpsURLConnection;
-
 /**
  * TicketValidator that can understand validating a SAML artifact.  This includes the SOAP request/response.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
  * @since 3.1
  */
 public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator {
@@ -232,12 +229,11 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
                 + "<samlp:AssertionArtifact>" + ticket
                 + "</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>";
         HttpURLConnection conn = null;
-
+        DataOutputStream out = null;
+        BufferedReader in = null;
+        
         try {
-            conn = (HttpURLConnection) validationUrl.openConnection();
-            if (this.hostnameVerifier != null && conn instanceof HttpsURLConnection) {
-                ((HttpsURLConnection)conn).setHostnameVerifier(this.hostnameVerifier);
-            }
+            conn = (HttpURLConnection) this.getURLConnectionFactory().getURLConnection(validationUrl.openConnection());
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "text/xml"); 
             conn.setRequestProperty("Content-Length", Integer.toString(MESSAGE_TO_SEND.length()));
@@ -246,12 +242,11 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
-            final DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+            out = new DataOutputStream(conn.getOutputStream());
             out.writeBytes(MESSAGE_TO_SEND);
             out.flush();
-            out.close();
-
-            final BufferedReader in = new BufferedReader(CommonUtils.isNotBlank(getEncoding()) ? new InputStreamReader(conn.getInputStream(), Charset.forName(getEncoding())) : new InputStreamReader(conn.getInputStream()));
+           
+            in = new BufferedReader(CommonUtils.isNotBlank(getEncoding()) ? new InputStreamReader(conn.getInputStream(), Charset.forName(getEncoding())) : new InputStreamReader(conn.getInputStream()));
             final StringBuilder buffer = new StringBuilder(256);
 
             String line;
@@ -263,6 +258,8 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         } catch (final IOException e) {
             throw new RuntimeException(e);       
         } finally {
+            CommonUtils.closeQuietly(out);
+            CommonUtils.closeQuietly(in);
             if (conn != null) {
                 conn.disconnect();
             }
