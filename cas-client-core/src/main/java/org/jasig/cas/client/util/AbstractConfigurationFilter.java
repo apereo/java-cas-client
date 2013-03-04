@@ -67,6 +67,10 @@ public abstract class AbstractConfigurationFilter implements Filter {
         final String value = filterConfig.getInitParameter(propertyName);
 
         if (CommonUtils.isNotBlank(value)) {
+            if ("renew".equals(propertyName)) {
+                throw new IllegalArgumentException(
+                        "Renew MUST be specified via context parameter or JNDI environment to avoid misconfiguration.");
+            }
             logger.info("Property [{}] loaded from FilterConfig.getInitParameter with value [{}]", propertyName, value);
             return value;
         }
