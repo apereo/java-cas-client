@@ -18,6 +18,15 @@
  */
 package org.jasig.cas.client.authentication;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 import junit.framework.TestCase;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.AssertionImpl;
@@ -25,13 +34,7 @@ import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import java.io.IOException;
-import java.net.URLEncoder;
+import org.springframework.mock.web.MockServletContext;
 
 /**
  * Tests for the AuthenticationFilter.
@@ -176,5 +179,31 @@ public final class AuthenticationFilterTests extends TestCase {
         this.filter.doFilter(request, response2, filterChain);
         assertNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNull(response2.getRedirectedUrl());
+    }
+
+    public void testRenewInitParamThrows() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockFilterConfig config = new MockFilterConfig();
+        config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        config.addInitParameter("service", "https://localhost:8443/service");
+        config.addInitParameter("renew", "true");
+        try {
+            f.init(config);
+            fail("Should have thrown IllegalArgumentException.");
+        } catch (final IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("Renew MUST"));
+        }
+    }
+
+    public void testAllowsRenewContextParam() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", "https://cas.example.com/login");
+        context.addInitParameter("service", "https://localhost:8443/service");
+        context.addInitParameter("renew", "true");
+        f.init(new MockFilterConfig(context));
+        final Field renewField = AuthenticationFilter.class.getDeclaredField("renew");
+        renewField.setAccessible(true);
+        assertTrue((Boolean) renewField.get(f));
     }
 }
