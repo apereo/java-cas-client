@@ -331,9 +331,9 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final URL constructedUrl, final URLConnectionFactory factory, final String encoding) {
 
-        URLConnection conn = null;
+        HttpURLConnection conn = null;
         try {
-            conn = factory.getURLConnection(constructedUrl.openConnection());
+            conn = factory.buildHttpURLConnection(constructedUrl.openConnection());
             
             final BufferedReader in;
 
@@ -355,8 +355,8 @@ public final class CommonUtils {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
-            if (conn != null && conn instanceof HttpURLConnection) {
-                ((HttpURLConnection)conn).disconnect();
+            if (conn != null) {
+                conn.disconnect();
             }
         }
 
@@ -371,7 +371,7 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final String url, String encoding) {
         try {
-            return getResponseFromServer(new URL(url), new HttpsURLConnectionFactory(), encoding);
+            return getResponseFromServer(new URL(url), HttpsURLConnectionFactory.INSTANCE, encoding);
         } catch (final MalformedURLException e) {
             throw new IllegalArgumentException(e);
         }

@@ -2,6 +2,7 @@ package org.jasig.cas.client.ssl;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.security.KeyStore;
 import java.util.Properties;
@@ -29,6 +30,8 @@ import org.slf4j.LoggerFactory;
 public final class HttpsURLConnectionFactory implements URLConnectionFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpsURLConnectionFactory.class);
+    
+    public static final HttpsURLConnectionFactory INSTANCE = new HttpsURLConnectionFactory();
     
     /**
      * Hostname verifier used when making an SSL request to the CAS server.
@@ -63,7 +66,7 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
         this.hostnameVerifier = verifier;
     }
 
-    public URLConnection getURLConnection(final URLConnection url) {
+    public HttpURLConnection buildHttpURLConnection(final URLConnection url) {
         return this.configureHttpsConnectionIfNeeded(url);
     }
     
@@ -74,7 +77,7 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
      *
      * @param conn the http connection
      */
-    private URLConnection configureHttpsConnectionIfNeeded(final URLConnection conn) {
+    private HttpURLConnection configureHttpsConnectionIfNeeded(final URLConnection conn) {
         if (conn instanceof HttpsURLConnection) {
             final HttpsURLConnection httpsConnection = (HttpsURLConnection) conn;
             final SSLSocketFactory socketFactory = this.createSSLSocketFactory();
@@ -86,7 +89,7 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
                 httpsConnection.setHostnameVerifier(this.hostnameVerifier);
             }
         }
-        return conn;
+        return (HttpURLConnection)conn;
     }
     
     /**

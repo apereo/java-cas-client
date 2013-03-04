@@ -233,7 +233,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         BufferedReader in = null;
         
         try {
-            conn = (HttpURLConnection) this.getURLConnectionFactory().getURLConnection(validationUrl.openConnection());
+            conn = this.getURLConnectionFactory().buildHttpURLConnection(validationUrl.openConnection());
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "text/xml"); 
             conn.setRequestProperty("Content-Length", Integer.toString(MESSAGE_TO_SEND.length()));
