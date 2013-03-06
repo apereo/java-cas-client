@@ -30,7 +30,6 @@ import java.util.Map;
  * Concrete implementation of the AttributePrincipal interface.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
  * @since 3.1
  */
 public class AttributePrincipalImpl extends SimplePrincipal implements AttributePrincipal {
@@ -80,7 +79,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
     }
 
     /**
-     * Constructs a new principal witht he supplied name, attributes, and proxying capabilities.
+     * Constructs a new principal with the supplied name, attributes, and proxying capabilities.
      *
      * @param name the unique identifier for the principal.
      * @param attributes the key/value pairs for this principal.

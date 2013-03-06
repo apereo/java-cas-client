@@ -31,8 +31,6 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpsURLConnectionFactory.class);
     
-    public static final HttpsURLConnectionFactory INSTANCE = new HttpsURLConnectionFactory();
-    
     /**
      * Hostname verifier used when making an SSL request to the CAS server.
      * Defaults to {@link HttpsURLConnection#getDefaultHostnameVerifier()}
@@ -89,7 +87,7 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
                 httpsConnection.setHostnameVerifier(this.hostnameVerifier);
             }
         }
-        return (HttpURLConnection)conn;
+        return (HttpURLConnection) conn;
     }
     
     /**
