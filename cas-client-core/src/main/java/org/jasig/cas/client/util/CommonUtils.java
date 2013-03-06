@@ -359,22 +359,6 @@ public final class CommonUtils {
                 conn.disconnect();
             }
         }
-
-    }
-
-    /**
-     * Contacts the remote URL and returns the response.
-     *
-     * @param url the url to contact.
-     * @param encoding the encoding to use.
-     * @return the response.
-     */
-    public static String getResponseFromServer(final String url, String encoding) {
-        try {
-            return getResponseFromServer(new URL(url), HttpsURLConnectionFactory.INSTANCE, encoding);
-        } catch (final MalformedURLException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
          
     public static ProxyList createProxyList(final String proxies) {
