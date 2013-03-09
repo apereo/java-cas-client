@@ -75,30 +75,28 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
         this.urlConnectionFactory = urlFactory;
     }
     
-    public String getProxyTicketIdFor(final String proxyGrantingTicketId,
-                                      final String targetService) {
-        try {
-            final String url = constructUrl(proxyGrantingTicketId, targetService);
-            final String response = CommonUtils.getResponseFromServer(new URL(url), this.urlConnectionFactory, this.encoding);
-            final String error = XmlUtils.getTextForElement(response, "proxyFailure");
+    public String getProxyTicketIdFor(final String proxyGrantingTicketId, final String targetService) {
+        CommonUtils.assertNotNull(proxyGrantingTicketId, "proxyGrantingTicketId cannot be null.");
+        CommonUtils.assertNotNull(targetService, "targetService cannot be null.");
+        
+        final URL url = constructUrl(proxyGrantingTicketId, targetService);
+        final String response = CommonUtils.getResponseFromServer(url, this.urlConnectionFactory, this.encoding);
+        final String error = XmlUtils.getTextForElement(response, "proxyFailure");
     
-            if (CommonUtils.isNotEmpty(error)) {
-                logger.debug(error);
-                return null;
-            }
-    
-            return XmlUtils.getTextForElement(response, "proxyTicket");
-        } catch (final MalformedURLException ex) {
-            throw new RuntimeException(ex);
+        if (CommonUtils.isNotEmpty(error)) {
+            logger.debug(error);
+            return null;
         }
+    
+        return XmlUtils.getTextForElement(response, "proxyTicket");
     }
 
-    private String constructUrl(final String proxyGrantingTicketId, final String targetService) {
+    private URL constructUrl(final String proxyGrantingTicketId, final String targetService) {
         try {
-        	return this.casServerUrl + (this.casServerUrl.endsWith("/") ? "" : "/") + "proxy" + "?pgt="
-            + proxyGrantingTicketId + "&targetService="
-            + URLEncoder.encode(targetService, "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
+            return new URL(this.casServerUrl + (this.casServerUrl.endsWith("/") ? "" : "/") + "proxy"
+                          + "?pgt=" + proxyGrantingTicketId 
+                          + "&targetService=" + URLEncoder.encode(targetService, "UTF-8"));
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
