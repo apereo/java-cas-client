@@ -20,7 +20,7 @@ package org.jasig.cas.client.util;
 
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
-import org.jasig.cas.client.ssl.URLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
@@ -329,7 +329,7 @@ public final class CommonUtils {
      * @param encoding the encoding to use.
      * @return the response.
      */
-    public static String getResponseFromServer(final URL constructedUrl, final URLConnectionFactory factory, final String encoding) {
+    public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory, final String encoding) {
 
         HttpURLConnection conn = null;
         try {

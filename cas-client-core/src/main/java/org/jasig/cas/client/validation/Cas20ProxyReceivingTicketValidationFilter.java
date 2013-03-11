@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.proxy.*;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
-import org.jasig.cas.client.ssl.URLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 
@@ -146,7 +146,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         validator.setProxyCallbackUrl(getPropertyFromInitParams(filterConfig, "proxyCallbackUrl", null));
         validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
         
-        final URLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig), getSSLConfig(filterConfig));
+        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig), getSSLConfig(filterConfig));
         validator.setURLConnectionFactory(factory);
         
         validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix, getPropertyFromInitParams(filterConfig, "encoding", null), factory));

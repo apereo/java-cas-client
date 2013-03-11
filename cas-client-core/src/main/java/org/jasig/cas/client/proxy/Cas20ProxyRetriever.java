@@ -18,7 +18,7 @@
  */
 package org.jasig.cas.client.proxy;
 
-import org.jasig.cas.client.ssl.URLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
@@ -59,7 +59,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
     private final String encoding;
 
     /** Url connection factory to use when communicating with the server **/
-    private final URLConnectionFactory urlConnectionFactory;
+    private final HttpURLConnectionFactory urlConnectionFactory;
     
     /**
      * Main Constructor.
@@ -68,7 +68,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
      * @param encoding the encoding to use.
      * @param urlFactory url connection factory use when retrieving proxy responses from the server
      */
-    public Cas20ProxyRetriever(final String casServerUrl, final String encoding, final URLConnectionFactory urlFactory) {
+    public Cas20ProxyRetriever(final String casServerUrl, final String encoding, final HttpURLConnectionFactory urlFactory) {
         CommonUtils.assertNotNull(casServerUrl, "casServerUrl cannot be null.");
         this.casServerUrl = casServerUrl;
         this.encoding = encoding;
