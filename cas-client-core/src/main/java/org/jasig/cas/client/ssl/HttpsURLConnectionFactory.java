@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An implementation of the {@link URLConnectionFactory} whose responsible to configure
+ * An implementation of the {@link HttpURLConnectionFactory} whose responsible to configure
  * the underlying <i>https</i> connection, if needed, with a given hostname and SSL socket factory based on the
  * configuration provided. 
  * 
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @see #setHostnameVerifier(HostnameVerifier)
  * @see #setSSLConfiguration(Properties)
  */
-public final class HttpsURLConnectionFactory implements URLConnectionFactory {
+public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpsURLConnectionFactory.class);
     

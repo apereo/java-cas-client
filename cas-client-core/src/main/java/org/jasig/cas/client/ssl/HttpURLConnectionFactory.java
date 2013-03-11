@@ -28,7 +28,7 @@ import java.net.URLConnection;
  * @author Misagh Moayyed
  * @since 3.3
  */
-public interface URLConnectionFactory {
+public interface HttpURLConnectionFactory {
     
     /**
      * Receives a {@link URLConnection} instance typically as a result of a {@link URL}
