@@ -2,6 +2,7 @@ package org.jasig.cas.client.ssl;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.security.KeyStore;
 import java.util.Properties;
@@ -17,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An implementation of the {@link URLConnectionFactory} whose responsible to configure
+ * An implementation of the {@link HttpURLConnectionFactory} whose responsible to configure
  * the underlying <i>https</i> connection, if needed, with a given hostname and SSL socket factory based on the
  * configuration provided. 
  * 
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @see #setHostnameVerifier(HostnameVerifier)
  * @see #setSSLConfiguration(Properties)
  */
-public final class HttpsURLConnectionFactory implements URLConnectionFactory {
+public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpsURLConnectionFactory.class);
     
@@ -63,7 +64,7 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
         this.hostnameVerifier = verifier;
     }
 
-    public URLConnection getURLConnection(final URLConnection url) {
+    public HttpURLConnection buildHttpURLConnection(final URLConnection url) {
         return this.configureHttpsConnectionIfNeeded(url);
     }
     
@@ -74,7 +75,7 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
      *
      * @param conn the http connection
      */
-    private URLConnection configureHttpsConnectionIfNeeded(final URLConnection conn) {
+    private HttpURLConnection configureHttpsConnectionIfNeeded(final URLConnection conn) {
         if (conn instanceof HttpsURLConnection) {
             final HttpsURLConnection httpsConnection = (HttpsURLConnection) conn;
             final SSLSocketFactory socketFactory = this.createSSLSocketFactory();
@@ -86,7 +87,7 @@ public final class HttpsURLConnectionFactory implements URLConnectionFactory {
                 httpsConnection.setHostnameVerifier(this.hostnameVerifier);
             }
         }
-        return conn;
+        return (HttpURLConnection) conn;
     }
     
     /**

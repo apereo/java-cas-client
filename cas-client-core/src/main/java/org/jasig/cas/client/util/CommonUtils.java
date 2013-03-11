@@ -20,7 +20,7 @@ package org.jasig.cas.client.util;
 
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
-import org.jasig.cas.client.ssl.URLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
@@ -329,11 +329,11 @@ public final class CommonUtils {
      * @param encoding the encoding to use.
      * @return the response.
      */
-    public static String getResponseFromServer(final URL constructedUrl, final URLConnectionFactory factory, final String encoding) {
+    public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory, final String encoding) {
 
-        URLConnection conn = null;
+        HttpURLConnection conn = null;
         try {
-            conn = factory.getURLConnection(constructedUrl.openConnection());
+            conn = factory.buildHttpURLConnection(constructedUrl.openConnection());
             
             final BufferedReader in;
 
@@ -355,25 +355,9 @@ public final class CommonUtils {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
-            if (conn != null && conn instanceof HttpURLConnection) {
-                ((HttpURLConnection)conn).disconnect();
+            if (conn != null) {
+                conn.disconnect();
             }
-        }
-
-    }
-
-    /**
-     * Contacts the remote URL and returns the response.
-     *
-     * @param url the url to contact.
-     * @param encoding the encoding to use.
-     * @return the response.
-     */
-    public static String getResponseFromServer(final String url, String encoding) {
-        try {
-            return getResponseFromServer(new URL(url), new HttpsURLConnectionFactory(), encoding);
-        } catch (final MalformedURLException e) {
-            throw new IllegalArgumentException(e);
         }
     }
          
