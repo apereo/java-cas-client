@@ -18,6 +18,7 @@
  */
 package org.jasig.cas.client.ssl;
 
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -27,7 +28,7 @@ import java.net.URLConnection;
  * @author Misagh Moayyed
  * @since 3.3
  */
-public interface URLConnectionFactory {
+public interface HttpURLConnectionFactory {
     
     /**
      * Receives a {@link URLConnection} instance typically as a result of a {@link URL}
@@ -36,9 +37,9 @@ public interface URLConnectionFactory {
      * to accommodate method chaining.
      *  
      * @param url The url connection that needs to be configured
-     * @return The configured {@link URLConnection} instance
+     * @return The configured {@link HttpURLConnection} instance
      * 
      * @see {@link HttpsURLConnectionFactory}
      */
-    URLConnection getURLConnection(final URLConnection url);
+    HttpURLConnection buildHttpURLConnection(final URLConnection url);
 }

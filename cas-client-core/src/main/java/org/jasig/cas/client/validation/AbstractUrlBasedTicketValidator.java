@@ -19,7 +19,7 @@
 package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
-import org.jasig.cas.client.ssl.URLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      * URLConnection factory instance to use when making validation requests to the CAS server.
      * Defaults to {@link HttpsURLConnectionFactory}
      */
-    private URLConnectionFactory urlConnectionFactory = new HttpsURLConnectionFactory();
+    private HttpURLConnectionFactory urlConnectionFactory = new HttpsURLConnectionFactory();
     
     /**
      * Prefix for the CAS server.   Should be everything up to the url endpoint, including the /.
@@ -238,11 +238,11 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
         return this.customParameters;
     }
 
-    protected URLConnectionFactory getURLConnectionFactory() {
+    protected HttpURLConnectionFactory getURLConnectionFactory() {
         return this.urlConnectionFactory;
     }
     
-    public void setURLConnectionFactory(final URLConnectionFactory urlConnectionFactory) {
+    public void setURLConnectionFactory(final HttpURLConnectionFactory urlConnectionFactory) {
         this.urlConnectionFactory = urlConnectionFactory;
     }
 }
