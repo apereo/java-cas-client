@@ -1,22 +1,21 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
@@ -26,19 +25,22 @@ import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
-import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of the TicketValidator that will validate Service Tickets in compliance with the CAS 2.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
  * @since 3.1
  */
 public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTicketValidator {
@@ -57,10 +59,11 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * CAS server url prefix.
      *
      * @param casServerUrlPrefix the CAS Server URL prefix.
+     * @param urlFactory URL connection factory to use when communicating with the server
      */
     public Cas20ServiceTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
-        this.proxyRetriever = new Cas20ProxyRetriever(casServerUrlPrefix, getEncoding());
+        this.proxyRetriever = new Cas20ProxyRetriever(casServerUrlPrefix, getEncoding(), getURLConnectionFactory());
     }
 
     /**
@@ -103,7 +106,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
             try {
                 authenticationDate = CommonUtils.parseFromUtcTime(stringAuthenticationDate);
             } catch (ParseException e) {
-                log.warn("Unexpected format of authentication date", e);
+                logger.warn("Unexpected format of authentication date", e);
             }
         }
 
@@ -142,27 +145,18 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @return the map of attributes.
      */
     protected Map<String,Object> extractCustomAttributes(final String xml) {
-
-    	if (!xml.contains("<cas:attributes>")) {
-    		return new HashMap<String, Object>();
-    	}
-
-        final Map<String, Object> attributes = new HashMap<String, Object>();
-
+        final SAXParserFactory spf = SAXParserFactory.newInstance();
+        spf.setNamespaceAware(true);
+        spf.setValidating(false);
         try {
-            NodeList nodeList = XmlUtils.getNodeListForElements(xml,"cas:attributes");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                final String nodeName = nodeList.item(i).getNodeName();
-                final int beginIndex = nodeName.indexOf(":") + 1;
-                final int endIndex = nodeList.item(i).getNodeName().length();
-
-                final String attributeName = nodeName.substring(beginIndex, endIndex); // remove the "cas:" prefix from node name
-                final Object attributeValue = nodeList.item(i).getTextContent();
-                attributes.put(attributeName, attributeValue);
-            }
-            return attributes;
-
-        } catch (Exception e) {
+            final SAXParser saxParser = spf.newSAXParser();
+            final XMLReader xmlReader = saxParser.getXMLReader();
+            final CustomAttributeHandler handler = new CustomAttributeHandler();
+            xmlReader.setContentHandler(handler);
+            xmlReader.parse(new InputSource(new StringReader(xml)));
+            return handler.getAttributes();
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
             return Collections.emptyMap();
         }
     }
@@ -200,5 +194,66 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
 
     protected final ProxyRetriever getProxyRetriever() {
         return this.proxyRetriever;
+    }
+
+    private class CustomAttributeHandler extends DefaultHandler {
+
+        private Map<String, Object> attributes;
+
+        private boolean foundAttributes;
+
+        private String currentAttribute;
+
+        private StringBuilder value;
+
+        @Override
+        public void startDocument() throws SAXException {
+            this.attributes = new HashMap<String, Object>();
+        }
+
+        @Override
+        public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attributes) throws SAXException {
+            if ("attributes".equals(localName)) {
+                this.foundAttributes = true;
+            } else if (this.foundAttributes) {
+                this.value = new StringBuilder();
+                this.currentAttribute = localName;
+            }
+        }
+
+        @Override
+        public void characters(final char[] chars, final int start, final int length) throws SAXException {
+            if (this.currentAttribute != null) {
+                value.append(chars, start, length);
+            }
+        }
+
+        @Override
+        public void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException {
+            if ("attributes".equals(localName)) {
+                this.foundAttributes = false;
+                this.currentAttribute = null;
+            } else if (this.foundAttributes) {
+                final Object o = this.attributes.get(this.currentAttribute);
+
+                if (o == null) {
+                    this.attributes.put(this.currentAttribute, this.value.toString());
+                } else {
+                    final List<Object> items;
+                    if (o instanceof List) {
+                        items = (List<Object>) o;
+                    } else {
+                        items = new LinkedList<Object>();
+                        items.add(o);
+                        this.attributes.put(this.currentAttribute, items);
+                    }
+                    items.add(this.value.toString());
+                }
+            }
+        }
+
+        public Map<String, Object> getAttributes() {
+            return this.attributes;
+        }
     }
 }

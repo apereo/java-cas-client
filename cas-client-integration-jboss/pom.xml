@@ -47,6 +47,10 @@
           <groupId>javax.security</groupId>
           <artifactId>jacc</artifactId>
         </exclusion>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
   </dependencies>
@@ -59,8 +63,6 @@
       <url>https://repository.jboss.org/nexus/content/groups/public//</url>
     </repository>
   </repositories>
-
-
   <properties>
     <jboss.version>6.1.0.Final</jboss.version>
   </properties>

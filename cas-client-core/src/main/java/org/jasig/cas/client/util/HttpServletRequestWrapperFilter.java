@@ -1,22 +1,21 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.util;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
@@ -107,17 +106,17 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
 
         public boolean isUserInRole(final String role) {
             if (CommonUtils.isBlank(role)) {
-                log.debug("No valid role provided.  Returning false.");
+                logger.debug("No valid role provided.  Returning false.");
                 return false;
             }
 
             if (this.principal == null) {
-                log.debug("No Principal in Request.  Returning false.");
+                logger.debug("No Principal in Request.  Returning false.");
                 return false;
             }
 
             if (CommonUtils.isBlank(roleAttribute)) {
-                log.debug("No Role Attribute Configured. Returning false.");
+                logger.debug("No Role Attribute Configured. Returning false.");
                 return false;
             }
 
@@ -126,14 +125,14 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
             if (value instanceof Collection<?>) {
                 for (final Object o : (Collection<?>) value) {
                     if (rolesEqual(role, o)) {
-                        log.debug("User [" + getRemoteUser() + "] is in role [" + role + "]: " + true);
+                        logger.debug("User [{}] is in role [{}]: true", getRemoteUser(), role);
                         return true;
                     }
                 }
             }
 
             final boolean isMember = rolesEqual(role, value);
-            log.debug("User [" + getRemoteUser() + "] is in role [" + role + "]: " + isMember);
+            logger.debug("User [{}] is in role [{}]: {}", getRemoteUser(), role, isMember);
             return isMember;
         }
         

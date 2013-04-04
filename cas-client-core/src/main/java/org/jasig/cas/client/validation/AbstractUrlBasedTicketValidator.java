@@ -1,27 +1,28 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.validation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -30,27 +31,22 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
-
 /**
  * Abstract validator implementation for tickets that must be validated against a server.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
  * @since 3.1
  */
 public abstract class AbstractUrlBasedTicketValidator implements TicketValidator {
 
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    
     /**
-     * Commons Logging instance.
+     * URLConnection factory instance to use when making validation requests to the CAS server.
+     * Defaults to {@link HttpsURLConnectionFactory}
      */
-    protected final Log log = LogFactory.getLog(getClass());
-   
-    /**
-     * Hostname verifier used when making an SSL request to the CAS server.
-     */
-    protected HostnameVerifier hostnameVerifier;
-
+    private HttpURLConnectionFactory urlConnectionFactory = new HttpsURLConnectionFactory();
+    
     /**
      * Prefix for the CAS server.   Should be everything up to the url endpoint, including the /.
      *
@@ -113,7 +109,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     protected final String constructValidationUrl(final String ticket, final String serviceUrl) {
         final Map<String,String> urlParameters = new HashMap<String,String>();
 
-        log.debug("Placing URL parameters in map.");
+        logger.debug("Placing URL parameters in map.");
         urlParameters.put("ticket", ticket);
         urlParameters.put("service", encodeUrl(serviceUrl));
 
@@ -121,10 +117,10 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
             urlParameters.put("renew", "true");
         }
 
-        log.debug("Calling template URL attribute map.");
+        logger.debug("Calling template URL attribute map.");
         populateUrlAttributeMap(urlParameters);
 
-        log.debug("Loading custom parameters from configuration.");
+        logger.debug("Loading custom parameters from configuration.");
         if (this.customParameters != null) {
             urlParameters.putAll(this.customParameters);
         }
@@ -195,24 +191,18 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     protected abstract String retrieveResponseFromServer(URL validationUrl, String ticket);
 
     public final Assertion validate(final String ticket, final String service) throws TicketValidationException {
-
-
         final String validationUrl = constructValidationUrl(ticket, service);
-        if (log.isDebugEnabled()) {
-            log.debug("Constructing validation url: " + validationUrl);
-        }
+         logger.debug("Constructing validation url: {}", validationUrl);
 
         try {
-        	log.debug("Retrieving response from server.");
+        	logger.debug("Retrieving response from server.");
             final String serverResponse = retrieveResponseFromServer(new URL(validationUrl), ticket);
 
             if (serverResponse == null) {
                 throw new TicketValidationException("The CAS server returned no response.");
             }
             
-            if (log.isDebugEnabled()) {
-            	log.debug("Server response: " + serverResponse);
-            }
+           	logger.debug("Server response: {}", serverResponse);
 
             return parseResponseFromServer(serverResponse);
         } catch (final MalformedURLException e) {
@@ -226,10 +216,6 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     public final void setCustomParameters(final Map<String,String> customParameters) {
         this.customParameters = customParameters;
-    }
-    
-    public final void setHostnameVerifier(final HostnameVerifier verifier) {
-        this.hostnameVerifier = verifier;
     }
 
     public final void setEncoding(final String encoding) {
@@ -250,5 +236,13 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     protected final Map<String, String> getCustomParameters() {
         return this.customParameters;
+    }
+
+    protected HttpURLConnectionFactory getURLConnectionFactory() {
+        return this.urlConnectionFactory;
+    }
+    
+    public void setURLConnectionFactory(final HttpURLConnectionFactory urlConnectionFactory) {
+        this.urlConnectionFactory = urlConnectionFactory;
     }
 }

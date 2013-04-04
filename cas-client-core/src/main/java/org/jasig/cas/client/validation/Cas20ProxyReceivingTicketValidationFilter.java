@@ -1,22 +1,21 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.validation;
 
 import java.io.IOException;
@@ -31,6 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.proxy.*;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 
@@ -49,7 +50,7 @@ import org.jasig.cas.client.util.ReflectUtils;
  */
 public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketValidationFilter {
 
-    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyGrantingTicketStorageClass", "proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl", "millisBetweenCleanUps", "hostnameVerifier", "encoding", "config"};
+    private static final String[] RESERVED_INIT_PARAMS = new String[] {"proxyGrantingTicketStorageClass", "proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl", "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service", "artifactParameterName", "serviceParameterName", "encodeServiceUrl", "millisBetweenCleanUps", "hostnameVerifier", "encoding", "config", "ticketValidatorClass"};
 
     private static final int DEFAULT_MILLIS_BETWEEN_CLEANUPS = 60 * 1000;
 
@@ -94,7 +95,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             }
         }
 
-        log.trace("Setting proxyReceptorUrl parameter: " + this.proxyReceptorUrl);
+        logger.trace("Setting proxyReceptorUrl parameter: {}", this.proxyReceptorUrl);
         this.millisBetweenCleanUps = Integer.parseInt(getPropertyFromInitParams(filterConfig, "millisBetweenCleanUps", Integer.toString(DEFAULT_MILLIS_BETWEEN_CLEANUPS)));
         super.initInternal(filterConfig);
     }
@@ -113,6 +114,14 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         this.timer.schedule(this.timerTask, this.millisBetweenCleanUps, this.millisBetweenCleanUps);
     }
 
+    private <T> T createNewTicketValidator(final String ticketValidatorClass, final String casServerUrlPrefix, final Class<T> clazz) {
+        if (CommonUtils.isBlank(ticketValidatorClass)) {
+            return ReflectUtils.newInstance(clazz, casServerUrlPrefix);
+        }
+
+        return ReflectUtils.newInstance(ticketValidatorClass, casServerUrlPrefix);
+    }
+
     /**
      * Constructs a Cas20ServiceTicketValidator or a Cas20ProxyTicketValidator based on supplied parameters.
      *
@@ -123,19 +132,24 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         final String allowAnyProxy = getPropertyFromInitParams(filterConfig, "acceptAnyProxy", null);
         final String allowedProxyChains = getPropertyFromInitParams(filterConfig, "allowedProxyChains", null);
         final String casServerUrlPrefix = getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null);
+        final String ticketValidatorClass = getPropertyFromInitParams(filterConfig, "ticketValidatorClass", null);
         final Cas20ServiceTicketValidator validator;
 
         if (CommonUtils.isNotBlank(allowAnyProxy) || CommonUtils.isNotBlank(allowedProxyChains)) {
-            final Cas20ProxyTicketValidator v = new Cas20ProxyTicketValidator(casServerUrlPrefix);
+            final Cas20ProxyTicketValidator v = createNewTicketValidator(ticketValidatorClass, casServerUrlPrefix, Cas20ProxyTicketValidator.class);
             v.setAcceptAnyProxy(parseBoolean(allowAnyProxy));
             v.setAllowedProxyChains(CommonUtils.createProxyList(allowedProxyChains));
             validator = v;
         } else {
-            validator = new Cas20ServiceTicketValidator(casServerUrlPrefix);
+            validator = createNewTicketValidator(ticketValidatorClass, casServerUrlPrefix, Cas20ServiceTicketValidator.class);
         }
         validator.setProxyCallbackUrl(getPropertyFromInitParams(filterConfig, "proxyCallbackUrl", null));
         validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
-        validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix, getPropertyFromInitParams(filterConfig, "encoding", null)));
+        
+        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig), getSSLConfig(filterConfig));
+        validator.setURLConnectionFactory(factory);
+        
+        validator.setProxyRetriever(new Cas20ProxyRetriever(casServerUrlPrefix, getPropertyFromInitParams(filterConfig, "encoding", null), factory));
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
         validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
 
@@ -151,8 +165,6 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         }
 
         validator.setCustomParameters(additionalParameters);
-        validator.setHostnameVerifier(getHostnameVerifier(filterConfig));
-
         return validator;
     }
 
@@ -176,7 +188,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         try {
             CommonUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
         } catch (final RuntimeException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             throw e;
         }
 

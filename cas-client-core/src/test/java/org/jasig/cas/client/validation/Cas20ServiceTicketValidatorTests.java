@@ -1,25 +1,22 @@
-/**
+/*
  * Licensed to Jasig under one or more contributor license
  * agreements. See the NOTICE file distributed with this work
  * for additional information regarding copyright ownership.
  * Jasig licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a
- * copy of the License at:
+ * except in compliance with the License.  You may obtain a
+ * copy of the License at the following location:
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.cas.client.validation;
-
-
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
@@ -141,13 +138,14 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
             + USERNAME
             + "</cas:user><cas:proxyGrantingTicket>"
             + PGTIOU
-            + "</cas:proxyGrantingTicket><cas:attributes><cas:password>test</cas:password><cas:eduPersonId>id</cas:eduPersonId></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
+            + "</cas:proxyGrantingTicket><cas:attributes><cas:password>test</cas:password><cas:eduPersonId>id</cas:eduPersonId><cas:longAttribute>test1\n\ntest</cas:longAttribute></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
         
         server.content = RESPONSE.getBytes(server.encoding);
         final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
         assertEquals("test", assertion.getPrincipal().getAttributes().get("password"));
         assertEquals("id", assertion.getPrincipal().getAttributes().get("eduPersonId"));
+        assertEquals("test1\n\ntest", assertion.getPrincipal().getAttributes().get("longAttribute"));
         //assertEquals(PGT, assertion.getProxyGrantingTicketId());
     }
 
