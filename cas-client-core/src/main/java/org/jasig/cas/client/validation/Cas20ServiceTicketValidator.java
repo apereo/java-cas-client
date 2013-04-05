@@ -100,7 +100,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
         }
 
-        Date authenticationDate = null;
+        Date authenticationDate = new Date();
         final String stringAuthenticationDate = XmlUtils.getTextForElement(response, "authenticationDate");
         if (CommonUtils.isNotBlank(stringAuthenticationDate)) {
             try {
