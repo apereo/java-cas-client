@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicketStorage {
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProxyGrantingTicketStorageImpl.class);
 
     /**
      * Default timeout in milliseconds.
@@ -89,20 +89,20 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
         final ProxyGrantingTicketHolder holder = this.cache.get(proxyGrantingTicketIou);
 
         if (holder == null) {
-        	logger.info("No Proxy Ticket found for [{}].", proxyGrantingTicketIou);
+        	LOGGER.info("No Proxy Ticket found for [{}].", proxyGrantingTicketIou);
             return null;
         }
 
         this.cache.remove(proxyGrantingTicketIou);
 
-        logger.debug("Returned ProxyGrantingTicket of [{}]", holder.getProxyGrantingTicket());
+        LOGGER.debug("Returned ProxyGrantingTicket of [{}]", holder.getProxyGrantingTicket());
         return holder.getProxyGrantingTicket();
     }
 
     public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         final ProxyGrantingTicketHolder holder = new ProxyGrantingTicketHolder(proxyGrantingTicket);
 
-        logger.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [{}, {}]", proxyGrantingTicketIou, proxyGrantingTicket);
+        LOGGER.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [{}, {}]", proxyGrantingTicketIou, proxyGrantingTicket);
         this.cache.put(proxyGrantingTicketIou, holder);
     }
 
