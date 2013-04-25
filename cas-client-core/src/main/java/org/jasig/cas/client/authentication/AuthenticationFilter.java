@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -132,7 +133,17 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
 
-        response.sendRedirect(urlToRedirectTo);
+        if (request.getParameter("javax.faces.partial.ajax") != null) {
+            // this is an ajax request - redirect ajaxly
+            response.setContentType("text/xml");
+            response.setStatus(200);
+ 
+            PrintWriter writer = response.getWriter();
+            writer.write("<?xml version='1.0' encoding='UTF-8'?>");
+            writer.write("<partial-response><redirect url=\"" + urlToRedirectTo + "\"></redirect></partial-response>");
+        } else { 
+            response.sendRedirect(urlToRedirectTo);
+        }
     }
 
     public final void setRenew(final boolean renew) {
