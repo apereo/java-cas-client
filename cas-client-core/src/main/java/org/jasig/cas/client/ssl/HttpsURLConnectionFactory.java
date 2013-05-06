@@ -118,11 +118,11 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
                         final KeyManagerFactory keyManager = KeyManagerFactory.getInstance(this.sslConfiguration.getProperty("keyManagerType", "SunX509"));
                         keyManager.init(keyStore, this.sslConfiguration.getProperty("certificatePassword").toCharArray());
                         sslContext.init(keyManager.getKeyManagers(), null, null);
+                        return sslContext.getSocketFactory();
                     }
                 }
             }
 
-            return sslContext.getSocketFactory();
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
