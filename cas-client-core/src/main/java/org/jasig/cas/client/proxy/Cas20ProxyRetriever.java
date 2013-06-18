@@ -49,7 +49,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
 	  /**
      * Instance of Commons Logging.
      */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(Cas20ProxyRetriever.class);
 
     /**
      * Url to CAS server.
@@ -84,7 +84,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
         final String error = XmlUtils.getTextForElement(response, "proxyFailure");
     
         if (CommonUtils.isNotEmpty(error)) {
-            logger.debug(error);
+            LOGGER.debug(error);
             return null;
         }
     
