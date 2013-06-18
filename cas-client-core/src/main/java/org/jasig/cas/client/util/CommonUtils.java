@@ -41,6 +41,7 @@ import java.net.URLEncoder;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -69,10 +70,33 @@ public final class CommonUtils {
         // nothing to do
     }
 
-    public static String formatForUtcTime(final Date date) {
+    /**
+     * Create a date formatter for UTC time with format : yyyy-MM-dd'T'HH:mm:ss'Z'.
+     * @return the date formatter
+     */
+    private static DateFormat createDateFormat() {
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return dateFormat.format(date);
+        return dateFormat;
+    }
+
+    /**
+     * Format a date as UTC time string with format : yyyy-MM-dd'T'HH:mm:ss'Z'.
+     * @param date the date to format
+     * @return the formatted string date
+     */
+    public static String formatForUtcTime(final Date date) {
+        return createDateFormat().format(date);
+    }
+
+    /**
+     * Parse a string as a UTC date with format : yyyy-MM-dd'T'HH:mm:ss'Z'.
+     * @param date the string date to parse
+     * @return the date
+     * @throws ParseException this exception is thrown when the date parsing fails
+     */
+    public static Date parseFromUtcTime(final String date) throws ParseException {
+        return createDateFormat().parse(date);
     }
 
     /**

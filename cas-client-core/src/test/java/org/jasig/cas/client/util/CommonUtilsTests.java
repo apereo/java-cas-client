@@ -18,12 +18,16 @@
  */
 package org.jasig.cas.client.util;
 
-import junit.framework.TestCase;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import static org.junit.Assert.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+
+import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * Tests for the CommonUtils.
@@ -32,8 +36,9 @@ import java.util.Collection;
  * @version $Revision: 11731 $ $Date: 2007-09-27 11:27:21 -0400 (Wed, 27 Sep 2007) $
  * @since 3.0
  */
-public final class CommonUtilsTests extends TestCase {
+public final class CommonUtilsTests {
 
+    @Test
     public void testRedirectUrlWithParam() {
         final String loginUrl = "http://localhost:8080/login?myName=foo";
         final String fullyConstructedUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", false, false);
@@ -50,6 +55,7 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals(1, count);
     }
 
+    @Test
     public void testAssertNotNull() {
         final String CONST_MESSAGE = "test";
         CommonUtils.assertNotNull(new Object(), CONST_MESSAGE);
@@ -60,6 +66,7 @@ public final class CommonUtilsTests extends TestCase {
         }
     }
 
+    @Test
     public void testAssertNotEmpty() {
         final String CONST_MESSAGE = "test";
         final Collection<Object> c = new ArrayList<Object>();
@@ -78,6 +85,7 @@ public final class CommonUtilsTests extends TestCase {
         }
     }
 
+    @Test
     public void testAssertTrue() {
         final String CONST_MESSAGE = "test";
         CommonUtils.assertTrue(true, CONST_MESSAGE);
@@ -88,6 +96,7 @@ public final class CommonUtilsTests extends TestCase {
         }
     }
 
+    @Test
     public void testIsEmpty() {
         assertFalse(CommonUtils.isEmpty("test"));
         assertFalse(CommonUtils.isEmpty(" test"));
@@ -96,6 +105,7 @@ public final class CommonUtilsTests extends TestCase {
         assertFalse(CommonUtils.isEmpty("   "));
     }
 
+    @Test
     public void testIsNotEmpty() {
         assertTrue(CommonUtils.isNotEmpty("test"));
         assertTrue(CommonUtils.isNotEmpty(" test"));
@@ -104,6 +114,7 @@ public final class CommonUtilsTests extends TestCase {
         assertTrue(CommonUtils.isNotEmpty("   "));
     }
 
+    @Test
     public void testIsBlank() {
         assertFalse(CommonUtils.isBlank("test"));
         assertFalse(CommonUtils.isBlank(" test"));
@@ -112,6 +123,7 @@ public final class CommonUtilsTests extends TestCase {
         assertTrue(CommonUtils.isBlank("   "));
     }
 
+    @Test
     public void testIsNotBlank() {
         assertTrue(CommonUtils.isNotBlank("test"));
         assertTrue(CommonUtils.isNotBlank(" test"));
@@ -120,6 +132,7 @@ public final class CommonUtilsTests extends TestCase {
         assertFalse(CommonUtils.isNotBlank("   "));
     }
 
+    @Test
     public void testConstructServiceUrlWithTrailingSlash() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
@@ -131,6 +144,7 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
+    @Test
     public void testConstructUrlWithMultipleHostsNoPortsOrProtocol() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
@@ -142,6 +156,7 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
+    @Test
     public void testConstructURlWithMultipleHostsAndPorts() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
@@ -151,5 +166,22 @@ public final class CommonUtilsTests extends TestCase {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
+    }
+
+    @Test
+    public void testParseFormatDate() {
+        String DATE = CommonUtils.formatForUtcTime(new Date());
+        Date date = null;
+        try {
+            date = CommonUtils.parseFromUtcTime(DATE);
+        } catch (ParseException e) {
+            fail("Parsing date should be successful here : " + e.getMessage());
+        }
+        assertEquals(DATE, CommonUtils.formatForUtcTime(date));
+    }
+
+    @Test(expected=ParseException.class)
+    public void testParseDateFailed() throws ParseException {
+        CommonUtils.parseFromUtcTime("this is obviously not a date");
     }
 }

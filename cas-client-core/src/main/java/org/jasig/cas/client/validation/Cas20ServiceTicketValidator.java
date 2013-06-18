@@ -34,6 +34,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -99,14 +100,26 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
         }
 
+        Date authenticationDate = new Date();
+        final String stringAuthenticationDate = XmlUtils.getTextForElement(response, "authenticationDate");
+        if (CommonUtils.isNotBlank(stringAuthenticationDate)) {
+            try {
+                authenticationDate = CommonUtils.parseFromUtcTime(stringAuthenticationDate);
+            } catch (ParseException e) {
+                logger.warn("Unexpected format of authentication date", e);
+            }
+        }
+
         final Assertion assertion;
         final Map<String,Object> attributes = extractCustomAttributes(response);
+        final AttributePrincipal attributePrincipal;
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
-            final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
-            assertion = new AssertionImpl(attributePrincipal);
+            attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
         } else {
-            assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
+            attributePrincipal = new AttributePrincipalImpl(principal, attributes);
         }
+        assertion = new AssertionImpl(attributePrincipal, new Date(), null, authenticationDate, Collections.<String, Object>emptyMap());
+
 
         customParseResponse(response, assertion);
 
