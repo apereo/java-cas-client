@@ -68,6 +68,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
     
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
+    private AuthenticationRedirectStrategy authenticationRedirectStrategy = new DefaultAuthenticationRedirectStrategy();
+
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
@@ -81,13 +83,23 @@ public class AuthenticationFilter extends AbstractCasFilter {
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
             if (gatewayStorageClass != null) {
-                try {
-                    this.gatewayStorage = (GatewayResolver) Class.forName(gatewayStorageClass).newInstance();
-                } catch (final Exception e) {
-                    logger.error(e.getMessage(),e);
-                    throw new ServletException(e);
-                }
+                this.gatewayStorage = classNameToClass(gatewayStorageClass);
             }
+
+            final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig, "authenticationRedirectStrategyClass", null);
+
+            if (authenticationRedirectStrategyClass != null) {
+                this.authenticationRedirectStrategy = classNameToClass(authenticationRedirectStrategyClass);
+            }
+        }
+    }
+
+    private <T> T classNameToClass(final String className) throws ServletException {
+        try {
+            return (T) Class.forName(className).newInstance();
+        } catch (final Exception e) {
+            logger.error(e.getMessage(),e);
+            throw new ServletException(e);
         }
     }
 
@@ -131,8 +143,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
-
-        response.sendRedirect(urlToRedirectTo);
+        this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
     }
 
     public final void setRenew(final boolean renew) {
