@@ -25,7 +25,6 @@ import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
-import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -41,7 +40,6 @@ import java.util.*;
  * Implementation of the TicketValidator that will validate Service Tickets in compliance with the CAS 2.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
  * @since 3.1
  */
 public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTicketValidator {
@@ -60,10 +58,11 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * CAS server url prefix.
      *
      * @param casServerUrlPrefix the CAS Server URL prefix.
+     * @param urlFactory URL connection factory to use when communicating with the server
      */
     public Cas20ServiceTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
-        this.proxyRetriever = new Cas20ProxyRetriever(casServerUrlPrefix, getEncoding());
+        this.proxyRetriever = new Cas20ProxyRetriever(casServerUrlPrefix, getEncoding(), getURLConnectionFactory());
     }
 
     /**
