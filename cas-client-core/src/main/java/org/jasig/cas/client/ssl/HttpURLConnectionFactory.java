@@ -29,7 +29,7 @@ import java.net.URLConnection;
  * @since 3.3
  */
 public interface HttpURLConnectionFactory {
-    
+
     /**
      * Receives a {@link URLConnection} instance typically as a result of a {@link URL}
      * opening a connection to a remote resource. The received url connection is then

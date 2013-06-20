@@ -20,15 +20,14 @@ package org.jasig.cas.client.integration.atlassian;
 
 import com.atlassian.confluence.user.ConfluenceAuthenticator;
 import com.atlassian.seraph.auth.AuthenticatorException;
+import java.security.Principal;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.Assertion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.security.Principal;
 
 /**
  * Extension of ConfluenceAuthenticator to allow people to configure Confluence to authenticate
@@ -70,7 +69,8 @@ public final class ConfluenceCasAuthenticator extends ConfluenceAuthenticator {
         return super.getUser(request, response);
     }
 
-    public boolean logout(final HttpServletRequest request, final HttpServletResponse response) throws AuthenticatorException {
+    public boolean logout(final HttpServletRequest request, final HttpServletResponse response)
+            throws AuthenticatorException {
         final HttpSession session = request.getSession();
 
         final Principal principal = (Principal) session.getAttribute(LOGGED_IN_KEY);

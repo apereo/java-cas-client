@@ -45,11 +45,13 @@ public final class PublicTestHttpServer extends Thread {
 
     private static Map<Integer, PublicTestHttpServer> serverMap = new HashMap<Integer, PublicTestHttpServer>();
 
-    private PublicTestHttpServer(String data, String encoding, String MIMEType, int port) throws UnsupportedEncodingException {
+    private PublicTestHttpServer(String data, String encoding, String MIMEType, int port)
+            throws UnsupportedEncodingException {
         this(data.getBytes(encoding), encoding, MIMEType, port);
     }
 
-    private PublicTestHttpServer(byte[] data, String encoding, String MIMEType, int port) throws UnsupportedEncodingException {
+    private PublicTestHttpServer(byte[] data, String encoding, String MIMEType, int port)
+            throws UnsupportedEncodingException {
         this.content = data;
         this.port = port;
         this.encoding = encoding;

@@ -17,18 +17,16 @@
  * under the License.
  */
 package org.jasig.cas.client.validation;
+
+import static org.junit.Assert.*;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.proxy.ProxyRetriever;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 /**
  * Test cases for the {@link Cas20ServiceTicketValidator}.
@@ -72,9 +70,9 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         return new ProxyRetriever() {
 
             /** Unique Id for serialization. */
-			private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-			public String getProxyTicketIdFor(String proxyGrantingTicketId, String targetService) {
+            public String getProxyTicketIdFor(String proxyGrantingTicketId, String targetService) {
                 return "test";
             }
         };
@@ -93,23 +91,19 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
     }
 
     @Test
-    public void testYesResponseButNoPgt() throws TicketValidationException,
-            UnsupportedEncodingException {
+    public void testYesResponseButNoPgt() throws TicketValidationException, UnsupportedEncodingException {
         final String USERNAME = "username";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
-                + USERNAME
-                + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
+                + USERNAME + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
 
-        final Assertion assertion = this.ticketValidator.validate("test",
-                "test");
+        final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
 
     }
 
     @Test
-    public void testYesResponseWithPgt() throws TicketValidationException,
-            UnsupportedEncodingException {
+    public void testYesResponseWithPgt() throws TicketValidationException, UnsupportedEncodingException {
         final String USERNAME = "username";
         final String PGTIOU = "testPgtIou";
         final String PGT = "test";
@@ -122,23 +116,21 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         server.content = RESPONSE.getBytes(server.encoding);
         this.proxyGrantingTicketStorage.save(PGTIOU, PGT);
 
-        final Assertion assertion = this.ticketValidator.validate("test",
-                "test");
+        final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
-//        assertEquals(PGT, assertion.getProxyGrantingTicketId());
+        //        assertEquals(PGT, assertion.getProxyGrantingTicketId());
     }
 
     @Test
-    public void testGetAttributes() throws TicketValidationException,
-    UnsupportedEncodingException {
+    public void testGetAttributes() throws TicketValidationException, UnsupportedEncodingException {
         final String USERNAME = "username";
         final String PGTIOU = "testPgtIou";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
-            + USERNAME
-            + "</cas:user><cas:proxyGrantingTicket>"
-            + PGTIOU
-            + "</cas:proxyGrantingTicket><cas:attributes><cas:password>test</cas:password><cas:eduPersonId>id</cas:eduPersonId><cas:longAttribute>test1\n\ntest</cas:longAttribute><cas:multivaluedAttribute>value1</cas:multivaluedAttribute><cas:multivaluedAttribute>value2</cas:multivaluedAttribute></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
-        
+                + USERNAME
+                + "</cas:user><cas:proxyGrantingTicket>"
+                + PGTIOU
+                + "</cas:proxyGrantingTicket><cas:attributes><cas:password>test</cas:password><cas:eduPersonId>id</cas:eduPersonId><cas:longAttribute>test1\n\ntest</cas:longAttribute><cas:multivaluedAttribute>value1</cas:multivaluedAttribute><cas:multivaluedAttribute>value2</cas:multivaluedAttribute></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
+
         server.content = RESPONSE.getBytes(server.encoding);
         final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
@@ -147,7 +139,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         assertEquals("test1\n\ntest", assertion.getPrincipal().getAttributes().get("longAttribute"));
         try {
             List<?> multivalued = (List<?>) assertion.getPrincipal().getAttributes().get("multivaluedAttribute");
-            assertArrayEquals(new String[]{"value1", "value2"}, multivalued.toArray());
+            assertArrayEquals(new String[] { "value1", "value2" }, multivalued.toArray());
         } catch (Exception e) {
             fail("'multivaluedAttribute' attribute expected as List<Object> object.");
         }

@@ -19,7 +19,6 @@
 package org.jasig.cas.client.jaas;
 
 import java.io.Serializable;
-
 import org.jasig.cas.client.authentication.SimplePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 
@@ -32,7 +31,7 @@ import org.jasig.cas.client.validation.Assertion;
  *
  */
 public class AssertionPrincipal extends SimplePrincipal implements Serializable {
-    
+
     /** AssertionPrincipal.java */
     private static final long serialVersionUID = 2288520214366461693L;
 

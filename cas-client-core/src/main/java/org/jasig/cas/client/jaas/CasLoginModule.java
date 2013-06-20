@@ -25,25 +25,12 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.security.Principal;
 import java.security.acl.Group;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-
 import javax.security.auth.Subject;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.callback.*;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-
 import org.jasig.cas.client.authentication.SimpleGroup;
 import org.jasig.cas.client.authentication.SimplePrincipal;
 import org.jasig.cas.client.util.CommonUtils;
@@ -116,14 +103,14 @@ import org.slf4j.LoggerFactory;
 public class CasLoginModule implements LoginModule {
     /** Constant for login name stored in shared state. */
     public static final String LOGIN_NAME = "javax.security.auth.login.name";
-    
+
     /**
      * Default group name for storing caller principal.
      * The default value supports JBoss, but is configurable to hopefully
      * support other JEE containers.
      */
     public static final String DEFAULT_PRINCIPAL_GROUP_NAME = "CallerPrincipal";
-    
+
     /**
      * Default group name for storing role membership data.
      * The default value supports JBoss, but is configurable to hopefully
@@ -145,41 +132,41 @@ public class CasLoginModule implements LoginModule {
      * CAS tickets are one-time-use, a cached assertion must be provided on
      * re-authentication.
      */
-    protected static final Map<TicketCredential,Assertion> ASSERTION_CACHE = new HashMap<TicketCredential,Assertion>();
+    protected static final Map<TicketCredential, Assertion> ASSERTION_CACHE = new HashMap<TicketCredential, Assertion>();
 
     /** Logger instance */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     /** JAAS authentication subject */
     protected Subject subject;
-   
+
     /** JAAS callback handler */
     protected CallbackHandler callbackHandler;
-   
+
     /** CAS ticket validator */
     protected TicketValidator ticketValidator;
-    
+
     /** CAS service parameter used if no service is provided via TextCallback on login */
     protected String service;
-    
+
     /** CAS assertion */
     protected Assertion assertion;
-   
+
     /** CAS ticket credential */
     protected TicketCredential ticket;
-    
+
     /** Login module shared state */
-    protected Map<String,Object> sharedState;
-   
+    protected Map<String, Object> sharedState;
+
     /** Roles to be added to all authenticated principals by default */
     protected String[] defaultRoles;
-   
+
     /** Names of attributes in the CAS assertion that should be used for role data */
     protected Set<String> roleAttributeNames = new HashSet<String>();
-   
+
     /** Name of JAAS Group containing caller principal */
     protected String principalGroupName = DEFAULT_PRINCIPAL_GROUP_NAME;
-   
+
     /** Name of JAAS Group containing role data */
     protected String roleGroupName = DEFAULT_ROLE_GROUP_NAME;
 
@@ -216,10 +203,7 @@ public class CasLoginModule implements LoginModule {
      *      names, e.g. DAYS, HOURS, MINUTES, SECONDS, MILLISECONDS. Default unit is MINUTES.</li>
      * </ul>
      */
-    public final void initialize(
-            final Subject subject,
-            final CallbackHandler handler,
-            final Map<String,?> state,
+    public final void initialize(final Subject subject, final CallbackHandler handler, final Map<String, ?> state,
             final Map<String, ?> options) {
 
         this.assertion = null;
@@ -227,7 +211,7 @@ public class CasLoginModule implements LoginModule {
         this.subject = subject;
         this.sharedState = (Map<String, Object>) state;
         this.sharedState = new HashMap<String, Object>(state);
-      
+
         String ticketValidatorClass = null;
 
         for (final String key : options.keySet()) {
@@ -251,7 +235,7 @@ public class CasLoginModule implements LoginModule {
                 logger.debug("Set roleAttributeNames={}", this.roleAttributeNames);
             } else if ("principalGroupName".equals(key)) {
                 this.principalGroupName = (String) options.get(key);
-                logger.debug("Set principalGroupName={}",this.principalGroupName);
+                logger.debug("Set principalGroupName={}", this.principalGroupName);
             } else if ("roleGroupName".equals(key)) {
                 this.roleGroupName = (String) options.get(key);
                 logger.debug("Set roleGroupName={}", this.roleGroupName);
@@ -311,15 +295,15 @@ public class CasLoginModule implements LoginModule {
                 logger.info("Login failed due to IO exception in callback handler: {}", e);
                 throw (LoginException) new LoginException("IO exception in callback handler: " + e).initCause(e);
             } catch (final UnsupportedCallbackException e) {
-                logger.info("Login failed due to unsupported callback: {}",  e);
+                logger.info("Login failed due to unsupported callback: {}", e);
                 throw (LoginException) new LoginException(
                         "Callback handler does not support PasswordCallback and TextInputCallback.").initCause(e);
             }
 
             if (ticketCallback.getPassword() != null) {
                 this.ticket = new TicketCredential(new String(ticketCallback.getPassword()));
-                final String service = CommonUtils.isNotBlank(
-                        serviceCallback.getName()) ? serviceCallback.getName() : this.service;
+                final String service = CommonUtils.isNotBlank(serviceCallback.getName()) ? serviceCallback.getName()
+                        : this.service;
 
                 if (this.cacheAssertions) {
                     this.assertion = ASSERTION_CACHE.get(ticket);
@@ -336,7 +320,8 @@ public class CasLoginModule implements LoginModule {
                                 "Neither login module nor callback handler provided required service parameter.");
                     }
                     try {
-                        logger.debug("Attempting ticket validation with service={}  and ticket={}", service, this.ticket);
+                        logger.debug("Attempting ticket validation with service={}  and ticket={}", service,
+                                this.ticket);
                         this.assertion = this.ticketValidator.validate(this.ticket.getName(), service);
 
                     } catch (final Exception e) {
@@ -398,8 +383,8 @@ public class CasLoginModule implements LoginModule {
                     throw new LoginException("Ticket credential not found.");
                 }
 
-                final AssertionPrincipal casPrincipal = new AssertionPrincipal(
-                        this.assertion.getPrincipal().getName(), this.assertion);
+                final AssertionPrincipal casPrincipal = new AssertionPrincipal(this.assertion.getPrincipal().getName(),
+                        this.assertion);
                 this.subject.getPrincipals().add(casPrincipal);
 
                 // Add group containing principal as sole member
@@ -415,7 +400,7 @@ public class CasLoginModule implements LoginModule {
                     roleGroup.addMember(new SimplePrincipal(defaultRole));
                 }
 
-                final Map<String,Object> attributes = this.assertion.getPrincipal().getAttributes();
+                final Map<String, Object> attributes = this.assertion.getPrincipal().getAttributes();
                 for (final String key : attributes.keySet()) {
                     if (this.roleAttributeNames.contains(key)) {
                         // Attribute value is Object if singular or Collection if plural
@@ -465,7 +450,7 @@ public class CasLoginModule implements LoginModule {
         removePrincipalsOfType(AssertionPrincipal.class);
         removePrincipalsOfType(SimplePrincipal.class);
         removePrincipalsOfType(SimpleGroup.class);
-        
+
         // Remove all CAS credentials
         removeCredentialsOfType(TicketCredential.class);
 
@@ -490,19 +475,20 @@ public class CasLoginModule implements LoginModule {
     protected void postLogout() {
         // template method
     }
+
     /**
      * Creates a {@link TicketValidator} instance from a class name and map of property name/value pairs.
      * @param className Fully-qualified name of {@link TicketValidator} concrete class.
      * @param propertyMap Map of property name/value pairs to set on validator instance.
      * @return Ticket validator with properties set.
      */
-    private TicketValidator createTicketValidator(final String className, final Map<String,?> propertyMap) {
-        CommonUtils.assertTrue(
-                propertyMap.containsKey("casServerUrlPrefix"), "Required property casServerUrlPrefix not found.");
+    private TicketValidator createTicketValidator(final String className, final Map<String, ?> propertyMap) {
+        CommonUtils.assertTrue(propertyMap.containsKey("casServerUrlPrefix"),
+                "Required property casServerUrlPrefix not found.");
 
         final Class<TicketValidator> validatorClass = ReflectUtils.loadClass(className);
-        final TicketValidator validator = ReflectUtils.newInstance(
-                validatorClass, propertyMap.get("casServerUrlPrefix"));
+        final TicketValidator validator = ReflectUtils.newInstance(validatorClass,
+                propertyMap.get("casServerUrlPrefix"));
 
         try {
             final BeanInfo info = Introspector.getBeanInfo(validatorClass);
@@ -513,8 +499,8 @@ public class CasLoginModule implements LoginModule {
                     final String value = (String) propertyMap.get(property);
                     final PropertyDescriptor pd = ReflectUtils.getPropertyDescriptor(info, property);
                     if (pd != null) {
-	                    ReflectUtils.setProperty(property, convertIfNecessary(pd, value), validator, info);
-	                    logger.debug("Set {} = {}", property, value);
+                        ReflectUtils.setProperty(property, convertIfNecessary(pd, value), validator, info);
+                        logger.debug("Set {} = {}", property, value);
                     } else {
                         logger.warn("Cannot find property {} on {}", property, className);
                     }
@@ -523,7 +509,7 @@ public class CasLoginModule implements LoginModule {
         } catch (final IntrospectionException e) {
             throw new RuntimeException("Error getting bean info for " + validatorClass, e);
         }
-        
+
         return validator;
     }
 
@@ -547,8 +533,8 @@ public class CasLoginModule implements LoginModule {
         } else if (long.class.equals(pd.getPropertyType())) {
             return new Long(value);
         } else {
-            throw new IllegalArgumentException(
-                    "No conversion strategy exists for property " + pd.getName() + " of type " + pd.getPropertyType());
+            throw new IllegalArgumentException("No conversion strategy exists for property " + pd.getName()
+                    + " of type " + pd.getPropertyType());
         }
     }
 
@@ -567,11 +553,12 @@ public class CasLoginModule implements LoginModule {
     private void removeCredentialsOfType(final Class<? extends Principal> clazz) {
         this.subject.getPrivateCredentials().removeAll(this.subject.getPrivateCredentials(clazz));
     }
+
     /**
      * Removes expired entries from the assertion cache.
      */
     private void cleanCache() {
-        logger.debug("Cleaning assertion cache of size {}",  ASSERTION_CACHE.size());
+        logger.debug("Cleaning assertion cache of size {}", ASSERTION_CACHE.size());
         final Iterator<Map.Entry<TicketCredential, Assertion>> iter = ASSERTION_CACHE.entrySet().iterator();
         final Calendar cutoff = Calendar.getInstance();
         cutoff.setTimeInMillis(System.currentTimeMillis() - this.cacheTimeoutUnit.toMillis(this.cacheTimeout));
@@ -586,4 +573,3 @@ public class CasLoginModule implements LoginModule {
         }
     }
 }
-

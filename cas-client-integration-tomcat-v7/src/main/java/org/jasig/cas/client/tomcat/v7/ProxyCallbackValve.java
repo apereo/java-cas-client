@@ -18,6 +18,8 @@
  */
 package org.jasig.cas.client.tomcat.v7;
 
+import java.io.IOException;
+import javax.servlet.ServletException;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
@@ -27,9 +29,6 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletException;
-import java.io.IOException;
 
 /**
  * Handles watching a url for the proxy callback.
@@ -45,7 +44,7 @@ import java.io.IOException;
 public final class ProxyCallbackValve extends ValveBase {
 
     private static ProxyGrantingTicketStorage PROXY_GRANTING_TICKET_STORAGE;
-    
+
     /** Logger instance */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

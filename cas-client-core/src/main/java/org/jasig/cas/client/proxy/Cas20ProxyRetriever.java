@@ -18,16 +18,13 @@
  */
 package org.jasig.cas.client.proxy;
 
+import java.net.URL;
+import java.net.URLEncoder;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 
 /**
  * Implementation of a ProxyRetriever that follows the CAS 2.0 specification.
@@ -44,7 +41,7 @@ import java.net.URLEncoder;
 public final class Cas20ProxyRetriever implements ProxyRetriever {
 
     /** Unique Id for serialization. */
-	private static final long serialVersionUID = 560409469568911792L;
+    private static final long serialVersionUID = 560409469568911792L;
 
     private static final Logger logger = LoggerFactory.getLogger(Cas20ProxyRetriever.class);
 
@@ -57,7 +54,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
 
     /** Url connection factory to use when communicating with the server **/
     private final HttpURLConnectionFactory urlConnectionFactory;
-    
+
     /**
      * Main Constructor.
      *
@@ -65,34 +62,34 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
      * @param encoding the encoding to use.
      * @param urlFactory url connection factory use when retrieving proxy responses from the server
      */
-    public Cas20ProxyRetriever(final String casServerUrl, final String encoding, final HttpURLConnectionFactory urlFactory) {
+    public Cas20ProxyRetriever(final String casServerUrl, final String encoding,
+            final HttpURLConnectionFactory urlFactory) {
         CommonUtils.assertNotNull(casServerUrl, "casServerUrl cannot be null.");
         this.casServerUrl = casServerUrl;
         this.encoding = encoding;
         this.urlConnectionFactory = urlFactory;
     }
-    
+
     public String getProxyTicketIdFor(final String proxyGrantingTicketId, final String targetService) {
         CommonUtils.assertNotNull(proxyGrantingTicketId, "proxyGrantingTicketId cannot be null.");
         CommonUtils.assertNotNull(targetService, "targetService cannot be null.");
-        
+
         final URL url = constructUrl(proxyGrantingTicketId, targetService);
         final String response = CommonUtils.getResponseFromServer(url, this.urlConnectionFactory, this.encoding);
         final String error = XmlUtils.getTextForElement(response, "proxyFailure");
-    
+
         if (CommonUtils.isNotEmpty(error)) {
             logger.debug(error);
             return null;
         }
-    
+
         return XmlUtils.getTextForElement(response, "proxyTicket");
     }
 
     private URL constructUrl(final String proxyGrantingTicketId, final String targetService) {
         try {
-            return new URL(this.casServerUrl + (this.casServerUrl.endsWith("/") ? "" : "/") + "proxy"
-                          + "?pgt=" + proxyGrantingTicketId 
-                          + "&targetService=" + URLEncoder.encode(targetService, "UTF-8"));
+            return new URL(this.casServerUrl + (this.casServerUrl.endsWith("/") ? "" : "/") + "proxy" + "?pgt="
+                    + proxyGrantingTicketId + "&targetService=" + URLEncoder.encode(targetService, "UTF-8"));
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

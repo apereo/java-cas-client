@@ -18,9 +18,6 @@
  */
 package org.jasig.cas.client.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +47,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     /** Defines the parameter to look for for the service. */
     private String serviceParameterName = "service";
-    
+
     /** Sets where response.encodeUrl should be called on service urls when constructed. */
     private boolean encodeServiceUrl = true;
 
@@ -96,8 +93,10 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     public void init() {
         CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
         CommonUtils.assertNotNull(this.serviceParameterName, "serviceParameterName cannot be null.");
-        CommonUtils.assertTrue(CommonUtils.isNotEmpty(this.serverName) || CommonUtils.isNotEmpty(this.service), "serverName or service must be set.");
-        CommonUtils.assertTrue(CommonUtils.isBlank(this.serverName) || CommonUtils.isBlank(this.service), "serverName and service cannot both be set.  You MUST ONLY set one.");
+        CommonUtils.assertTrue(CommonUtils.isNotEmpty(this.serverName) || CommonUtils.isNotEmpty(this.service),
+                "serverName or service must be set.");
+        CommonUtils.assertTrue(CommonUtils.isBlank(this.serverName) || CommonUtils.isBlank(this.service),
+                "serverName and service cannot both be set.  You MUST ONLY set one.");
     }
 
     // empty implementation as most filters won't need this.
@@ -106,7 +105,8 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     }
 
     protected final String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response) {
-        return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName, this.artifactParameterName, this.encodeServiceUrl);
+        return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName,
+                this.artifactParameterName, this.encodeServiceUrl);
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      */
     public final void setServerName(final String serverName) {
         if (serverName != null && serverName.endsWith("/")) {
-            this.serverName = serverName.substring(0, serverName.length()-1);
+            this.serverName = serverName.substring(0, serverName.length() - 1);
             logger.info("Eliminated extra slash from serverName [{}].  It is now [{}]", serverName, this.serverName);
         } else {
             this.serverName = serverName;
@@ -135,9 +135,9 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     public final void setServiceParameterName(final String serviceParameterName) {
         this.serviceParameterName = serviceParameterName;
     }
-    
+
     public final void setEncodeServiceUrl(final boolean encodeServiceUrl) {
-    	this.encodeServiceUrl = encodeServiceUrl;
+        this.encodeServiceUrl = encodeServiceUrl;
     }
 
     public final String getArtifactParameterName() {
@@ -155,6 +155,6 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      * @return the ticket if its found, null otherwise.
      */
     protected String retrieveTicketFromRequest(final HttpServletRequest request) {
-        return CommonUtils.safeGetParameter(request,getArtifactParameterName());
+        return CommonUtils.safeGetParameter(request, getArtifactParameterName());
     }
 }

@@ -48,7 +48,7 @@ public class PropertiesCasRealm extends AbstractCasRealm {
     public void setPropertiesFilePath(final String path) {
         this.delegate.setPropertiesFilePath(path);
     }
-    
+
     /** {@inheritDoc} */
     protected void startInternal() throws LifecycleException {
         super.startInternal();

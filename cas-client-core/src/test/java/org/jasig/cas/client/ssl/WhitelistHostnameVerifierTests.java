@@ -46,8 +46,7 @@ public class WhitelistHostnameVerifierTests extends TestCase {
      * Test method for {@link WhitelistHostnameVerifier#verify(String, SSLSession)}.
      */
     public void testVerify() {
-        final WhitelistHostnameVerifier verifier = new WhitelistHostnameVerifier(
-                "red.vt.edu, green.vt.edu,blue.vt.edu");
+        final WhitelistHostnameVerifier verifier = new WhitelistHostnameVerifier("red.vt.edu, green.vt.edu,blue.vt.edu");
         Assert.assertTrue(verifier.verify("red.vt.edu", null));
         Assert.assertTrue(verifier.verify("green.vt.edu", null));
         Assert.assertTrue(verifier.verify("blue.vt.edu", null));

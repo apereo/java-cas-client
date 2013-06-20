@@ -38,11 +38,10 @@ public abstract class AbstractLifecycleValve extends ValveBase implements Lifecy
 
     /** Logger instance */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     /** Lifecycle listeners */
     private LifecycleSupport lifecycle = new LifecycleSupport(this);
-    
-    
+
     /** {@inheritDoc} */
     public void addLifecycleListener(final LifecycleListener listener) {
         lifecycle.addLifecycleListener(listener);

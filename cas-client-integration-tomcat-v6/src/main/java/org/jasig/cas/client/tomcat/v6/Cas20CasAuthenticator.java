@@ -34,13 +34,13 @@ public final class Cas20CasAuthenticator extends AbstractCasAuthenticator {
     public static final String AUTH_METHOD = "CAS20";
 
     private static final String NAME = Cas20CasAuthenticator.class.getName();
-    
+
     private Cas20ServiceTicketValidator ticketValidator;
 
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
-    
+
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }

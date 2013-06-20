@@ -20,7 +20,6 @@
 package org.jasig.cas.client.ssl;
 
 import java.util.regex.Pattern;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
@@ -37,8 +36,7 @@ public final class RegexHostnameVerifier implements HostnameVerifier {
 
     /** Allowed hostname pattern */
     private Pattern pattern;
-    
-    
+
     /**
      * Creates a new instance using the given regular expression.
      * 
@@ -47,6 +45,7 @@ public final class RegexHostnameVerifier implements HostnameVerifier {
     public RegexHostnameVerifier(final String regex) {
         this.pattern = Pattern.compile(regex);
     }
+
     /** {@inheritDoc} */
     public boolean verify(final String hostname, final SSLSession session) {
         return pattern.matcher(hostname).matches();

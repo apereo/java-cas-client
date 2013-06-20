@@ -1,69 +1,69 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
+    <parent>
+        <groupId>org.jasig.cas.client</groupId>
+        <version>3.3-SNAPSHOT</version>
+        <artifactId>cas-client</artifactId>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas.client</groupId>
-    <version>3.3-SNAPSHOT</version>
-    <artifactId>cas-client</artifactId>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jasig.cas.client</groupId>
-  <artifactId>cas-client-integration-jboss</artifactId>
-  <packaging>jar</packaging>
-  <name>Jasig CAS Client for Java - JBoss Integration</name>
+    <artifactId>cas-client-integration-jboss</artifactId>
+    <packaging>jar</packaging>
+    <name>Jasig CAS Client for Java - JBoss Integration</name>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.jasig.cas.client</groupId>
-      <artifactId>cas-client-core</artifactId>
-      <version>${project.version}</version>
-      <scope>compile</scope>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
-    <!-- http://repository.jboss.org/maven2/org/jboss/jbossas/jboss-as-tomcat/5.1.0.GA/ -->
-    <dependency>
-      <groupId>org.jboss.jbossas</groupId>
-      <artifactId>jboss-as-tomcat</artifactId>
-      <version>${jboss.version}</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>trove</groupId>
-          <artifactId>trove</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>apache-log4j</groupId>
-          <artifactId>log4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>jpl-pattern</groupId>
-          <artifactId>jpl-pattern</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>jpl-util</groupId>
-          <artifactId>jpl-util</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.security</groupId>
-          <artifactId>jacc</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-  </dependencies>
+        <!-- http://repository.jboss.org/maven2/org/jboss/jbossas/jboss-as-tomcat/5.1.0.GA/ -->
+        <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-as-tomcat</artifactId>
+            <version>${jboss.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>trove</groupId>
+                    <artifactId>trove</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>apache-log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jpl-pattern</groupId>
+                    <artifactId>jpl-pattern</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jpl-util</groupId>
+                    <artifactId>jpl-util</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.security</groupId>
+                    <artifactId>jacc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 
-  <!-- This must be disabled before releasing a production-ready version. -->
-  <repositories>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Repository</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public//</url>
-    </repository>
-  </repositories>
-  <properties>
-    <jboss.version>6.1.0.Final</jboss.version>
-  </properties>
+    <!-- This must be disabled before releasing a production-ready version. -->
+    <repositories>
+        <repository>
+            <id>jboss</id>
+            <name>JBoss Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public//</url>
+        </repository>
+    </repositories>
+    <properties>
+        <jboss.version>6.1.0.Final</jboss.version>
+    </properties>
 </project>

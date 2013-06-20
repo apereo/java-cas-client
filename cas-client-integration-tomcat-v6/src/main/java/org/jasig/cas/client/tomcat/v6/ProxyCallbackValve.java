@@ -18,15 +18,14 @@
  */
 package org.jasig.cas.client.tomcat.v6;
 
+import java.io.IOException;
+import javax.servlet.ServletException;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
-
-import javax.servlet.ServletException;
-import java.io.IOException;
 
 /**
  * Handles watching a url for the proxy callback.

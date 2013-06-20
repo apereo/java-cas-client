@@ -19,9 +19,7 @@
 package org.jasig.cas.client.tomcat;
 
 import java.util.regex.Pattern;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.jasig.cas.client.util.CommonUtils;
 
 /**
@@ -52,7 +50,7 @@ public final class RegexUriLogoutHandler extends AbstractLogoutHandler {
         CommonUtils.assertNotNull(this.logoutUriRegex, "A logout URI regular expression is required.");
         this.logoutUriPattern = Pattern.compile(this.logoutUriRegex);
     }
-    
+
     /** {@inheritDoc} */
     public boolean isLogoutRequest(final HttpServletRequest request) {
         return this.logoutUriPattern.matcher(request.getRequestURI()).matches();
