@@ -23,23 +23,23 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<bean id="proxyTicketValidator"
-		class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
-		<constructor-arg index="0" value="http://localhost:8089/" />
-		<property name="allowedProxyChains">
-			<value>
-				test test2 test3 test4 test5
-				mytest mytest1 mytest2 mytest3
-				proxy1 proxy2 proxy3
-			</value>
-		</property>
-        <property name="proxyCallbackUrl" value="https://localhost:8443/test" />
-        <property name="renew" value="true" />
+    <bean id="proxyTicketValidator"
+          class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
+        <constructor-arg index="0" value="http://localhost:8089/"/>
+        <property name="allowedProxyChains">
+            <value>
+                test test2 test3 test4 test5
+                mytest mytest1 mytest2 mytest3
+                proxy1 proxy2 proxy3
+            </value>
+        </property>
+        <property name="proxyCallbackUrl" value="https://localhost:8443/test"/>
+        <property name="renew" value="true"/>
     </bean>
-	
-	<bean id="proxyTicketValidatorWithAllowAnyProxy"
-		class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator"
-		p:acceptAnyProxy="true">
-		<constructor-arg index="0" value="http://localhost:8089/" />
-	</bean>      
+
+    <bean id="proxyTicketValidatorWithAllowAnyProxy"
+          class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator"
+          p:acceptAnyProxy="true">
+        <constructor-arg index="0" value="http://localhost:8089/"/>
+    </bean>
 </beans>
