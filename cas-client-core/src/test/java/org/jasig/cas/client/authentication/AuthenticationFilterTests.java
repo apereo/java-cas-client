@@ -27,14 +27,18 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import junit.framework.TestCase;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.AssertionImpl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for the AuthenticationFilter.
@@ -43,7 +47,7 @@ import org.springframework.mock.web.MockServletContext;
  * @version $Revision: 11753 $ $Date: 2007-01-03 13:37:26 -0500 (Wed, 03 Jan 2007) $
  * @since 3.0
  */
-public final class AuthenticationFilterTests extends TestCase {
+public final class AuthenticationFilterTests {
 
     private static final String CAS_SERVICE_URL = "https://localhost:8443/service";
 
@@ -51,7 +55,8 @@ public final class AuthenticationFilterTests extends TestCase {
 
     private AuthenticationFilter filter;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         // TODO CAS_SERVICE_URL, false, CAS_LOGIN_URL
         this.filter = new AuthenticationFilter();
         final MockFilterConfig config = new MockFilterConfig();
@@ -60,10 +65,12 @@ public final class AuthenticationFilterTests extends TestCase {
         this.filter.init(config);
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         this.filter.destroy();
     }
 
+    @Test
     public void testRedirect() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
@@ -84,6 +91,7 @@ public final class AuthenticationFilterTests extends TestCase {
                 .getRedirectedUrl());
     }
 
+    @Test
     public void testRedirectWithQueryString() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
@@ -116,6 +124,7 @@ public final class AuthenticationFilterTests extends TestCase {
                 "UTF-8"), response.getRedirectedUrl());
     }
 
+    @Test
     public void testAssertion() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
@@ -136,6 +145,7 @@ public final class AuthenticationFilterTests extends TestCase {
         assertNull(response.getRedirectedUrl());
     }
 
+    @Test
     public void testRenew() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
@@ -156,6 +166,7 @@ public final class AuthenticationFilterTests extends TestCase {
         assertTrue(response.getRedirectedUrl().indexOf("renew=true") != -1);
     }
 
+    @Test
     public void testGateway() throws Exception {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
@@ -181,6 +192,7 @@ public final class AuthenticationFilterTests extends TestCase {
         assertNull(response2.getRedirectedUrl());
     }
 
+    @Test
     public void testRenewInitParamThrows() throws Exception {
         final AuthenticationFilter f = new AuthenticationFilter();
         final MockFilterConfig config = new MockFilterConfig();
@@ -195,6 +207,7 @@ public final class AuthenticationFilterTests extends TestCase {
         }
     }
 
+    @Test
     public void testAllowsRenewContextParam() throws Exception {
         final AuthenticationFilter f = new AuthenticationFilter();
         final MockServletContext context = new MockServletContext();
@@ -205,5 +218,15 @@ public final class AuthenticationFilterTests extends TestCase {
         final Field renewField = AuthenticationFilter.class.getDeclaredField("renew");
         renewField.setAccessible(true);
         assertTrue((Boolean) renewField.get(f));
+    }
+
+    @Test
+    public void customRedirectStrategy() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", "https://cas.example.com/login");
+        context.addInitParameter("service", "https://localhost:8443/service");
+        context.addInitParameter("authenticationRedirectStrategyClass", "org.jasig.cas.client.authentication.FacesCompatibleAuthenticationRedirectStrategy");
+        f.init(new MockFilterConfig(context));
     }
 }

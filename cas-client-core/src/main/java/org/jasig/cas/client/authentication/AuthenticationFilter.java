@@ -20,6 +20,7 @@ package org.jasig.cas.client.authentication;
 
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.validation.Assertion;
 
 import javax.servlet.FilterChain;
@@ -83,23 +84,14 @@ public class AuthenticationFilter extends AbstractCasFilter {
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
             if (gatewayStorageClass != null) {
-                this.gatewayStorage = classNameToClass(gatewayStorageClass);
+                this.gatewayStorage = ReflectUtils.newInstance(gatewayStorageClass);
             }
 
             final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig, "authenticationRedirectStrategyClass", null);
 
             if (authenticationRedirectStrategyClass != null) {
-                this.authenticationRedirectStrategy = classNameToClass(authenticationRedirectStrategyClass);
+                this.authenticationRedirectStrategy = ReflectUtils.newInstance(authenticationRedirectStrategyClass);
             }
-        }
-    }
-
-    private <T> T classNameToClass(final String className) throws ServletException {
-        try {
-            return (T) Class.forName(className).newInstance();
-        } catch (final Exception e) {
-            logger.error(e.getMessage(),e);
-            throw new ServletException(e);
         }
     }
 
