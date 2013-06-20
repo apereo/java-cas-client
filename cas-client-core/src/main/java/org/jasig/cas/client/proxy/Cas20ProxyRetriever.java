@@ -44,12 +44,9 @@ import java.net.URLEncoder;
 public final class Cas20ProxyRetriever implements ProxyRetriever {
 
     /** Unique Id for serialization. */
-	  private static final long serialVersionUID = 560409469568911791L;
+	private static final long serialVersionUID = 560409469568911792L;
 
-	  /**
-     * Instance of Commons Logging.
-     */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(Cas20ProxyRetriever.class);
 
     /**
      * Url to CAS server.
