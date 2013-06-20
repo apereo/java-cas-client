@@ -21,7 +21,6 @@ package org.jasig.cas.client.tomcat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
@@ -51,7 +50,8 @@ public abstract class AbstractLogoutHandler implements LogoutHandler {
 
         final Assertion assertion;
         final HttpSession httpSession = request.getSession(false);
-        if (httpSession != null && (assertion = (Assertion) httpSession.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION)) != null) {
+        if (httpSession != null
+                && (assertion = (Assertion) httpSession.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION)) != null) {
             httpSession.removeAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
             logger.info("Successfully logged out {}", assertion.getPrincipal());
         } else {

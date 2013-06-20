@@ -21,9 +21,7 @@ package org.jasig.cas.client.tomcat;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
-
 import junit.framework.TestCase;
-
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 
 /**
@@ -47,10 +45,10 @@ public class PropertiesCasRealmDelegateTests extends TestCase {
         final Principal p = new AttributePrincipalImpl("rosencrantz");
         assertTrue(p == realm.authenticate(p));
     }
-    
+
     public void testGetRoles() {
         final Principal p = new AttributePrincipalImpl("rosencrantz");
-        final List<String> expected = Arrays.asList(new String[] {"admins", "users"});
+        final List<String> expected = Arrays.asList(new String[] { "admins", "users" });
         final List<String> actual = Arrays.asList(realm.getRoles(p));
         assertEquals(expected.size(), actual.size());
 
@@ -58,7 +56,7 @@ public class PropertiesCasRealmDelegateTests extends TestCase {
             assertTrue(actual.contains(item));
         }
     }
-    
+
     public void testHasRole() {
         assertTrue(realm.hasRole(new AttributePrincipalImpl("rosencrantz"), "admins"));
         assertTrue(realm.hasRole(new AttributePrincipalImpl("rosencrantz"), "users"));

@@ -64,7 +64,7 @@ public final class SimpleGroup extends SimplePrincipal implements Group {
     public boolean removeMember(final Principal user) {
         return this.members.remove(user);
     }
-    
+
     public String toString() {
         return super.toString() + ": " + members.toString();
     }

@@ -18,6 +18,10 @@
  */
 package org.jasig.cas.client.validation;
 
+import java.io.StringReader;
+import java.util.*;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
@@ -30,11 +34,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.StringReader;
-import java.util.*;
 
 /**
  * Implementation of the TicketValidator that will validate Service Tickets in compliance with the CAS 2.
@@ -70,7 +69,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      *
      * @param urlParameters the Map containing the existing parameters to send to the server.
      */
-    protected final void populateUrlAttributeMap(final Map<String,String> urlParameters) {
+    protected final void populateUrlAttributeMap(final Map<String, String> urlParameters) {
         urlParameters.put("pgtUrl", encodeUrl(this.proxyCallbackUrl));
     }
 
@@ -87,12 +86,12 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
 
         final String principal = XmlUtils.getTextForElement(response, "user");
         final String proxyGrantingTicketIou = XmlUtils.getTextForElement(response, "proxyGrantingTicket");
-        
+
         final String proxyGrantingTicket;
         if (CommonUtils.isBlank(proxyGrantingTicketIou) || this.proxyGrantingTicketStorage == null) {
-        	proxyGrantingTicket = null;
+            proxyGrantingTicket = null;
         } else {
-        	proxyGrantingTicket = this.proxyGrantingTicketStorage.retrieve(proxyGrantingTicketIou);
+            proxyGrantingTicket = this.proxyGrantingTicketStorage.retrieve(proxyGrantingTicketIou);
         }
 
         if (CommonUtils.isEmpty(principal)) {
@@ -100,9 +99,10 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         }
 
         final Assertion assertion;
-        final Map<String,Object> attributes = extractCustomAttributes(response);
+        final Map<String, Object> attributes = extractCustomAttributes(response);
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
-            final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
+            final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes,
+                    proxyGrantingTicket, this.proxyRetriever);
             assertion = new AssertionImpl(attributePrincipal);
         } else {
             assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
@@ -131,7 +131,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @param xml the XML to parse.
      * @return the map of attributes.
      */
-    protected Map<String,Object> extractCustomAttributes(final String xml) {
+    protected Map<String, Object> extractCustomAttributes(final String xml) {
         final SAXParserFactory spf = SAXParserFactory.newInstance();
         spf.setNamespaceAware(true);
         spf.setValidating(false);
@@ -155,7 +155,8 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @param assertion the partially constructed assertion.
      * @throws TicketValidationException if there is a problem constructing the Assertion.
      */
-    protected void customParseResponse(final String response, final Assertion assertion) throws TicketValidationException {
+    protected void customParseResponse(final String response, final Assertion assertion)
+            throws TicketValidationException {
         // nothing to do
     }
 
@@ -199,7 +200,8 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         }
 
         @Override
-        public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attributes) throws SAXException {
+        public void startElement(final String namespaceURI, final String localName, final String qName,
+                final Attributes attributes) throws SAXException {
             if ("attributes".equals(localName)) {
                 this.foundAttributes = true;
             } else if (this.foundAttributes) {
@@ -216,7 +218,8 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         }
 
         @Override
-        public void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException {
+        public void endElement(final String namespaceURI, final String localName, final String qName)
+                throws SAXException {
             if ("attributes".equals(localName)) {
                 this.foundAttributes = false;
                 this.currentAttribute = null;

@@ -18,13 +18,15 @@
  */
 package org.jasig.cas.client.proxy;
 
-import net.spy.memcached.MemcachedClient;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+import net.spy.memcached.MemcachedClient;
 
 /**
  * Implementation of the {@link org.jasig.cas.client.proxy.ProxyGrantingTicketStorage} interface that is backed by
@@ -34,7 +36,8 @@ import java.util.concurrent.Future;
  * @version $Revision$ $Date$
  * @since 3.1.9
  */
-public final class MemcachedBackedProxyGrantingTicketStorageImpl extends AbstractEncryptedProxyGrantingTicketStorageImpl {
+public final class MemcachedBackedProxyGrantingTicketStorageImpl extends
+        AbstractEncryptedProxyGrantingTicketStorageImpl {
 
     private final MemcachedClient client;
 
@@ -47,7 +50,8 @@ public final class MemcachedBackedProxyGrantingTicketStorageImpl extends Abstrac
     }
 
     protected static String[] getHostsFromClassPath() {
-        final InputStream inputStream = MemcachedBackedProxyGrantingTicketStorageImpl.class.getResourceAsStream("/cas/casclient_memcached_hosts.txt");
+        final InputStream inputStream = MemcachedBackedProxyGrantingTicketStorageImpl.class
+                .getResourceAsStream("/cas/casclient_memcached_hosts.txt");
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         final List<String> hosts = new ArrayList<String>();
 
@@ -89,6 +93,7 @@ public final class MemcachedBackedProxyGrantingTicketStorageImpl extends Abstrac
             throw new IllegalStateException(e);
         }
     }
+
     public void saveInternal(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         handleSynchronousRequest(this.client.add(proxyGrantingTicketIou, 120, proxyGrantingTicket));
     }

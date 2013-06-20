@@ -18,17 +18,15 @@
  */
 package org.jasig.cas.client.util;
 
-import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-
+import static org.junit.Assert.assertTrue;
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.io.IOException;
-
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Scott Battaglia
@@ -57,7 +55,8 @@ public final class CasFilterTests {
     }
 
     private static class TestCasFilter extends AbstractCasFilter {
-        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+                ServletException {
             // nothing to do
         }
     }

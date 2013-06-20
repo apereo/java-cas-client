@@ -18,11 +18,11 @@
  */
 package org.jasig.cas.client.session;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Matt Brown <matt.brown@citrix.com>

@@ -19,12 +19,7 @@
 package org.jasig.cas.client.jaas;
 
 import java.io.IOException;
-
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.callback.*;
 
 /**
  * Callback handler that provides the CAS service and ticket to a
@@ -40,10 +35,10 @@ public class ServiceAndTicketCallbackHandler implements CallbackHandler {
 
     /** CAS service URL */
     private final String service;
-   
+
     /** CAS service ticket */
     private final String ticket;
-   
+
     /**
      * Creates a new instance with the given service and ticket.
      *

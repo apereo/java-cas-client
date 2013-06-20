@@ -18,13 +18,11 @@
  */
 package org.jasig.cas.client.session;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * HashMap backed implementation of SessionMappingStorage.
@@ -35,26 +33,26 @@ import javax.servlet.http.HttpSession;
  *
  */
 public final class HashMapBackedSessionMappingStorage implements SessionMappingStorage {
-	
+
     /**
      * Maps the ID from the CAS server to the Session.
      */
-    private final Map<String,HttpSession> MANAGED_SESSIONS = new HashMap<String,HttpSession>();
+    private final Map<String, HttpSession> MANAGED_SESSIONS = new HashMap<String, HttpSession>();
 
     /**
      * Maps the Session ID to the key from the CAS Server.
      */
-    private final Map<String,String> ID_TO_SESSION_KEY_MAPPING = new HashMap<String,String>();
+    private final Map<String, String> ID_TO_SESSION_KEY_MAPPING = new HashMap<String, String>();
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public synchronized void addSessionById(String mappingId, HttpSession session) {
+    public synchronized void addSessionById(String mappingId, HttpSession session) {
         ID_TO_SESSION_KEY_MAPPING.put(session.getId(), mappingId);
         MANAGED_SESSIONS.put(mappingId, session);
 
-	}                               
+    }
 
-	public synchronized void removeBySessionById(final String sessionId) {
+    public synchronized void removeBySessionById(final String sessionId) {
         logger.debug("Attempting to remove Session=[{}]", sessionId);
 
         final String key = ID_TO_SESSION_KEY_MAPPING.get(sessionId);
@@ -68,15 +66,15 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
         }
         MANAGED_SESSIONS.remove(key);
         ID_TO_SESSION_KEY_MAPPING.remove(sessionId);
-	}
+    }
 
-	public synchronized HttpSession removeSessionByMappingId(String mappingId) {
-		final HttpSession session = MANAGED_SESSIONS.get(mappingId);
+    public synchronized HttpSession removeSessionByMappingId(String mappingId) {
+        final HttpSession session = MANAGED_SESSIONS.get(mappingId);
 
         if (session != null) {
-        	removeBySessionById(session.getId());
+            removeBySessionById(session.getId());
         }
 
         return session;
-	}
+    }
 }

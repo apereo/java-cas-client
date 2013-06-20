@@ -20,11 +20,9 @@ package org.jasig.cas.client.tomcat;
 
 import java.io.IOException;
 import java.security.Principal;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
@@ -51,17 +49,17 @@ public final class AuthenticatorDelegate {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String serviceUrl;
-    
+
     private String serverName;
-    
+
     private String casServerLoginUrl;
 
     private String artifactParameterName;
-    
+
     private String serviceParameterName;
-    
+
     private TicketValidator ticketValidator;
-    
+
     private CasRealm realm;
 
     /**
@@ -87,9 +85,11 @@ public final class AuthenticatorDelegate {
         if (assertion == null) {
             logger.debug("CAS assertion not found in session -- authentication required.");
             final String token = request.getParameter(this.artifactParameterName);
-            final String service = CommonUtils.constructServiceUrl(request, response, this.serviceUrl, this.serverName, this.artifactParameterName, true);
+            final String service = CommonUtils.constructServiceUrl(request, response, this.serviceUrl, this.serverName,
+                    this.artifactParameterName, true);
             if (CommonUtils.isBlank(token)) {
-                final String redirectUrl = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, this.serviceParameterName, service, false, false);
+                final String redirectUrl = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
+                        this.serviceParameterName, service, false, false);
                 logger.debug("Redirecting to {}", redirectUrl);
                 CommonUtils.sendRedirect(response, redirectUrl);
                 return null;
@@ -188,9 +188,9 @@ public final class AuthenticatorDelegate {
     private void setUnauthorized(final HttpServletResponse response, final String message) {
         try {
             if (message != null) {
-	            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
             } else {
-	            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } catch (IOException e) {
             throw new IllegalStateException("Error setting 403 status.", e);

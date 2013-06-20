@@ -18,10 +18,9 @@
  */
 package org.jasig.cas.client.proxy;
 
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.jasig.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +38,8 @@ import org.slf4j.LoggerFactory;
  * @since 3.0
  */
 public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicketStorage {
-	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Default timeout in milliseconds.
@@ -50,7 +49,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
     /**
      * Map that stores the PGTIOU to PGT mappings.
      */
-    private final ConcurrentMap<String,ProxyGrantingTicketHolder> cache = new ConcurrentHashMap<String,ProxyGrantingTicketHolder>();
+    private final ConcurrentMap<String, ProxyGrantingTicketHolder> cache = new ConcurrentHashMap<String, ProxyGrantingTicketHolder>();
 
     /**
      * time, in milliseconds, before a {@link ProxyGrantingTicketHolder}
@@ -58,7 +57,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * 
      * @see ProxyGrantingTicketStorageImpl#DEFAULT_TIMEOUT
      */
-	private long timeout;
+    private long timeout;
 
     /**
      * Constructor set the timeout to the default value.
@@ -74,7 +73,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * @param timeout the time to hold on to the ProxyGrantingTicket
      */
     public ProxyGrantingTicketStorageImpl(final long timeout) {
-    	this.timeout = timeout;
+        this.timeout = timeout;
     }
 
     /**
@@ -89,7 +88,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
         final ProxyGrantingTicketHolder holder = this.cache.get(proxyGrantingTicketIou);
 
         if (holder == null) {
-        	logger.info("No Proxy Ticket found for [{}].", proxyGrantingTicketIou);
+            logger.info("No Proxy Ticket found for [{}].", proxyGrantingTicketIou);
             return null;
         }
 
@@ -102,7 +101,8 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
     public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         final ProxyGrantingTicketHolder holder = new ProxyGrantingTicketHolder(proxyGrantingTicket);
 
-        logger.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [{}, {}]", proxyGrantingTicketIou, proxyGrantingTicket);
+        logger.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [{}, {}]", proxyGrantingTicketIou,
+                proxyGrantingTicket);
         this.cache.put(proxyGrantingTicketIou, holder);
     }
 
@@ -111,13 +111,13 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * called regularly via an external thread or timer.
      */
     public void cleanUp() {
-        for (final Map.Entry<String,ProxyGrantingTicketHolder> holder : this.cache.entrySet()) {
+        for (final Map.Entry<String, ProxyGrantingTicketHolder> holder : this.cache.entrySet()) {
             if (holder.getValue().isExpired(this.timeout)) {
                 this.cache.remove(holder.getKey());
             }
         }
     }
-    
+
     private static final class ProxyGrantingTicketHolder {
 
         private final String proxyGrantingTicket;

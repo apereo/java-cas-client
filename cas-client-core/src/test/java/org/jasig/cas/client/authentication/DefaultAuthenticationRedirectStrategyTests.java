@@ -1,7 +1,6 @@
 package org.jasig.cas.client.authentication;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;

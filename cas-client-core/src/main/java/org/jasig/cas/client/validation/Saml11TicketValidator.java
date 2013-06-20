@@ -18,13 +18,19 @@
  */
 package org.jasig.cas.client.validation;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.*;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.util.CommonUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-import org.opensaml.*;
+import org.opensaml.Configuration;
+import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.IdentifierGenerator;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml1.core.*;
@@ -39,12 +45,6 @@ import org.opensaml.xml.schema.XSAny;
 import org.opensaml.xml.schema.XSString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.*;
 
 /**
  * TicketValidator that can understand validating a SAML artifact.  This includes the SOAP request/response.
@@ -69,6 +69,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     private final BasicParserPool basicParserPool;
 
     private final IdentifierGenerator identifierGenerator;
+
     public Saml11TicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
         this.basicParserPool = new BasicParserPool();
@@ -140,30 +141,34 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
                 }
 
                 final List<Attribute> attributes = getAttributesFor(assertion, subject);
-                final Map<String,Object> personAttributes = new HashMap<String,Object>();
+                final Map<String, Object> personAttributes = new HashMap<String, Object>();
                 for (final Attribute samlAttribute : attributes) {
                     final List<?> values = getValuesFrom(samlAttribute);
 
                     personAttributes.put(samlAttribute.getAttributeName(), values.size() == 1 ? values.get(0) : values);
                 }
 
-                final AttributePrincipal principal = new AttributePrincipalImpl(subject.getNameIdentifier().getNameIdentifier(), personAttributes);
+                final AttributePrincipal principal = new AttributePrincipalImpl(subject.getNameIdentifier()
+                        .getNameIdentifier(), personAttributes);
 
-                final Map<String,Object> authenticationAttributes = new HashMap<String,Object>();
-                authenticationAttributes.put("samlAuthenticationStatement::authMethod", authenticationStatement.getAuthenticationMethod());
+                final Map<String, Object> authenticationAttributes = new HashMap<String, Object>();
+                authenticationAttributes.put("samlAuthenticationStatement::authMethod",
+                        authenticationStatement.getAuthenticationMethod());
 
                 final DateTime notBefore = assertion.getConditions().getNotBefore();
                 final DateTime notOnOrAfter = assertion.getConditions().getNotOnOrAfter();
                 final DateTime authenticationInstant = authenticationStatement.getAuthenticationInstant();
-                return new AssertionImpl(principal, notBefore.toDate(), notOnOrAfter.toDate(), authenticationInstant.toDate(), authenticationAttributes);
+                return new AssertionImpl(principal, notBefore.toDate(), notOnOrAfter.toDate(),
+                        authenticationInstant.toDate(), authenticationAttributes);
             }
-       } catch (final UnmarshallingException e) {
+        } catch (final UnmarshallingException e) {
             throw new TicketValidationException(e);
         } catch (final XMLParserException e) {
             throw new TicketValidationException(e);
         }
 
-        throw new TicketValidationException("No Assertion found within valid time range.  Either there's a replay of the ticket or there's clock drift. Check tolerance range, or server/client synchronization.");
+        throw new TicketValidationException(
+                "No Assertion found within valid time range.  Either there's a replay of the ticket or there's clock drift. Check tolerance range, or server/client synchronization.");
     }
 
     private boolean isValidAssertion(final org.opensaml.saml1.core.Assertion assertion) {
@@ -205,7 +210,8 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     private List<Attribute> getAttributesFor(final org.opensaml.saml1.core.Assertion assertion, final Subject subject) {
         final List<Attribute> attributes = new ArrayList<Attribute>();
         for (final AttributeStatement attribute : assertion.getAttributeStatements()) {
-            if (subject.getNameIdentifier().getNameIdentifier().equals(attribute.getSubject().getNameIdentifier().getNameIdentifier())) {
+            if (subject.getNameIdentifier().getNameIdentifier()
+                    .equals(attribute.getSubject().getNameIdentifier().getNameIdentifier())) {
                 attributes.addAll(attribute.getAttributes());
             }
         }
@@ -228,17 +234,22 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     }
 
     protected String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-        final String MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\"" + this.identifierGenerator.generateIdentifier() + "\" IssueInstant=\"" + CommonUtils.formatForUtcTime(new Date()) + "\">"
-                + "<samlp:AssertionArtifact>" + ticket
+        final String MESSAGE_TO_SEND = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\"  MajorVersion=\"1\" MinorVersion=\"1\" RequestID=\""
+                + this.identifierGenerator.generateIdentifier()
+                + "\" IssueInstant=\""
+                + CommonUtils.formatForUtcTime(new Date())
+                + "\">"
+                + "<samlp:AssertionArtifact>"
+                + ticket
                 + "</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>";
         HttpURLConnection conn = null;
         DataOutputStream out = null;
         BufferedReader in = null;
-        
+
         try {
             conn = this.getURLConnectionFactory().buildHttpURLConnection(validationUrl.openConnection());
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "text/xml"); 
+            conn.setRequestProperty("Content-Type", "text/xml");
             conn.setRequestProperty("Content-Length", Integer.toString(MESSAGE_TO_SEND.length()));
             conn.setRequestProperty("SOAPAction", "http://www.oasis-open.org/committees/security");
             conn.setUseCaches(false);
@@ -248,8 +259,10 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             out = new DataOutputStream(conn.getOutputStream());
             out.writeBytes(MESSAGE_TO_SEND);
             out.flush();
-           
-            in = new BufferedReader(CommonUtils.isNotBlank(getEncoding()) ? new InputStreamReader(conn.getInputStream(), Charset.forName(getEncoding())) : new InputStreamReader(conn.getInputStream()));
+
+            in = new BufferedReader(CommonUtils.isNotBlank(getEncoding()) ? new InputStreamReader(
+                    conn.getInputStream(), Charset.forName(getEncoding())) : new InputStreamReader(
+                    conn.getInputStream()));
             final StringBuilder buffer = new StringBuilder(256);
 
             String line;
@@ -259,7 +272,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             }
             return buffer.toString();
         } catch (final IOException e) {
-            throw new RuntimeException(e);       
+            throw new RuntimeException(e);
         } finally {
             CommonUtils.closeQuietly(out);
             CommonUtils.closeQuietly(in);
