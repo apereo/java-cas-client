@@ -70,7 +70,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -92,7 +92,7 @@ public final class AuthenticationFilterTests {
         request.setSecure(true);
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -122,7 +122,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -141,7 +141,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -161,7 +161,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
