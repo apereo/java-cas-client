@@ -18,20 +18,15 @@
  */
 package org.jasig.cas.client.authentication;
 
+import java.io.IOException;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.validation.Assertion;
-
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -66,7 +61,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
      * Whether to send the gateway request or not.
      */
     private boolean gateway = false;
-    
+
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
     private AuthenticationRedirectStrategy authenticationRedirectStrategy = new DefaultAuthenticationRedirectStrategy();
@@ -87,7 +82,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
                 this.gatewayStorage = ReflectUtils.newInstance(gatewayStorageClass);
             }
 
-            final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig, "authenticationRedirectStrategyClass", null);
+            final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig,
+                    "authenticationRedirectStrategyClass", null);
 
             if (authenticationRedirectStrategyClass != null) {
                 this.authenticationRedirectStrategy = ReflectUtils.newInstance(authenticationRedirectStrategyClass);
@@ -100,7 +96,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
         CommonUtils.assertNotNull(this.casServerLoginUrl, "casServerLoginUrl cannot be null.");
     }
 
-    public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+    public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession(false);
@@ -130,9 +127,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
             modifiedServiceUrl = serviceUrl;
         }
 
-         logger.debug("Constructed service url: {}", modifiedServiceUrl);
+        logger.debug("Constructed service url: {}", modifiedServiceUrl);
 
-        final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
+        final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
+                getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
         this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
@@ -149,8 +147,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void setCasServerLoginUrl(final String casServerLoginUrl) {
         this.casServerLoginUrl = casServerLoginUrl;
     }
-    
+
     public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
-    	this.gatewayStorage = gatewayStorage;
+        this.gatewayStorage = gatewayStorage;
     }
 }
