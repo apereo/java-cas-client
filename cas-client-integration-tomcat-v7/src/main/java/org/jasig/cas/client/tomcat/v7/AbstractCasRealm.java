@@ -18,11 +18,10 @@
  */
 package org.jasig.cas.client.tomcat.v7;
 
+import java.security.Principal;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.realm.RealmBase;
 import org.jasig.cas.client.tomcat.CasRealm;
-
-import java.security.Principal;
 
 /**
  * Base <code>Realm</code> implementation for all CAS realms.

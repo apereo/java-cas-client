@@ -18,6 +18,10 @@
  */
 package org.jasig.cas.client.validation;
 
+import java.io.StringReader;
+import java.util.*;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
@@ -30,11 +34,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.StringReader;
-import java.util.*;
 
 /**
  * Implementation of the TicketValidator that will validate Service Tickets in compliance with the CAS 2.

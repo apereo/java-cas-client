@@ -18,9 +18,8 @@
  */
 package org.jasig.cas.client.tomcat;
 
-import org.jasig.cas.client.util.CommonUtils;
-
 import javax.servlet.http.HttpServletRequest;
+import org.jasig.cas.client.util.CommonUtils;
 
 /**
  * Performs CAS logout when the request URI matches a fixed context-relative
