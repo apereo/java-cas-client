@@ -18,17 +18,11 @@
  */
 package org.jasig.cas.client.util;
 
-import org.jasig.cas.client.validation.Assertion;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import java.io.IOException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import org.jasig.cas.client.validation.Assertion;
 
 /**
  * Places the assertion in a ThreadLocal such that other resources can access it that do not have access to the web tier session.
@@ -43,10 +37,13 @@ public final class AssertionThreadLocalFilter implements Filter {
         // nothing to do here
     }
 
-    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpSession session = request.getSession(false);
-        final Assertion assertion = (Assertion) (session == null ? request.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION));
+        final Assertion assertion = (Assertion) (session == null ? request
+                .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : session
+                .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION));
 
         try {
             AssertionHolder.setAssertion(assertion);

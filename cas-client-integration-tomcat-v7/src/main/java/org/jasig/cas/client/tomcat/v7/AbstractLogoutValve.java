@@ -18,15 +18,14 @@
  */
 package org.jasig.cas.client.tomcat.v7;
 
+import java.io.IOException;
+import javax.servlet.ServletException;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 import org.jasig.cas.client.tomcat.LogoutHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletException;
-import java.io.IOException;
 
 /**
  * Abstract base class for Container-managed log out.  Removes the attributes
@@ -51,6 +50,6 @@ public abstract class AbstractLogoutValve extends ValveBase {
         logger.debug("URI is not a logout request: {}", request.getRequestURI());
         getNext().invoke(request, response);
     }
-    
+
     protected abstract LogoutHandler getLogoutHandler();
 }

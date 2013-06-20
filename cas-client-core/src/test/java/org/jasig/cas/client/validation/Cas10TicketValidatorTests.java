@@ -17,14 +17,13 @@
  * under the License.
  */
 package org.jasig.cas.client.validation;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import java.io.UnsupportedEncodingException;
 import org.jasig.cas.client.PublicTestHttpServer;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.UnsupportedEncodingException;
-
-import static org.junit.Assert.*;
 
 /**
  * Test cases for the {@link Cas10TicketValidator}.
@@ -57,8 +56,7 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
     public void testNoResponse() throws Exception {
         server.content = "no\n\n".getBytes(server.encoding);
         try {
-            this.ticketValidator.validate("testTicket",
-                    "myService");
+            this.ticketValidator.validate("testTicket", "myService");
             fail("ValidationException expected.");
         } catch (final TicketValidationException e) {
             // expected
@@ -66,21 +64,17 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
     }
 
     @Test
-    public void testYesResponse() throws TicketValidationException,
-            UnsupportedEncodingException {
+    public void testYesResponse() throws TicketValidationException, UnsupportedEncodingException {
         server.content = "yes\nusername\n\n".getBytes(server.encoding);
-        final Assertion assertion = this.ticketValidator.validate("testTicket",
-                "myService");
+        final Assertion assertion = this.ticketValidator.validate("testTicket", "myService");
         assertEquals(CONST_USERNAME, assertion.getPrincipal().getName());
     }
 
     @Test
     public void testBadResponse() throws UnsupportedEncodingException {
-        server.content = "falalala\n\n"
-                .getBytes(server.encoding);
+        server.content = "falalala\n\n".getBytes(server.encoding);
         try {
-            this.ticketValidator.validate("testTicket",
-                    "myService");
+            this.ticketValidator.validate("testTicket", "myService");
             fail("ValidationException expected.");
         } catch (final TicketValidationException e) {
             // expected

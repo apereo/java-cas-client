@@ -33,6 +33,7 @@ public final class WhitelistHostnameVerifier implements HostnameVerifier {
 
     /** Allowed hosts */
     private String[] allowedHosts;
+
     /**
      * Creates a new instance using the given array of allowed hosts.
      * 
@@ -41,6 +42,7 @@ public final class WhitelistHostnameVerifier implements HostnameVerifier {
     public WhitelistHostnameVerifier(final String[] allowed) {
         this.allowedHosts = allowed;
     }
+
     /**
      * Creates a new instance using the given list of allowed hosts.
      * 

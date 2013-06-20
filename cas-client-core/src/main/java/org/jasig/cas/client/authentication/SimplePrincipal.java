@@ -20,7 +20,6 @@ package org.jasig.cas.client.authentication;
 
 import java.io.Serializable;
 import java.security.Principal;
-
 import org.jasig.cas.client.util.CommonUtils;
 
 /**
@@ -62,7 +61,7 @@ public class SimplePrincipal implements Principal, Serializable {
         } else if (!(o instanceof SimplePrincipal)) {
             return false;
         } else {
-            return getName().equals(((SimplePrincipal)o).getName());
+            return getName().equals(((SimplePrincipal) o).getName());
         }
     }
 

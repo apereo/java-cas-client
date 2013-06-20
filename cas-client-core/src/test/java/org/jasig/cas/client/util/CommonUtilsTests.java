@@ -18,12 +18,11 @@
  */
 package org.jasig.cas.client.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import junit.framework.TestCase;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Tests for the CommonUtils.
@@ -43,7 +42,7 @@ public final class CommonUtilsTests extends TestCase {
 
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == '?') {
-                count ++;
+                count++;
             }
         }
 
@@ -126,7 +125,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setScheme("https");
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com", "ticket", false);
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+                "ticket", false);
 
         assertEquals(CONST_MY_URL, constructedUrl);
     }
@@ -138,7 +138,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setScheme("https");
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.amazon.com www.bestbuy.com www.myserver.com", "ticket", false);
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+                "www.amazon.com www.bestbuy.com www.myserver.com", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
@@ -149,7 +150,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setScheme("https");
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "ticket", false);
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+                "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 }

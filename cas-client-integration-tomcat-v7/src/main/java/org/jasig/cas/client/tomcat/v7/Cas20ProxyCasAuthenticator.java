@@ -37,7 +37,7 @@ public final class Cas20ProxyCasAuthenticator extends AbstractCasAuthenticator {
     private static final String NAME = Cas20ProxyCasAuthenticator.class.getName();
 
     private Cas20ProxyTicketValidator ticketValidator;
-    
+
     private boolean acceptAnyProxy;
 
     private String allowedProxyChains;
@@ -53,7 +53,7 @@ public final class Cas20ProxyCasAuthenticator extends AbstractCasAuthenticator {
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
-    
+
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }

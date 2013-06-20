@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
-
 import org.jasig.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,17 +44,17 @@ import org.slf4j.LoggerFactory;
  * @since 3.1.12
  *
  */
-public class PropertiesCasRealmDelegate implements CasRealm  {
+public class PropertiesCasRealmDelegate implements CasRealm {
 
     /** Log instance */
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     /** Path to backing properties file */
     private String propertiesFilePath;
-    
+
     /** Map of usernames to roles */
     private Map<String, Set<String>> roleMap;
-    
+
     /**
      * @param path Path to properties file container username/role data.
      */
@@ -70,7 +69,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
         if (!file.isAbsolute()) {
             file = new File(System.getProperty("catalina.base"), propertiesFilePath);
         }
-        CommonUtils.assertTrue(file.exists(), "File not found " + file);        
+        CommonUtils.assertTrue(file.exists(), "File not found " + file);
         CommonUtils.assertTrue(file.canRead(), "Cannot read " + file);
         logger.debug("Loading users/roles from {}", file);
         final Properties properties = new Properties();
@@ -79,7 +78,7 @@ public class PropertiesCasRealmDelegate implements CasRealm  {
         } catch (final IOException e) {
             throw new IllegalStateException("Error loading users/roles from " + file, e);
         }
-        this.roleMap = new HashMap<String,Set<String>>(properties.size());
+        this.roleMap = new HashMap<String, Set<String>>(properties.size());
 
         for (final Object key : properties.keySet()) {
             final String user = (String) key;

@@ -33,13 +33,14 @@ import org.jasig.cas.client.validation.TicketValidator;
 public final class Saml11Authenticator extends AbstractAuthenticator {
 
     public static final String AUTH_METHOD = "SAML11";
-    
+
     private static final String NAME = Saml11Authenticator.class.getName();
 
     private Saml11TicketValidator ticketValidator;
-    
+
     /** SAML protocol clock drift tolerance in ms */
     private int tolerance = -1;
+
     /**
      * @param ms SAML clock drift tolerance in milliseconds.
      */
@@ -51,7 +52,7 @@ public final class Saml11Authenticator extends AbstractAuthenticator {
         super.startInternal();
         this.ticketValidator = new Saml11TicketValidator(getCasServerUrlPrefix());
         if (this.tolerance > -1) {
-	        this.ticketValidator.setTolerance(this.tolerance);
+            this.ticketValidator.setTolerance(this.tolerance);
         }
         if (getEncoding() != null) {
             this.ticketValidator.setEncoding(getEncoding());
@@ -62,11 +63,11 @@ public final class Saml11Authenticator extends AbstractAuthenticator {
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
-    
+
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }
-    
+
     /** {@inheritDoc} */
     protected String getArtifactParameterName() {
         return "SAMLart";

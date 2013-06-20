@@ -46,7 +46,7 @@ public interface CasRealm {
      * @return  Roles for given principal or empty array if none exist.
      */
     String[] getRoles(Principal p);
-    
+
     /**
      * Determines whether the given principal possesses the given role.
      *

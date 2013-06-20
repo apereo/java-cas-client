@@ -22,7 +22,6 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.util.CommonUtils;
 
@@ -46,6 +45,7 @@ public class AssertionCasRealmDelegate implements CasRealm {
 
     /** Name of the role attribute in the principal's attributes */
     private String roleAttributeName = DEFAULT_ROLE_NAME;
+
     /**
      * @param name Name of the attribute in the principal that contains role data.
      */
@@ -60,7 +60,8 @@ public class AssertionCasRealmDelegate implements CasRealm {
 
     /** {@inheritDoc} */
     public String[] getRoles(final Principal p) {
-        CommonUtils.assertTrue(p instanceof AttributePrincipal, "Expected instance of AttributePrincipal but got " + p.getClass());
+        CommonUtils.assertTrue(p instanceof AttributePrincipal,
+                "Expected instance of AttributePrincipal but got " + p.getClass());
 
         final Collection<String> roles = getRoleCollection(p);
         final String[] array = new String[roles.size()];

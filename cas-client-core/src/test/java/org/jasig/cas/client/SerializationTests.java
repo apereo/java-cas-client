@@ -23,10 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.authentication.SimpleGroup;
 import org.jasig.cas.client.authentication.SimplePrincipal;
@@ -43,7 +41,7 @@ import org.jasig.cas.client.validation.AssertionImpl;
  *
  */
 public class SerializationTests extends TestCase {
-    
+
     public void testSerializeDeserialize() throws Exception {
         final Object[] subjects = getTestSubjects();
         for (int i = 0; i < subjects.length; i++) {
@@ -56,7 +54,7 @@ public class SerializationTests extends TestCase {
             } finally {
                 out.close();
             }
-            
+
             final ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
             final ObjectInputStream in = new ObjectInputStream(byteIn);
             try {
@@ -72,17 +70,11 @@ public class SerializationTests extends TestCase {
     private Object[] getTestSubjects() {
         final SimplePrincipal simplePrincipal = new SimplePrincipal("simple");
         final SimpleGroup simpleGroup = new SimpleGroup("group");
-        final AttributePrincipalImpl attributePrincipal =
-            new AttributePrincipalImpl("attr", Collections.<String,Object>singletonMap("LOA", "3"));
-        final AssertionPrincipal assertionPrincipal = new AssertionPrincipal(
-                "assertion",
-                new AssertionImpl(attributePrincipal, Collections.<String,Object>singletonMap("authenticationMethod", "username")));
-        
-        return new Object[] {
-                simplePrincipal,
-                simpleGroup,
-                attributePrincipal,
-                assertionPrincipal,
-        };
+        final AttributePrincipalImpl attributePrincipal = new AttributePrincipalImpl("attr",
+                Collections.<String, Object> singletonMap("LOA", "3"));
+        final AssertionPrincipal assertionPrincipal = new AssertionPrincipal("assertion", new AssertionImpl(
+                attributePrincipal, Collections.<String, Object> singletonMap("authenticationMethod", "username")));
+
+        return new Object[] { simplePrincipal, simpleGroup, attributePrincipal, assertionPrincipal, };
     }
 }

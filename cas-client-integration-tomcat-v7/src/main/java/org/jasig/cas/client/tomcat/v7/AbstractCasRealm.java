@@ -19,7 +19,6 @@
 package org.jasig.cas.client.tomcat.v7;
 
 import java.security.Principal;
-
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.realm.RealmBase;
 import org.jasig.cas.client.tomcat.CasRealm;
@@ -58,7 +57,7 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
     public String toString() {
         return getName();
     }
-    
+
     /** {@inheritDoc} */
     public String getInfo() {
         return getClass().getName() + "/1.0";

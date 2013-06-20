@@ -20,7 +20,6 @@ package org.jasig.cas.client.jboss.authentication;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -28,11 +27,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.jasig.cas.client.jaas.AssertionPrincipal;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
-
 import org.jboss.web.tomcat.security.login.WebAuthentication;
 
 /**
@@ -53,7 +50,8 @@ import org.jboss.web.tomcat.security.login.WebAuthentication;
  */
 public final class WebAuthenticationFilter extends AbstractCasFilter {
 
-    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain chain) throws IOException, ServletException {
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession();
@@ -73,7 +71,8 @@ public final class WebAuthenticationFilter extends AbstractCasFilter {
                     request.getSession().setAttribute(CONST_CAS_ASSERTION, principal.getAssertion());
                 } else {
                     logger.debug("Aborting -- principal is not of type AssertionPrincipal");
-                    throw new GeneralSecurityException("JBoss Web authentication did not produce CAS AssertionPrincipal.");
+                    throw new GeneralSecurityException(
+                            "JBoss Web authentication did not produce CAS AssertionPrincipal.");
                 }
             } catch (final GeneralSecurityException e) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());

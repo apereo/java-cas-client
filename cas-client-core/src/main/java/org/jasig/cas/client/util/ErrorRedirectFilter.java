@@ -22,15 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,78 +43,78 @@ import org.slf4j.LoggerFactory;
  */
 public final class ErrorRedirectFilter implements Filter {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	private final List<ErrorHolder> errors = new ArrayList<ErrorHolder>();
-	
-	private String defaultErrorRedirectPage;
-	
-	public void destroy() {
-		// nothing to do here
-	}
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public void doFilter(final ServletRequest request, final ServletResponse response,
-			final FilterChain filterChain) throws IOException, ServletException {
-		final HttpServletResponse httpResponse = (HttpServletResponse) response;
-		try {
-			filterChain.doFilter(request, response);
-		} catch (final ServletException e) {
-			final Throwable t = e.getCause();
-			ErrorHolder currentMatch = null;
+    private final List<ErrorHolder> errors = new ArrayList<ErrorHolder>();
+
+    private String defaultErrorRedirectPage;
+
+    public void destroy() {
+        // nothing to do here
+    }
+
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
+            throws IOException, ServletException {
+        final HttpServletResponse httpResponse = (HttpServletResponse) response;
+        try {
+            filterChain.doFilter(request, response);
+        } catch (final ServletException e) {
+            final Throwable t = e.getCause();
+            ErrorHolder currentMatch = null;
             for (final ErrorHolder errorHolder : this.errors) {
-				if (errorHolder.exactMatch(t)) {
-					currentMatch = errorHolder;
-					break;
-				} else if (errorHolder.inheritanceMatch(t)) {
-					currentMatch = errorHolder;
-				}
-			}
-			
-			if (currentMatch != null) {
-				httpResponse.sendRedirect(currentMatch.getUrl());
-			} else {
-				httpResponse.sendRedirect(defaultErrorRedirectPage);
-			}
-		}
-	} 	
+                if (errorHolder.exactMatch(t)) {
+                    currentMatch = errorHolder;
+                    break;
+                } else if (errorHolder.inheritanceMatch(t)) {
+                    currentMatch = errorHolder;
+                }
+            }
 
-	public void init(final FilterConfig filterConfig) throws ServletException {
-		this.defaultErrorRedirectPage = filterConfig.getInitParameter("defaultErrorRedirectPage");
-		
-		final Enumeration<?> enumeration = filterConfig.getInitParameterNames();
-		while (enumeration.hasMoreElements()) {
-			final String className = (String) enumeration.nextElement();
-			try {
-				if (!className.equals("defaultErrorRedirectPage")) {
-					this.errors.add(new ErrorHolder(className, filterConfig.getInitParameter(className)));
-				}
-			} catch (final ClassNotFoundException e) {
-				logger.warn("Class [{}] cannot be found in ClassLoader.  Ignoring.", className);
-			}
-		}
-	}
-	
-	protected final class ErrorHolder {
-		
-		private Class<?> className;
-		
-		private String url;
-		
-		protected ErrorHolder(final String className, final String url) throws ClassNotFoundException {
-			this.className = Class.forName(className);
-			this.url = url;
-		}
-		
-		public boolean exactMatch(final Throwable e) {
-			return this.className.equals(e.getClass());
-		}
-		
-		public boolean inheritanceMatch(final Throwable e) {
-			return className.isAssignableFrom(e.getClass());
-		}
-		
-		public String getUrl() {
-			return this.url;
-		}
-	}
+            if (currentMatch != null) {
+                httpResponse.sendRedirect(currentMatch.getUrl());
+            } else {
+                httpResponse.sendRedirect(defaultErrorRedirectPage);
+            }
+        }
+    }
+
+    public void init(final FilterConfig filterConfig) throws ServletException {
+        this.defaultErrorRedirectPage = filterConfig.getInitParameter("defaultErrorRedirectPage");
+
+        final Enumeration<?> enumeration = filterConfig.getInitParameterNames();
+        while (enumeration.hasMoreElements()) {
+            final String className = (String) enumeration.nextElement();
+            try {
+                if (!className.equals("defaultErrorRedirectPage")) {
+                    this.errors.add(new ErrorHolder(className, filterConfig.getInitParameter(className)));
+                }
+            } catch (final ClassNotFoundException e) {
+                logger.warn("Class [{}] cannot be found in ClassLoader.  Ignoring.", className);
+            }
+        }
+    }
+
+    protected final class ErrorHolder {
+
+        private Class<?> className;
+
+        private String url;
+
+        protected ErrorHolder(final String className, final String url) throws ClassNotFoundException {
+            this.className = Class.forName(className);
+            this.url = url;
+        }
+
+        public boolean exactMatch(final Throwable e) {
+            return this.className.equals(e.getClass());
+        }
+
+        public boolean inheritanceMatch(final Throwable e) {
+            return className.isAssignableFrom(e.getClass());
+        }
+
+        public String getUrl() {
+            return this.url;
+        }
+    }
 }

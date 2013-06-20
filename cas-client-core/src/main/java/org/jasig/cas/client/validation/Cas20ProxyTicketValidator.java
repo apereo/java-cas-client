@@ -18,9 +18,8 @@
  */
 package org.jasig.cas.client.validation;
 
-import org.jasig.cas.client.util.XmlUtils;
-
 import java.util.List;
+import org.jasig.cas.client.util.XmlUtils;
 
 /**
  * Extension to the traditional Service Ticket validation that will validate service tickets and proxy tickets.
@@ -37,7 +36,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
 
     /** Allows for an empty chain of proxy callback urls. **/
     private boolean allowEmptyProxyChain = true;
-    
+
     public Cas20ProxyTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
     }
@@ -50,9 +49,10 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         return "proxyValidate";
     }
 
-    protected void customParseResponse(final String response, final Assertion assertion) throws TicketValidationException {
+    protected void customParseResponse(final String response, final Assertion assertion)
+            throws TicketValidationException {
         final List<String> proxies = XmlUtils.getTextForElements(response, "proxy");
-        
+
         // this means there was nothing in the proxy chain, which is okay
         if ((this.allowEmptyProxyChain && proxies.isEmpty()) || this.acceptAnyProxy) {
             return;
@@ -79,7 +79,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
     }
 
     protected final boolean isAllowEmptyProxyChain() {
-      return this.allowEmptyProxyChain;
+        return this.allowEmptyProxyChain;
     }
 
     /**
@@ -88,6 +88,6 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
      * @param allowEmptyProxyChain whether to allow empty proxy chains or not.  True if so, false otherwise.
      */
     public final void setAllowEmptyProxyChain(final boolean allowEmptyProxyChain) {
-      this.allowEmptyProxyChain = allowEmptyProxyChain;
+        this.allowEmptyProxyChain = allowEmptyProxyChain;
     }
 }
