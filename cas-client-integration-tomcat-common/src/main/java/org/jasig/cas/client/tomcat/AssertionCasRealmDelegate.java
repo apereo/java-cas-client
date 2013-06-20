@@ -18,13 +18,12 @@
  */
 package org.jasig.cas.client.tomcat;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.jasig.cas.client.util.CommonUtils;
-
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.jasig.cas.client.util.CommonUtils;
 
 /**
  * {@link CasRealm} implementation with prinicpal and role data backed by the {@link org.jasig.cas.client.validation.Assertion}.

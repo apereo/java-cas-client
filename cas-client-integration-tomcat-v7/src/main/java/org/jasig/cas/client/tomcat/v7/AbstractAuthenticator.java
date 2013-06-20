@@ -18,6 +18,9 @@
  */
 package org.jasig.cas.client.tomcat.v7;
 
+import java.io.IOException;
+import java.security.Principal;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.catalina.*;
 import org.apache.catalina.authenticator.AuthenticatorBase;
 import org.apache.catalina.connector.Request;
@@ -28,10 +31,6 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.Principal;
 
 /**
  * Base authenticator for all authentication protocols supported by CAS.
