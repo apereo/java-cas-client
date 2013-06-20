@@ -37,7 +37,7 @@ public class Saml11Authenticator extends AbstractAuthenticator {
     private static final String NAME = Saml11Authenticator.class.getName();
 
     private Saml11TicketValidator ticketValidator;
-    
+
     /** SAML protocol clock drift tolerance in ms */
     private int tolerance = -1;
 
@@ -52,7 +52,7 @@ public class Saml11Authenticator extends AbstractAuthenticator {
         super.start();
         this.ticketValidator = new Saml11TicketValidator(getCasServerUrlPrefix());
         if (this.tolerance > -1) {
-	        this.ticketValidator.setTolerance(this.tolerance);
+            this.ticketValidator.setTolerance(this.tolerance);
         }
         if (getEncoding() != null) {
             this.ticketValidator.setEncoding(getEncoding());
@@ -65,11 +65,11 @@ public class Saml11Authenticator extends AbstractAuthenticator {
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
-    
+
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }
-    
+
     /** {@inheritDoc} */
     protected String getArtifactParameterName() {
         return "SAMLart";

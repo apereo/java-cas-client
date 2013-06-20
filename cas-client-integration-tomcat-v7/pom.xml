@@ -2,41 +2,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>cas-client</artifactId>
+    <parent>
+        <artifactId>cas-client</artifactId>
+        <groupId>org.jasig.cas.client</groupId>
+        <version>3.3-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
     <groupId>org.jasig.cas.client</groupId>
-    <version>3.3-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+    <artifactId>cas-client-integration-tomcat-v7</artifactId>
+    <packaging>jar</packaging>
+    <name>Jasig CAS Client for Java - Tomcat 7.x Integration</name>
 
-  <groupId>org.jasig.cas.client</groupId>
-  <artifactId>cas-client-integration-tomcat-v7</artifactId>
-  <packaging>jar</packaging>
-  <name>Jasig CAS Client for Java - Tomcat 7.x Integration</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-integration-tomcat-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>7.0.8</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.jasig.cas.client</groupId>
-      <artifactId>cas-client-integration-tomcat-common</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-catalina</artifactId>
-      <version>7.0.8</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jasig.cas.client</groupId>
-      <artifactId>cas-client-core</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 </project>

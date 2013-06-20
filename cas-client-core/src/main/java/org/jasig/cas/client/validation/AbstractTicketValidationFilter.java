@@ -18,21 +18,16 @@
  */
 package org.jasig.cas.client.validation;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import javax.net.ssl.HostnameVerifier;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.FileInputStream;
-import java.util.Properties;
 
 /**
  * The filter that handles all the work of validating ticket requests.
@@ -91,15 +86,15 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      */
     protected Properties getSSLConfig(final FilterConfig filterConfig) {
         final Properties properties = new Properties();
-        final String fileName = getPropertyFromInitParams(filterConfig, "sslConfigFile", null);	
-        
+        final String fileName = getPropertyFromInitParams(filterConfig, "sslConfigFile", null);
+
         if (fileName != null) {
             FileInputStream fis = null;
             try {
                 fis = new FileInputStream(fileName);
                 properties.load(fis);
-                logger.trace("Loaded {} entries from {}", properties.size(), fileName);  
-            } catch(final IOException ioe) {
+                logger.trace("Loaded {} entries from {}", properties.size(), fileName);
+            } catch (final IOException ioe) {
                 logger.error(ioe.getMessage(), ioe);
             } finally {
                 CommonUtils.closeQuietly(fis);
@@ -130,9 +125,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     }
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
-        setExceptionOnValidationFailure(parseBoolean(getPropertyFromInitParams(filterConfig, "exceptionOnValidationFailure", "true")));
+        setExceptionOnValidationFailure(parseBoolean(getPropertyFromInitParams(filterConfig,
+                "exceptionOnValidationFailure", "true")));
         logger.trace("Setting exceptionOnValidationFailure parameter: {}", this.exceptionOnValidationFailure);
-        setRedirectAfterValidation(parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation", "true")));
+        setRedirectAfterValidation(parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation",
+                "true")));
         logger.trace("Setting redirectAfterValidation parameter: {}", this.redirectAfterValidation);
         setUseSession(parseBoolean(getPropertyFromInitParams(filterConfig, "useSession", "true")));
         logger.trace("Setting useSession parameter: {}", this.useSession);
@@ -161,7 +158,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * @throws IOException if there is an I/O problem
      * @throws ServletException if there is a servlet problem.
      */
-    protected boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+    protected boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain filterChain) throws IOException, ServletException {
         return true;
     }
 
@@ -174,7 +172,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * @param response the HttpServletResponse.
      * @param assertion the successful Assertion from the server.
      */
-    protected void onSuccessfulValidation(final HttpServletRequest request, final HttpServletResponse response, final Assertion assertion) {
+    protected void onSuccessfulValidation(final HttpServletRequest request, final HttpServletResponse response,
+            final Assertion assertion) {
         // nothing to do here.
     }
 
@@ -189,7 +188,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         // nothing to do here.
     }
 
-    public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+    public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain filterChain) throws IOException, ServletException {
 
         if (!preFilter(servletRequest, servletResponse, filterChain)) {
             return;
@@ -203,7 +203,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
             logger.debug("Attempting to validate ticket: {}", ticket);
 
             try {
-                final Assertion assertion = this.ticketValidator.validate(ticket, constructServiceUrl(request, response));
+                final Assertion assertion = this.ticketValidator.validate(ticket,
+                        constructServiceUrl(request, response));
 
                 logger.debug("Successfully authenticated user: {}", assertion.getPrincipal().getName());
 
@@ -215,7 +216,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                 onSuccessfulValidation(request, response, assertion);
 
                 if (this.redirectAfterValidation) {
-                    logger. debug("Redirecting after successful ticket validation.");
+                    logger.debug("Redirecting after successful ticket validation.");
                     response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
@@ -240,8 +241,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     }
 
     public final void setTicketValidator(final TicketValidator ticketValidator) {
-    this.ticketValidator = ticketValidator;
-}
+        this.ticketValidator = ticketValidator;
+    }
 
     public final void setRedirectAfterValidation(final boolean redirectAfterValidation) {
         this.redirectAfterValidation = redirectAfterValidation;

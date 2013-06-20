@@ -18,24 +18,17 @@
  */
 package org.jasig.cas.client.util;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Common utilities for easily parsing XML without duplicating logic.
@@ -75,8 +68,7 @@ public final class XmlUtils {
      * @param element     the element to look for
      * @return the list of text from the elements.
      */
-    public static List<String> getTextForElements(final String xmlAsString,
-                                          final String element) {
+    public static List<String> getTextForElements(final String xmlAsString, final String element) {
         final List<String> elements = new ArrayList<String>(2);
         final XMLReader reader = getXmlReader();
 
@@ -86,16 +78,14 @@ public final class XmlUtils {
 
             private StringBuilder buffer = new StringBuilder();
 
-            public void startElement(final String uri, final String localName,
-                                     final String qName, final Attributes attributes)
-                    throws SAXException {
+            public void startElement(final String uri, final String localName, final String qName,
+                    final Attributes attributes) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = true;
                 }
             }
 
-            public void endElement(final String uri, final String localName,
-                                   final String qName) throws SAXException {
+            public void endElement(final String uri, final String localName, final String qName) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = false;
                     elements.add(this.buffer.toString());
@@ -103,8 +93,7 @@ public final class XmlUtils {
                 }
             }
 
-            public void characters(char[] ch, int start, int length)
-                    throws SAXException {
+            public void characters(char[] ch, int start, int length) throws SAXException {
                 if (this.foundElement) {
                     this.buffer.append(ch, start, length);
                 }
@@ -132,8 +121,7 @@ public final class XmlUtils {
      * @param element     the element to look for
      * @return the text value of the element.
      */
-    public static String getTextForElement(final String xmlAsString,
-                                           final String element) {
+    public static String getTextForElement(final String xmlAsString, final String element) {
         final XMLReader reader = getXmlReader();
         final StringBuilder builder = new StringBuilder();
 
@@ -141,23 +129,20 @@ public final class XmlUtils {
 
             private boolean foundElement = false;
 
-            public void startElement(final String uri, final String localName,
-                                     final String qName, final Attributes attributes)
-                    throws SAXException {
+            public void startElement(final String uri, final String localName, final String qName,
+                    final Attributes attributes) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = true;
                 }
             }
 
-            public void endElement(final String uri, final String localName,
-                                   final String qName) throws SAXException {
+            public void endElement(final String uri, final String localName, final String qName) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = false;
                 }
             }
 
-            public void characters(char[] ch, int start, int length)
-                    throws SAXException {
+            public void characters(char[] ch, int start, int length) throws SAXException {
                 if (this.foundElement) {
                     builder.append(ch, start, length);
                 }

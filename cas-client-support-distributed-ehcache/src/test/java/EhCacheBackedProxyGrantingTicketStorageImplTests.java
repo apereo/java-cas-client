@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import junit.framework.TestCase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
 import org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl;
 
 /**
@@ -30,10 +30,11 @@ import org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl;
 public class EhCacheBackedProxyGrantingTicketStorageImplTests extends TestCase {
 
     public void testEncryptionMechanisms() throws Exception {
-        final Cache ehcache = new Cache("name", 100,false, false, 500, 500);
+        final Cache ehcache = new Cache("name", 100, false, false, 500, 500);
         CacheManager.getInstance().addCache(ehcache);
-        final EhcacheBackedProxyGrantingTicketStorageImpl cache = new EhcacheBackedProxyGrantingTicketStorageImpl(ehcache);
-//        cache.setSecretKey("thismustbeatleast24charactersandcannotbelessthanthat1234");
+        final EhcacheBackedProxyGrantingTicketStorageImpl cache = new EhcacheBackedProxyGrantingTicketStorageImpl(
+                ehcache);
+        //        cache.setSecretKey("thismustbeatleast24charactersandcannotbelessthanthat1234");
 
         assertNull(cache.retrieve(null));
         assertNull(cache.retrieve("foobar"));

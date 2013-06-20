@@ -32,7 +32,7 @@ import org.jasig.cas.client.validation.TicketValidator;
 public final class Cas10CasAuthenticator extends AbstractCasAuthenticator {
 
     public static final String AUTH_METHOD = "CAS10";
-    
+
     private static final String NAME = Cas10CasAuthenticator.class.getName();
 
     private Cas10TicketValidator ticketValidator;
@@ -40,7 +40,7 @@ public final class Cas10CasAuthenticator extends AbstractCasAuthenticator {
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
-    
+
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }

@@ -33,9 +33,8 @@ public class ReflectUtilsTests extends TestCase {
      * Test method for {@link org.jasig.cas.client.util.ReflectUtils#newInstance(java.lang.String, java.lang.Object[])}.
      */
     public void testNewInstanceStringObjectArray() {
-        final Object result = ReflectUtils.newInstance(
-                "org.jasig.cas.client.validation.Cas10TicketValidator",
-                new Object[] {"https://localhost/cas"} );
+        final Object result = ReflectUtils.newInstance("org.jasig.cas.client.validation.Cas10TicketValidator",
+                new Object[] { "https://localhost/cas" });
         assertNotNull(result);
     }
 
@@ -44,13 +43,13 @@ public class ReflectUtilsTests extends TestCase {
      */
     public void testSetPropertyStringObjectObject() {
         final TestBean bean = new TestBean();
-       
+
         ReflectUtils.setProperty("count", new Integer(30000), bean);
         assertEquals(30000, bean.getCount());
-        
+
         ReflectUtils.setProperty("name", "bob", bean);
         assertEquals("bob", bean.getName());
-        
+
         ReflectUtils.setProperty("flag", Boolean.TRUE, bean);
         assertTrue(bean.isFlag());
     }

@@ -18,7 +18,6 @@
  */
 package org.jasig.cas.client.proxy;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,15 +35,15 @@ public class ProxyGrantingTicketStorageImplTest {
     @Test
     public void cleanUp() throws Exception {
         String proxyGrantingTicketIou = "proxyGrantingTicketIou";
-        
+
         int timeout = 250;
         this.storage.save(proxyGrantingTicketIou, "proxyGrantingTicket");
-        
+
         // sleep long enough for the ticket to timeout
         Thread.sleep(timeout * 2);
-        
+
         this.storage.cleanUp();
-        
+
         Assert.assertNull(this.storage.retrieve(proxyGrantingTicketIou));
     }
 

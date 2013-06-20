@@ -18,11 +18,10 @@
  */
 package org.jasig.cas.client.tomcat.v7;
 
-import org.apache.catalina.LifecycleEvent;
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.LifecycleListener;
-import org.apache.catalina.LifecycleState;
-import org.apache.catalina.Realm;
+import java.io.IOException;
+import java.security.Principal;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.catalina.*;
 import org.apache.catalina.authenticator.AuthenticatorBase;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.deploy.LoginConfig;
@@ -32,10 +31,6 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.Principal;
 
 /**
  * Base authenticator for all authentication protocols supported by CAS.
@@ -47,7 +42,7 @@ import java.security.Principal;
 public abstract class AbstractAuthenticator extends AuthenticatorBase implements LifecycleListener {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private final AuthenticatorDelegate delegate = new AuthenticatorDelegate();
 
     private String casServerUrlPrefix;
@@ -66,7 +61,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
      * @return the authentication method.
      */
     protected String getAuthMethod() {
-        return  getAuthenticationMethod();
+        return getAuthenticationMethod();
     }
 
     /**
@@ -101,7 +96,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
             CommonUtils.assertNotNull(this.delegate.getCasServerLoginUrl(), "casServerLoginUrl cannot be null.");
             CommonUtils.assertTrue(this.delegate.getServerName() != null || this.delegate.getServiceUrl() != null,
                     "either serverName or serviceUrl must be set.");
-            this.delegate.setRealm((CasRealm) realm);   
+            this.delegate.setRealm((CasRealm) realm);
         } catch (final Exception e) {
             throw new LifecycleException(e);
         }
@@ -155,12 +150,13 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     }
 
     /** {@inheritDoc} */
-    public final boolean authenticate(final Request request, final HttpServletResponse response, final LoginConfig loginConfig) throws IOException {
+    public final boolean authenticate(final Request request, final HttpServletResponse response,
+            final LoginConfig loginConfig) throws IOException {
         Principal principal = request.getUserPrincipal();
         boolean result = false;
         if (principal == null) {
             // Authentication sets the response headers for status and redirect if needed
-	        principal = this.delegate.authenticate(request.getRequest(), response);
+            principal = this.delegate.authenticate(request.getRequest(), response);
             if (principal != null) {
                 register(request, response, principal, getAuthenticationMethod(), null, null);
                 result = true;
@@ -185,7 +181,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     public String getInfo() {
         return getName() + "/1.0";
     }
-    
+
     /** {@inheritDoc} */
     protected synchronized void setState(LifecycleState state, Object data) {
         super.setState(state, data);

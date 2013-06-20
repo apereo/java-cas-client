@@ -46,7 +46,7 @@ public interface ProxyGrantingTicketStorage {
      * @return the ProxyGrantingTicket Id or null if it can't be found
      */
     public String retrieve(String proxyGrantingTicketIou);
-    
+
     /**
      * Called on a regular basis by an external timer,
      * giving implementations a chance to remove stale data.

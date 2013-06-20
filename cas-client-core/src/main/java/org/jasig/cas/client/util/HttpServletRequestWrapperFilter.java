@@ -18,20 +18,15 @@
  */
 package org.jasig.cas.client.util;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.jasig.cas.client.validation.Assertion;
-
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpSession;
+import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.jasig.cas.client.validation.Assertion;
 
 /**
  * Implementation of a filter that wraps the normal HttpServletRequest with a
@@ -55,7 +50,7 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
 
     /** Name of the attribute used to answer role membership queries */
     private String roleAttribute;
-   
+
     /** Whether or not to ignore case in role membership queries */
     private boolean ignoreCase;
 
@@ -68,16 +63,20 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
      * <code>request.getRemoteUser</code> to the underlying Assertion object
      * stored in the user session.
      */
-    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain filterChain) throws IOException, ServletException {
         final AttributePrincipal principal = retrievePrincipalFromSessionOrRequest(servletRequest);
 
-        filterChain.doFilter(new CasHttpServletRequestWrapper((HttpServletRequest) servletRequest, principal), servletResponse);
+        filterChain.doFilter(new CasHttpServletRequestWrapper((HttpServletRequest) servletRequest, principal),
+                servletResponse);
     }
 
     protected AttributePrincipal retrievePrincipalFromSessionOrRequest(final ServletRequest servletRequest) {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpSession session = request.getSession(false);
-        final Assertion assertion = (Assertion) (session == null ? request.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION));
+        final Assertion assertion = (Assertion) (session == null ? request
+                .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : session
+                .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION));
 
         return assertion == null ? null : assertion.getPrincipal();
     }
@@ -121,7 +120,7 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
             }
 
             final Object value = this.principal.getAttributes().get(roleAttribute);
-            
+
             if (value instanceof Collection<?>) {
                 for (final Object o : (Collection<?>) value) {
                     if (rolesEqual(role, o)) {
@@ -135,7 +134,7 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
             logger.debug("User [{}] is in role [{}]: {}", getRemoteUser(), role, isMember);
             return isMember;
         }
-        
+
         /**
          * Determines whether the given role is equal to the candidate
          * role attribute taking into account case sensitivity.

@@ -18,15 +18,10 @@
  */
 package org.jasig.cas.client.session;
 
-import org.jasig.cas.client.util.AbstractConfigurationFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import org.jasig.cas.client.util.AbstractConfigurationFilter;
 
 /**
  * Implements the Single Sign Out protocol.  It handles registering the session and destroying the session.
@@ -42,9 +37,12 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     public void init(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             handler.setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
-            handler.setLogoutParameterName(getPropertyFromInitParams(filterConfig, "logoutParameterName", "logoutRequest"));
-            handler.setArtifactParameterOverPost(parseBoolean(getPropertyFromInitParams(filterConfig, "artifactParameterOverPost", "false")));
-            handler.setEagerlyCreateSessions(parseBoolean(getPropertyFromInitParams(filterConfig, "eagerlyCreateSessions", "true")));
+            handler.setLogoutParameterName(getPropertyFromInitParams(filterConfig, "logoutParameterName",
+                    "logoutRequest"));
+            handler.setArtifactParameterOverPost(parseBoolean(getPropertyFromInitParams(filterConfig,
+                    "artifactParameterOverPost", "false")));
+            handler.setEagerlyCreateSessions(parseBoolean(getPropertyFromInitParams(filterConfig,
+                    "eagerlyCreateSessions", "true")));
         }
         handler.init();
     }
@@ -52,7 +50,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     public void setArtifactParameterName(final String name) {
         handler.setArtifactParameterName(name);
     }
-    
+
     public void setLogoutParameterName(final String name) {
         handler.setLogoutParameterName(name);
     }
@@ -60,8 +58,9 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         handler.setSessionMappingStorage(storage);
     }
-    
-    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
+
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
 
         if (handler.isTokenRequest(request)) {
@@ -80,7 +79,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     public void destroy() {
         // nothing to do
     }
-    
+
     protected static SingleSignOutHandler getSingleSignOutHandler() {
         return handler;
     }

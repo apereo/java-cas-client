@@ -40,7 +40,7 @@ public class Cas10CasAuthenticator extends AbstractCasAuthenticator {
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
-    
+
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }

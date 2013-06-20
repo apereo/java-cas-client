@@ -33,7 +33,7 @@ public class MethodFlag {
     public boolean wasCalled() {
         return called;
     }
-    
+
     public void setCalled() {
         called = true;
     }

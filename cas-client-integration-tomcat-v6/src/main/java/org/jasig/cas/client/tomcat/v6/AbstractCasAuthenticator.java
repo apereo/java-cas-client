@@ -28,6 +28,7 @@ package org.jasig.cas.client.tomcat.v6;
 public abstract class AbstractCasAuthenticator extends AbstractAuthenticator {
 
     private String proxyCallbackUrl;
+
     protected final String getProxyCallbackUrl() {
         return this.proxyCallbackUrl;
     }

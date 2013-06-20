@@ -18,14 +18,13 @@
  */
 package org.jasig.cas.client.validation;
 
-import org.jasig.cas.client.util.CommonUtils;
-
 import java.beans.PropertyEditorSupport;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import org.jasig.cas.client.util.CommonUtils;
 
 /**
  * Convert a String-formatted list of acceptable proxies to an array.
@@ -37,27 +36,27 @@ import java.util.List;
  */
 public final class ProxyListEditor extends PropertyEditorSupport {
 
-	public void setAsText(final String text) throws IllegalArgumentException {
-		final BufferedReader reader = new BufferedReader(new StringReader(text));
-		final List<String[]> proxyChains = new ArrayList<String[]>();
+    public void setAsText(final String text) throws IllegalArgumentException {
+        final BufferedReader reader = new BufferedReader(new StringReader(text));
+        final List<String[]> proxyChains = new ArrayList<String[]>();
 
-		try {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (CommonUtils.isNotBlank(line)) {
-					proxyChains.add(line.trim().split(" "));
-				}
-			}
-		} catch (final IOException e) {
-			// ignore this
-		} finally {
-			try {
-				reader.close();
-			} catch (final IOException e) {
-				// nothing to do
-			}
-		}
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (CommonUtils.isNotBlank(line)) {
+                    proxyChains.add(line.trim().split(" "));
+                }
+            }
+        } catch (final IOException e) {
+            // ignore this
+        } finally {
+            try {
+                reader.close();
+            } catch (final IOException e) {
+                // nothing to do
+            }
+        }
 
-		setValue(new ProxyList(proxyChains));
-	}
+        setValue(new ProxyList(proxyChains));
+    }
 }
