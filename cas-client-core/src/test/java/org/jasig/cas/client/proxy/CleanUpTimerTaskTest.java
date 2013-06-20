@@ -19,10 +19,8 @@
 package org.jasig.cas.client.proxy;
 
 import java.util.TimerTask;
-
-import org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter;
-
 import junit.framework.TestCase;
+import org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter;
 
 /**
  * Unit test for the {@link CleanUpTimerTask}
@@ -40,7 +38,7 @@ public class CleanUpTimerTaskTest extends TestCase {
         timerTask.run();
         assertTrue(storage.cleanUpWasCalled());
     }
-    
+
     /**
      * implementation of the storage interface used only for testing
      * 
@@ -48,11 +46,11 @@ public class CleanUpTimerTaskTest extends TestCase {
      */
     private static final class ProxyGrantingTicketStorageTestImpl implements ProxyGrantingTicketStorage {
         private boolean cleanUpCalled = false;
-        
+
         public boolean cleanUpWasCalled() {
             return cleanUpCalled;
         }
-        
+
         public void cleanUp() {
             cleanUpCalled = true;
         }

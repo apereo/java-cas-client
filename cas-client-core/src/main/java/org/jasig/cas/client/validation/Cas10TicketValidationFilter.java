@@ -19,9 +19,8 @@
 package org.jasig.cas.client.validation;
 
 import javax.servlet.FilterConfig;
-
-import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 
 /**
  * Implementation of AbstractTicketValidatorFilter that instanciates a Cas10TicketValidator.
@@ -38,8 +37,9 @@ public class Cas10TicketValidationFilter extends AbstractTicketValidationFilter 
         final String casServerUrlPrefix = getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null);
         final Cas10TicketValidator validator = new Cas10TicketValidator(casServerUrlPrefix);
         validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
-        
-        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig), getSSLConfig(filterConfig));
+
+        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig),
+                getSSLConfig(filterConfig));
         validator.setURLConnectionFactory(factory);
         validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
 

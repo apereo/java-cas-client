@@ -18,12 +18,11 @@
  */
 package org.jasig.cas.client.validation;
 
+import java.util.HashMap;
+import java.util.Map;
 import junit.framework.TestCase;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Test cases for the {@link AssertionImpl}.
@@ -36,7 +35,7 @@ public final class AssertionImplTests extends TestCase {
 
     private static final AttributePrincipal CONST_PRINCIPAL = new AttributePrincipalImpl("test");
 
-    private static final Map<String,Object> CONST_ATTRIBUTES = new HashMap<String,Object>();
+    private static final Map<String, Object> CONST_ATTRIBUTES = new HashMap<String, Object>();
 
     static {
         CONST_ATTRIBUTES.put("test", "test");
@@ -51,8 +50,7 @@ public final class AssertionImplTests extends TestCase {
     }
 
     public void testCompleteConstructor() {
-        final Assertion assertion = new AssertionImpl(CONST_PRINCIPAL,
-                CONST_ATTRIBUTES);
+        final Assertion assertion = new AssertionImpl(CONST_PRINCIPAL, CONST_ATTRIBUTES);
 
         assertEquals(CONST_PRINCIPAL, assertion.getPrincipal());
         assertEquals(CONST_ATTRIBUTES, assertion.getAttributes());

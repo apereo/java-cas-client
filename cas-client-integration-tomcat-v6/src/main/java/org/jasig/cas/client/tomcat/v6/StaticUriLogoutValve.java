@@ -39,7 +39,7 @@ public final class StaticUriLogoutValve extends AbstractLogoutValve {
     public void setRedirectUrl(final String redirectUrl) {
         this.logoutHandler.setRedirectUrl(redirectUrl);
     }
-    
+
     public void setLogoutUri(final String logoutUri) {
         this.logoutHandler.setLogoutUri(logoutUri);
     }

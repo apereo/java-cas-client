@@ -35,7 +35,7 @@ import org.jasig.cas.client.tomcat.CasRealm;
 public class AssertionCasRealm extends AbstractCasRealm {
 
     private final AssertionCasRealmDelegate delegate = new AssertionCasRealmDelegate();
-    
+
     /** {@inheritDoc} */
     public void start() throws LifecycleException {
         super.start();

@@ -19,7 +19,6 @@
 package org.jasig.cas.client.tomcat;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.jasig.cas.client.util.CommonUtils;
 
 /**

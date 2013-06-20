@@ -32,7 +32,7 @@ public final class TicketCredential implements Principal {
 
     /** Hash code seed value */
     private static final int HASHCODE_SEED = 17;
-    
+
     /** Ticket ID string */
     private String ticket;
 
@@ -53,12 +53,15 @@ public final class TicketCredential implements Principal {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         final TicketCredential that = (TicketCredential) o;
 
-        if (ticket != null ? !ticket.equals(that.ticket) : that.ticket != null) return false;
+        if (ticket != null ? !ticket.equals(that.ticket) : that.ticket != null)
+            return false;
 
         return true;
     }

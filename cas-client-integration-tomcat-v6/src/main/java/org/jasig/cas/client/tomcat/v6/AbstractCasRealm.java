@@ -19,7 +19,6 @@
 package org.jasig.cas.client.tomcat.v6;
 
 import java.security.Principal;
-
 import org.apache.catalina.realm.RealmBase;
 import org.jasig.cas.client.tomcat.CasRealm;
 import org.slf4j.Logger;
@@ -36,6 +35,7 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
 
     /** Logger instance */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
+
     /** {@inheritDoc} */
     public Principal authenticate(final Principal p) {
         return getDelegate().authenticate(p);
@@ -55,7 +55,7 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
     public String toString() {
         return getName();
     }
-    
+
     /** {@inheritDoc} */
     public String getInfo() {
         return getClass().getName() + "/1.0";

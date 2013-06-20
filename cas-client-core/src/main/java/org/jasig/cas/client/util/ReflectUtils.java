@@ -52,6 +52,7 @@ public final class ReflectUtils {
             throw new IllegalArgumentException(className + " class not found.");
         }
     }
+
     /**
      * Creates a new instance of the given class by passing the given arguments
      * to the constructor.
@@ -59,10 +60,10 @@ public final class ReflectUtils {
      * @param args Constructor arguments.
      * @return New instance of given class.
      */
-    public static <T> T newInstance(final String className, final Object ... args) {
-        return newInstance(ReflectUtils.<T>loadClass(className), args);
+    public static <T> T newInstance(final String className, final Object... args) {
+        return newInstance(ReflectUtils.<T> loadClass(className), args);
     }
-    
+
     /**
      * Creates a new instance of the given class by passing the given arguments
      * to the constructor.
@@ -70,7 +71,7 @@ public final class ReflectUtils {
      * @param args Constructor arguments.
      * @return New instance of given class.
      */
-    public static <T> T newInstance(final Class<T> clazz, final Object ... args) {
+    public static <T> T newInstance(final Class<T> clazz, final Object... args) {
         final Class<?>[] argClasses = new Class[args.length];
         for (int i = 0; i < args.length; i++) {
             argClasses[i] = args[i].getClass();
@@ -136,7 +137,8 @@ public final class ReflectUtils {
      * @param target Target JavaBean on which to set property.
      * @param info BeanInfo describing the target JavaBean.
      */
-    public static void setProperty(final String propertyName, final Object value, final Object target, final BeanInfo info) {
+    public static void setProperty(final String propertyName, final Object value, final Object target,
+            final BeanInfo info) {
         try {
             final PropertyDescriptor pd = getPropertyDescriptor(info, propertyName);
             pd.getWriteMethod().invoke(target, value);

@@ -20,7 +20,6 @@ package org.jasig.cas.client.validation;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
 import junit.framework.TestCase;
 import org.jasig.cas.client.proxy.CleanUpTimerTask;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
@@ -82,7 +81,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         assertTrue(cancelMethodFlag.wasCalled());
     }
 
-public void testCallsCleanAllOnSchedule() throws Exception {
+    public void testCallsCleanAllOnSchedule() throws Exception {
         final MethodFlag timerTaskFlag = new MethodFlag();
         final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
 
@@ -153,7 +152,8 @@ public void testCallsCleanAllOnSchedule() throws Exception {
         filter.setMillisBetweenCleanUps(250);
         filter.setTimer(defaultTimer);
         filter.setTimerTask(new TimerTask() {
-          public void run() {}
+            public void run() {
+            }
         });
         filter.init();
 
@@ -165,16 +165,13 @@ public void testCallsCleanAllOnSchedule() throws Exception {
 
         // Test case #2
         final MockFilterConfig config2 = new MockFilterConfig();
-        config2.addInitParameter(
-                "allowedProxyChains",
-                "https://a.example.com https://b.example.com");
+        config2.addInitParameter("allowedProxyChains", "https://a.example.com https://b.example.com");
         config2.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
         assertNotNull(filter.getTicketValidator(config2));
 
         // Test case #3
         final MockFilterConfig config3 = new MockFilterConfig();
-        config3.addInitParameter(
-                "allowedProxyChains",
+        config3.addInitParameter("allowedProxyChains",
                 "https://a.example.com https://b.example.com\nhttps://c.example.com");
         config3.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
         assertNotNull(filter.getTicketValidator(config3));

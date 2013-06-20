@@ -18,13 +18,13 @@
  */
 package org.jasig.cas.client.proxy;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESedeKeySpec;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESedeKeySpec;
 
 /**
  * Provides encryption capabilities. Not entirely safe to configure since we have no way of controlling the
@@ -42,7 +42,8 @@ public abstract class AbstractEncryptedProxyGrantingTicketStorageImpl implements
 
     private String cipherAlgorithm = DEFAULT_ENCRYPTION_ALGORITHM;
 
-    public final void setSecretKey(final String key) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException {
+    public final void setSecretKey(final String key) throws NoSuchAlgorithmException, InvalidKeyException,
+            InvalidKeySpecException {
         this.key = SecretKeyFactory.getInstance(this.cipherAlgorithm).generateSecret(new DESedeKeySpec(key.getBytes()));
     }
 
