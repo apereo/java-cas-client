@@ -28,7 +28,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
+
+import javax.xml.parsers.SAXParserFactory;
 
 /**
  * Common utilities for easily parsing XML without duplicating logic.
@@ -51,10 +52,12 @@ public final class XmlUtils {
      */
     public static XMLReader getXmlReader() {
         try {
-            final XMLReader reader = XMLReaderFactory.createXMLReader();
+            final XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+            reader.setFeature("http://xml.org/sax/features/namespaces", true);
+            reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
             reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             return reader;
-        } catch (final SAXException e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Unable to create XMLReader", e);
         }
     }
