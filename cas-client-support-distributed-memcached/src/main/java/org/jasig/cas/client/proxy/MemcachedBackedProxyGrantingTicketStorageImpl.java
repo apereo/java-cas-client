@@ -18,6 +18,8 @@
  */
 package org.jasig.cas.client.proxy;
 
+import net.spy.memcached.MemcachedClient;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +28,6 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-import net.spy.memcached.MemcachedClient;
 
 /**
  * Implementation of the {@link org.jasig.cas.client.proxy.ProxyGrantingTicketStorage} interface that is backed by

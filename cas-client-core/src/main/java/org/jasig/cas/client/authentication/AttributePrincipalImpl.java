@@ -18,12 +18,13 @@
  */
 package org.jasig.cas.client.authentication;
 
-import java.util.Collections;
-import java.util.Map;
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Concrete implementation of the AttributePrincipal interface.

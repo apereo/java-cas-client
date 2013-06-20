@@ -18,8 +18,6 @@
  */
 package org.jasig.cas.client.tomcat.v6;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Session;
 import org.apache.catalina.SessionEvent;
@@ -28,6 +26,9 @@ import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.jasig.cas.client.session.SessionMappingStorage;
 import org.jasig.cas.client.session.SingleSignOutHandler;
+
+import javax.servlet.ServletException;
+import java.io.IOException;
 
 /**
  * Handles logout request messages sent from the CAS server by ending the current

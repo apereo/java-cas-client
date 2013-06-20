@@ -18,10 +18,11 @@
  */
 package org.jasig.cas.client.validation;
 
+import org.jasig.cas.client.authentication.AttributePrincipal;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
-import org.jasig.cas.client.authentication.AttributePrincipal;
 
 /**
  * Represents a response to a validation request.

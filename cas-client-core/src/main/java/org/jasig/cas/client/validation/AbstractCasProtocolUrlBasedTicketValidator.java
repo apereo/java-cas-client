@@ -18,8 +18,9 @@
  */
 package org.jasig.cas.client.validation;
 
-import java.net.URL;
 import org.jasig.cas.client.util.CommonUtils;
+
+import java.net.URL;
 
 /**
  * Abstract class that knows the protocol for validating a CAS ticket.
