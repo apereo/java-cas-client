@@ -60,7 +60,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     private boolean redirectAfterValidation = true;
 
     /** Determines whether an exception is thrown when there is a ticket validation failure. */
-    private boolean exceptionOnValidationFailure = true;
+    private boolean exceptionOnValidationFailure = false;
 
     /**
      * Specify whether the Assertion should be stored in a session
@@ -126,7 +126,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         setExceptionOnValidationFailure(parseBoolean(getPropertyFromInitParams(filterConfig,
-                "exceptionOnValidationFailure", "true")));
+                "exceptionOnValidationFailure", "false")));
         logger.trace("Setting exceptionOnValidationFailure parameter: {}", this.exceptionOnValidationFailure);
         setRedirectAfterValidation(parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation",
                 "true")));
@@ -221,8 +221,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     return;
                 }
             } catch (final TicketValidationException e) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                logger.warn(e.getMessage(), e);
+                logger.debug(e.getMessage(), e);
 
                 onFailedValidation(request, response);
 
@@ -230,7 +229,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     throw new ServletException(e);
                 }
 
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 
                 return;
             }

@@ -18,11 +18,12 @@
  */
 package org.jasig.cas.client.tomcat;
 
+import junit.framework.TestCase;
+import org.jasig.cas.client.authentication.AttributePrincipalImpl;
+
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.TestCase;
-import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 
 /**
  * Unit test for {@link PropertiesCasRealmDelegate} class.

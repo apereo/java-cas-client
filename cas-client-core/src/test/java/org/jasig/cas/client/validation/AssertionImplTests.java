@@ -18,11 +18,12 @@
  */
 package org.jasig.cas.client.validation;
 
-import java.util.HashMap;
-import java.util.Map;
 import junit.framework.TestCase;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Test cases for the {@link AssertionImpl}.

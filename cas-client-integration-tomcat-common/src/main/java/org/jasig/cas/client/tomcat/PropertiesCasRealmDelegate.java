@@ -18,15 +18,16 @@
  */
 package org.jasig.cas.client.tomcat;
 
+import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
-import org.jasig.cas.client.util.CommonUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link CasRealm} implementation with users and roles defined by a properties

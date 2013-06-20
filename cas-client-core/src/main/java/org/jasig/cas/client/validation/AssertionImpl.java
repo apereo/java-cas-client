@@ -18,12 +18,13 @@
  */
 package org.jasig.cas.client.validation;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.util.CommonUtils;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Concrete Implementation of the {@link Assertion}.

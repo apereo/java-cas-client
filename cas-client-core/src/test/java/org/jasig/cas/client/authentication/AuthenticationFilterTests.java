@@ -18,27 +18,20 @@
  */
 package org.jasig.cas.client.authentication;
 
+import static org.junit.Assert.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.AssertionImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.mock.web.MockFilterConfig;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.mock.web.MockServletContext;
-
-import static org.junit.Assert.*;
+import org.springframework.mock.web.*;
 
 /**
  * Tests for the AuthenticationFilter.
@@ -77,8 +70,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
+            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -86,9 +78,8 @@ public final class AuthenticationFilterTests {
         request.setSession(session);
         this.filter.doFilter(request, response, filterChain);
 
-        assertEquals(CAS_LOGIN_URL + "?service="
-                + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"), response
-                .getRedirectedUrl());
+        assertEquals(CAS_LOGIN_URL + "?service=" + URLEncoder.encode(CAS_SERVICE_URL, "UTF-8"),
+                response.getRedirectedUrl());
     }
 
     @Test
@@ -101,8 +92,7 @@ public final class AuthenticationFilterTests {
         request.setSecure(true);
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
+            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -117,11 +107,12 @@ public final class AuthenticationFilterTests {
 
         this.filter.doFilter(request, response, filterChain);
 
-        assertEquals(CAS_LOGIN_URL
-                + "?service="
-                + URLEncoder.encode("https://localhost:8443"
-                + request.getRequestURI() + "?" + request.getQueryString(),
-                "UTF-8"), response.getRedirectedUrl());
+        assertEquals(
+                CAS_LOGIN_URL
+                        + "?service="
+                        + URLEncoder.encode(
+                                "https://localhost:8443" + request.getRequestURI() + "?" + request.getQueryString(),
+                                "UTF-8"), response.getRedirectedUrl());
     }
 
     @Test
@@ -131,15 +122,13 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
+            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
                 // nothing to do
             }
         };
 
         request.setSession(session);
-        session.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION,
-                new AssertionImpl("test"));
+        session.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, new AssertionImpl("test"));
         this.filter.doFilter(request, response, filterChain);
 
         assertNull(response.getRedirectedUrl());
@@ -152,8 +141,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
+            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -173,8 +161,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
-            public void doFilter(ServletRequest arg0, ServletResponse arg1)
-                    throws IOException, ServletException {
+            public void doFilter(ServletRequest arg0, ServletResponse arg1) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -226,7 +213,8 @@ public final class AuthenticationFilterTests {
         final MockServletContext context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", "https://cas.example.com/login");
         context.addInitParameter("service", "https://localhost:8443/service");
-        context.addInitParameter("authenticationRedirectStrategyClass", "org.jasig.cas.client.authentication.FacesCompatibleAuthenticationRedirectStrategy");
+        context.addInitParameter("authenticationRedirectStrategyClass",
+                "org.jasig.cas.client.authentication.FacesCompatibleAuthenticationRedirectStrategy");
         f.init(new MockFilterConfig(context));
     }
 }

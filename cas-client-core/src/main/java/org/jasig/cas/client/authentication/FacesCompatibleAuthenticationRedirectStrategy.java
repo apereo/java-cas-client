@@ -1,10 +1,11 @@
 package org.jasig.cas.client.authentication;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.jasig.cas.client.util.CommonUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.jasig.cas.client.util.CommonUtils;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Implementation of the redirect strategy that can handle a Faces Ajax request in addition to the standard redirect style.
