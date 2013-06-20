@@ -20,6 +20,7 @@ package org.jasig.cas.client.authentication;
 
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.validation.Assertion;
 
 import javax.servlet.FilterChain;
@@ -68,6 +69,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
     
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
+    private AuthenticationRedirectStrategy authenticationRedirectStrategy = new DefaultAuthenticationRedirectStrategy();
+
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
@@ -81,12 +84,13 @@ public class AuthenticationFilter extends AbstractCasFilter {
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
             if (gatewayStorageClass != null) {
-                try {
-                    this.gatewayStorage = (GatewayResolver) Class.forName(gatewayStorageClass).newInstance();
-                } catch (final Exception e) {
-                    logger.error(e.getMessage(),e);
-                    throw new ServletException(e);
-                }
+                this.gatewayStorage = ReflectUtils.newInstance(gatewayStorageClass);
+            }
+
+            final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig, "authenticationRedirectStrategyClass", null);
+
+            if (authenticationRedirectStrategyClass != null) {
+                this.authenticationRedirectStrategy = ReflectUtils.newInstance(authenticationRedirectStrategyClass);
             }
         }
     }
@@ -131,8 +135,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
-
-        response.sendRedirect(urlToRedirectTo);
+        this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
     }
 
     public final void setRenew(final boolean renew) {
