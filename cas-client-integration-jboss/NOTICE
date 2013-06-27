@@ -1,0 +1,334 @@
+Copyright 2010, JA-SIG, Inc.
+This project includes software developed by Jasig.
+http://www.jasig.org/
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at:
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on
+an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+
+This project includes:
+  ant-launcher under Apache License, Version 2.0
+  AntLR under BSD License
+  Apache Log4j under The Apache Software License, Version 2.0
+  Apache Santuario under The Apache Software License, Version 2.0
+  Apache Velocity under The Apache Software License, Version 2.0
+  asm under Apache License, Version 2.0
+  bcel under null
+  Bean Validation API under Apache License, Version 2.0
+  Beanshell under null
+  Bouncy Castle Provider under Bouncy Castle Licence
+  cglib under Apache License, Version 2.0
+  Codec under The Apache Software License, Version 2.0
+  com.sun.istack:istack-commons-runtime under null
+  Common Annotations 1.1 API under lgpl
+  Commons BeanUtils under The Apache Software License, Version 2.0
+  commons-collections under Apache License, Version 2.0
+  concurrent under oswego
+  Connector Architecture 1.5 API under lgpl
+  dom4j under BSD License
+  dtdparser under GNU Lesser General Public License or Apache-style license
+  EJB 3.1 API under lgpl
+  EJB3.1 Calendar expression (ScheduleExpression) parser under lgpl
+  EMMA under null
+  EMMA Ant under null
+  ESAPI 2.0 under BSD or Creative Commons 3.0 BY-SA
+  Expression Language 2.2 API under lgpl
+  Extended StAX API under Common Development And Distribution License (CDDL) Version 1.0
+  Hibernate Annotations under GNU LESSER GENERAL PUBLIC LICENSE
+  Hibernate Commons Annotations under GNU LESSER GENERAL PUBLIC LICENSE
+  Hibernate Core under GNU Lesser General Public License
+  Hibernate Entity Manager under GNU Lesser General Public License
+  hornetq-core under null
+  HttpClient under Apache License
+  i18nlog under null
+  idl under null
+  Implementation of @EJB reference resolvers for EJB3.0 beans under null
+  Implementation of @EJB reference resolvers for EJB3.1 beans under null
+  Infinispan Core under GNU Lesser General Public License
+  Interceptors 1.1 API under lgpl
+  JACC 1.4 API under lgpl
+  jacorb under null
+  Jasig CAS Client for Java - Core under Apache License Version 2.0
+  Jasig CAS Client for Java - JBoss Integration under Apache License Version 2.0
+  jasper-jdt under lgpl
+  Java API for XML Based RPC under null
+  Java API for XML Web Services 2.2 under lgpl
+  Java API for XML-Based RPC (JAX-RPC) 1.1 under lgpl
+  Java Architecture for XML Binding 2.2 under lgpl
+  Java Persistence API under LGPL, v2.1
+  Java Service Wrapper under Tanuki Software license
+  Java Servlet 3.0 API under lgpl
+  java.lang.reflect based implementation of proxy SPI under lgpl
+  JavaBeans(TM) Activation Framework under COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+  JavaEE Application Deployment 1.2 API under lgpl
+  JavaMail API under CDDL or GPLv2+CE
+  Javassist under LGPL 2.1
+  Javassist based implementation of proxy SPI under lgpl
+  javax.inject under The Apache Software License, Version 2.0
+  JAX-WS (JSR-224) Reference Implementation under Dual license consisting of the CDDL v1.0 and GPL v2
+  JAX-WS (JSR-224) Reference Implementation Tools under Dual license consisting of the CDDL v1.0 and GPL v2
+  jaxb-api under null
+  jaxb-xjc under null
+  JBoss AOP AS Integration Core under lgpl
+  JBoss AOP AS Integration MC under lgpl
+  JBoss AOP Aspects under lgpl
+  JBoss AOP based JBoss EJB 3.x Concurrency Implementation under lgpl
+  JBoss AOP Deployers under lgpl
+  JBoss AOP Framework under lgpl
+  JBoss AOP Pluggable Instrumentor under lgpl
+  JBoss Application Server Connector under lgpl
+  JBoss Application Server Deployment under lgpl
+  JBoss Application Server EJB3 under lgpl
+  JBoss Application Server IIOP under lgpl
+  JBoss Application Server Main under lgpl
+  JBoss Application Server Security under lgpl
+  JBoss Application Server Server under lgpl
+  JBoss Application Server System under lgpl
+  JBoss Application Server System JMX under lgpl
+  JBoss Application Server Tomcat under lgpl
+  JBoss AS - Core Implementation under lgpl
+  JBoss AS - JBoss Cache Integration SPI under lgpl
+  JBoss AS Clustering Infinispan Support under lgpl
+  JBoss Bootstrap API under lgpl
+  JBoss Bootstrap API for AS under lgpl
+  JBoss Bootstrap API for MC under lgpl
+  JBoss Bootstrap SPI under lgpl
+  JBoss Bootstrap SPI for AS under lgpl
+  JBoss Bootstrap SPI for MC under lgpl
+  JBoss ClassLoader under lgpl
+  JBoss ClassLoading under lgpl
+  JBoss ClassLoading 6.0.0 SPI under lgpl
+  JBoss ClassLoading VFS under lgpl
+  JBoss ClassPool under lgpl
+  JBoss Cluster HA Client Classes under lgpl
+  JBoss Cluster HA Server API Classes under lgpl
+  JBoss Common Classes under lgpl
+  JBoss Container Managed JPA Deployers under lgpl
+  JBoss Container Managed JPA Implementation under lgpl
+  JBoss Container Managed JPA SPI under lgpl
+  JBoss Container Managed JPA VFS3 Integration under lgpl
+  JBoss CORBA OTS 6.0.0 SPI under lgpl
+  JBoss Current Invocation Aspects under lgpl
+  JBoss Deployers Client under lgpl
+  JBoss Deployers Client SPI under lgpl
+  JBoss Deployers Core under lgpl
+  JBoss Deployers Core SPI under lgpl
+  JBoss Deployers Impl under lgpl
+  JBoss Deployers JMX under lgpl
+  JBoss Deployers SPI under lgpl
+  JBoss Deployers Structure SPI under lgpl
+  JBoss Deployers VFS under lgpl
+  JBoss Deployers VFS SPI under lgpl
+  JBoss Deployment 6.0.0 SPI under lgpl
+  JBoss EJB 3 Context Base under lgpl
+  JBoss EJB 3 Context Naming under lgpl
+  JBoss EJB 3 Context SPI under lgpl
+  JBoss EJB 3 Effigy AOP Integration under lgpl
+  JBoss EJB 3 Effigy API under lgpl
+  JBoss EJB 3 Effigy Integration JBMETA 2.x under lgpl
+  JBoss EJB 3 Effigy Integration JBMETA Common under lgpl
+  JBoss EJB 3 Heks under lgpl
+  JBoss EJB 3 JNDI Binder under lgpl
+  JBoss EJB 3 JNDI Deployers under lgpl
+  JBoss EJB 3 Timeout Requirements EJB 3.1 under lgpl
+  JBoss EJB 3 Timeout Requirements SPI under lgpl
+  JBoss EJB 3 TX2 AOP under lgpl
+  JBoss EJB 3 TX2 Implementation under lgpl
+  JBoss EJB 3 TX2 SPI under lgpl
+  JBoss EJB 3.0 @EJB reference resolver SPI under null
+  JBoss EJB 3.0 Cache under lgpl
+  JBoss EJB 3.0 Clustered Proxy under lgpl
+  JBoss EJB 3.0 Common Utilities under lgpl
+  JBoss EJB 3.0 Core under lgpl
+  JBoss EJB 3.0 External API under lgpl
+  JBoss EJB 3.0 Implementation Classes under lgpl
+  JBoss EJB 3.0 Interceptors under lgpl
+  JBoss EJB 3.0 Meta Data bridge under lgpl
+  JBoss EJB 3.0 Security under lgpl
+  JBoss EJB 3.0 Simple Interceptor System under lgpl
+  JBoss EJB 3.0 Transactions under lgpl
+  JBoss EJB 3.1 Common Interceptor Library API under Apache License, Version 2.0
+  JBoss EJB 3.1 Implementation of the no-interface view under null
+  JBoss EJB 3.1 Singleton Proxy implementation under lgpl
+  JBoss EJB 3.1+ @Asynchronous Deployer under lgpl
+  JBoss EJB 3.1+ @Asynchronous Implementation (Internals) under lgpl
+  JBoss EJB 3.1+ @Asynchronous SPI under lgpl
+  JBoss EJB 3.1+ @Singleton implementation under lgpl
+  JBoss EJB 3.1+ @Singleton SPI under lgpl
+  JBoss EJB 3.1+ Singleton Container Deployer under lgpl
+  JBoss EJB 3.x Concurrency Implementation under lgpl
+  JBoss EJB 3.x Dependency Chain for AS6 under lgpl
+  JBoss EJB 3.x Endpoint SPI under lgpl
+  JBoss EJB 3.x Infinispan stateful cache provider under lgpl
+  JBoss EJB 3.x Instantiator Deployer under lgpl
+  JBoss EJB 3.x Instantiator Implementation under lgpl
+  JBoss EJB 3.x Instantiator SPI under lgpl
+  JBoss EJB 3.x JPA Integration under lgpl
+  JBoss EJB 3.x Proxy Implementation (Internals) under lgpl
+  JBoss EJB 3.x Proxy SPI under lgpl
+  JBoss EJB 3.x TimerService Mark 2 under lgpl
+  JBoss EJB 3.x TimerService SPI under lgpl
+  JBoss EJB 3.x VFS Abstraction Implementation for JBoss VFS3 under lgpl
+  JBoss EJB 3.x VFS Abstraction SPI under lgpl
+  JBoss EJB3 Container SPI under lgpl
+  JBoss EJB3 Deployers under lgpl
+  JBoss EJB3 Metadata deployers under lgpl
+  JBoss EJB3 No-Interface view SPI under null
+  JBoss EJB3 TimerService naming under null
+  JBoss EJB3.1 @Singleton container AOP implementation under lgpl
+  JBoss EJB3.1 TimerService extension under lgpl
+  JBoss EJB3.1+ Timerservice deployer under null
+  JBoss Injection Implementation under lgpl
+  JBoss Injection Injector under lgpl
+  JBoss Injection SwitchBoard Deployer under lgpl
+  JBoss Injection SwitchBoard MetaData under lgpl
+  JBoss Integration 6.0.0 Aggregate Build under lgpl
+  JBoss Java Authentication SPI for Containers 1.0 API under lgpl
+  JBoss Java Server Pages 2.2 API under lgpl
+  JBoss JAXB Introductions under lgpl
+  JBoss JCA 5.0.0 SPI under lgpl
+  JBoss JSTL 1.2 API under lgpl
+  JBoss Log Manager under lgpl
+  JBoss Logging 3 under lgpl
+  JBoss Logging I18n Tools under lgpl
+  JBoss Logging Log4j under lgpl
+  JBoss Logging Programming Interface under lgpl
+  JBoss Managed under lgpl
+  JBoss Marshalling API under null
+  JBoss Marshalling River under null
+  JBoss MC Integration - Common under lgpl
+  JBoss MC Integration - Servlet under lgpl
+  JBoss Metadata Client under lgpl
+  JBoss Metadata Common under lgpl
+  JBoss Metadata EAR under lgpl
+  JBoss Metadata EJB under lgpl
+  JBoss Metadata RAR under lgpl
+  JBoss MetaData Repository under lgpl
+  JBoss Metadata WAR under lgpl
+  JBoss Metatype under lgpl
+  JBoss Micro Container integration for jboss-injection under lgpl
+  JBoss Micro Container SPI for SwitchBoard component under lgpl
+  JBoss Microcontainer AOP MC INT under lgpl
+  JBoss Microcontainer Dependency under lgpl
+  JBoss Microcontainer JMX Integration under lgpl
+  JBoss Microcontainer Kernel under lgpl
+  JBoss Naming Client under lgpl
+  JBoss Naming Server under lgpl
+  JBoss ProfileService Core under LGPL 2.1
+  JBoss ProfileService Domain Model under LGPL 2.1
+  JBoss ProfileService Persistence Plugin under LGPL 2.1
+  JBoss ProfileService SPI under LGPL 2.1
+  JBoss Reflection under lgpl
+  JBoss Reloaded Naming Deployers under lgpl
+  JBoss Reloaded Naming Implementation under lgpl
+  JBoss Reloaded Naming SPI under lgpl
+  JBoss Remoting 2 under lgpl
+  JBoss Remoting Aspects under lgpl
+  JBoss Resolver Implementation under lgpl
+  JBoss Resolver SPI under lgpl
+  JBoss Scanning Deployers under lgpl
+  JBoss Scanning Impl under lgpl
+  JBoss Scanning Plugins under lgpl
+  JBoss Scanning SPI under lgpl
+  JBoss ScopedClassPool under lgpl
+  JBoss Security Aspects under lgpl
+  JBoss Security SPI - Assembly under lgpl
+  JBoss Service Binding Manager Core under lgpl
+  JBoss Service Binding Manager Management Interface under lgpl
+  JBoss STDIO under null
+  JBoss Switchboard component under lgpl
+  JBoss Switchboard component SPI under lgpl
+  JBoss Switchboard JavaEE environment entry types under lgpl
+  JBoss Test under lgpl
+  JBoss Threads under lgpl
+  JBoss Transaction 6.0.0 SPI under lgpl
+  JBoss Transaction Aspects under lgpl
+  JBoss VFS under lgpl
+  JBoss Web Services - Common under lgpl
+  JBoss Web Services - Endorsed JAX-WS, JAX-RPC and SAAJ factories under lgpl
+  JBoss Web Services - Framework Parent under lgpl
+  JBoss Web Services - Native Server under lgpl
+  JBoss Web Services - SPI under lgpl
+  JBoss XACML- Assembly under lgpl
+  JBoss XML Binding under lgpl
+  jboss-injection-manager under lgpl
+  jboss-profiler-jvmti under lgpl
+  jboss-serialization under lgpl
+  JBossAS Server Manager under lgpl
+  JBossCl ClassPool under lgpl
+  JBossMX J2SE under lgpl
+  JBossMX JMX under lgpl
+  JBossMX JMX2 Annotations under lgpl
+  JBossMX MBeans under lgpl
+  JBossMX MBeanServer under lgpl
+  JBossTS jbossjts under LGPL 2.1
+  jbossweb under lgpl
+  jcip-annotations under Creative Commons Attribution License
+  JCL 1.1.1 implemented over SLF4J under MIT License
+  jcommon under GNU Lesser General Public Licence
+  Jettison under null
+  jfreechart under GNU Lesser General Public Licence
+  JGroups under GNU Lesser General Public License 2.1
+  JMS 1.1 API under lgpl
+  Joda time under Apache 2
+  JPA 2.0 API under Sun Binary Code License
+  JSR-181 Maintenance Release 1 under CDDL+GPLv2
+  JUL to SLF4J bridge under MIT License
+  JUnit under Common Public License Version 1.0
+  Lang under The Apache Software License, Version 2.0
+  Log4j Implemented Over SLF4J under Apache Software Licenses
+  Metadata for Managed Beans under lgpl
+  mod_cluster under lgpl
+  Not Yet Commons SSL under Apache License v2
+  ON Enterprise Server JAR under GNU Lesser General Public License (LGPL)
+  OpenSAML-J under Apache 2
+  OpenWS under Apache 2
+  org.apache.tools.ant under Apache License, Version 2.0
+  Picketbox under lgpl
+  PicketBox Access Control List SPI under lgpl
+  PicketBox ACL Implementation under lgpl
+  PicketBox Authorization SPI under lgpl
+  PicketBox Client under lgpl
+  PicketBox Identity Implementation under lgpl
+  PicketBox Identity SPI under lgpl
+  PicketBox implementation under lgpl
+  PicketBox Implementation - Assembly under lgpl
+  Picketbox SPI under lgpl
+  policy under Dual License: CDDL 1.0 and GPL V2 with Classpath Exception
+  QDox under The Apache Software License, Version 2.0
+  Quartz Enterprise Job Scheduler under Apache 2.0
+  regexp under null
+  resolver under null
+  RHQ plugin annotations under null
+  servlet-api under Commons Development and Distribution License, Version 1.0
+  SLF4J API Module under MIT License
+  SLF4J Simple Binding under MIT License
+  SOAP with Attachments API for Java 1.3 under lgpl
+  stax-api under null
+  streambuffer under null
+  The Netty Project under Apache License, Version 2.0
+  Transaction 1.1 API under lgpl
+  Typed XML Writer runtime under null
+  Woodstox under GNU Lesser General Public License (LGPL), Version 2.1
+  woodstox:wstx-asl under null
+  ws-commons:policy under null
+  WSDL4J under CPL
+  xalan under Apache License, Version 2.0
+  Xalan Java under The Apache Software License, Version 2.0
+  Xalan Java Serializer under The Apache Software License, Version 2.0
+  Xerces2-j under The Apache Software License, Version 2.0
+  XML Commons External Components XML APIs under The Apache Software License, Version 2.0
+  XML Commons Resolver Component under The Apache Software License, Version 2.0
+  xml-apis under null
+  xmlsec under null
+  XMLTooling-J under Apache 2
+
