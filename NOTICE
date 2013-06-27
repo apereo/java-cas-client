@@ -16,193 +16,22 @@ specific language governing permissions and limitations
 under the License.
 
 This project includes:
-  ActiveObjects Plugin - SPI under Apache 2
-  alt-jdk1.3 under null
   annotations-api under Apache License, Version 2.0
-  ant-launcher under Apache License, Version 2.0
-  AntLR under BSD License
-  Antlr 3 Runtime under BSD License
-  AntLR Parser Generator under BSD License
-  ANTLR StringTemplate under BSD licence
   AOP alliance under Public Domain
-  Apache Felix Framework under The Apache Software License, Version 2.0
   Apache Log4j under The Apache Software License, Version 2.0
   Apache Santuario under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
   Apache XML Security under The Apache Software License, Version 2.0
-  apache-xerces:xml-apis under null
-  asm under Apache License, Version 2.0
-  AspectJ weaver under Eclipse Public License - v 1.0
-  Atlassian Core under BSD License
-  Atlassian Crowd Core under null
-  Atlassian Crowd Core API under null
-  Atlassian Crowd Events under null
-  Atlassian Crowd Integration Client under null
-  Atlassian Crowd Integration Client - REST under null
-  Atlassian Crowd Remote Implementation under null
-  Atlassian Integration Client Common under null
-  Atlassian Mail under BSD
-  Atlassian OAuth API under BSD License
-  Atlassian OfBiz Entity under BSD License
-  Atlassian OfBiz Share under BSD License
-  Atlassian Scheduler under BSD License
-  atlassian-bandana under null
-  atlassian-p4package under null
-  Axis Web Services under The Apache Software License, Version 2.0
-  axis-jaxrpc under null
-  axis-saaj under null
-  bcel under null
-  Bean Validation API under Apache License, Version 2.0
-  Beanshell under null
-  BeanUtils under Apache License, Version 2.0
-  BND Library under This material is licensed under the Apache Software License, Version 2.0
   Bouncy Castle Provider under Bouncy Castle Licence
-  bsf under null
-  bsh under null
-  carol under null
-  carol-properties under null
   catalina under Apache License, Version 2.0
-  cglib under Apache License, Version 2.0
   Codec under The Apache Software License, Version 2.0
-  com.atlassian.applinks:applinks-api under null
-  com.atlassian.applinks:applinks-host under null
-  com.atlassian.applinks:applinks-spi under null
-  com.atlassian.bandana:atlassian-bandana under null
-  com.atlassian.cache:atlassian-cache-api under null
-  com.atlassian.cache:atlassian-cache-memory under null
-  com.atlassian.confluence:confluence under null
-  com.atlassian.confluence:confluence-bucket under null
-  com.atlassian.confluence:confluence-upgrade under null
-  com.atlassian.crowd:atlassian-embedded-crowd-atlassian-user under null
-  com.atlassian.crowd:atlassian-embedded-crowd-hibernate2 under null
-  com.atlassian.crowd:atlassian-embedded-crowd-ofbiz under null
-  com.atlassian.crowd:crowd-integration-api under null
-  com.atlassian.crowd:crowd-integration-seraph22 under null
-  com.atlassian.crowd:crowd-ldap under null
-  com.atlassian.crowd:crowd-password-encoders under null
-  com.atlassian.crowd:crowd-persistence under null
-  com.atlassian.crowd:embedded-crowd-api under null
-  com.atlassian.crowd:embedded-crowd-core under null
-  com.atlassian.crowd:embedded-crowd-spi under null
-  com.atlassian.event:atlassian-event under null
-  com.atlassian.extras:atlassian-extras under null
-  com.atlassian.gadgets:atlassian-gadgets-api under null
-  com.atlassian.gadgets:atlassian-gadgets-spi under null
-  com.atlassian.gzipfilter:atlassian-gzipfilter under null
-  com.atlassian.inject:atlassian-inject under null
-  com.atlassian.jdk.utilities:atlassian-jdk-utilities under null
-  com.atlassian.jira:jira-api under null
-  com.atlassian.jira:jira-core under null
-  com.atlassian.jira:jira-lang-ca_ES under null
-  com.atlassian.jira:jira-lang-cs_CZ under null
-  com.atlassian.jira:jira-lang-da_DK under null
-  com.atlassian.jira:jira-lang-de_CH under null
-  com.atlassian.jira:jira-lang-de_DE under null
-  com.atlassian.jira:jira-lang-en_UK under null
-  com.atlassian.jira:jira-lang-en_US under null
-  com.atlassian.jira:jira-lang-es_ES under null
-  com.atlassian.jira:jira-lang-fr_FR under null
-  com.atlassian.jira:jira-lang-hu_HU under null
-  com.atlassian.jira:jira-lang-it_IT under null
-  com.atlassian.jira:jira-lang-ja_JP under null
-  com.atlassian.jira:jira-lang-nl_BE under null
-  com.atlassian.jira:jira-lang-no_NO under null
-  com.atlassian.jira:jira-lang-pl_PL under null
-  com.atlassian.jira:jira-lang-pt_BR under null
-  com.atlassian.jira:jira-lang-ru_RU under null
-  com.atlassian.jira:jira-lang-sk_SK under null
-  com.atlassian.jira:jira-lang-tr_TR under null
-  com.atlassian.jira:jira-lang-zh_CN under null
-  com.atlassian.jira:jira-lang-zh_TW under null
-  com.atlassian.johnson:atlassian-johnson under null
-  com.atlassian.modzdetector:modz-detector under null
-  com.atlassian.multitenant:multitenant-core under null
-  com.atlassian.multitenant:multitenant-utils under null
-  com.atlassian.osuser:atlassian-osuser under null
-  com.atlassian.paddle:atlassian-paddle under null
-  com.atlassian.plugins:atlassian-plugins-core under null
-  com.atlassian.plugins:atlassian-plugins-osgi under null
-  com.atlassian.plugins:atlassian-plugins-osgi-events under null
-  com.atlassian.plugins:atlassian-plugins-servlet under null
-  com.atlassian.plugins:atlassian-plugins-spring under null
-  com.atlassian.plugins:atlassian-plugins-webfragment under null
-  com.atlassian.plugins:atlassian-plugins-webresource under null
-  com.atlassian.profiling:atlassian-profiling under null
-  com.atlassian.renderer:atlassian-renderer under null
-  com.atlassian.sal:sal-api under null
-  com.atlassian.sal:sal-core under null
-  com.atlassian.sal:sal-spi under null
-  com.atlassian.sal:sal-spring under null
-  com.atlassian.security.auth.trustedapps:atlassian-trusted-apps-core under null
-  com.atlassian.security.auth.trustedapps:atlassian-trusted-apps-seraph-integration under null
-  com.atlassian.security:atlassian-cookie-tools under null
-  com.atlassian.security:atlassian-password-encoder under null
-  com.atlassian.security:atlassian-secure-random under null
-  com.atlassian.seraph:atlassian-seraph under null
-  com.atlassian.spring:atlassian-spring under null
-  com.atlassian.trackback:atlassian-trackback under null
-  com.atlassian.util.concurrent:atlassian-util-concurrent under null
-  com.atlassian.velocity:atlassian-velocity under null
-  com.atlassian.xwork:atlassian-xwork-10 under null
-  com.atlassian.xwork:atlassian-xwork-core under null
-  com.sun.istack:istack-commons-runtime under null
-  Common Annotations 1.1 API under lgpl
-  Commons BeanUtils under The Apache Software License, Version 2.0
   Commons Codec under The Apache Software License, Version 2.0
   Commons Collections under The Apache Software License, Version 2.0
-  Commons FileUpload under The Apache Software License, Version 2.0
-  Commons IO under The Apache Software License, Version 2.0
-  Commons JEXL under The Apache Software License, Version 2.0
   Commons Lang under The Apache Software License, Version 2.0
   commons-collections under Apache License, Version 2.0
-  commons-configuration under null
-  commons-dbcp under null
-  commons-jelly under null
-  commons-jelly-tags-email under null
-  commons-jelly-tags-http under null
-  commons-jelly-tags-junit under null
-  commons-jelly-tags-log under null
-  commons-jelly-tags-regexp under null
-  commons-jelly-tags-soap under null
-  commons-jelly-tags-sql under null
-  commons-jelly-tags-util under null
-  commons-jrcs under null
-  commons-pool under null
-  Connector Architecture 1.5 API under lgpl
-  Crowd Server Common under null
-  CSS Parser under GNU Lesser General Public License
-  csv under null
-  datafile under null
-  Digester under Apache License, Version 2.0
-  Direct Web Remoting under The Apache Software License, Version 2.0
-  Discovery under null
-  dom4j under BSD License
-  dtdparser under GNU Lesser General Public License or Apache-style license
-  ehcache under The Apache Software License, Version 2.0
   Ehcache Core under The Apache Software License, Version 2.0
-  EJB 3.1 API under lgpl
-  EMMA under null
-  EMMA Ant under null
   ESAPI 2.0 under BSD or Creative Commons 3.0 BY-SA
-  Expression Language 2.2 API under lgpl
-  Extended StAX API under Common Development And Distribution License (CDDL) Version 1.0
-  glue under null
-  gnu-getopt:getopt under null
-  Google Collections Library under The Apache Software License, Version 2.0
-  Hibernate Annotations under GNU LESSER GENERAL PUBLIC LICENSE
-  Hibernate Commons Annotations under GNU LESSER GENERAL PUBLIC LICENSE
-  Hibernate Core under GNU Lesser General Public License
-  Hibernate Entity Manager under GNU Lesser General Public License
-  hornetq-core under null
-  hsqldb under null
   HttpClient under Apache License
-  i18nlog:i18nlog under null
-  Interceptors 1.1 API under lgpl
-  JACC 1.4 API under lgpl
-  jacorb:idl under null
-  jacorb:jacorb under null
-  jai_codec under null
-  jai_core under null
   Jasig CAS Client for Java under Apache License Version 2.0
   Jasig CAS Client for Java - Atlassian Integration under Apache License Version 2.0
   Jasig CAS Client for Java - Common Tomcat Integration Support under Apache License Version 2.0
@@ -213,341 +42,28 @@ This project includes:
   Jasig CAS Client for Java - JBoss Integration under Apache License Version 2.0
   Jasig CAS Client for Java - Tomcat 6.x Integration under Apache License Version 2.0
   Jasig CAS Client for Java - Tomcat 7.x Integration under Apache License Version 2.0
-  Java API for XML Based RPC under null
-  Java API for XML Web Services 2.2 under lgpl
-  Java API for XML-Based RPC (JAX-RPC) 1.1 under lgpl
-  Java Architecture for XML Binding 2.2 under lgpl
-  Java Persistence API under LGPL, v2.1
-  Java Service Wrapper under Tanuki Software license
-  Java Servlet 3.0 API under lgpl
-  Java Transaction API under Commons Development and Distribution License, Version 1.0
   JavaBeans Activation Framework (JAF) under Common Development and Distribution License (CDDL) v1.0
-  JavaBeans(TM) Activation Framework under COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
-  javacvs under null
-  JavaEE Application Deployment 1.2 API under lgpl
-  JavaMail API under CDDL or GPLv2+CE
-  Javassist under LGPL 2.1
-  javax.inject under The Apache Software License, Version 2.0
-  javax.media:jai-core under null
-  JAX-WS (JSR-224) Reference Implementation under Dual license consisting of the CDDL v1.0 and GPL v2
-  JAX-WS (JSR-224) Reference Implementation Tools under Dual license consisting of the CDDL v1.0 and GPL v2
-  jaxb-xjc under null
-  JBoss Application Server Connector under lgpl
-  JBoss Application Server Deployment under lgpl
-  JBoss Application Server EJB3 under lgpl
-  JBoss Application Server IIOP under lgpl
-  JBoss Application Server Main under lgpl
-  JBoss Application Server Security under lgpl
-  JBoss Application Server Server under lgpl
-  JBoss Application Server System under lgpl
-  JBoss Application Server System JMX under lgpl
-  JBoss Application Server Tomcat under lgpl
-  JBoss ClassLoader under lgpl
-  JBoss ClassLoading under lgpl
-  JBoss ClassLoading 6.0.0 SPI under lgpl
-  JBoss ClassLoading VFS under lgpl
-  JBoss Common Classes under lgpl
-  JBoss CORBA OTS 6.0.0 SPI under lgpl
-  JBoss Deployers Client under lgpl
-  JBoss Deployers Client SPI under lgpl
-  JBoss Deployers Core under lgpl
-  JBoss Deployers Core SPI under lgpl
-  JBoss Deployers Impl under lgpl
-  JBoss Deployers JMX under lgpl
-  JBoss Deployers SPI under lgpl
-  JBoss Deployers Structure SPI under lgpl
-  JBoss Deployers VFS under lgpl
-  JBoss Deployers VFS SPI under lgpl
-  JBoss Deployment 6.0.0 SPI under lgpl
-  JBoss EJB 3.1 Common Interceptor Library API under Apache License, Version 2.0
-  JBoss Integration 6.0.0 Aggregate Build under lgpl
-  JBoss Java Authentication SPI for Containers 1.0 API under lgpl
-  JBoss Java Server Pages 2.2 API under lgpl
-  JBoss JAXB Introductions under lgpl
-  JBoss JCA 5.0.0 SPI under lgpl
-  JBoss JSTL 1.2 API under lgpl
-  JBoss Log Manager under lgpl
-  JBoss Logging 3 under lgpl
-  JBoss Logging I18n Tools under lgpl
-  JBoss Logging Log4j under lgpl
-  JBoss Logging Programming Interface under lgpl
-  JBoss Managed under lgpl
-  JBoss Marshalling API under null
-  JBoss Marshalling River under null
-  JBoss MetaData Repository under lgpl
-  JBoss Metatype under lgpl
-  JBoss Microcontainer AOP MC INT under lgpl
-  JBoss Microcontainer Kernel under lgpl
-  JBoss Reflection under lgpl
-  JBoss Security SPI - Assembly under lgpl
-  JBoss Test under lgpl
-  JBoss Threads under lgpl
-  JBoss Transaction 6.0.0 SPI under lgpl
-  JBoss VFS under lgpl
-  JBoss XML Binding under lgpl
-  jboss.profiler.jvmti:jboss-profiler-jvmti under null
-  jboss:jboss-serialization under null
-  JBossAS Server Manager under lgpl
-  JCaptcha under null
-  jcaptcha-all under LGPL
+  JavaMail API under Common Development and Distribution License (CDDL) v1.0
   jcip-annotations under Creative Commons Attribution License
   JCL 1.1.1 implemented over SLF4J under MIT License
-  jcommon under GNU Lesser General Public Licence
-  jdom under Apache style license
-  Jettison under null
-  jfreechart under GNU Lesser General Public Licence
-  JGroups under GNU Lesser General Public License 2.1
-  JHLabs Image Processing Filters under Apache License, Version 2.0
-  JMS 1.1 API under lgpl
   Joda time under Apache 2
-  jonas_timer under null
-  jotm under null
-  jotm-iiop_stubs under null
-  jotm-jrmp_stubs under null
-  JPA 2.0 API under Sun Binary Code License
-  js under Mozilla Public License, Version 1.1
-  jsch under null
-  JSR-181 Maintenance Release 1 under CDDL+GPLv2
-  jtidy under null
   JUL to SLF4J bridge under MIT License
   juli under Apache License, Version 2.0
   JUnit under Common Public License Version 1.0
-  jzlib under null
   Lang under The Apache Software License, Version 2.0
-  LdapTemplate under The Apache Software License, Version 2.0
-  Legion of the Bouncy Castle Java Cryptography APIs under Bouncy Castle License
-  log4j under null
   Log4j Implemented Over SLF4J under Apache Software Licenses
-  Lucene Analyzers under Apache 2
-  Lucene Core under Apache 2
-  Lucene Highlighter under Apache 2
-  Lucene Memory under Apache 2
-  Lucene Miscellaneous under Apache 2
-  mockobjects-alt-jdk1.3-j2ee1.3 under null
   Not Yet Commons SSL under Apache License v2
-  objectweb-datasource under null
-  ofbcore:ofbcore-jira-entity under null
-  ofbcore:ofbcore-jira-share under null
   OpenSAML-J under Apache 2
-  opensymphony:oscore under null
-  opensymphony:propertyset under null
   OpenWS under Apache 2
-  org.apache.tools.ant under Apache License, Version 2.0
-  org.apache.velocity:velocity under null
-  org.apache.xalan:xalan under Apache License, Version 2.0
-  org.apache:xmlsec under null
-  org.hsqldb:hsqldb under null
-  org.infinispan:infinispan-core under null
-  org.jboss.aop:jboss-aop under null
-  org.jboss.aop:jboss-aop-asintegration-core under null
-  org.jboss.aop:jboss-aop-asintegration-mc under null
-  org.jboss.aop:jboss-aop-aspects under null
-  org.jboss.aop:jboss-aop-deployers under null
-  org.jboss.aop:pluggable-instrumentor under null
-  org.jboss.aspects:jboss-current-invocation-aspects under null
-  org.jboss.aspects:jboss-remoting-aspects under null
-  org.jboss.aspects:jboss-security-aspects under null
-  org.jboss.aspects:jboss-transaction-aspects under null
-  org.jboss.bootstrap:jboss-bootstrap-api under null
-  org.jboss.bootstrap:jboss-bootstrap-api-as under null
-  org.jboss.bootstrap:jboss-bootstrap-api-mc under null
-  org.jboss.bootstrap:jboss-bootstrap-spi under null
-  org.jboss.bootstrap:jboss-bootstrap-spi-as under null
-  org.jboss.bootstrap:jboss-bootstrap-spi-mc under null
-  org.jboss.classpool:jboss-classpool under null
-  org.jboss.classpool:jboss-classpool-jbosscl under null
-  org.jboss.classpool:jboss-classpool-scoped under null
-  org.jboss.cluster:jboss-ha-client under null
-  org.jboss.cluster:jboss-ha-server-api under null
-  org.jboss.cluster:jboss-ha-server-cache-spi under null
-  org.jboss.cluster:jboss-ha-server-core under null
-  org.jboss.cluster:jboss-ha-server-ispn under null
-  org.jboss.ejb3.async:jboss-ejb3-async-deployer under null
-  org.jboss.ejb3.async:jboss-ejb3-async-impl under null
-  org.jboss.ejb3.async:jboss-ejb3-async-spi under null
-  org.jboss.ejb3.concurrency:jboss-ejb3-concurrency-aop under null
-  org.jboss.ejb3.concurrency:jboss-ejb3-concurrency-impl under null
-  org.jboss.ejb3.container:jboss-ejb3-container-spi under null
-  org.jboss.ejb3.context:jboss-ejb3-context-base under null
-  org.jboss.ejb3.context:jboss-ejb3-context-naming under null
-  org.jboss.ejb3.context:jboss-ejb3-context-spi under null
-  org.jboss.ejb3.depchain:jboss-ejb3-depchain-as6 under null
-  org.jboss.ejb3.effigy:jboss-ejb3-effigy-aop-int under null
-  org.jboss.ejb3.effigy:jboss-ejb3-effigy-api under null
-  org.jboss.ejb3.effigy:jboss-ejb3-effigy-common under null
-  org.jboss.ejb3.effigy:jboss-ejb3-effigy-int2 under null
-  org.jboss.ejb3.ejbref.resolver:ejbref-resolver-ejb30-impl under null
-  org.jboss.ejb3.ejbref.resolver:ejbref-resolver-ejb31-impl under null
-  org.jboss.ejb3.ejbref.resolver:ejbref-resolver-spi under null
-  org.jboss.ejb3.heks:jboss-ejb3-heks under null
-  org.jboss.ejb3.instantiator:jboss-ejb3-instantiator-deployer under null
-  org.jboss.ejb3.instantiator:jboss-ejb3-instantiator-impl under null
-  org.jboss.ejb3.instantiator:jboss-ejb3-instantiator-spi under null
-  org.jboss.ejb3.jndi:jboss-ejb3-jndi-binder under null
-  org.jboss.ejb3.jndi:jboss-ejb3-jndi-deployers under null
-  org.jboss.ejb3.nointerface:jboss-ejb3-nointerface-impl under null
-  org.jboss.ejb3.nointerface:jboss-ejb3-nointerface-spi under null
-  org.jboss.ejb3.proxy:proxy-javassist under null
-  org.jboss.ejb3.proxy:proxy-reflect under null
-  org.jboss.ejb3.proxy:proxy-spi under null
-  org.jboss.ejb3.singleton:jboss-ejb3-singleton-aop-impl under null
-  org.jboss.ejb3.singleton:jboss-ejb3-singleton-deployer under null
-  org.jboss.ejb3.singleton:jboss-ejb3-singleton-impl under null
-  org.jboss.ejb3.singleton:jboss-ejb3-singleton-proxy-impl under null
-  org.jboss.ejb3.singleton:jboss-ejb3-singleton-spi under null
-  org.jboss.ejb3.sis:jboss-ejb3-sis under null
-  org.jboss.ejb3.statefulcache:jboss-ejb3-statefulcache-ispn under null
-  org.jboss.ejb3.timeout:jboss-ejb3-timeout-3.1 under null
-  org.jboss.ejb3.timeout:jboss-ejb3-timeout-spi under null
-  org.jboss.ejb3.timerservice:ejb31-calendar-expr-parser under null
-  org.jboss.ejb3.timerservice:jboss-ejb3-timerservice-extension under null
-  org.jboss.ejb3.timerservice:jboss-ejb3-timerservice-mk2 under null
-  org.jboss.ejb3.tx2:jboss-ejb3-tx2-aop under null
-  org.jboss.ejb3.tx2:jboss-ejb3-tx2-impl under null
-  org.jboss.ejb3.tx2:jboss-ejb3-tx2-spi under null
-  org.jboss.ejb3.vfs:jboss-ejb3-vfs-impl-vfs3 under null
-  org.jboss.ejb3.vfs:jboss-ejb3-vfs-spi under null
-  org.jboss.ejb3:jboss-ejb3-cache under null
-  org.jboss.ejb3:jboss-ejb3-common under null
-  org.jboss.ejb3:jboss-ejb3-core under null
-  org.jboss.ejb3:jboss-ejb3-deployers under null
-  org.jboss.ejb3:jboss-ejb3-endpoint under null
-  org.jboss.ejb3:jboss-ejb3-ext-api under null
-  org.jboss.ejb3:jboss-ejb3-ext-api-impl under null
-  org.jboss.ejb3:jboss-ejb3-interceptors under null
-  org.jboss.ejb3:jboss-ejb3-jpa-int under null
-  org.jboss.ejb3:jboss-ejb3-metadata under null
-  org.jboss.ejb3:jboss-ejb3-metadata-deployers under null
-  org.jboss.ejb3:jboss-ejb3-proxy-clustered under null
-  org.jboss.ejb3:jboss-ejb3-proxy-impl under null
-  org.jboss.ejb3:jboss-ejb3-proxy-spi under null
-  org.jboss.ejb3:jboss-ejb3-security under null
-  org.jboss.ejb3:jboss-ejb3-timerservice-deployer under null
-  org.jboss.ejb3:jboss-ejb3-timerservice-naming under null
-  org.jboss.ejb3:jboss-ejb3-timerservice-spi under null
-  org.jboss.ejb3:jboss-ejb3-transactions under null
-  org.jboss.injection:jboss-injection under null
-  org.jboss.injection:jboss-injection-injector under null
-  org.jboss.injection:jboss-injection-manager under null
-  org.jboss.injection:jboss-injection-mc-impl under null
-  org.jboss.injection:jboss-injection-switchboard-deployer under null
-  org.jboss.injection:jboss-resolver-impl under null
-  org.jboss.injection:jboss-resolver-spi under null
-  org.jboss.injection:jboss-switchboard-metadata under null
-  org.jboss.jbossts:jbossjts under null
-  org.jboss.jpa:jboss-jpa-deployers under null
-  org.jboss.jpa:jboss-jpa-impl under null
-  org.jboss.jpa:jboss-jpa-spi under null
-  org.jboss.jpa:jboss-jpa-vfs3 under null
-  org.jboss.kernel:jboss-aop-mc-int under null
-  org.jboss.kernel:jboss-dependency under null
-  org.jboss.kernel:jboss-jmx-mc-int under null
-  org.jboss.kernel:jboss-kernel under null
-  org.jboss.managed.beans:managed-beans-metadata under null
-  org.jboss.mc-int:jboss-mc-int-common under null
-  org.jboss.mc-int:jboss-mc-int-servlet under null
-  org.jboss.metadata:jboss-metadata-client under null
-  org.jboss.metadata:jboss-metadata-common under null
-  org.jboss.metadata:jboss-metadata-ear under null
-  org.jboss.metadata:jboss-metadata-ejb under null
-  org.jboss.metadata:jboss-metadata-rar under null
-  org.jboss.metadata:jboss-metadata-war under null
-  org.jboss.mod_cluster:mod_cluster under null
-  org.jboss.mx:jboss-j2se under null
-  org.jboss.mx:jboss-jmx under null
-  org.jboss.mx:jboss-jmx-annotations under null
-  org.jboss.mx:jboss-mbeans under null
-  org.jboss.mx:jboss-mbeanserver under null
-  org.jboss.naming:jnp-client under null
-  org.jboss.naming:jnpserver under null
-  org.jboss.profileservice:jboss-profileservice-core under null
-  org.jboss.profileservice:jboss-profileservice-domain under null
-  org.jboss.profileservice:jboss-profileservice-persistence under null
-  org.jboss.profileservice:jboss-profileservice-spi under null
-  org.jboss.reloaded.naming:jboss-reloaded-naming-deployers under null
-  org.jboss.reloaded.naming:jboss-reloaded-naming-impl under null
-  org.jboss.reloaded.naming:jboss-reloaded-naming-spi under null
-  org.jboss.remoting:jboss-remoting under null
-  org.jboss.scanning:scanning-deployers under null
-  org.jboss.scanning:scanning-impl under null
-  org.jboss.scanning:scanning-plugins under null
-  org.jboss.scanning:scanning-spi under null
-  org.jboss.security:jboss-security-spi under null
-  org.jboss.security:jbossxacml under null
-  org.jboss.service.binding:jboss-service-binding-core under null
-  org.jboss.service.binding:jboss-service-binding-mgmt under null
-  org.jboss.stdio:jboss-stdio under null
-  org.jboss.switchboard:jboss-switchboard-impl under null
-  org.jboss.switchboard:jboss-switchboard-javaee under null
-  org.jboss.switchboard:jboss-switchboard-mc-spi under null
-  org.jboss.switchboard:jboss-switchboard-spi under null
-  org.jboss.web:jasper-jdt under null
-  org.jboss.web:jbossweb under null
-  org.jboss.ws.native:jbossws-native-core under null
-  org.jboss.ws.native:jbossws-native-factories under null
-  org.jboss.ws:jbossws-common under null
-  org.jboss.ws:jbossws-framework under null
-  org.jboss.ws:jbossws-spi under null
-  org.twdata.pkgscanner:package-scanner under null
-  oro under Apache License, Version 2.0
-  oswego-concurrent:concurrent under null
-  osworkflow under null
-  ots-jts under null
-  pell-multipart-request under null
-  Picketbox under lgpl
-  PicketBox Access Control List SPI under lgpl
-  PicketBox ACL Implementation under lgpl
-  PicketBox Authorization SPI under lgpl
-  PicketBox Client under lgpl
-  PicketBox Identity Implementation under lgpl
-  PicketBox Identity SPI under lgpl
-  PicketBox implementation under lgpl
-  PicketBox Implementation - Assembly under lgpl
-  Picketbox SPI under lgpl
-  Pico Container under null
-  policy under Dual License: CDDL 1.0 and GPL V2 with Classpath Exception
-  QDox under The Apache Software License, Version 2.0
-  quartz under Apache License, Version 2.0
-  Quartz Enterprise Job Scheduler under Apache 2.0
-  radeox under null
-  regexp under null
-  resolver under null
-  RHQ plugin annotations under null
-  saxon-noaelfred under null
   servlet-api under Apache License, Version 2.0
-  Simple API for CSS under The W3C Software License
-  SiteMesh under null
   SLF4J API Module under MIT License
-  SLF4J LOG4J-12 Binding under MIT License
   SLF4J Simple Binding under MIT License
-  SOAP with Attachments API for Java 1.3 under lgpl
-  Spring Framework: AOP under The Apache Software License, Version 2.0
-  Spring Framework: Beans under The Apache Software License, Version 2.0
-  Spring Framework: Context under The Apache Software License, Version 2.0
-  Spring Framework: Core under The Apache Software License, Version 2.0
-  Spring Framework: DAO under The Apache Software License, Version 2.0
-  Spring Framework: Hibernate2 under The Apache Software License, Version 2.0
-  Spring Framework: JDBC under The Apache Software License, Version 2.0
-  Spring Framework: JMX under The Apache Software License, Version 2.0
-  Spring Framework: Transaction under The Apache Software License, Version 2.0
-  Spring Framework: Web under The Apache Software License, Version 2.0
-  Spring LDAP Core under Apache License, Version 2.0
-  Spring Security - Core under The Apache Software License, Version 2.0
   spring-aop under The Apache Software License, Version 2.0
   spring-asm under The Apache Software License, Version 2.0
-  spring-beans under The Apache Software License, Version 2.0
   spring-context under The Apache Software License, Version 2.0
   spring-core under The Apache Software License, Version 2.0
   spring-expression under The Apache Software License, Version 2.0
   spring-test under The Apache Software License, Version 2.0
-  spymemcached under null
-  statcvs under null
-  stax-api under null
-  stax-utils under null
-  streambuffer under null
-  Streaming API for XML under Sun Binary Code License
-  sun-jaxb:jaxb-api under null
-  The Netty Project under Apache License, Version 2.0
   tomcat-annotations-api under Apache License, Version 2.0
   tomcat-api under Apache License, Version 2.0
   tomcat-catalina under Apache License, Version 2.0
@@ -555,28 +71,10 @@ This project includes:
   tomcat-servlet-api under Apache License, Version 2.0 and
         Common Development And Distribution License (CDDL) Version 1.0
   tomcat-util under Apache License, Version 2.0
-  Transaction 1.1 API under lgpl
-  Typed XML Writer runtime under null
-  UrlRewriteFilter under null
-  VelocityTools under Apache 2
-  webwork under null
-  Woodstox under GNU Lesser General Public License (LGPL), Version 2.1
-  woodstox:wstx-asl under null
-  ws-commons:policy under null
-  WSDL4J under CPL
   Xalan Java under The Apache Software License, Version 2.0
   Xalan Java Serializer under The Apache Software License, Version 2.0
-  xapool under null
   Xerces2-j under The Apache Software License, Version 2.0
-  XFire Aegis Binding under null
-  XFire Core under null
   XML Commons External Components XML APIs under The Apache Software License, Version 2.0
   XML Commons Resolver Component under The Apache Software License, Version 2.0
-  xmlrpc under null
-  XmlSchema under The Apache Software License, Version 2.0
-  xmlsec under null
   XMLTooling-J under Apache 2
-  xpp3 under Apache License, Version 1.1
-  xpp3_min under null
-  XStream under BSD style
 

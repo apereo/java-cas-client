@@ -16,251 +16,31 @@ specific language governing permissions and limitations
 under the License.
 
 This project includes:
-  ActiveObjects Plugin - SPI under Apache 2
-  alt-jdk1.3 under null
-  Antlr 3 Runtime under BSD License
-  AntLR Parser Generator under BSD License
-  ANTLR StringTemplate under BSD licence
-  AOP alliance under Public Domain
-  Apache Felix Framework under The Apache Software License, Version 2.0
   Apache Santuario under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
-  Applinks API under BSD License
-  Applinks Host Integration Services under BSD License
-  Applinks SPI under BSD License
-  AspectJ weaver under Eclipse Public License - v 1.0
-  Atlassian Bandana under BSD License
-  Atlassian Cache API under BSD License
-  Atlassian Cache Memory under BSD License
-  Atlassian Concurrency Utilities under Apache 2
-  Atlassian Cookie Tools under null
-  Atlassian Core under BSD License
-  Atlassian Crowd Core under null
-  Atlassian Crowd Core API under null
-  Atlassian Crowd Events under null
-  Atlassian Crowd Integration API under null
-  Atlassian Crowd Integration Client under null
-  Atlassian Crowd Integration Client - REST under null
-  Atlassian Crowd LDAP Implementation under null
-  Atlassian Crowd Persistence Module under null
-  Atlassian Crowd Remote Implementation under null
-  Atlassian Crowd Seraph 2.2 Integration under null
-  Atlassian Crowd System Password Encoders under null
-  Atlassian Embedded Crowd - API under null
-  Atlassian Embedded Crowd - Atlassian User under null
-  Atlassian Embedded Crowd - Core under null
-  Atlassian Embedded Crowd - Hibernate 2 under null
-  Atlassian Embedded Crowd - Ofbiz under null
-  Atlassian Embedded Crowd - SPI under null
-  Atlassian Event under BSD License
-  Atlassian Extras - The full extras! under null
-  Atlassian Gadgets API under null
-  Atlassian Gadgets SPI under null
-  Atlassian Gzip Filter under BSD License
-  Atlassian Inject under BSD License
-  Atlassian Integration Client Common under null
-  Atlassian JDK Utilities under BSD License
-  Atlassian JIRA - Code - API under null
-  Atlassian JIRA - Code - Core under null
-  Atlassian JIRA - Language Packs - ca_ES under null
-  Atlassian JIRA - Language Packs - cs_CZ under null
-  Atlassian JIRA - Language Packs - da_DK under null
-  Atlassian JIRA - Language Packs - de_CH under null
-  Atlassian JIRA - Language Packs - de_DE under null
-  Atlassian JIRA - Language Packs - en_UK under null
-  Atlassian JIRA - Language Packs - en_US under null
-  Atlassian JIRA - Language Packs - es_ES under null
-  Atlassian JIRA - Language Packs - fr_FR under null
-  Atlassian JIRA - Language Packs - hu_HU under null
-  Atlassian JIRA - Language Packs - it_IT under null
-  Atlassian JIRA - Language Packs - ja_JP under null
-  Atlassian JIRA - Language Packs - nl_BE under null
-  Atlassian JIRA - Language Packs - no_NO under null
-  Atlassian JIRA - Language Packs - pl_PL under null
-  Atlassian JIRA - Language Packs - pt_BR under null
-  Atlassian JIRA - Language Packs - ru_RU under null
-  Atlassian JIRA - Language Packs - sk_SK under null
-  Atlassian JIRA - Language Packs - tr_TR under null
-  Atlassian JIRA - Language Packs - zh_CN under null
-  Atlassian JIRA - Language Packs - zh_TW under null
-  Atlassian Johnson under BSD License
-  Atlassian Mail under BSD
-  Atlassian Modz Detector - Core and Ant task under null
-  Atlassian Multi-Tenant Core Utils under BSD License
-  Atlassian Multi-Tenant Utilities under BSD License
-  Atlassian OAuth API under BSD License
-  Atlassian OfBiz Entity under BSD License
-  Atlassian OfBiz Share under BSD License
-  Atlassian Password Encoder under null
-  Atlassian Plugins - Core under BSD
-  Atlassian Plugins - OSGi events under BSD
-  Atlassian Plugins - OSGi Loader under BSD
-  Atlassian Plugins - Spring Integration under BSD
-  Atlassian Plugins - Web Fragments under BSD
-  Atlassian Plugins - Web Resource under BSD
-  Atlassian Plugins - Web Servlet under BSD
-  Atlassian Profiling under BSD License
-  Atlassian Renderer under null
-  Atlassian Scheduler under BSD License
-  Atlassian Secure Random under null
-  Atlassian Seraph under BSD License
-  Atlassian Spring under BSD License
-  Atlassian Trackback under BSD License
-  Atlassian Trusted Apps - Seraph Integration under BSD License
-  Atlassian Trusted Apps Core under BSD License
-  Atlassian Velocity under BSD License
-  Atlassian XWork 1.0.x Implementation under BSD License
-  Atlassian XWork Core under BSD License
-  atlassian-bandana under null
-  atlassian-osuser under BSD License
-  atlassian-p4package under null
-  Axis Web Services under The Apache Software License, Version 2.0
-  axis-jaxrpc under null
-  axis-saaj under null
-  BeanUtils under Apache License, Version 2.0
-  BND Library under This material is licensed under the Apache Software License, Version 2.0
   Bouncy Castle Provider under Bouncy Castle Licence
-  bsf under null
-  bsh under null
-  carol under null
-  carol-properties under null
-  cglib under Apache License, Version 2.0
   Codec under The Apache Software License, Version 2.0
   Commons Collections under The Apache Software License, Version 2.0
-  Commons FileUpload under The Apache Software License, Version 2.0
-  Commons IO under The Apache Software License, Version 2.0
-  Commons JEXL under The Apache Software License, Version 2.0
   Commons Lang under The Apache Software License, Version 2.0
-  commons-configuration under null
-  commons-dbcp under null
-  commons-jelly under null
-  commons-jelly-tags-email under null
-  commons-jelly-tags-http under null
-  commons-jelly-tags-junit under null
-  commons-jelly-tags-log under null
-  commons-jelly-tags-regexp under null
-  commons-jelly-tags-soap under null
-  commons-jelly-tags-sql under null
-  commons-jelly-tags-util under null
-  commons-jrcs under null
-  commons-pool under null
-  Confluence Bucket under null
-  Confluence Core under null
-  Confluence Upgrade under null
-  Crowd Server Common under null
-  CSS Parser under GNU Lesser General Public License
-  csv under null
-  datafile under null
-  Digester under Apache License, Version 2.0
-  Direct Web Remoting under The Apache Software License, Version 2.0
-  Discovery under null
-  dom4j under BSD License
-  ehcache under The Apache Software License, Version 2.0
   ESAPI 2.0 under BSD or Creative Commons 3.0 BY-SA
-  glue under null
-  Google Collections Library under The Apache Software License, Version 2.0
-  hsqldb under null
   HttpClient under Apache License
-  jai-core under null
-  jai_codec under null
-  jai_core under null
   Jasig CAS Client for Java - Atlassian Integration under Apache License Version 2.0
   Jasig CAS Client for Java - Core under Apache License Version 2.0
-  Java Transaction API under Commons Development and Distribution License, Version 1.0
-  JavaBeans(TM) Activation Framework under COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
-  javacvs under null
-  JavaMail API under Sun Binary Code License
-  JCaptcha under null
-  jcaptcha-all under LGPL
   jcip-annotations under Creative Commons Attribution License
   JCL 1.1.1 implemented over SLF4J under MIT License
-  jcommon under null
-  jdom under Apache style license
-  jfreechart under null
-  JHLabs Image Processing Filters under Apache License, Version 2.0
   Joda time under Apache 2
-  jonas_timer under null
-  jotm under null
-  jotm-iiop_stubs under null
-  jotm-jrmp_stubs under null
-  js under Mozilla Public License, Version 1.1
-  jsch under null
-  jtidy under null
   JUL to SLF4J bridge under MIT License
   JUnit under Common Public License Version 1.0
-  jzlib under null
-  LdapTemplate under The Apache Software License, Version 2.0
-  Legion of the Bouncy Castle Java Cryptography APIs under Bouncy Castle License
-  log4j under null
   Log4j Implemented Over SLF4J under Apache Software Licenses
-  Lucene Analyzers under Apache 2
-  Lucene Core under Apache 2
-  Lucene Highlighter under Apache 2
-  Lucene Memory under Apache 2
-  Lucene Miscellaneous under Apache 2
-  mockobjects-alt-jdk1.3-j2ee1.3 under null
   Not Yet Commons SSL under Apache License v2
-  objectweb-datasource under null
-  ofbcore-jira-entity under null
-  ofbcore-jira-share under null
   OpenSAML-J under Apache 2
   OpenWS under Apache 2
-  oro under Apache License, Version 2.0
-  OS Core under OpenSymphony (Apache 2)
-  OS Property Set under null
-  osworkflow under null
-  ots-jts under null
-  Package Export Scanner under null
-  Paddle under BSD License
-  pell-multipart-request under null
-  Pico Container under null
-  quartz under Apache License, Version 2.0
-  Quartz Enterprise Job Scheduler under Apache 2.0
-  radeox under null
-  saxon-noaelfred under null
-  servlet-api under Commons Development and Distribution License, Version 1.0
-  Shared Access Layer SPI under BSD License
-  Shared Application Access Layer API under BSD License
-  Shared Application Access Layer Core under BSD License
-  Shared Application Access Layer Spring Implementation under BSD License
-  Simple API for CSS under The W3C Software License
-  SiteMesh under null
   SLF4J API Module under MIT License
-  SLF4J LOG4J-12 Binding under MIT License
   SLF4J Simple Binding under MIT License
-  Spring Framework: AOP under The Apache Software License, Version 2.0
-  Spring Framework: Beans under The Apache Software License, Version 2.0
-  Spring Framework: Context under The Apache Software License, Version 2.0
-  Spring Framework: Core under The Apache Software License, Version 2.0
-  Spring Framework: DAO under The Apache Software License, Version 2.0
-  Spring Framework: Hibernate2 under The Apache Software License, Version 2.0
-  Spring Framework: JDBC under The Apache Software License, Version 2.0
-  Spring Framework: JMX under The Apache Software License, Version 2.0
-  Spring Framework: Transaction under The Apache Software License, Version 2.0
-  Spring Framework: Web under The Apache Software License, Version 2.0
-  Spring LDAP Core under Apache License, Version 2.0
-  Spring Security - Core under The Apache Software License, Version 2.0
-  statcvs under null
-  stax-utils under null
-  Streaming API for XML under Sun Binary Code License
-  UrlRewriteFilter under null
-  VelocityTools under Apache 2
-  webwork under null
-  Woodstox under The Apache Software License, Version 2.0
-  WSDL4J under CPL
   Xalan Java under The Apache Software License, Version 2.0
   Xalan Java Serializer under The Apache Software License, Version 2.0
-  xapool under null
   Xerces2-j under The Apache Software License, Version 2.0
-  XFire Aegis Binding under null
-  XFire Core under null
   XML Commons External Components XML APIs under The Apache Software License, Version 2.0 or The SAX License or The W3C License
   XML Commons Resolver Component under The Apache Software License, Version 2.0
-  xmlrpc under null
-  XmlSchema under The Apache Software License, Version 2.0
-  xmlsec under null
   XMLTooling-J under Apache 2
-  xpp3 under Apache License, Version 1.1
-  xpp3_min under null
-  XStream under BSD style
 
