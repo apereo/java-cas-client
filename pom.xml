@@ -201,6 +201,22 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>1.5</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
     <modules>
         <module>cas-client-core</module>
         <module>cas-client-integration-atlassian</module>
@@ -215,6 +231,6 @@
     <properties>
         <ehcache.version>2.2.0</ehcache.version>
         <clover.version>3.0.2</clover.version>
-        <slf4j.version>1.7.1</slf4j.version>
+        <slf4j.version>1.7.5</slf4j.version>
     </properties>
 </project>
