@@ -69,8 +69,7 @@ public final class Servlet3AuthenticationFilter extends AbstractCasFilter {
                     request.getSession().setAttribute(CONST_CAS_ASSERTION, principal.getAssertion());
                 } else {
                     logger.debug("Aborting -- principal is not of type AssertionPrincipal");
-                    throw new GeneralSecurityException(
-                            "JBoss Web authentication did not produce CAS AssertionPrincipal.");
+                    throw new GeneralSecurityException("JAAS authentication did not produce CAS AssertionPrincipal.");
                 }
             } catch (final ServletException e) {
                 logger.debug("JAAS authentication failed.");
