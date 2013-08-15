@@ -46,7 +46,6 @@ import org.jasig.cas.client.util.CommonUtils;
  *
  * @author  Daniel Fisher
  * @author  Marvin S. Addison
- * @version  $Revision$
  * @since 3.3
  */
 public final class Servlet3AuthenticationFilter extends AbstractCasFilter {
