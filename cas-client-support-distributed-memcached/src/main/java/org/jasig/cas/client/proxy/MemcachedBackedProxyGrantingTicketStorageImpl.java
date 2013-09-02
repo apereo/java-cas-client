@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 import net.spy.memcached.MemcachedClient;
+import net.spy.memcached.MemcachedClientIF;
 
 /**
  * Implementation of the {@link org.jasig.cas.client.proxy.ProxyGrantingTicketStorage} interface that is backed by
@@ -39,7 +40,7 @@ import net.spy.memcached.MemcachedClient;
 public final class MemcachedBackedProxyGrantingTicketStorageImpl extends
         AbstractEncryptedProxyGrantingTicketStorageImpl {
 
-    private final MemcachedClient client;
+    protected final MemcachedClientIF client;
 
     /**
      * Default constructor reads from the /casclient_memcached_hosts.txt in the classpath.  Each line should be a host:port
