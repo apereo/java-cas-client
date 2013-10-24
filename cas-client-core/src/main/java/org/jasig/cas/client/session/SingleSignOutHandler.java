@@ -23,6 +23,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,6 +173,7 @@ public final class SingleSignOutHandler {
 
                 try {
                     session.invalidate();
+                    // TODO: Add request.logout() upon bump to Servlet 3.0 API dependency
                 } catch (final IllegalStateException e) {
                     logger.debug("Error invalidating session.", e);
                 }
