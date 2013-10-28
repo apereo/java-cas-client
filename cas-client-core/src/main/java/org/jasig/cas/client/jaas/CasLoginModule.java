@@ -448,7 +448,7 @@ public class CasLoginModule implements LoginModule {
 
         // Remove cache entry if assertion caching is enabled
         if (this.cacheAssertions) {
-            for (TicketCredential ticket : this.subject.getPrivateCredentials(TicketCredential.class)) {
+            for (final TicketCredential ticket : this.subject.getPrivateCredentials(TicketCredential.class)) {
                 logger.debug("Removing cached assertion for {}", ticket);
                 ASSERTION_CACHE.remove(ticket);
             }

@@ -20,6 +20,8 @@ package org.jasig.cas.client.session;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.util.CommonUtils;
@@ -173,7 +175,9 @@ public final class SingleSignOutHandler {
 
                 try {
                     session.invalidate();
-                    // TODO: Add request.logout() upon bump to Servlet 3.0 API dependency
+                    request.logout();
+                } catch (final ServletException e) {
+                    logger.debug("Error performing request.logout.");
                 } catch (final IllegalStateException e) {
                     logger.debug("Error invalidating session.", e);
                 }
