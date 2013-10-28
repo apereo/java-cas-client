@@ -175,11 +175,13 @@ public final class SingleSignOutHandler {
 
                 try {
                     session.invalidate();
+                } catch (final IllegalStateException e) {
+                    logger.debug("Error invalidating session.", e);
+                }
+                try {
                     request.logout();
                 } catch (final ServletException e) {
                     logger.debug("Error performing request.logout.");
-                } catch (final IllegalStateException e) {
-                    logger.debug("Error invalidating session.", e);
                 }
             }
         }
