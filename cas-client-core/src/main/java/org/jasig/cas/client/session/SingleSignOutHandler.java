@@ -20,9 +20,12 @@ package org.jasig.cas.client.session;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,6 +177,11 @@ public final class SingleSignOutHandler {
                     session.invalidate();
                 } catch (final IllegalStateException e) {
                     logger.debug("Error invalidating session.", e);
+                }
+                try {
+                    request.logout();
+                } catch (final ServletException e) {
+                    logger.debug("Error performing request.logout.");
                 }
             }
         }
