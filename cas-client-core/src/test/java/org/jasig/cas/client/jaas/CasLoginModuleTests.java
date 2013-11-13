@@ -28,6 +28,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.validation.TicketValidationException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -84,7 +85,10 @@ public class CasLoginModuleTests {
                 + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
 
-        module.initialize(subject, new ServiceAndTicketCallbackHandler(SERVICE, TICKET), new HashMap<String, Object>(),
+        module.initialize(
+                subject,
+                new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
+                new HashMap<String, Object>(),
                 options);
         module.login();
         module.commit();
@@ -105,13 +109,16 @@ public class CasLoginModuleTests {
         final String TICKET = "ST-200000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-200000-aA5Yuvrxzpv8Tau1cYQ7-srv1 not recognized</cas:authenticationFailure></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
-        module.initialize(subject, new ServiceAndTicketCallbackHandler(SERVICE, TICKET), new HashMap<String, Object>(),
+        module.initialize(
+                subject,
+                new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
+                new HashMap<String, Object>(),
                 options);
         try {
             module.login();
-            fail("Login did not throw LoginException as expected.");
-        } catch (Exception e) {
-            assertTrue(e instanceof LoginException);
+            fail("Login did not throw FailedLoginException as expected.");
+        } catch (LoginException e) {
+            assertEquals(TicketValidationException.class, e.getCause().getClass());
         }
         module.commit();
         assertNull(module.ticket);
@@ -131,7 +138,7 @@ public class CasLoginModuleTests {
     }
 
     /**
-     * Test assertion cache allows successive logins with same ticket to succeed.
+     * Confirm that CasLoginModule#logout() destroys cached data and prevents subsequent login w/expired ticket.
      * @throws Exception On errors.
      */
     @Test
@@ -148,24 +155,37 @@ public class CasLoginModuleTests {
         options.put("cacheTimeout", "1");
 
         server.content = SUCCESS_RESPONSE.getBytes(server.encoding);
-        module.initialize(subject, new ServiceAndTicketCallbackHandler(SERVICE, TICKET), new HashMap<String, Object>(),
+        module.initialize(
+                subject,
+                new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
+                new HashMap<String, Object>(),
                 options);
         module.login();
         module.commit();
         assertEquals(this.subject.getPrincipals().size(), 3);
         assertEquals(TICKET, this.subject.getPrivateCredentials().iterator().next().toString());
 
-        Thread.sleep(2000);
+        // Logout should destroy all authenticated state data including assertion cache entries
         module.logout();
         assertEquals(0, subject.getPrincipals().size());
         assertEquals(0, subject.getPrivateCredentials().size());
         server.content = FAILURE_RESPONSE.getBytes(server.encoding);
-        module.initialize(subject, new ServiceAndTicketCallbackHandler(SERVICE, TICKET), new HashMap<String, Object>(),
+
+        // Verify we can't log in again with same ticket
+        module.initialize(
+                subject,
+                new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
+                new HashMap<String, Object>(),
                 options);
-        module.login();
-        module.commit();
-        assertEquals(this.subject.getPrincipals().size(), 3);
-        assertEquals(TICKET, this.subject.getPrivateCredentials().iterator().next().toString());
+        try {
+            module.login();
+            module.commit();
+            Assert.fail("Login should have failed.");
+        } catch (LoginException e) {
+            assertEquals(TicketValidationException.class, e.getCause().getClass());
+        }
+        assertEquals(0, this.subject.getPrincipals().size());
+        assertEquals(0, this.subject.getPrivateCredentials().size());
     }
 
     /**
@@ -190,7 +210,10 @@ public class CasLoginModuleTests {
         options.put("cacheTimeout", "1");
 
         server.content = SUCCESS_RESPONSE.getBytes(server.encoding);
-        module.initialize(subject, new ServiceAndTicketCallbackHandler(SERVICE, TICKET), new HashMap<String, Object>(),
+        module.initialize(
+                subject,
+                new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
+                new HashMap<String, Object>(),
                 options);
         assertTrue(module.login());
         module.commit();
@@ -198,13 +221,16 @@ public class CasLoginModuleTests {
         Thread.sleep(1100);
         // Assertion should now be expired from cache
         server.content = FAILURE_RESPONSE.getBytes(server.encoding);
-        module.initialize(subject, new ServiceAndTicketCallbackHandler(SERVICE, TICKET), new HashMap<String, Object>(),
+        module.initialize(
+                subject,
+                new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
+                new HashMap<String, Object>(),
                 options);
         try {
             module.login();
-            fail("Should have thrown login exception.");
+            fail("Should have thrown FailedLoginException.");
         } catch (LoginException e) {
-            assertTrue(e.getCause() instanceof TicketValidationException);
+            assertEquals(TicketValidationException.class, e.getCause().getClass());
         }
     }
 
