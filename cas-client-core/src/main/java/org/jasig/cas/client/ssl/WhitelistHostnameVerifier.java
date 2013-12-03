@@ -26,7 +26,7 @@ import javax.net.ssl.SSLSession;
  * Verifies a SSL peer host name based on an explicit whitelist of allowed hosts.
  *
  * @author Marvin Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 22945 $ $Date: 2011-02-12 13:30:25 -0500 (Sat, 12 Feb 2011) $
  * @since 3.1.10
  *
  */

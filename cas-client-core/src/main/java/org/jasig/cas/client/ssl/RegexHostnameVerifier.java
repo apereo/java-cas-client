@@ -28,7 +28,7 @@ import javax.net.ssl.SSLSession;
  * host must match in order to be verified.
  *
  * @author Marvin Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 22945 $ $Date: 2011-02-12 13:30:25 -0500 (Sat, 12 Feb 2011) $
  * @since 3.1.10
  *
  */

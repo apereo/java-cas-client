@@ -27,15 +27,14 @@
         </dependency>
     </dependencies>
 
-    <!--
-    <repositories>
-      <repository>
-        <id>jboss</id>
-        <name>JBoss Repository</name>
-        <url>http://repository.jboss.com/maven2/</url>
-      </repository>
-    </repositories>
-    -->
+
+    <!--<repositories>-->
+      <!--<repository>-->
+        <!--<id>jboss</id>-->
+        <!--<name>JBoss Repository</name>-->
+        <!--<url>http://repository.jboss.com/</url>-->
+      <!--</repository>-->
+    <!--</repositories>-->
 
     <properties>
         <jboss.version>5.1.0.GA</jboss.version>

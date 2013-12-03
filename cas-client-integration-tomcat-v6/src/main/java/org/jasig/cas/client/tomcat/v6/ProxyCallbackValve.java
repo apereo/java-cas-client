@@ -37,7 +37,7 @@ import java.io.IOException;
  * This valve should be ordered before the authentication valves.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
+ * @version $Revision: 22122 $ $Date: 2010-10-28 13:44:53 -0400 (Thu, 28 Oct 2010) $
  * @since 3.1.12
  */
 public final class ProxyCallbackValve extends AbstractLifecycleValve {

@@ -29,7 +29,7 @@ import java.lang.reflect.InvocationTargetException;
  * Helper class with reflection utility methods.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22122 $
  * @since 3.1.11
  *
  */

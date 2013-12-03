@@ -42,7 +42,7 @@ import org.jasig.cas.client.util.CommonUtils;
  * a username in the properties file.
  *
  * @author Middleware
- * @version $Revision$
+ * @version $Revision: 22122 $
  * @since 3.1.12
  *
  */

@@ -18,7 +18,7 @@
  */
 
 /*
-  $Id$
+  $Id: WhitelistHostnameVerifierTests.java 22071 2010-10-23 04:03:14Z battags $
 
   Copyright (C) 2008-2009 Virginia Tech.
   All rights reserved.
@@ -27,8 +27,8 @@
 
   Author:  Middleware
   Email:   middleware@vt.edu
-  Version: $Revision$
-  Updated: $Date$
+  Version: $Revision: 22071 $
+  Updated: $Date: 2010-10-23 00:03:14 -0400 (Sat, 23 Oct 2010) $
 */
 package org.jasig.cas.client.ssl;
 
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * Unit test for {@link WhitelistHostnameVerifier} class.
  *
  * @author Middleware
- * @version $Revision$
+ * @version $Revision: 22071 $
  *
  */
 public class WhitelistHostnameVerifierTests extends TestCase {

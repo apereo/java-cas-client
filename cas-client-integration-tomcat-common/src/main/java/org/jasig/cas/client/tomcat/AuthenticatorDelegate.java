@@ -42,7 +42,7 @@ import org.jasig.cas.client.validation.TicketValidator;
  * logic to this class.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22086 $
  * @since 3.1.12
  *
  */

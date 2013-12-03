@@ -27,7 +27,7 @@ import javax.net.ssl.SSLSession;
  * such that all hosts are allowed.
  *
  * @author Marvin Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 22945 $ $Date: 2011-02-12 13:30:25 -0500 (Sat, 12 Feb 2011) $
  * @since 3.1.10
  */
 public final class AnyHostnameVerifier implements HostnameVerifier {

@@ -28,7 +28,7 @@ import org.jasig.cas.client.tomcat.RegexUriLogoutHandler;
  *
  * @author Scott Battaglia
  * @author Marvin S. Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 22086 $ $Date: 2010-10-24 23:59:14 -0400 (Sun, 24 Oct 2010) $
  * @since 3.1.12
  */
 public final class RegexUriLogoutValve extends AbstractLogoutValve {

@@ -33,7 +33,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
  * which meets the requirements of the {@link CasLoginModule} JAAS module.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22086 $
  * @since 3.1.11
  *
  */

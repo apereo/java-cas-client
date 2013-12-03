@@ -25,7 +25,7 @@ import junit.framework.TestCase;
  * Unit test for {@link ReflectUtils} class.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22071 $
  * @since 3.1.11
  *
  */

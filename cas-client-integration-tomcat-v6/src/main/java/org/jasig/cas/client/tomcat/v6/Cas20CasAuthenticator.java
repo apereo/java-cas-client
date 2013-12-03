@@ -27,7 +27,7 @@ import org.jasig.cas.client.validation.TicketValidator;
  *  Authenticator that handles the CAS 2.0 protocol.
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
+ * @version $Revision: 22071 $ $Date: 2010-10-23 00:03:14 -0400 (Sat, 23 Oct 2010) $
  * @since 3.1.12
  */
 public final class Cas20CasAuthenticator extends AbstractCasAuthenticator {

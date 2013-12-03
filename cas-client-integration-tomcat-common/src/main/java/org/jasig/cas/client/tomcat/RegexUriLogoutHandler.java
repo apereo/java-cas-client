@@ -29,7 +29,7 @@ import org.jasig.cas.client.util.CommonUtils;
  * Performs CAS logout when the request URI matches a regular expression.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22071 $
  * @since 3.1.12
  *
  */

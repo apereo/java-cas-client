@@ -41,7 +41,7 @@ import java.security.Principal;
  * Base authenticator for all authentication protocols supported by CAS.
  * 
  * @author Scott Battaglia
- * @version $Revision$ $Date$
+ * @version $Revision: 22071 $ $Date: 2010-10-23 00:03:14 -0400 (Sat, 23 Oct 2010) $
  * @since 3.1.12
  */
 public abstract class AbstractAuthenticator extends AuthenticatorBase implements LifecycleListener {

@@ -28,7 +28,7 @@ import org.jasig.cas.client.util.CommonUtils;
  * Simple security principal implementation.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22071 $
  * @since 3.1.11
  *
  */

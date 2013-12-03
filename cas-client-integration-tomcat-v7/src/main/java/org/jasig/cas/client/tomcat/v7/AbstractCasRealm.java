@@ -29,7 +29,7 @@ import org.jasig.cas.client.tomcat.CasRealm;
  * Base <code>Realm</code> implementation for all CAS realms.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 23042 $
  *
  */
 public abstract class AbstractCasRealm extends RealmBase implements CasRealm {

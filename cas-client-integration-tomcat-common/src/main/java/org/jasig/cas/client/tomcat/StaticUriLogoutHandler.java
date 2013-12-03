@@ -28,7 +28,7 @@ import org.jasig.cas.client.util.CommonUtils;
  * URI.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22086 $
  * @since 3.1.12
  *
  */

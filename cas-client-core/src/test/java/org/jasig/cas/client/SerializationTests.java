@@ -39,7 +39,7 @@ import org.jasig.cas.client.validation.AssertionImpl;
  * other potential serialization use cases.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22086 $
  * @since 3.1.11
  *
  */

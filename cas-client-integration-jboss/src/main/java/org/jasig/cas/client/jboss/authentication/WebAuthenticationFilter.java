@@ -49,7 +49,7 @@ import org.jboss.web.tomcat.security.login.WebAuthentication;
  *
  * @author  Daniel Fisher
  * @author  Marvin S. Addison 
- * @version  $Revision$
+ * @version  $Revision: 22071 $
  * @since 3.1.11
  */
 public final class WebAuthenticationFilter extends AbstractCasFilter {

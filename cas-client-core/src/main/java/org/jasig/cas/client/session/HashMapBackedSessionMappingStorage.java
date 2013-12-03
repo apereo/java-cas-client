@@ -52,7 +52,6 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
 	public synchronized void addSessionById(String mappingId, HttpSession session) {
         ID_TO_SESSION_KEY_MAPPING.put(session.getId(), mappingId);
         MANAGED_SESSIONS.put(mappingId, session);
-
 	}                               
 
 	public synchronized void removeBySessionById(String sessionId) {

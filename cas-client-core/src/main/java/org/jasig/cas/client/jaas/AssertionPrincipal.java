@@ -28,7 +28,7 @@ import org.jasig.cas.client.validation.Assertion;
  * Principal implementation that contains the CAS ticket validation assertion.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22071 $
  * @since 3.1.11
  *
  */

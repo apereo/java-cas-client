@@ -32,7 +32,7 @@ import java.io.IOException;
  *
  * @author Scott Battaglia
  * @author Marvin S. Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 22071 $ $Date: 2010-10-23 00:03:14 -0400 (Sat, 23 Oct 2010) $
  * @since 3.1.12
  */
 public abstract class AbstractLogoutValve extends AbstractLifecycleValve {

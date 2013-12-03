@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * management, including {@link #start()} and {@link #stop()} methods.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22071 $
  *
  */
 public abstract class AbstractLifecycleValve extends ValveBase implements Lifecycle {

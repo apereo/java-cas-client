@@ -36,7 +36,7 @@ import org.jasig.cas.client.util.CommonUtils;
  * Authentication always succeeds and simply returns the given principal.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22122 $
  * @since 3.1.12
  *
  */

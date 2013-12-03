@@ -20,6 +20,7 @@
 package org.jasig.cas.client.session;
 
 import org.jasig.cas.client.util.AbstractConfigurationFilter;
+import org.jasig.cas.client.util.ReflectUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -27,6 +28,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -44,6 +46,16 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         if (!isIgnoreInitConfiguration()) {
             handler.setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
             handler.setLogoutParameterName(getPropertyFromInitParams(filterConfig, "logoutParameterName", "logoutRequest"));
+            String sessionMappingStorageClassName = getPropertyFromInitParams(filterConfig, "sessionMappingStorageClass", null);
+            String ehcacheConfigFile = getPropertyFromInitParams(filterConfig, "ehcacheConfigFile", null);
+            if (sessionMappingStorageClassName != null) {
+                if (ehcacheConfigFile != null){
+                    handler.setSessionMappingStorage(ReflectUtils.<SessionMappingStorage>newInstance(sessionMappingStorageClassName, ehcacheConfigFile));
+                }else{
+                    handler.setSessionMappingStorage(ReflectUtils.<SessionMappingStorage>newInstance(sessionMappingStorageClassName));
+                }
+
+            }
         }
         handler.init();
     }
@@ -51,7 +63,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     public void setArtifactParameterName(final String name) {
         handler.setArtifactParameterName(name);
     }
-    
+
     public void setLogoutParameterName(final String name) {
         handler.setLogoutParameterName(name);
     }
@@ -59,7 +71,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         handler.setSessionMappingStorage(storage);
     }
-    
+
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
 
@@ -77,9 +89,17 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     }
 
     public void destroy() {
-        // nothing to do
+        log.info("The container is shutting down ...");
+        SessionMappingStorage sessionMappingStorage = handler.getSessionMappingStorage();
+        if (sessionMappingStorage instanceof Closeable) {
+            try {
+                ((Closeable) sessionMappingStorage).close();
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
     }
-    
+
     protected static SingleSignOutHandler getSingleSignOutHandler() {
         return handler;
     }

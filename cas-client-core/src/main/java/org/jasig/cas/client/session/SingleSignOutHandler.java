@@ -31,7 +31,7 @@ import org.jasig.cas.client.util.XmlUtils;
  * Performs CAS single sign-out operations in an API-agnostic fashion.
  *
  * @author Marvin S. Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 24094 $ $Date: 2011-06-20 21:39:49 -0400 (Mon, 20 Jun 2011) $
  * @since 3.1.12
  *
  */
@@ -42,7 +42,7 @@ public final class SingleSignOutHandler {
 
     /** Mapping of token IDs and session IDs to HTTP sessions */
     private SessionMappingStorage sessionMappingStorage = new HashMapBackedSessionMappingStorage();
-    
+
     /** The name of the artifact parameter.  This is used to capture the session identifier. */
     private String artifactParameterName = "ticket";
 
@@ -145,7 +145,7 @@ public final class SingleSignOutHandler {
                 String sessionID = session.getId();
 
                 if (log.isDebugEnabled()) {
-                    log.debug ("Invalidating session [" + sessionID + "] for token [" + token + "]");
+                    log.debug ("*** Invalidating session [" + sessionID + "] for token [" + token + "] ***");
                 }
                 try {
                     session.invalidate();

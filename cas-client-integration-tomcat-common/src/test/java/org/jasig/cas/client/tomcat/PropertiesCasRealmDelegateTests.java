@@ -31,7 +31,7 @@ import org.jasig.cas.client.authentication.AttributePrincipalImpl;
  * Unit test for {@link PropertiesCasRealmDelegate} class.
  *
  * @author Middleware
- * @version $Revision$
+ * @version $Revision: 22122 $
  *
  */
 public class PropertiesCasRealmDelegateTests extends TestCase {

@@ -30,7 +30,7 @@ import java.util.Set;
  * Simple security group implementation
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22120 $
  * @since 3.1.11
  *
  */

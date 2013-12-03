@@ -39,7 +39,7 @@ import org.junit.Test;
  * Unit test for {@link CasLoginModule} class.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 23261 $
  *
  */
 public class CasLoginModuleTests {

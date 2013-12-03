@@ -102,7 +102,7 @@ import org.jasig.cas.client.validation.TicketValidator;
  * </pre>
  *
  * @author Marvin S. Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 22122 $ $Date: 2010-10-28 13:44:53 -0400 (Thu, 28 Oct 2010) $
  * @since 3.1.11
  *
  */

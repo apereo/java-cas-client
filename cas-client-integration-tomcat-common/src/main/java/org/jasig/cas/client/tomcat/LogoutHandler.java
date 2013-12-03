@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  * Strategy pattern interface for ending a CAS authentication session.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22086 $
  * @since 3.1.12
  *
  */

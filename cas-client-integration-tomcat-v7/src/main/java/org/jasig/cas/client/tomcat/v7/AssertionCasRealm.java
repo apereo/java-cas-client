@@ -29,7 +29,7 @@ import org.jasig.cas.client.tomcat.CasRealm;
  * Authentication always succeeds and simply returns the given principal.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22071 $
  *
  */
 public class AssertionCasRealm extends AbstractCasRealm {

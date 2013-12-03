@@ -33,7 +33,7 @@ import org.jasig.cas.client.validation.Assertion;
  * Base class for all logout handlers.
  *
  * @author Marvin S. Addison
- * @version $Revision$
+ * @version $Revision: 22086 $
  *
  */
 public abstract class AbstractLogoutHandler implements LogoutHandler {
