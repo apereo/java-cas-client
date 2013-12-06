@@ -19,6 +19,7 @@
 
 package org.jasig.cas.client.validation;
 
+import org.jasig.cas.client.authentication.AuthenticationFilter;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
@@ -31,16 +32,17 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
  * The filter that handles all the work of validating ticket requests.
- * <p>
+ * <p/>
  * This filter can be configured with the following values:
  * <ul>
  * <li><code>redirectAfterValidation</code> - redirect the CAS client to the same URL without the ticket.</li>
  * <li><code>exceptionOnValidationFailure</code> - throw an exception if the validation fails.  Otherwise, continue
- *  processing.</li>
+ * processing.</li>
  * <li><code>useSession</code> - store any of the useful information in a session attribute.</li>
  * </ul>
  *
@@ -50,7 +52,9 @@ import java.io.IOException;
  */
 public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
-    /** The TicketValidator we will use to validate tickets. */
+    /**
+     * The TicketValidator we will use to validate tickets.
+     */
     private TicketValidator ticketValidator;
 
     /**
@@ -60,7 +64,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      */
     private boolean redirectAfterValidation = false;
 
-    /** Determines whether an exception is thrown when there is a ticket validation failure. */
+    /**
+     * Determines whether an exception is thrown when there is a ticket validation failure.
+     */
     private boolean exceptionOnValidationFailure = true;
 
     private boolean useSession = true;
@@ -74,10 +80,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     protected TicketValidator getTicketValidator(final FilterConfig filterConfig) {
         return this.ticketValidator;
     }
-   
+
     /**
      * Gets the configured {@link HostnameVerifier} to use for HTTPS connections
      * if one is configured for this filter.
+     *
      * @param filterConfig Servlet filter configuration.
      * @return Instance of specified host name verifier or null if none specified.
      */
@@ -115,11 +122,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     /**
      * Pre-process the request before the normal filter process starts.  This could be useful for pre-empting code.
      *
-     * @param servletRequest The servlet request.
+     * @param servletRequest  The servlet request.
      * @param servletResponse The servlet response.
-     * @param filterChain the filter chain.
+     * @param filterChain     the filter chain.
      * @return true if processing should continue, false otherwise.
-     * @throws IOException if there is an I/O problem
+     * @throws IOException      if there is an I/O problem
      * @throws ServletException if there is a servlet problem.
      */
     protected boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
@@ -131,8 +138,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * if ticket validation succeeds.  This method is called after all ValidationFilter processing required for a successful authentication
      * occurs.
      *
-     * @param request the HttpServletRequest.
-     * @param response the HttpServletResponse.
+     * @param request   the HttpServletRequest.
+     * @param response  the HttpServletResponse.
      * @param assertion the successful Assertion from the server.
      */
     protected void onSuccessfulValidation(final HttpServletRequest request, final HttpServletResponse response, final Assertion assertion) {
@@ -143,7 +150,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * Template method that gets executed if validation fails.  This method is called right after the exception is caught from the ticket validator
      * but before any of the processing of the exception occurs.
      *
-     * @param request the HttpServletRequest.
+     * @param request  the HttpServletRequest.
      * @param response the HttpServletResponse.
      */
     protected void onFailedValidation(final HttpServletRequest request, final HttpServletResponse response) {
@@ -173,14 +180,21 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                 }
 
                 request.setAttribute(CONST_CAS_ASSERTION, assertion);
-
+                HttpSession session = request.getSession();
                 if (this.useSession) {
-                    request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
+                    session.setAttribute(CONST_CAS_ASSERTION, assertion);
                 }
                 onSuccessfulValidation(request, response, assertion);
 
+                String proxyReferer = (String) session.getAttribute(AuthenticationFilter.PROXY_REFERER);
+                if (proxyReferer != null) {
+                    response.sendRedirect(proxyReferer);
+                    session.removeAttribute(AuthenticationFilter.PROXY_REFERER);
+                    return;
+                }
+
                 if (this.redirectAfterValidation) {
-                    log. debug("Redirecting after successful ticket validation.");
+                    log.debug("Redirecting after successful ticket validation.");
                     response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
@@ -202,9 +216,10 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
     }
 
+
     public final void setTicketValidator(final TicketValidator ticketValidator) {
-    this.ticketValidator = ticketValidator;
-}
+        this.ticketValidator = ticketValidator;
+    }
 
     public final void setRedirectAfterValidation(final boolean redirectAfterValidation) {
         this.redirectAfterValidation = redirectAfterValidation;
@@ -217,8 +232,6 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     public final void setUseSession(final boolean useSession) {
         this.useSession = useSession;
     }
-
-
 
 
 }
