@@ -27,9 +27,22 @@
 
     <repositories>
         <repository>
+            <id>oschina-repo</id>
+            <url>http://maven.oschina.net/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>nexus-repo</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>        
+        <repository>
+            <id>atlassian-repo</id>
+            <url>https://maven.atlassian.com/content/repositories/atlassian-public/</url>
         </repository>
+        <repository>
+            <id>opencastproject-repo</id>
+            <url>http://repository.opencastproject.org/nexus/content/repositories/public</url>
+        </repository>
+        
     </repositories>
 
     <developers>
