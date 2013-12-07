@@ -19,6 +19,8 @@
 
 package org.jasig.cas.client.authentication;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
@@ -52,6 +54,7 @@ import java.io.IOException;
  */
 public class AuthenticationFilter extends AbstractCasFilter {
 
+    protected final Log LOG = LogFactory.getLog(getClass());
     /**
      * The URL to the CAS Server login.
      */
@@ -137,7 +140,23 @@ public class AuthenticationFilter extends AbstractCasFilter {
             log.debug("redirecting to \"" + urlToRedirectTo + "\"");
         }
 
+        recordProxyReferer(request);
+
         response.sendRedirect(urlToRedirectTo);
+    }
+
+    public static final String PROXY_REFERER = "proxy-referer";
+
+    private void recordProxyReferer(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
+        String proxyReferer = ((HttpServletRequest) request).getHeader(PROXY_REFERER);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(PROXY_REFERER + " : " + proxyReferer);
+        }
+        if (proxyReferer != null && proxyReferer.length() > 1) {
+            session.setAttribute(PROXY_REFERER, proxyReferer);
+        }
     }
 
     public final void setRenew(final boolean renew) {
