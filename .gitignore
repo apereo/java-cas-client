@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .classpath
 !/.project
 .project
@@ -10,3 +11,10 @@ target
 .idea/
 .DS_Store
 .idea
+=======
+*.ipr
+*.iws
+*.iml
+.idea/
+target/
+>>>>>>> v3.2.1-feature

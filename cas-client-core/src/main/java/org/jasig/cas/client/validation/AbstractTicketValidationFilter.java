@@ -18,29 +18,47 @@
  */
 package org.jasig.cas.client.validation;
 
+<<<<<<< HEAD
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-import javax.net.ssl.HostnameVerifier;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+=======
+import org.jasig.cas.client.authentication.AuthenticationFilter;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 
+>>>>>>> v3.2.1-feature
+import javax.net.ssl.HostnameVerifier;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+<<<<<<< HEAD
+import org.jasig.cas.client.util.AbstractCasFilter;
+import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.ReflectUtils;
+=======
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+>>>>>>> v3.2.1-feature
+
 /**
  * The filter that handles all the work of validating ticket requests.
- * <p>
+ * <p/>
  * This filter can be configured with the following values:
  * <ul>
  * <li><code>redirectAfterValidation</code> - redirect the CAS client to the same URL without the ticket.
  * (default: true, Will be forced to false when {@link #useSession} is false.)</li>
  * <li><code>exceptionOnValidationFailure</code> - throw an exception if the validation fails.  Otherwise, continue
+<<<<<<< HEAD
  *  processing. (default: true)</li>
  * <li><code>useSession</code> - store any of the useful information in a session attribute. (default: true)</li>
  * <li><code>hostnameVerifier</code> - name of class implementing a {@link HostnameVerifier}.</li>
  * <li><code>hostnameVerifierConfig</code> - name of configuration class (constructor argument of verifier).</li>
+=======
+ * processing.</li>
+ * <li><code>useSession</code> - store any of the useful information in a session attribute.</li>
+>>>>>>> v3.2.1-feature
  * </ul>
  *
  * @author Scott Battaglia
@@ -49,7 +67,9 @@ import org.jasig.cas.client.util.ReflectUtils;
  */
 public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
-    /** The TicketValidator we will use to validate tickets. */
+    /**
+     * The TicketValidator we will use to validate tickets.
+     */
     private TicketValidator ticketValidator;
 
     /**
@@ -59,8 +79,15 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      */
     private boolean redirectAfterValidation = true;
 
+<<<<<<< HEAD
     /** Determines whether an exception is thrown when there is a ticket validation failure. */
     private boolean exceptionOnValidationFailure = false;
+=======
+    /**
+     * Determines whether an exception is thrown when there is a ticket validation failure.
+     */
+    private boolean exceptionOnValidationFailure = true;
+>>>>>>> v3.2.1-feature
 
     /**
      * Specify whether the Assertion should be stored in a session
@@ -78,6 +105,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         return this.ticketValidator;
     }
 
+<<<<<<< HEAD
     /**
      * Gets the ssl config to use for HTTPS connections
      * if one is configured for this filter.
@@ -103,9 +131,12 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         return properties;
     }
 
+=======
+>>>>>>> v3.2.1-feature
     /**
      * Gets the configured {@link HostnameVerifier} to use for HTTPS connections
      * if one is configured for this filter.
+     *
      * @param filterConfig Servlet filter configuration.
      * @return Instance of specified host name verifier or null if none specified.
      */
@@ -151,11 +182,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     /**
      * Pre-process the request before the normal filter process starts.  This could be useful for pre-empting code.
      *
-     * @param servletRequest The servlet request.
+     * @param servletRequest  The servlet request.
      * @param servletResponse The servlet response.
-     * @param filterChain the filter chain.
+     * @param filterChain     the filter chain.
      * @return true if processing should continue, false otherwise.
-     * @throws IOException if there is an I/O problem
+     * @throws IOException      if there is an I/O problem
      * @throws ServletException if there is a servlet problem.
      */
     protected boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
@@ -168,8 +199,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * if ticket validation succeeds.  This method is called after all ValidationFilter processing required for a successful authentication
      * occurs.
      *
-     * @param request the HttpServletRequest.
-     * @param response the HttpServletResponse.
+     * @param request   the HttpServletRequest.
+     * @param response  the HttpServletResponse.
      * @param assertion the successful Assertion from the server.
      */
     protected void onSuccessfulValidation(final HttpServletRequest request, final HttpServletResponse response,
@@ -181,7 +212,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * Template method that gets executed if validation fails.  This method is called right after the exception is caught from the ticket validator
      * but before any of the processing of the exception occurs.
      *
-     * @param request the HttpServletRequest.
+     * @param request  the HttpServletRequest.
      * @param response the HttpServletResponse.
      */
     protected void onFailedValidation(final HttpServletRequest request, final HttpServletResponse response) {
@@ -209,14 +240,25 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                 logger.debug("Successfully authenticated user: {}", assertion.getPrincipal().getName());
 
                 request.setAttribute(CONST_CAS_ASSERTION, assertion);
-
+                HttpSession session = request.getSession();
                 if (this.useSession) {
-                    request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
+                    session.setAttribute(CONST_CAS_ASSERTION, assertion);
                 }
                 onSuccessfulValidation(request, response, assertion);
 
+                String proxyReferer = (String) session.getAttribute(AuthenticationFilter.PROXY_REFERER);
+                if (proxyReferer != null) {
+                    response.sendRedirect(proxyReferer);
+                    session.removeAttribute(AuthenticationFilter.PROXY_REFERER);
+                    return;
+                }
+
                 if (this.redirectAfterValidation) {
+<<<<<<< HEAD
                     logger.debug("Redirecting after successful ticket validation.");
+=======
+                    log.debug("Redirecting after successful ticket validation.");
+>>>>>>> v3.2.1-feature
                     response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
@@ -239,6 +281,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
     }
 
+
     public final void setTicketValidator(final TicketValidator ticketValidator) {
         this.ticketValidator = ticketValidator;
     }
@@ -254,4 +297,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     public final void setUseSession(final boolean useSession) {
         this.useSession = useSession;
     }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> v3.2.1-feature
 }

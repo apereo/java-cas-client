@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * Performs CAS single sign-out operations in an API-agnostic fashion.
  *
  * @author Marvin S. Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 24094 $ $Date: 2011-06-20 21:39:49 -0400 (Mon, 20 Jun 2011) $
  * @since 3.1.12
  *
  */
@@ -171,8 +171,14 @@ public final class SingleSignOutHandler {
             if (session != null) {
                 String sessionID = session.getId();
 
+<<<<<<< HEAD
                 logger.debug("Invalidating session [{}] for token [{}]", sessionID, token);
 
+=======
+                if (log.isDebugEnabled()) {
+                    log.debug ("*** Invalidating session [" + sessionID + "] for token [" + token + "] ***");
+                }
+>>>>>>> v3.2.1-feature
                 try {
                     session.invalidate();
                 } catch (final IllegalStateException e) {

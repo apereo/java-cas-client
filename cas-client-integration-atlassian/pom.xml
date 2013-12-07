@@ -556,6 +556,12 @@
         </dependency>
 
     </dependencies>
+<<<<<<< HEAD
+=======
+
+
+<!--
+>>>>>>> v3.2.1-feature
     <repositories>
         <repository>
             <id>atlassian</id>
@@ -563,4 +569,9 @@
             <url>http://repository.atlassian.com/maven2/</url>
         </repository>
     </repositories>
+<<<<<<< HEAD
+=======
+-->
+
+>>>>>>> v3.2.1-feature
 </project>

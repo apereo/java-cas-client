@@ -18,6 +18,10 @@
  */
 package org.jasig.cas.client.session;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jasig.cas.client.util.SessionUtils;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
@@ -25,33 +29,61 @@ import javax.servlet.http.HttpSessionListener;
 /**
  * Listener to detect when an HTTP session is destroyed and remove it from the map of
  * managed sessions.  Also allows for the programmatic removal of sessions.
- * <p>
+ * <p/>
  * Enables the CAS Single Sign out feature.
- *
+ * <p/>
  * Scott Battaglia
+ *
  * @version $Revision$ Date$
  * @since 3.1
  */
 public final class SingleSignOutHttpSessionListener implements HttpSessionListener {
+    private final Log LOG = LogFactory.getLog(getClass());
+//	private SessionMappingStorage sessionMappingStorage;
 
+<<<<<<< HEAD
     private SessionMappingStorage sessionMappingStorage;
 
+=======
+>>>>>>> v3.2.1-feature
     public void sessionCreated(final HttpSessionEvent event) {
-        // nothing to do at the moment
+        HttpSession session = event.getSession();
+        String stripSessionId = SessionUtils.stripSessionIdPostfix(session.getId());
+        SessionStorage storage = SessionStorage.getInstance();
+        if (!storage.containsKey(stripSessionId)) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format("### map (SessionId: %s) to (session: %s) ###", session.getId(), session.toString()));
+            }
+            storage.put(stripSessionId, session);
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format("~~~ Session(SessionId: %s) is already in the Map ~~~", session.getId()));
+            }
+        }
     }
 
     public void sessionDestroyed(final HttpSessionEvent event) {
+<<<<<<< HEAD
         if (sessionMappingStorage == null) {
             sessionMappingStorage = getSessionMappingStorage();
         }
+=======
+        SessionMappingStorage sessionMappingStorage = getSessionMappingStorage();
+>>>>>>> v3.2.1-feature
         final HttpSession session = event.getSession();
-        sessionMappingStorage.removeBySessionById(session.getId());
+        String sessionId = session.getId();
+        sessionMappingStorage.removeBySessionById(sessionId);
+        String stripSessionId = SessionUtils.stripSessionIdPostfix(sessionId);
+        SessionStorage.getInstance().remove(stripSessionId);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("^^^^ REMOVE Session(" + sessionId + ") from the map and the sessionMapping Storage ^^^^");
+        }
     }
 
     /**
      * Obtains a {@link SessionMappingStorage} object. Assumes this method will always return the same
      * instance of the object.  It assumes this because it generally lazily calls the method.
-     * 
+     *
      * @return the SessionMappingStorage
      */
     protected static SessionMappingStorage getSessionMappingStorage() {
