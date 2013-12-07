@@ -5,6 +5,7 @@
         <artifactId>cas-client</artifactId>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <version>3.2.1-1</version>
     <groupId>org.jasig.cas.client</groupId>
     <artifactId>cas-client-core</artifactId>
     <packaging>jar</packaging>
