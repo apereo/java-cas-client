@@ -25,6 +25,7 @@ import javax.servlet.FilterConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * Abstracts out the ability to configure the filters from the initial properties provided.
  *

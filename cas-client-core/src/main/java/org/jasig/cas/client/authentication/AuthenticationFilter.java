@@ -18,29 +18,22 @@
  */
 package org.jasig.cas.client.authentication;
 
-<<<<<<< HEAD
-import java.io.IOException;
-import javax.servlet.*;
-=======
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jasig.cas.client.util.AbstractCasFilter;
-import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.validation.Assertion;
 
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
->>>>>>> v3.2.1-feature
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.util.ReflectUtils;
+
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -61,7 +54,6 @@ import org.jasig.cas.client.validation.Assertion;
  */
 public class AuthenticationFilter extends AbstractCasFilter {
 
-    protected final Log LOG = LogFactory.getLog(getClass());
     /**
      * The URL to the CAS Server login.
      */
@@ -147,18 +139,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
                 getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
-<<<<<<< HEAD
+
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
-        this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
-=======
-        if (log.isDebugEnabled()) {
-            log.debug("redirecting to \"" + urlToRedirectTo + "\"");
-        }
-
         recordProxyReferer(request);
-
-        response.sendRedirect(urlToRedirectTo);
->>>>>>> v3.2.1-feature
+        this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
     }
 
     public static final String PROXY_REFERER = "proxy-referer";
@@ -167,8 +151,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
         HttpSession session = request.getSession();
 
         String proxyReferer = ((HttpServletRequest) request).getHeader(PROXY_REFERER);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(PROXY_REFERER + " : " + proxyReferer);
+        if (logger.isDebugEnabled()){
+            logger.debug(PROXY_REFERER + " : " + proxyReferer);
         }
         if (proxyReferer != null && proxyReferer.length() > 1) {
             session.setAttribute(PROXY_REFERER, proxyReferer);
