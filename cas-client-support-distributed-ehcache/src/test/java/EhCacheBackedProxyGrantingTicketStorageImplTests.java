@@ -47,12 +47,8 @@ public class EhCacheBackedProxyGrantingTicketStorageImplTests  {
         Assert.assertNull(cache.retrieve("foobar"));
 
         cache.save("proxyGrantingTicketIou", "proxyGrantingTicket");
-<<<<<<< HEAD
-        assertEquals("proxyGrantingTicket", cache.retrieve("proxyGrantingTicketIou"));
-        assertTrue("proxyGrantingTicket".equals(ehcache.get("proxyGrantingTicketIou").getValue()));
-=======
         Assert.assertEquals("proxyGrantingTicket", cache.retrieve("proxyGrantingTicketIou"));
         Assert.assertFalse("proxyGrantingTicket".equals(ehcache.get("proxyGrantingTicketIou").getValue()));
->>>>>>> v3.2.1-feature
+
     }
 }

@@ -25,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,14 +170,8 @@ public final class SingleSignOutHandler {
             if (session != null) {
                 String sessionID = session.getId();
 
-<<<<<<< HEAD
                 logger.debug("Invalidating session [{}] for token [{}]", sessionID, token);
 
-=======
-                if (log.isDebugEnabled()) {
-                    log.debug ("*** Invalidating session [" + sessionID + "] for token [" + token + "] ***");
-                }
->>>>>>> v3.2.1-feature
                 try {
                     session.invalidate();
                 } catch (final IllegalStateException e) {

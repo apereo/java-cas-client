@@ -18,13 +18,13 @@
  */
 package org.jasig.cas.client.session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jasig.cas.client.util.SessionUtils;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+
+import org.jasig.cas.client.util.SessionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Listener to detect when an HTTP session is destroyed and remove it from the map of
@@ -38,38 +38,23 @@ import javax.servlet.http.HttpSessionListener;
  * @since 3.1
  */
 public final class SingleSignOutHttpSessionListener implements HttpSessionListener {
-    private final Log LOG = LogFactory.getLog(getClass());
-//	private SessionMappingStorage sessionMappingStorage;
 
-<<<<<<< HEAD
-    private SessionMappingStorage sessionMappingStorage;
+    private static final Logger LOG =LoggerFactory.getLogger(SingleSignOutHttpSessionListener.class);
 
-=======
->>>>>>> v3.2.1-feature
     public void sessionCreated(final HttpSessionEvent event) {
         HttpSession session = event.getSession();
         String stripSessionId = SessionUtils.stripSessionIdPostfix(session.getId());
         SessionStorage storage = SessionStorage.getInstance();
         if (!storage.containsKey(stripSessionId)) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(String.format("### map (SessionId: %s) to (session: %s) ###", session.getId(), session.toString()));
-            }
+                LOG.debug("### map (SessionId: {}) to (session: {}) ###", session.getId(), session.toString());
             storage.put(stripSessionId, session);
         } else {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(String.format("~~~ Session(SessionId: %s) is already in the Map ~~~", session.getId()));
-            }
+                LOG.debug("~~~ Session(SessionId: {}) is already in the Map ~~~", session.getId());
         }
     }
 
     public void sessionDestroyed(final HttpSessionEvent event) {
-<<<<<<< HEAD
-        if (sessionMappingStorage == null) {
-            sessionMappingStorage = getSessionMappingStorage();
-        }
-=======
-        SessionMappingStorage sessionMappingStorage = getSessionMappingStorage();
->>>>>>> v3.2.1-feature
+         SessionMappingStorage   sessionMappingStorage = getSessionMappingStorage();
         final HttpSession session = event.getSession();
         String sessionId = session.getId();
         sessionMappingStorage.removeBySessionById(sessionId);

@@ -3,16 +3,17 @@ package org.jasig.cas.client.session;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.jasig.cas.client.util.SessionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * To change this template use File | Settings | File Templates.
  */
 public class EhcacheBackedSessionMappingStorage implements SessionMappingStorage, Closeable {
-    private final Log LOGGER = LogFactory.getLog(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EhcacheBackedSessionMappingStorage.class);
     private CacheManager cacheManager;
     private final String SESSIONID_TO_MAPPINGID_CACHE_NAME = "sessionId2MappingIdCache";
     private final Ehcache sessionId2MappingIdCache;
@@ -82,9 +83,9 @@ public class EhcacheBackedSessionMappingStorage implements SessionMappingStorage
             URL configURL = getClass().getResource(configPath);
             if (LOGGER.isDebugEnabled()) {
                 if (configURL == null) {
-                    LOGGER.debug("Not found the ehcache configuration file on " + configPath + " using the default one");
+                    LOGGER.debug("Not found the ehcache configuration file on {} using the default one",configPath);
                 } else {
-                    LOGGER.debug("Using the ehcache configuration file: " + configURL);
+                    LOGGER.debug("Using the ehcache configuration file: {}", configURL);
                 }
             }
             manager = new CacheManager(configURL);
@@ -104,10 +105,10 @@ public class EhcacheBackedSessionMappingStorage implements SessionMappingStorage
             if (session != null) {
                 removeBySessionById(session.getId());
             }
-            LOGGER.info(String.format("Found mapping(mappingId: %s) for session", mappingId));
+            LOGGER.info("Found mapping(mappingId: {}) for session", mappingId);
             return session;
         } else {
-            LOGGER.info(String.format("No mapping(mappingId: %s) session found ", mappingId));
+            LOGGER.info("No mapping(mappingId: {}) session found ", mappingId);
             return null;
         }
     }
@@ -117,16 +118,15 @@ public class EhcacheBackedSessionMappingStorage implements SessionMappingStorage
         final Element element = sessionId2MappingIdCache.get(stripSessionId);
 
         if (element != null) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(String.format("Found mapping for (sessionId: %s).  Session Removed.", sessionId));
-            }
+
+            LOGGER.debug("Found mapping for (sessionId: {}).  Session Removed.", sessionId);
+
             String mappingId = (String) element.getObjectValue();
             mappingId2SessionIdCache.remove(mappingId);
             sessionId2MappingIdCache.remove(stripSessionId);
         } else {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(String.format("No mapping for (sessionId: %s) found.  Ignoring.", sessionId));
-            }
+            LOGGER.debug("No mapping for (sessionId: {}) found.  Ignoring.", sessionId);
+
         }
     }
 
@@ -137,10 +137,9 @@ public class EhcacheBackedSessionMappingStorage implements SessionMappingStorage
         String sessionId = SessionUtils.stripSessionIdPostfix(session.getId());
         sessionId2MappingIdCache.put(new Element(sessionId, mappingId));
         mappingId2SessionIdCache.put(new Element(mappingId, sessionId));
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info(String.format("==== map (sessionId: %s) to (mappingId: %s) , and vice versa====",
-                    session.getId(), mappingId));
-        }
+        LOGGER.info("==== map (sessionId: {}) to (mappingId: {}) , and vice versa====",
+                session.getId(), mappingId);
+
     }
 
     public void close() throws IOException {
