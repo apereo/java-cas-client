@@ -18,15 +18,22 @@
  */
 package org.jasig.cas.client.authentication;
 
+
 import java.io.IOException;
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.util.ReflectUtils;
+
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -132,8 +139,24 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
                 getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
+
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
+        recordProxyReferer(request);
         this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
+    }
+
+    public static final String PROXY_REFERER = "proxy-referer";
+
+    private void recordProxyReferer(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
+        String proxyReferer = ((HttpServletRequest) request).getHeader(PROXY_REFERER);
+        if (logger.isDebugEnabled()){
+            logger.debug(PROXY_REFERER + " : " + proxyReferer);
+        }
+        if (proxyReferer != null && proxyReferer.length() > 1) {
+            session.setAttribute(PROXY_REFERER, proxyReferer);
+        }
     }
 
     public final void setRenew(final boolean renew) {

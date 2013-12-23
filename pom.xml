@@ -32,6 +32,26 @@
 
     <inceptionYear>2006</inceptionYear>
 
+    <repositories>
+        <repository>
+            <id>oschina-repo</id>
+            <url>http://maven.oschina.net/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>nexus-repo</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>        
+        <repository>
+            <id>atlassian-repo</id>
+            <url>https://maven.atlassian.com/content/repositories/atlassian-public/</url>
+        </repository>
+        <repository>
+            <id>opencastproject-repo</id>
+            <url>http://repository.opencastproject.org/nexus/content/repositories/public</url>
+        </repository>
+        
+    </repositories>
+
     <developers>
         <developer>
             <id>battags</id>
@@ -137,6 +157,7 @@
                     </execution>
                 </executions>
             </plugin>
+ 
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
@@ -165,6 +186,24 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <charset>UTF-8</charset>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

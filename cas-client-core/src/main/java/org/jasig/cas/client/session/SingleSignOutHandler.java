@@ -25,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * Performs CAS single sign-out operations in an API-agnostic fashion.
  *
  * @author Marvin S. Addison
- * @version $Revision$ $Date$
+ * @version $Revision: 24094 $ $Date: 2011-06-20 21:39:49 -0400 (Mon, 20 Jun 2011) $
  * @since 3.1.12
  *
  */
