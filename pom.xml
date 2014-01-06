@@ -142,6 +142,7 @@
                 <artifactId>maven-license-plugin</artifactId>
                 <configuration>
                     <header>src/licensing/header.txt</header>
+                    <skipExistingHeaders>true</skipExistingHeaders>
                     <headerDefinitions>
                         <headerDefinition>src/licensing/header-definitions.xml</headerDefinition>
                     </headerDefinitions>
