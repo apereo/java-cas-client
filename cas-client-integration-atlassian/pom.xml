@@ -1377,7 +1377,7 @@
         <repository>
             <id>atlassian</id>
             <name>Atlassian Repository</name>
-            <url>http://repository.atlassian.com/maven2/</url>
+            <url>https://maven.atlassian.com/repository/public</url>
         </repository>
     </repositories>
 </project>
