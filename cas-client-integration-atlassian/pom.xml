@@ -193,10 +193,6 @@
             <artifactId>atlassian-spring</artifactId>
         </exclusion>
         <exclusion>
-            <groupId>com.atlassian.event</groupId>
-            <artifactId>atlassian-event</artifactId>
-        </exclusion>
-        <exclusion>
             <groupId>com.atlassian.confluence</groupId>
             <artifactId>confluence-bucket</artifactId>
         </exclusion>
@@ -427,10 +423,6 @@
 	<exclusion>
 	    <groupId>org.springframework</groupId>
 	    <artifactId>spring-jdbc</artifactId>
-	</exclusion>
-	<exclusion>
-	    <groupId>org.springframework</groupId>
-	    <artifactId>spring-context</artifactId>
 	</exclusion>
 	<exclusion>
 	    <groupId>org.springframework</groupId>

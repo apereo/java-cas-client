@@ -16,8 +16,10 @@ specific language governing permissions and limitations
 under the License.
 
 This project includes:
+  AOP alliance under Public Domain
   Apache Santuario under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
+  Atlassian Event under Atlassian End User License
   Atlassian JIRA - Code - Core under Atlassian End User License
   Atlassian Seraph under BSD License
   atlassian-osuser under BSD License
@@ -26,6 +28,7 @@ This project includes:
   commons-collections under Apache License, Version 2.0
   Confluence Core under Atlassian End User License
   ESAPI 2.0 under BSD or Creative Commons 3.0 BY-SA
+  Google Collections Library under The Apache Software License, Version 2.0
   HttpClient under Apache License
   Jasig CAS Client for Java - Atlassian Integration under Apache License Version 2.0
   Jasig CAS Client for Java - Core under Apache License Version 2.0
@@ -42,6 +45,7 @@ This project includes:
   OpenWS under Apache 2
   SLF4J API Module under MIT License
   SLF4J Simple Binding under MIT License
+  Spring Framework: Context under The Apache Software License, Version 2.0
   Xalan Java under The Apache Software License, Version 2.0
   Xalan Java Serializer under The Apache Software License, Version 2.0
   Xerces2-j under The Apache Software License, Version 2.0
