@@ -328,29 +328,28 @@ public final class CommonUtils {
             final String encoding) {
 
         HttpURLConnection conn = null;
+        InputStreamReader in = null;
         try {
             conn = factory.buildHttpURLConnection(constructedUrl.openConnection());
 
-            final BufferedReader in;
-
             if (CommonUtils.isEmpty(encoding)) {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                in = new InputStreamReader(conn.getInputStream());
             } else {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream(), encoding));
+                in = new InputStreamReader(conn.getInputStream(), encoding);
             }
 
-            String line;
-            final StringBuilder stringBuffer = new StringBuilder(255);
-
-            while ((line = in.readLine()) != null) {
-                stringBuffer.append(line);
-                stringBuffer.append("\n");
+            final StringBuilder builder = new StringBuilder(255);
+            int byteRead;
+            while ((byteRead = in.read()) != -1) {
+                builder.append((char) byteRead);
             }
-            return stringBuffer.toString();
+
+            return builder.toString();
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
+            closeQuietly(in);
             if (conn != null) {
                 conn.disconnect();
             }

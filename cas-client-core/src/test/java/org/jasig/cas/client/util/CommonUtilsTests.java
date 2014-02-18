@@ -18,9 +18,12 @@
  */
 package org.jasig.cas.client.util;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import junit.framework.TestCase;
+import org.jasig.cas.client.PublicTestHttpServer;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -32,6 +35,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
  * @since 3.0
  */
 public final class CommonUtilsTests extends TestCase {
+
+    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8090);
 
     public void testRedirectUrlWithParam() {
         final String loginUrl = "http://localhost:8080/login?myName=foo";
@@ -153,5 +158,13 @@ public final class CommonUtilsTests extends TestCase {
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
                 "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
+    }
+
+    public void testGetResponseFromServer() throws Exception {
+        final String RESPONSE = "test1\r\ntest2";
+        server.content = RESPONSE.getBytes(server.encoding);
+
+        final String responsedContent = CommonUtils.getResponseFromServer(new URL("http://localhost:8090"), new HttpsURLConnectionFactory(), null);
+        assertEquals(RESPONSE, responsedContent);
     }
 }
