@@ -33,6 +33,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 import javax.servlet.FilterChain;
 import java.net.URLEncoder;
+import java.util.regex.Pattern;
 
 /**
  * Tests for the AuthenticationFilter.
@@ -134,7 +135,7 @@ public final class AuthenticationFilterTests {
         final MockFilterConfig config = new MockFilterConfig();
         config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         config.addInitParameter("serverName", "localhost:8443");
-        config.addInitParameter(AuthenticationFilter.EXCLUDE_PARAMETERS_INIT_PARAM, "*\\.action");
+        config.addInitParameter(AuthenticationFilter.EXCLUDE_PARAMETERS_INIT_PARAM, ".*\\.action");
         this.filter.init(config);
 
         assertNotNull(filter.getExcludePatterns());
@@ -158,7 +159,7 @@ public final class AuthenticationFilterTests {
     @Test
     public void testExcludedUrl_SingleException() throws Exception {
         request.setServletPath("/ajax/details.action");
-        filter.setExcludePatterns(new String[]{".*/ajax/.*"});
+        filter.setExcludePatterns(new Pattern[]{Pattern.compile(".*/ajax/.*")});
         filter.doFilter(request, response, filterChain);
         verify(filterChain).doFilter(request, response);
     }
@@ -166,7 +167,7 @@ public final class AuthenticationFilterTests {
     @Test
     public void testExcludedUrl_MultipleException() throws Exception {
         request.setServletPath("/ajax/details.action");
-        filter.setExcludePatterns(new String[]{".*\\.jsp", ".*/ajax/.*"});
+        filter.setExcludePatterns(new Pattern[]{Pattern.compile(".*\\.jsp"), Pattern.compile(".*/ajax/.*")});
         filter.doFilter(request, response, filterChain);
         verify(filterChain).doFilter(request, response);
     }
@@ -174,7 +175,7 @@ public final class AuthenticationFilterTests {
     @Test
     public void testNotExcludedUrl() throws Exception {
         request.setServletPath("/ajax/details.action");
-        filter.setExcludePatterns(new String[]{".*\\.jsp", ".*/protected/.*"});
+        filter.setExcludePatterns(new Pattern[]{Pattern.compile(".*\\.jsp"), Pattern.compile(".*/protected/.*")});
         filter.doFilter(request, response, filterChain);
         verify(filterChain, never()).doFilter(request, response);
     }

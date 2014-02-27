@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -74,7 +75,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     /**
      * URL Regex patterns which should be ignored.
      */
-    private String[] excludePatterns;
+    private Pattern[] excludePatterns;
 
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
@@ -87,10 +88,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
             log.trace("Loaded renew parameter: " + this.renew);
             setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
             log.trace("Loaded gateway parameter: " + this.gateway);
-            String[] excludeUrls = parseExcludePatterns(getPropertyFromInitParams(filterConfig,
+            Pattern[] excludeUrls = parseExcludePatterns(getPropertyFromInitParams(filterConfig,
                     EXCLUDE_PARAMETERS_INIT_PARAM, "false"));
             setExcludePatterns(excludeUrls);
-            log.trace("exclude patterns: " + excludePatterns);
+            log.trace("Exclude patterns: " + excludePatterns);
 
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
@@ -105,11 +106,23 @@ public class AuthenticationFilter extends AbstractCasFilter {
         }
     }
 
-    private String[] parseExcludePatterns(String patterns) {
+    /**
+     * Split and parse the provided comma separated list of pattern strings into Pattern objects.
+     * @param patterns a comma separated string of regex patterns.
+     * @return the array of compiled Pattern objects.
+     */
+    private Pattern[] parseExcludePatterns(String patterns) {
         if (patterns == null || patterns.trim().isEmpty()) {
-            return new String[0];
+            return new Pattern[0];
         } else {
-            return patterns.split(",");
+            String[] patternStrings = patterns.split(",");
+            Pattern[] regexPatterns = new Pattern[patternStrings.length];
+
+            for (int i = 0; i < patternStrings.length; i++) {
+                regexPatterns[i] = Pattern.compile(patternStrings[i]);
+            }
+            
+            return regexPatterns;
         }
     }
 
@@ -163,8 +176,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
     private boolean isExcludedUrl(HttpServletRequest request) {
         String servletPath = request.getServletPath();
-        for (String pattern : this.excludePatterns) {
-            if (servletPath.matches(pattern)) {
+        for (Pattern pattern : this.excludePatterns) {
+            if (pattern.matcher(servletPath).matches()) {
                 return true;
             }
         }
@@ -190,11 +203,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
     /**
      * @param excludePatterns parsed regex patterns to exclude from filtering.
      */
-    public final void setExcludePatterns(final String[] excludePatterns) {
+    public final void setExcludePatterns(final Pattern[] excludePatterns) {
         this.excludePatterns = excludePatterns;
     }
 
-    public String[] getExcludePatterns() {
+    public Pattern[] getExcludePatterns() {
         return excludePatterns;
     }
 }
