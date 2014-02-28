@@ -198,7 +198,7 @@ public abstract class AbstractConfigurationFilter implements Filter {
     private String retrieveParameterValueFromConfigFile(final FilterConfig filterConfig, final String propertyName,
             final String defaultFile) {
         if (this.configurationProperties == null) {
-            initializeConfigurationProperties(filterConfig);
+            initializeConfigurationProperties(filterConfig, defaultFile);
         }
         
         if (this.configurationProperties != null) {
@@ -209,7 +209,7 @@ public abstract class AbstractConfigurationFilter implements Filter {
             }
         }
         
-        return defaultFile;
+        return null;
     }
     
     /**
@@ -217,7 +217,7 @@ public abstract class AbstractConfigurationFilter implements Filter {
      * The parameter <code>configFile</code> itself can be specified by web or JNDI configuration.
      * @param filterConfig
      */
-    private void initializeConfigurationProperties(final FilterConfig filterConfig) {
+    private void initializeConfigurationProperties(final FilterConfig filterConfig, final String defaultFile) {
         
         final String configFileProps = retrieveParameterValueFromWebOrJNDIConfiguration(filterConfig, PARAM_NAME_CONFIG_FILE);
         if (CommonUtils.isNotBlank(configFileProps)) {
