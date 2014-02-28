@@ -224,8 +224,7 @@ public abstract class AbstractConfigurationFilter implements Filter {
             final File configFile = new File(configFileProps);
             
             if (configFile.exists() && configFile.isFile() && configFile.canRead()) {
-                this.configurationProperties = new Properties();
-    
+                
                 FileReader reader = null;
                 BufferedReader bufferedReader = null;
     
@@ -234,7 +233,8 @@ public abstract class AbstractConfigurationFilter implements Filter {
     
                     reader = new FileReader(configFile);
                     bufferedReader = new BufferedReader(reader);
-    
+                    
+                    this.configurationProperties = new Properties();
                     this.configurationProperties.load(bufferedReader);
     
                     logger.info("Loaded {} properties from configuration file", this.configurationProperties.size());
