@@ -18,6 +18,10 @@
  */
 package org.jasig.cas.client.util;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +52,9 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     /** Defines the parameter to look for for the service. */
     private String serviceParameterName = "service";
 
+    /** Url pattern for this filter to exclude and ignore. **/
+    private Pattern ignorePattern = null;
+    
     /** Sets where response.encodeUrl should be called on service urls when constructed. */
     private boolean encodeServiceUrl = true;
 
@@ -72,6 +79,12 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
             setEncodeServiceUrl(parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
             logger.trace("Loading encodeServiceUrl property: {}", this.encodeServiceUrl);
 
+            final String ignorePattern = getPropertyFromInitParams(filterConfig, "ignorePattern", null);
+            if (ignorePattern != null) {
+                setIgnorePattern(Pattern.compile(ignorePattern));
+                logger.trace("Loading ignorePattern property: {}", this.ignorePattern.pattern());
+            }
+            
             initInternal(filterConfig);
         }
         init();
@@ -148,6 +161,10 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         return this.serviceParameterName;
     }
 
+    public final void setIgnorePattern(final Pattern patternToIgnore) {
+        this.ignorePattern = patternToIgnore;
+    }
+    
     /**
      * Template method to allow you to change how you retrieve the ticket.
      *
@@ -156,5 +173,21 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      */
     protected String retrieveTicketFromRequest(final HttpServletRequest request) {
         return CommonUtils.safeGetParameter(request, getArtifactParameterName());
+    }
+
+    protected boolean isRequestUrlExcluded(final HttpServletRequest request) {
+        boolean result = false;
+        if (this.ignorePattern != null) {
+            final StringBuffer urlBuffer = request.getRequestURL();
+            if (request.getQueryString() != null) {
+                urlBuffer.append("?").append(request.getQueryString());
+            }
+            final String requestUri = urlBuffer.toString();
+            logger.debug("Checking [{}] against pattern [{}]", requestUri, this.ignorePattern.pattern());
+            result = this.ignorePattern.matcher(requestUri).find();
+        } else {
+            logger.debug("Ignore pattern is not defined");
+        }
+        return result;
     }
 }

@@ -98,8 +98,16 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
             final FilterChain filterChain) throws IOException, ServletException {
+        
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
+        
+        if (isRequestUrlExcluded(request)) {
+            logger.debug("Request is ignored.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         final HttpSession session = request.getSession(false);
         final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
 
