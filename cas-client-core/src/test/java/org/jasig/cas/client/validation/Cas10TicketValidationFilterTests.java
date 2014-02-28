@@ -20,8 +20,19 @@ package org.jasig.cas.client.validation;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 import org.junit.Test;
 import org.springframework.mock.web.MockFilterConfig;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 
 /**
@@ -53,5 +64,40 @@ public class Cas10TicketValidationFilterTests {
         final TicketValidator validator = f.getTicketValidator(new MockFilterConfig(context));
         assertTrue(validator instanceof Cas10TicketValidator);
         assertTrue(((Cas10TicketValidator) validator).isRenew());
+    }
+    
+    @Test
+    public void testIgnorePatterns() throws Exception {
+        final Cas10TicketValidationFilter f = new Cas10TicketValidationFilter();
+    
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
+        context.addInitParameter("serverName", "https://localhost:8443");
+        
+        context.addInitParameter("ignorePattern", "=valueTo(\\w+)");
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final String URL = "https://localhost:8443/?param=valueToIgnore";
+        request.setRequestURI(URL);
+        request.setQueryString("ticket=ST-1234");
+        request.setParameter("ticket", "ST-1234");
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        try {
+            f.doFilter(request, response, filterChain);
+        } catch (final Exception e) {
+            fail("The validation request should have been ignored");
+        }
+
     }
 }
