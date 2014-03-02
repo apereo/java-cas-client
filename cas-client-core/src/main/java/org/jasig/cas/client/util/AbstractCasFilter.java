@@ -185,8 +185,6 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
             final String requestUri = urlBuffer.toString();
             logger.debug("Checking [{}] against pattern [{}]", requestUri, this.ignorePattern.pattern());
             result = this.ignorePattern.matcher(requestUri).find();
-        } else {
-            logger.debug("Ignore pattern is not defined");
         }
         return result;
     }

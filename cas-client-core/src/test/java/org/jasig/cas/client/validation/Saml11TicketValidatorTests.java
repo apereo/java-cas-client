@@ -21,14 +21,8 @@ package org.jasig.cas.client.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.util.CommonUtils;
@@ -38,11 +32,6 @@ import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.mock.web.MockFilterConfig;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.mock.web.MockServletContext;
 
 /**
  * @author Scott Battaglia
