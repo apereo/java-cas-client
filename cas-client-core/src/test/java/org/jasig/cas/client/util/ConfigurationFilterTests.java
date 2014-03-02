@@ -56,8 +56,8 @@ public class ConfigurationFilterTests {
         filterConfig.addInitParameter(AbstractConfigurationFilter.PARAM_NAME_CONFIG_FILE, CONFIG_FILE_PATH);
         filterConfig.addInitParameter("serverName", "http://foo.com");
 
-        assertEquals(filter.getPropertyFromInitParams(filterConfig, "serverName", null), "http://foo.com");
-        assertNotNull(filter.getPropertyFromInitParams(filterConfig, "service", null));
+        assertEquals(filter.getPropertyFromInitParams(filterConfig, "serverName", null), filterConfig.getInitParameter("serverName"));
+        assertEquals(filter.getPropertyFromInitParams(filterConfig, "service", null), ctx.getInitParameter("service"));
     }
     
     private static class TestConfigurationFilter extends AbstractConfigurationFilter {

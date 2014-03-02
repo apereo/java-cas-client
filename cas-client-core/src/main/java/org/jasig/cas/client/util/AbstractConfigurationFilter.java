@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractConfigurationFilter implements Filter {
 
     protected static final String PARAM_NAME_CONFIG_FILE = "configFile";
+    private static final String PARAM_VALUE_DEFAULT_CONFIG_FILE = "/etc/cas/client.properties";
     
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -90,12 +91,12 @@ public abstract class AbstractConfigurationFilter implements Filter {
             return value;
         }
         
-        value = retrieveParameterValueFromConfigFile(filterConfig, propertyName, "/etc/cas/client.properties");
+        value = retrieveParameterValueFromConfigFile(filterConfig, propertyName, PARAM_VALUE_DEFAULT_CONFIG_FILE);
         if (CommonUtils.isNotBlank(value)) {
             return value;
         }
 
-        logger.info("Property [{}] not found.  Using default value [{}]", propertyName, defaultValue);
+        logger.info("Property [{}] not found. Using default value [{}]", propertyName, defaultValue);
         return defaultValue;
     }
 
@@ -134,12 +135,12 @@ public abstract class AbstractConfigurationFilter implements Filter {
     }
     
     private String retrieveParameterValueFromServletContextConfiguration(final FilterConfig filterConfig, final String propertyName) {
-        final String value2 = filterConfig.getServletContext().getInitParameter(propertyName);
+        final String value = filterConfig.getServletContext().getInitParameter(propertyName);
 
-        if (CommonUtils.isNotBlank(value2)) {
+        if (CommonUtils.isNotBlank(value)) {
             logger.info("Property [{}] loaded from ServletContext.getInitParameter with value [{}]", propertyName,
-                    value2);
-            return value2;
+                    value);
+            return value;
         }
         return null;
     }
@@ -149,18 +150,18 @@ public abstract class AbstractConfigurationFilter implements Filter {
         try {
             context = new InitialContext();
             final String shortName = this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1);
-            final String value3 = loadFromContext(context, "java:comp/env/cas/" + shortName + "/" + propertyName);
+            final String value1 = loadFromContext(context, "java:comp/env/cas/" + shortName + "/" + propertyName);
             
-            if (CommonUtils.isNotBlank(value3)) {
-                logger.info("Property [{}] loaded from JNDI Filter Specific Property with value [{}]", propertyName, value3);
-                return value3;
+            if (CommonUtils.isNotBlank(value1)) {
+                logger.info("Property [{}] loaded from JNDI Filter Specific Property with value [{}]", propertyName, value1);
+                return value1;
             }
 
-            final String value4 = loadFromContext(context, "java:comp/env/cas/" + propertyName);
+            final String value2 = loadFromContext(context, "java:comp/env/cas/" + propertyName);
 
-            if (CommonUtils.isNotBlank(value4)) {
-                logger.info("Property [{}] loaded from JNDI with value [{}]", propertyName, value4);
-                return value4;
+            if (CommonUtils.isNotBlank(value2)) {
+                logger.info("Property [{}] loaded from JNDI with value [{}]", propertyName, value2);
+                return value2;
             }
             
         } catch (final NamingException e) {
@@ -218,36 +219,38 @@ public abstract class AbstractConfigurationFilter implements Filter {
      * @param filterConfig
      */
     private void initializeConfigurationProperties(final FilterConfig filterConfig, final String defaultFile) {
+        File configFile = null;
         
         final String configFileProps = retrieveParameterValueFromWebOrJNDIConfiguration(filterConfig, PARAM_NAME_CONFIG_FILE);
-        if (CommonUtils.isNotBlank(configFileProps)) {
-            final File configFile = new File(configFileProps);
-            
-            if (configFile.exists() && configFile.isFile() && configFile.canRead()) {
+        if (CommonUtils.isBlank(configFileProps)) {
+            configFile = new File(defaultFile);
+        } else {
+            configFile = new File(configFileProps);
+        }
+        
+        if (configFile.exists() && configFile.isFile() && configFile.canRead()) {
+            FileReader reader = null;
+            BufferedReader bufferedReader = null;
+
+            try {
+                logger.info("Loading configuration file from {}", configFile.getCanonicalPath());
+
+                reader = new FileReader(configFile);
+                bufferedReader = new BufferedReader(reader);
+
                 this.configurationProperties = new Properties();
-    
-                FileReader reader = null;
-                BufferedReader bufferedReader = null;
-    
-                try {
-                    logger.info("Loading configuration file from {}", configFile.getCanonicalPath());
-    
-                    reader = new FileReader(configFile);
-                    bufferedReader = new BufferedReader(reader);
-    
-                    this.configurationProperties.load(bufferedReader);
-    
-                    logger.info("Loaded {} properties from configuration file", this.configurationProperties.size());
-    
-                } catch (final IOException e) {
-                    logger.warn(e.getMessage(), e);
-                } finally {
-                    CommonUtils.closeQuietly(bufferedReader);
-                    CommonUtils.closeQuietly(reader);
-                }
-            } else {
-                logger.debug("Configuration file cannot be loaded from {}", configFile.getPath());
+                this.configurationProperties.load(bufferedReader);
+
+                logger.info("Loaded {} properties from configuration file {}", 
+                        this.configurationProperties.size(), configFile.getCanonicalPath());
+
+            } catch (final IOException e) {
+                logger.warn(e.getMessage(), e);
+            } finally {
+                CommonUtils.closeQuietly(bufferedReader);
+                CommonUtils.closeQuietly(reader);
             }
         }
+        
     }
 }
