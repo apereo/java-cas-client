@@ -27,7 +27,6 @@ import org.jasig.cas.client.util.CommonUtils;
  * Holding class for the proxy list to make Spring configuration easier.
  *
  * @author Scott Battaglia
- * @author John Gasper
  * @version $Revision$ $Date$
  * @since 3.1.3
  */
@@ -59,6 +58,7 @@ public final class ProxyList {
                             || pattern.equals(proxiedList[i])) {
                             passed = true;
                         } else {
+                            passed = false;
                             break;
                         }
                     }
