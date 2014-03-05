@@ -126,7 +126,7 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
         list.add(new String[] { "proxy1", "proxy2", "^proxy3/[a-z]*/" });
         this.ticketValidator.setAllowedProxyChains(new ProxyList(list));
         
-        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy/ABC/</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
+        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3/ABC/</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
         
         try {
