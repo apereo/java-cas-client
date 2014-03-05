@@ -35,7 +35,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Test cases for the {@link Cas20ProxyTicketValidator}.
  *
  * @author Scott Battaglia
- * @author John Gasper
  * @version $Revision: 11737 $ $Date: 2007-10-03 09:14:02 -0400 (Tue, 03 Oct 2007) $
  * @since 3.0
  */
