@@ -27,6 +27,7 @@ import org.jasig.cas.client.util.CommonUtils;
  * Holding class for the proxy list to make Spring configuration easier.
  *
  * @author Scott Battaglia
+ * @author John Gasper
  * @version $Revision$ $Date$
  * @since 3.1.3
  */
@@ -47,6 +48,24 @@ public final class ProxyList {
         for (final String[] list : this.proxyChains) {
             if (Arrays.equals(proxiedList, list)) {
                 return true;
+            } else {
+                //strings might be regex, so check for each string
+                if (list.length == proxiedList.length) {
+                    boolean passed = false;
+                    
+                    for (int i=0; i<list.length; i++) {
+                        String pattern = list[i];
+                        if ((pattern.startsWith("^") && proxiedList[i].matches(pattern))
+                            || pattern.equals(proxiedList[i])) {
+                            passed = true;
+                        } else {
+                            break;
+                        }
+                    }
+                    if (passed == true) {
+                        return true;
+                    }
+                }
             }
         }
 
