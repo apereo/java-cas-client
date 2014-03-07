@@ -251,7 +251,7 @@ public final class AuthenticationFilterTests {
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         
         context.addInitParameter("ignorePattern", "=valueToIgnore");
-        context.addInitParameter("ignorePatternType", "NONE");
+        context.addInitParameter("ignoreUrlPatternMatcherStrategyClass", ExactUrlPatternMatcherStrategy.class.getName());
         context.addInitParameter("service", CAS_SERVICE_URL);
         f.init(new MockFilterConfig(context));
         

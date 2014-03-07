@@ -19,10 +19,12 @@
 package org.jasig.cas.client.authentication;
 
 import java.io.IOException;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
@@ -42,11 +44,11 @@ import org.jasig.cas.client.validation.Assertion;
  * <p>Please see AbstractCasFilter for additional properties.</p>
  *
  * @author Scott Battaglia
- * @version $Revision: 11768 $ $Date: 2007-02-07 15:44:16 -0500 (Wed, 07 Feb 2007) $
+ * @author Misagh Moayyed
  * @since 3.0
  */
 public class AuthenticationFilter extends AbstractCasFilter {
-
+   
     /**
      * The URL to the CAS Server login.
      */
@@ -64,6 +66,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
+    private UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass = null;
+    
     private AuthenticationRedirectStrategy authenticationRedirectStrategy = new DefaultAuthenticationRedirectStrategy();
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
@@ -75,7 +79,22 @@ public class AuthenticationFilter extends AbstractCasFilter {
             logger.trace("Loaded renew parameter: {}", this.renew);
             setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
             logger.trace("Loaded gateway parameter: {}", this.gateway);
-
+                       
+            final String ignorePattern = getPropertyFromInitParams(filterConfig, "ignorePattern", null);
+            logger.trace("Loaded ignorePattern parameter: {}", ignorePattern);
+            
+            final String ignoreUrlMatcherClass = getPropertyFromInitParams(filterConfig, "ignoreUrlPatternMatcherStrategyClass", null);
+            logger.trace("Loaded ignoreUrlPatternMatcherStrategyClass parameter: {}", ignoreUrlMatcherClass);
+            
+            if (ignorePattern != null ) {
+                if (ignoreUrlMatcherClass != null) {
+                    this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlMatcherClass);
+                } else {
+                    this.ignoreUrlPatternMatcherStrategyClass = new RegexUrlPatternMatcherStrategy();
+                }
+                this.ignoreUrlPatternMatcherStrategyClass.setPattern(ignorePattern);
+            }
+            
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
             if (gatewayStorageClass != null) {
@@ -158,5 +177,19 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
     public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
         this.gatewayStorage = gatewayStorage;
+    }
+        
+    private boolean isRequestUrlExcluded(final HttpServletRequest request) {
+              
+        if (this.ignoreUrlPatternMatcherStrategyClass == null) {
+            return false;
+        }
+        
+        final StringBuffer urlBuffer = request.getRequestURL();
+        if (request.getQueryString() != null) {
+            urlBuffer.append("?").append(request.getQueryString());
+        }
+        final String requestUri = urlBuffer.toString();
+        return this.ignoreUrlPatternMatcherStrategyClass.matches(requestUri);
     }
 }

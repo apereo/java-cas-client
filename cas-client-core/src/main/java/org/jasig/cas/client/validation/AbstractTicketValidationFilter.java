@@ -190,13 +190,13 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
             final FilterChain filterChain) throws IOException, ServletException {
-        final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpServletResponse response = (HttpServletResponse) servletResponse;
-                
+
         if (!preFilter(servletRequest, servletResponse, filterChain)) {
             return;
         }
-        
+
+        final HttpServletRequest request = (HttpServletRequest) servletRequest;
+        final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final String ticket = retrieveTicketFromRequest(request);
 
         if (CommonUtils.isNotBlank(ticket)) {
