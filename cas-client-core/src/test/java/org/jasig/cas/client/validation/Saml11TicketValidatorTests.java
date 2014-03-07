@@ -20,10 +20,8 @@ package org.jasig.cas.client.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.util.CommonUtils;
 import org.joda.time.DateTime;
@@ -139,7 +137,7 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
             fail(e.toString());
         }
     }
-    
+
     private Interval currentTimeRangeInterval() {
         return new Interval(new DateTime(DateTimeZone.UTC).minus(5000), new DateTime(DateTimeZone.UTC).plus(200000000));
     }

@@ -18,8 +18,6 @@
  */
 package org.jasig.cas.client.util;
 
-import java.util.regex.Pattern;
-
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -40,15 +38,6 @@ import javax.servlet.http.HttpServletResponse;
  * @since 3.1
  */
 public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
-
-    /**
-     * Enumeration that defines pattern types.
-     * @since 3.3.1
-     */
-    public enum IgnorePatternTypes {
-        NONE,
-        REGEX;
-    }
     
     /** Represents the constant for where the assertion will be located in memory. */
     public static final String CONST_CAS_ASSERTION = "_const_cas_assertion_";
@@ -58,16 +47,6 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     /** Defines the parameter to look for for the service. */
     private String serviceParameterName = "service";
-
-    /** Url pattern for this filter to exclude and ignore.
-     * @since 3.3.1 
-     **/
-    private String ignorePattern = null;
-    
-    /** Denotes the pattern type.
-     * @since 3.3.1
-     */
-    private IgnorePatternTypes ignorePatternType = null;
     
     /** Sets where response.encodeUrl should be called on service urls when constructed. */
     private boolean encodeServiceUrl = true;
@@ -92,16 +71,6 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
             logger.trace("Loading serviceParameterName property: {} ", this.serviceParameterName);
             setEncodeServiceUrl(parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
             logger.trace("Loading encodeServiceUrl property: {}", this.encodeServiceUrl);
-
-            final String ignorePattern = getPropertyFromInitParams(filterConfig, "ignorePattern", null);
-            if (ignorePattern != null) {
-                setIgnorePattern(ignorePattern);
-                logger.trace("Loading ignorePattern property: {}", ignorePattern);
-            }
-            
-            setIgnorePatternType(Enum.valueOf(IgnorePatternTypes.class, getPropertyFromInitParams(filterConfig, "ignorePatternType",
-                    IgnorePatternTypes.REGEX.name())));
-            logger.trace("Loading ignorePatternType property: {}", ignorePatternType);
             
             initInternal(filterConfig);
         }
@@ -179,14 +148,6 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     public final String getServiceParameterName() {
         return this.serviceParameterName;
     }
-
-    public final void setIgnorePattern(final String patternToIgnore) {
-        this.ignorePattern = patternToIgnore;
-    }
-    
-    public final void setIgnorePatternType(final IgnorePatternTypes patternType) {
-        this.ignorePatternType = patternType;
-    }
     
     /**
      * Template method to allow you to change how you retrieve the ticket.
@@ -196,29 +157,5 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      */
     protected String retrieveTicketFromRequest(final HttpServletRequest request) {
         return CommonUtils.safeGetParameter(request, getArtifactParameterName());
-    }
-
-    protected boolean isRequestUrlExcluded(final HttpServletRequest request) {
-        boolean result = false;
-        if (this.ignorePattern != null) {
-            final StringBuffer urlBuffer = request.getRequestURL();
-            if (request.getQueryString() != null) {
-                urlBuffer.append("?").append(request.getQueryString());
-            }
-            final String requestUri = urlBuffer.toString();
-            logger.debug("Checking [{}] against pattern [{}]", requestUri, this.ignorePattern);
-            
-            
-            switch (this.ignorePatternType) {
-            case NONE:
-                result = requestUri.contains(this.ignorePattern);
-                break;
-            case REGEX:
-                result = Pattern.compile(this.ignorePattern).matcher(requestUri).find();
-                break;
-            }
-            
-        }
-        return result;
     }
 }
