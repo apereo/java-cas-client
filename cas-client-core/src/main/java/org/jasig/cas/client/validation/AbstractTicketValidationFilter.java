@@ -192,13 +192,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
             final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        
-        if (isRequestUrlExcluded(request)) {
-            logger.debug("Request is ignored.");
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
+                
         if (!preFilter(servletRequest, servletResponse, filterChain)) {
             return;
         }

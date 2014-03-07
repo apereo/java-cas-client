@@ -18,8 +18,6 @@
  */
 package org.jasig.cas.client.util;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.FilterConfig;
@@ -38,11 +36,20 @@ import javax.servlet.http.HttpServletResponse;
  * <p>Please note that one of the two above parameters must be set.</p>
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
+ * @author Misagh Moayyed
  * @since 3.1
  */
 public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
+    /**
+     * Enumeration that defines pattern types.
+     * @since 3.3.1
+     */
+    public enum IgnorePatternTypes {
+        NONE,
+        REGEX;
+    }
+    
     /** Represents the constant for where the assertion will be located in memory. */
     public static final String CONST_CAS_ASSERTION = "_const_cas_assertion_";
 
@@ -52,8 +59,15 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     /** Defines the parameter to look for for the service. */
     private String serviceParameterName = "service";
 
-    /** Url pattern for this filter to exclude and ignore. **/
-    private Pattern ignorePattern = null;
+    /** Url pattern for this filter to exclude and ignore.
+     * @since 3.3.1 
+     **/
+    private String ignorePattern = null;
+    
+    /** Denotes the pattern type.
+     * @since 3.3.1
+     */
+    private IgnorePatternTypes ignorePatternType = null;
     
     /** Sets where response.encodeUrl should be called on service urls when constructed. */
     private boolean encodeServiceUrl = true;
@@ -81,14 +95,19 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
             final String ignorePattern = getPropertyFromInitParams(filterConfig, "ignorePattern", null);
             if (ignorePattern != null) {
-                setIgnorePattern(Pattern.compile(ignorePattern));
-                logger.trace("Loading ignorePattern property: {}", this.ignorePattern.pattern());
+                setIgnorePattern(ignorePattern);
+                logger.trace("Loading ignorePattern property: {}", ignorePattern);
             }
+            
+            setIgnorePatternType(Enum.valueOf(IgnorePatternTypes.class, getPropertyFromInitParams(filterConfig, "ignorePatternType",
+                    IgnorePatternTypes.REGEX.name())));
+            logger.trace("Loading ignorePatternType property: {}", ignorePatternType);
             
             initInternal(filterConfig);
         }
         init();
     }
+
 
     /** Controls the ordering of filter initialization and checking by defining a method that runs before the init.
      * @param filterConfig the original filter configuration.
@@ -161,8 +180,12 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         return this.serviceParameterName;
     }
 
-    public final void setIgnorePattern(final Pattern patternToIgnore) {
+    public final void setIgnorePattern(final String patternToIgnore) {
         this.ignorePattern = patternToIgnore;
+    }
+    
+    public final void setIgnorePatternType(final IgnorePatternTypes patternType) {
+        this.ignorePatternType = patternType;
     }
     
     /**
@@ -183,8 +206,18 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
                 urlBuffer.append("?").append(request.getQueryString());
             }
             final String requestUri = urlBuffer.toString();
-            logger.debug("Checking [{}] against pattern [{}]", requestUri, this.ignorePattern.pattern());
-            result = this.ignorePattern.matcher(requestUri).find();
+            logger.debug("Checking [{}] against pattern [{}]", requestUri, this.ignorePattern);
+            
+            
+            switch (this.ignorePatternType) {
+            case NONE:
+                result = requestUri.contains(this.ignorePattern);
+                break;
+            case REGEX:
+                result = Pattern.compile(this.ignorePattern).matcher(requestUri).find();
+                break;
+            }
+            
         }
         return result;
     }
