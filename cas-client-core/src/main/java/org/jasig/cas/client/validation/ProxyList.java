@@ -19,8 +19,9 @@
 package org.jasig.cas.client.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.jasig.cas.client.util.CommonUtils;
 
 /**
@@ -33,10 +34,20 @@ import org.jasig.cas.client.util.CommonUtils;
 public final class ProxyList {
 
     private final List<String[]> proxyChains;
+    private final HashMap<String, Pattern> proxyChainRegexCache;
 
     public ProxyList(final List<String[]> proxyChains) {
         CommonUtils.assertNotNull(proxyChains, "List of proxy chains cannot be null.");
         this.proxyChains = proxyChains;
+
+        this.proxyChainRegexCache = new HashMap<String, Pattern>();
+        for (final String[] list : this.proxyChains) {
+            for (final String item : list) {
+                if (item.startsWith("^")) {
+                    this.proxyChainRegexCache.put(item, Pattern.compile(item));
+                }
+            }
+        }
     }
 
     public ProxyList() {
@@ -44,26 +55,23 @@ public final class ProxyList {
     }
 
     public boolean contains(String[] proxiedList) {
-        for (final String[] list : this.proxyChains) {
-            if (Arrays.equals(proxiedList, list)) {
-                return true;
-            } else {
-                //strings might be regex, so check for each string
-                if (list.length == proxiedList.length) {
-                    boolean passed = false;
-                    
-                    for (int i=0; i<list.length; i++) {
-                        String pattern = list[i];
-                        if ((pattern.startsWith("^") && proxiedList[i].matches(pattern))
-                            || pattern.equals(proxiedList[i])) {
-                            passed = true;
-                        } else {
-                            passed = false;
-                            break;
+        for (final String[] proxyChain : this.proxyChains) {
+
+            if (proxyChain.length == proxiedList.length) {
+
+                for (int linkIndex = 0; linkIndex < proxyChain.length; linkIndex++) {
+                    String link = proxyChain[linkIndex];
+
+                    if (link.equals(proxiedList[linkIndex])
+                           || (link.startsWith("^") && proxyChainRegexCache.get(link).matcher(proxiedList[linkIndex]).matches())) {
+
+                        //If we are at the last link, we found a good proxyChain.
+                        if (linkIndex == proxyChain.length-1) {
+                            return true;
                         }
-                    }
-                    if (passed == true) {
-                        return true;
+
+                    } else {
+                        break;
                     }
                 }
             }
