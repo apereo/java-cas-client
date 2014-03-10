@@ -273,11 +273,6 @@ public final class CommonUtils {
 
         buffer.append(serverName);
 
-        final boolean serverNameContainsPort = serverNameContainsPort(containsScheme, serverName);
-        System.out.println("serverNameContainsPort " + serverNameContainsPort);
-        final boolean requestIsOnStandardPort = requestIsOnStandardPort(request);
-        System.out.println("requestIsOnStandardPort " + requestIsOnStandardPort);
-
         if (!serverNameContainsPort(containsScheme, serverName) && !requestIsOnStandardPort(request)) {
             buffer.append(":");
             buffer.append(request.getServerPort());
