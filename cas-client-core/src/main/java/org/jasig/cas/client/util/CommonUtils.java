@@ -225,6 +225,21 @@ public final class CommonUtils {
         return serverNames[0];
     }
 
+    private static boolean serverNameContainsPort(final boolean containsScheme, final String serverName) {
+        if (!containsScheme && serverName.contains(":")) {
+            return true;
+        }
+
+        final int schemeIndex = serverName.indexOf(":");
+        final int portIndex = serverName.lastIndexOf(":");
+        return schemeIndex != portIndex;
+    }
+
+    private static boolean requestIsOnStandardPort(final HttpServletRequest request) {
+        final int serverPort = request.getServerPort();
+        return serverPort == 80 || serverPort == 443;
+    }
+
     /**
          * Constructs a service url from the HttpServletRequest or from the given
          * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
@@ -250,11 +265,24 @@ public final class CommonUtils {
 
         final String serverName = findMatchingServerName(request, serverNames);
 
+        boolean containsScheme = true;
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
             buffer.append(request.isSecure() ? "https://" : "http://");
+            containsScheme = false;
         }
 
         buffer.append(serverName);
+
+        final boolean serverNameContainsPort = serverNameContainsPort(containsScheme, serverName);
+        System.out.println("serverNameContainsPort " + serverNameContainsPort);
+        final boolean requestIsOnStandardPort = requestIsOnStandardPort(request);
+        System.out.println("requestIsOnStandardPort " + requestIsOnStandardPort);
+
+        if (!serverNameContainsPort(containsScheme, serverName) && !requestIsOnStandardPort(request)) {
+            buffer.append(":");
+            buffer.append(request.getServerPort());
+        }
+
         buffer.append(request.getRequestURI());
 
         if (CommonUtils.isNotBlank(request.getQueryString())) {
