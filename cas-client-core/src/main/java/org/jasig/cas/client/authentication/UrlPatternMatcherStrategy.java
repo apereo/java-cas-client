@@ -29,11 +29,11 @@ public interface UrlPatternMatcherStrategy {
      * @param url the request url typically with query strings included
      * @return true if match is successful
      */
-    boolean matches(final String url);
+    boolean matches(String url);
     
     /**
      * The pattern against which the url is compared
      * @param pattern
      */
-    void setPattern(final String pattern);
+    void setPattern(String pattern);
 }

@@ -180,7 +180,6 @@ public class AuthenticationFilter extends AbstractCasFilter {
     }
         
     private boolean isRequestUrlExcluded(final HttpServletRequest request) {
-              
         if (this.ignoreUrlPatternMatcherStrategyClass == null) {
             return false;
         }
