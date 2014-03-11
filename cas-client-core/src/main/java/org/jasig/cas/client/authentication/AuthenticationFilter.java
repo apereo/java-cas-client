@@ -50,7 +50,6 @@ import org.jasig.cas.client.validation.Assertion;
  * @since 3.0
  */
 public class AuthenticationFilter extends AbstractCasFilter {
-   
     /**
      * The URL to the CAS Server login.
      */
@@ -97,15 +96,15 @@ public class AuthenticationFilter extends AbstractCasFilter {
             logger.trace("Loaded ignoreUrlPatternType parameter: {}", ignoreUrlPatternType);
             
             if (ignorePattern != null) {
-                final Class<? extends UrlPatternMatcherStrategy> ignoreUrlMatcherClass = this.PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
+                final Class<? extends UrlPatternMatcherStrategy> ignoreUrlMatcherClass = PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
                 if (ignoreUrlMatcherClass != null) {
                     this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlMatcherClass.getName());
                 } else {
                     try {
-                        logger.trace("Assuming {} is a qualfiied class name...", ignoreUrlPatternType);
+                        logger.trace("Assuming {} is a qualified class name...", ignoreUrlPatternType);
                         this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlPatternType);
                     } catch (final IllegalArgumentException e) {
-                        logger.warn("Could not instantiate class [{}]: [{}]", ignoreUrlPatternType, e.getMessage());
+                        logger.error("Could not instantiate class [{}]", ignoreUrlPatternType, e);
                     }
                 }
                 if (this.ignoreUrlPatternMatcherStrategyClass != null) {
