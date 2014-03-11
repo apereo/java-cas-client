@@ -272,4 +272,62 @@ public final class AuthenticationFilterTests {
         f.doFilter(request, response, filterChain);
         assertNull(response.getRedirectedUrl());
     }
+    
+    @Test
+    public void testIgnorePatternsWithExactClassname() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        
+        context.addInitParameter("ignorePattern", "=valueToIgnore");
+        context.addInitParameter("ignoreUrlPatternType", ExactUrlPatternMatcherStrategy.class.getName());
+        context.addInitParameter("service", CAS_SERVICE_URL);
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        request.setRequestURI(URL);
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        f.doFilter(request, response, filterChain);
+        assertNull(response.getRedirectedUrl());
+    }
+    
+    @Test
+    public void testIgnorePatternsWithInvalidClassname() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        
+        context.addInitParameter("ignorePattern", "=valueToIgnore");
+        context.addInitParameter("ignoreUrlPatternType", "unknown.class.name");
+        context.addInitParameter("service", CAS_SERVICE_URL);
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        request.setRequestURI(URL);
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        f.doFilter(request, response, filterChain);
+        System.out.println(response.getRedirectedUrl());
+    }
 }
