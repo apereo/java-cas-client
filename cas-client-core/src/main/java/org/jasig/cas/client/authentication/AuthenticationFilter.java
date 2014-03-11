@@ -72,12 +72,12 @@ public class AuthenticationFilter extends AbstractCasFilter {
     
     private UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass = null;
     
-    private final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
+    private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
             new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
     
-    public AuthenticationFilter() {
-        this.PATTERN_MATCHER_TYPES.put("EXACT", ExactUrlPatternMatcherStrategy.class);
-        this.PATTERN_MATCHER_TYPES.put("REGEX", RegexUrlPatternMatcherStrategy.class);
+    static {
+        PATTERN_MATCHER_TYPES.put("EXACT", ExactUrlPatternMatcherStrategy.class);
+        PATTERN_MATCHER_TYPES.put("REGEX", RegexUrlPatternMatcherStrategy.class);
     }
     
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
