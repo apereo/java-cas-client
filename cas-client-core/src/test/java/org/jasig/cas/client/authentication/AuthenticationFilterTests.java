@@ -245,13 +245,13 @@ public final class AuthenticationFilterTests {
     }
     
     @Test
-    public void testIgnorePatternsWithNoRegex() throws Exception {
+    public void testIgnorePatternsWithExactMatching() throws Exception {
         final AuthenticationFilter f = new AuthenticationFilter();
         final MockServletContext context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         
         context.addInitParameter("ignorePattern", "=valueToIgnore");
-        context.addInitParameter("ignoreUrlPatternMatcherStrategyClass", ExactUrlPatternMatcherStrategy.class.getName());
+        context.addInitParameter("ignoreUrlPatternType", "EXACT");
         context.addInitParameter("service", CAS_SERVICE_URL);
         f.init(new MockFilterConfig(context));
         
