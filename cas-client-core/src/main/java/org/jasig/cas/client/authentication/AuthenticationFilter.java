@@ -19,6 +19,8 @@
 package org.jasig.cas.client.authentication;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -66,10 +68,18 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
+    private AuthenticationRedirectStrategy authenticationRedirectStrategy = new DefaultAuthenticationRedirectStrategy();
+    
     private UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass = null;
     
-    private AuthenticationRedirectStrategy authenticationRedirectStrategy = new DefaultAuthenticationRedirectStrategy();
-
+    private final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
+            new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
+    
+    public AuthenticationFilter() {
+        this.PATTERN_MATCHER_TYPES.put("EXACT", ExactUrlPatternMatcherStrategy.class);
+        this.PATTERN_MATCHER_TYPES.put("REGEX", RegexUrlPatternMatcherStrategy.class);
+    }
+    
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
@@ -83,29 +93,23 @@ public class AuthenticationFilter extends AbstractCasFilter {
             final String ignorePattern = getPropertyFromInitParams(filterConfig, "ignorePattern", null);
             logger.trace("Loaded ignorePattern parameter: {}", ignorePattern);
             
-            final String ignoreUrlMatcherClass = getPropertyFromInitParams(filterConfig, "ignoreUrlPatternMatcherStrategyClass", null);
-            logger.trace("Loaded ignoreUrlPatternMatcherStrategyClass parameter: {}", ignoreUrlMatcherClass);
+            final String ignoreUrlPatternType = getPropertyFromInitParams(filterConfig, "ignoreUrlPatternType", "REGEX");
+            logger.trace("Loaded ignoreUrlPatternType parameter: {}", ignoreUrlPatternType);
             
             if (ignorePattern != null ) {
+                final Class<? extends UrlPatternMatcherStrategy> ignoreUrlMatcherClass = this.PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
                 if (ignoreUrlMatcherClass != null) {
-                    this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlMatcherClass);
+                    this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlMatcherClass.getName());
+                    this.ignoreUrlPatternMatcherStrategyClass.setPattern(ignorePattern);
                 } else {
-                    this.ignoreUrlPatternMatcherStrategyClass = new RegexUrlPatternMatcherStrategy();
+                    logger.trace("Could not find and load: {}", ignoreUrlMatcherClass);
                 }
-                this.ignoreUrlPatternMatcherStrategyClass.setPattern(ignorePattern);
             }
             
             final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
 
             if (gatewayStorageClass != null) {
                 this.gatewayStorage = ReflectUtils.newInstance(gatewayStorageClass);
-            }
-
-            final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig,
-                    "authenticationRedirectStrategyClass", null);
-
-            if (authenticationRedirectStrategyClass != null) {
-                this.authenticationRedirectStrategy = ReflectUtils.newInstance(authenticationRedirectStrategyClass);
             }
         }
     }
