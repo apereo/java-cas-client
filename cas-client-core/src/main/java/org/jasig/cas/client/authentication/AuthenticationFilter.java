@@ -96,13 +96,20 @@ public class AuthenticationFilter extends AbstractCasFilter {
             final String ignoreUrlPatternType = getPropertyFromInitParams(filterConfig, "ignoreUrlPatternType", "REGEX");
             logger.trace("Loaded ignoreUrlPatternType parameter: {}", ignoreUrlPatternType);
             
-            if (ignorePattern != null ) {
+            if (ignorePattern != null) {
                 final Class<? extends UrlPatternMatcherStrategy> ignoreUrlMatcherClass = this.PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
                 if (ignoreUrlMatcherClass != null) {
                     this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlMatcherClass.getName());
-                    this.ignoreUrlPatternMatcherStrategyClass.setPattern(ignorePattern);
                 } else {
-                    logger.trace("Could not find and load: {}", ignoreUrlMatcherClass);
+                    try {
+                        logger.trace("Assuming {} is a qualfiied class name...", ignoreUrlPatternType);
+                        this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlPatternType);
+                    } catch (final IllegalArgumentException e) {
+                        logger.warn("Could not instantiate class [{}]: [{}]", ignoreUrlPatternType, e.getMessage());
+                    }
+                }
+                if (this.ignoreUrlPatternMatcherStrategyClass != null) {
+                    this.ignoreUrlPatternMatcherStrategyClass.setPattern(ignorePattern);
                 }
             }
             
@@ -110,6 +117,13 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
             if (gatewayStorageClass != null) {
                 this.gatewayStorage = ReflectUtils.newInstance(gatewayStorageClass);
+            }
+            
+            final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig,
+                    "authenticationRedirectStrategyClass", null);
+
+            if (authenticationRedirectStrategyClass != null) {
+                this.authenticationRedirectStrategy = ReflectUtils.newInstance(authenticationRedirectStrategyClass);
             }
         }
     }
