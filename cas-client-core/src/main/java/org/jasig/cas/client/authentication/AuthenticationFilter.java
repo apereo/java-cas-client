@@ -77,6 +77,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     static {
         PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);
         PATTERN_MATCHER_TYPES.put("REGEX", RegexUrlPatternMatcherStrategy.class);
+        PATTERN_MATCHER_TYPES.put("EXACT", ExactUrlPatternMatcherStrategy.class);
     }
     
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {

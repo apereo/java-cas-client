@@ -19,13 +19,17 @@
 package org.jasig.cas.client.authentication;
 
 import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.net.URLEncoder;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.AssertionImpl;
 import org.junit.After;
@@ -245,7 +249,7 @@ public final class AuthenticationFilterTests {
     }
     
     @Test
-    public void testIgnorePatternsWithExactMatching() throws Exception {
+    public void testIgnorePatternsWithContainsMatching() throws Exception {
         final AuthenticationFilter f = new AuthenticationFilter();
         final MockServletContext context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
@@ -258,6 +262,40 @@ public final class AuthenticationFilterTests {
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
         request.setRequestURI(URL);
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        f.doFilter(request, response, filterChain);
+        assertNull(response.getRedirectedUrl());
+    }
+    
+    @Test
+    public void testIgnorePatternsWithExactMatching() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        
+        final URL url = new URL(CAS_SERVICE_URL + "?param=valueToIgnore");
+        
+        context.addInitParameter("ignorePattern", url.toExternalForm());
+        context.addInitParameter("ignoreUrlPatternType", "EXACT");
+        context.addInitParameter("service", CAS_SERVICE_URL);
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setScheme(url.getProtocol());
+        request.setServerName(url.getHost());
+        request.setServerPort(url.getPort());
+        request.setQueryString(url.getQuery());
+        request.setRequestURI(url.getPath());
         
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
