@@ -18,14 +18,18 @@
  */
 package org.jasig.cas.client.session;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +44,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class SingleSignOutHandler {
 
+    public final static String DEFAULT_ARTIFACT_PARAMETER_NAME = "ticket";
+    public final static String DEFAULT_LOGOUT_PARAMETER_NAME = "logoutRequest";
+    public final static String DEFAULT_RELAY_STATE_PARAMETER_NAME = "RelayState";
+    
     /** Logger instance */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -47,11 +55,14 @@ public final class SingleSignOutHandler {
     private SessionMappingStorage sessionMappingStorage = new HashMapBackedSessionMappingStorage();
 
     /** The name of the artifact parameter.  This is used to capture the session identifier. */
-    private String artifactParameterName = "ticket";
+    private String artifactParameterName = DEFAULT_ARTIFACT_PARAMETER_NAME;
 
     /** Parameter name that stores logout request */
-    private String logoutParameterName = "logoutRequest";
+    private String logoutParameterName = DEFAULT_LOGOUT_PARAMETER_NAME;
 
+    /** Parameter name that stores the state of the CAS server webflow for the callback */
+    private String relayStateParameterName = DEFAULT_RELAY_STATE_PARAMETER_NAME;
+    
     private boolean artifactParameterOverPost = false;
 
     private boolean eagerlyCreateSessions = true;
@@ -84,6 +95,13 @@ public final class SingleSignOutHandler {
         this.logoutParameterName = name;
     }
 
+    /**
+     * @param name Name of parameter containing the state of the CAS server webflow.
+     */
+    public void setRelayStateParameterName(final String name) {
+        this.relayStateParameterName = name;
+    }
+
     public void setEagerlyCreateSessions(final boolean eagerlyCreateSessions) {
         this.eagerlyCreateSessions = eagerlyCreateSessions;
     }
@@ -95,6 +113,7 @@ public final class SingleSignOutHandler {
         CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
         CommonUtils.assertNotNull(this.logoutParameterName, "logoutParameterName cannot be null.");
         CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannot be null.");
+        CommonUtils.assertNotNull(this.relayStateParameterName, "relayStateParameterName cannot be null.");
 
         if (this.artifactParameterOverPost) {
             this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
@@ -116,17 +135,29 @@ public final class SingleSignOutHandler {
     }
 
     /**
-     * Determines whether the given request is a CAS logout request.
+     * Determines whether the given request is a CAS back channel logout request.
      *
      * @param request HTTP request.
      *
      * @return True if request is logout request, false otherwise.
      */
-    public boolean isLogoutRequest(final HttpServletRequest request) {
+    public boolean isBackChannelLogoutRequest(final HttpServletRequest request) {
         return "POST".equals(request.getMethod())
                 && !isMultipartRequest(request)
                 && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
                         this.safeParameters));
+    }
+
+    /**
+     * Determines whether the given request is a CAS front channel logout request.
+     *
+     * @param request HTTP request.
+     *
+     * @return True if request is logout request, false otherwise.
+     */
+    public boolean isFrontChannelLogoutRequest(final HttpServletRequest request) {
+        return "GET".equals(request.getMethod())
+                && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName));
     }
 
     /**
@@ -155,13 +186,46 @@ public final class SingleSignOutHandler {
     }
 
     /**
+     * Uncompress a logout message (base64 + deflate).
+     * 
+     * @param originalMessage the original logout message.
+     * @return the uncompressed logout message.
+     */
+    private String uncompressLogoutMessage(final String originalMessage) {
+        // base64 decode
+        final byte[] binaryMessage = Base64.decodeBase64(originalMessage);
+
+        try {
+            // decompress the bytes
+            final Inflater decompresser = new Inflater();
+            decompresser.setInput(binaryMessage);
+            byte[] result = new byte[binaryMessage.length * 10];
+            int resultLength = decompresser.inflate(result);
+            decompresser.end();
+
+            // decode the bytes into a String
+            return new String(result, 0, resultLength, "UTF-8");
+        } catch (DataFormatException e) {
+            logger.error("Unable to decompress logout message", e);
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            logger.error("Unable to decompress logout message", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Destroys the current HTTP session for the given CAS logout request.
      *
      * @param request HTTP request containing a CAS logout message.
      */
     public void destroySession(final HttpServletRequest request) {
-        final String logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName,
+        String logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName,
                 this.safeParameters);
+        // front channel request -> the message needs to be base64 decoded + decompressed
+        if ("GET".equals(request.getMethod())) {
+            logoutMessage = uncompressLogoutMessage(logoutMessage); 
+        }
         logger.trace("Logout request:\n{}", logoutMessage);
 
         final String token = XmlUtils.getTextForElement(logoutMessage, "SessionIndex");
