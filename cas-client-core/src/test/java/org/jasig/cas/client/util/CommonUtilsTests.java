@@ -167,4 +167,8 @@ public final class CommonUtilsTests extends TestCase {
         final String responsedContent = CommonUtils.getResponseFromServer(new URL("http://localhost:8090"), new HttpsURLConnectionFactory(), null);
         assertEquals(RESPONSE, responsedContent);
     }
+    
+    public void testUrlEncode() {
+        assertEquals("this+is+a+very+special+parameter+with+%3D%25%2F", CommonUtils.urlEncode("this is a very special parameter with =%/"));
+    }
 }
