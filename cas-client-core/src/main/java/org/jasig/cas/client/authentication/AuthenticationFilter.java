@@ -75,7 +75,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
     
     static {
-        PATTERN_MATCHER_TYPES.put("EXACT", ContainsPatternUrlPatternMatcherStrategy.class);
+        PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);
         PATTERN_MATCHER_TYPES.put("REGEX", RegexUrlPatternMatcherStrategy.class);
     }
     
