@@ -19,12 +19,12 @@ public final class LogoutMessageGenerator {
             + "IssueInstant=\"\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@"
             + "</saml:NameID><samlp:SessionIndex>%s</samlp:SessionIndex></samlp:LogoutRequest>";
 
-    public static String generateLogoutMessage(String sessionIndex) {
+    public static String generateBackChannelLogoutMessage(String sessionIndex) {
         return String.format(LOGOUT_REQUEST_TEMPLATE, sessionIndex);
     }
     
-    public static String generateCompressedLogoutMessage(String sessionIndex) {
-        final String logoutMessage = generateLogoutMessage(sessionIndex);
+    public static String generateFrontChannelLogoutMessage(String sessionIndex) {
+        final String logoutMessage = generateBackChannelLogoutMessage(sessionIndex);
         final Deflater deflater = new Deflater();
         deflater.setInput(logoutMessage.getBytes(Charset.forName("ASCII")));
         deflater.finish();

@@ -29,6 +29,7 @@ import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 import org.jasig.cas.client.session.SessionMappingStorage;
 import org.jasig.cas.client.session.SingleSignOutHandler;
+import org.jasig.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +57,18 @@ public class SingleSignOutValve extends ValveBase implements SessionListener {
         handler.setLogoutParameterName(name);
     }
 
+    public void setFrontLogoutParameterName(final String name) {
+        handler.setFrontLogoutParameterName(name);
+    }
+
+    public void setRelayStateParameterName(final String name) {
+        handler.setRelayStateParameterName(name);
+    }
+
+    public void setCasServerUrlPrefix(final String casServerUrlPrefix) {
+        handler.setCasServerUrlPrefix(casServerUrlPrefix);
+    }
+
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         handler.setSessionMappingStorage(storage);
     }
@@ -65,9 +78,17 @@ public class SingleSignOutValve extends ValveBase implements SessionListener {
         if (this.handler.isTokenRequest(request)) {
             this.handler.recordSession(request);
             request.getSessionInternal(true).addSessionListener(this);
-        } else if (this.handler.isLogoutRequest(request)) {
+        } else if (this.handler.isBackChannelLogoutRequest(request)) {
             this.handler.destroySession(request);
             // Do not proceed up valve chain
+            return;
+        } else if (this.handler.isFrontChannelLogoutRequest(request)) {
+            this.handler.destroySession(request);
+            // redirection url to the CAS server
+            final String redirectionUrl = handler.computeRedirectionToServer(request);
+            if (redirectionUrl != null) {
+                CommonUtils.sendRedirect(response, redirectionUrl);
+            }
             return;
         } else {
             logger.debug("Ignoring URI {}", request.getRequestURI());
