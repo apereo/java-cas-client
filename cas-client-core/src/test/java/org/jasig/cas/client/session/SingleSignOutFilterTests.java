@@ -79,7 +79,8 @@ public class SingleSignOutFilterTests {
 
     @Test
     public void backChannelRequest() throws IOException, ServletException {
-        request.setParameter(SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME, LogoutMessageGenerator.generateLogoutMessage(TICKET));
+        request.setParameter(SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME,
+                LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET));
         request.setMethod("POST");
         final MockHttpSession session = new MockHttpSession();
         SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
@@ -89,9 +90,9 @@ public class SingleSignOutFilterTests {
 
     @Test
     public void frontChannelRequest() throws IOException, ServletException {
-        final String logoutMessage = LogoutMessageGenerator.generateCompressedLogoutMessage(TICKET);
-        request.setParameter(SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME, logoutMessage);
-        request.setQueryString(SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
+        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        request.setParameter(SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setQueryString(SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
         SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
@@ -102,10 +103,10 @@ public class SingleSignOutFilterTests {
 
     @Test
     public void frontChannelRequestRelayState() throws IOException, ServletException {
-        final String logoutMessage = LogoutMessageGenerator.generateCompressedLogoutMessage(TICKET);
-        request.setParameter(SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME, logoutMessage);
+        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        request.setParameter(SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setParameter(SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME, RELAY_STATE);
-        request.setQueryString(SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" +
+        request.setQueryString(SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" +
                 SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME + "=" + RELAY_STATE);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
