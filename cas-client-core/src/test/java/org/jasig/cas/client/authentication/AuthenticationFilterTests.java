@@ -19,13 +19,17 @@
 package org.jasig.cas.client.authentication;
 
 import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.net.URLEncoder;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.AssertionImpl;
 import org.junit.After;
@@ -37,7 +41,6 @@ import org.springframework.mock.web.*;
  * Tests for the AuthenticationFilter.
  *
  * @author Scott Battaglia
- * @version $Revision: 11753 $ $Date: 2007-01-03 13:37:26 -0500 (Wed, 03 Jan 2007) $
  * @since 3.0
  */
 public final class AuthenticationFilterTests {
@@ -50,11 +53,10 @@ public final class AuthenticationFilterTests {
 
     @Before
     public void setUp() throws Exception {
-        // TODO CAS_SERVICE_URL, false, CAS_LOGIN_URL
         this.filter = new AuthenticationFilter();
         final MockFilterConfig config = new MockFilterConfig();
         config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
-        config.addInitParameter("service", "https://localhost:8443/service");
+        config.addInitParameter("service", CAS_SERVICE_URL);
         this.filter.init(config);
     }
 
@@ -184,7 +186,7 @@ public final class AuthenticationFilterTests {
         final AuthenticationFilter f = new AuthenticationFilter();
         final MockFilterConfig config = new MockFilterConfig();
         config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
-        config.addInitParameter("service", "https://localhost:8443/service");
+        config.addInitParameter("service", CAS_SERVICE_URL);
         config.addInitParameter("renew", "true");
         try {
             f.init(config);
@@ -198,8 +200,8 @@ public final class AuthenticationFilterTests {
     public void testAllowsRenewContextParam() throws Exception {
         final AuthenticationFilter f = new AuthenticationFilter();
         final MockServletContext context = new MockServletContext();
-        context.addInitParameter("casServerLoginUrl", "https://cas.example.com/login");
-        context.addInitParameter("service", "https://localhost:8443/service");
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        context.addInitParameter("service", CAS_SERVICE_URL);
         context.addInitParameter("renew", "true");
         f.init(new MockFilterConfig(context));
         final Field renewField = AuthenticationFilter.class.getDeclaredField("renew");
@@ -211,10 +213,159 @@ public final class AuthenticationFilterTests {
     public void customRedirectStrategy() throws Exception {
         final AuthenticationFilter f = new AuthenticationFilter();
         final MockServletContext context = new MockServletContext();
-        context.addInitParameter("casServerLoginUrl", "https://cas.example.com/login");
-        context.addInitParameter("service", "https://localhost:8443/service");
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        context.addInitParameter("service", CAS_SERVICE_URL);
         context.addInitParameter("authenticationRedirectStrategyClass",
                 "org.jasig.cas.client.authentication.FacesCompatibleAuthenticationRedirectStrategy");
         f.init(new MockFilterConfig(context));
+    }
+    
+    @Test
+    public void testIgnorePatterns() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        
+        context.addInitParameter("ignorePattern", "=valueTo(\\w+)");
+        context.addInitParameter("service", CAS_SERVICE_URL);
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        request.setRequestURI(URL);
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        f.doFilter(request, response, filterChain);
+        assertNull(response.getRedirectedUrl());
+    }
+    
+    @Test
+    public void testIgnorePatternsWithContainsMatching() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        
+        context.addInitParameter("ignorePattern", "=valueToIgnore");
+        context.addInitParameter("ignoreUrlPatternType", "CONTAINS");
+        context.addInitParameter("service", CAS_SERVICE_URL);
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        request.setRequestURI(URL);
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        f.doFilter(request, response, filterChain);
+        assertNull(response.getRedirectedUrl());
+    }
+    
+    @Test
+    public void testIgnorePatternsWithExactMatching() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        
+        final URL url = new URL(CAS_SERVICE_URL + "?param=valueToIgnore");
+        
+        context.addInitParameter("ignorePattern", url.toExternalForm());
+        context.addInitParameter("ignoreUrlPatternType", "EXACT");
+        context.addInitParameter("service", CAS_SERVICE_URL);
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setScheme(url.getProtocol());
+        request.setServerName(url.getHost());
+        request.setServerPort(url.getPort());
+        request.setQueryString(url.getQuery());
+        request.setRequestURI(url.getPath());
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        f.doFilter(request, response, filterChain);
+        assertNull(response.getRedirectedUrl());
+    }
+    
+    @Test
+    public void testIgnorePatternsWithExactClassname() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        
+        context.addInitParameter("ignorePattern", "=valueToIgnore");
+        context.addInitParameter("ignoreUrlPatternType", ContainsPatternUrlPatternMatcherStrategy.class.getName());
+        context.addInitParameter("service", CAS_SERVICE_URL);
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        request.setRequestURI(URL);
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        f.doFilter(request, response, filterChain);
+        assertNull(response.getRedirectedUrl());
+    }
+    
+    @Test
+    public void testIgnorePatternsWithInvalidClassname() throws Exception {
+        final AuthenticationFilter f = new AuthenticationFilter();
+        final MockServletContext context = new MockServletContext();
+        context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
+        
+        context.addInitParameter("ignorePattern", "=valueToIgnore");
+        context.addInitParameter("ignoreUrlPatternType", "unknown.class.name");
+        context.addInitParameter("service", CAS_SERVICE_URL);
+        f.init(new MockFilterConfig(context));
+        
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        request.setRequestURI(URL);
+        
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        final FilterChain filterChain = new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        };
+
+        f.doFilter(request, response, filterChain);
+        System.out.println(response.getRedirectedUrl());
     }
 }

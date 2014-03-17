@@ -34,11 +34,11 @@ import javax.servlet.http.HttpServletResponse;
  * <p>Please note that one of the two above parameters must be set.</p>
  *
  * @author Scott Battaglia
- * @version $Revision$ $Date$
+ * @author Misagh Moayyed
  * @since 3.1
  */
 public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
-
+    
     /** Represents the constant for where the assertion will be located in memory. */
     public static final String CONST_CAS_ASSERTION = "_const_cas_assertion_";
 
@@ -47,7 +47,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     /** Defines the parameter to look for for the service. */
     private String serviceParameterName = "service";
-
+    
     /** Sets where response.encodeUrl should be called on service urls when constructed. */
     private boolean encodeServiceUrl = true;
 
@@ -71,11 +71,12 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
             logger.trace("Loading serviceParameterName property: {} ", this.serviceParameterName);
             setEncodeServiceUrl(parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
             logger.trace("Loading encodeServiceUrl property: {}", this.encodeServiceUrl);
-
+            
             initInternal(filterConfig);
         }
         init();
     }
+
 
     /** Controls the ordering of filter initialization and checking by defining a method that runs before the init.
      * @param filterConfig the original filter configuration.
@@ -147,7 +148,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     public final String getServiceParameterName() {
         return this.serviceParameterName;
     }
-
+    
     /**
      * Template method to allow you to change how you retrieve the ticket.
      *
