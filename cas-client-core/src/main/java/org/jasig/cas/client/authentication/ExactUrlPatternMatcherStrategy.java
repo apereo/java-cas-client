@@ -7,7 +7,7 @@ package org.jasig.cas.client.authentication;
  * @author Misagh Moayyed
  * @since 3.3.1
  */
-public class ExactUrlPatternMatcherStrategy implements UrlPatternMatcherStrategy {
+public final class ExactUrlPatternMatcherStrategy implements UrlPatternMatcherStrategy {
 
     private String pattern;
     

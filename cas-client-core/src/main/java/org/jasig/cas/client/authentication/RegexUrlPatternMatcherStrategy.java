@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * @author Misagh Moayyed
  * @since 3.3.1
  */
-public class RegexUrlPatternMatcherStrategy implements UrlPatternMatcherStrategy {
+public final class RegexUrlPatternMatcherStrategy implements UrlPatternMatcherStrategy {
 
     private Pattern pattern;
     
