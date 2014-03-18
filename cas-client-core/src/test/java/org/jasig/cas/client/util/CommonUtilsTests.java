@@ -136,6 +136,27 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
+    private void constructUrlNonStandardPortAndNoPortInConfigTest(final String serverNameList) {
+        final String CONST_MY_URL = "https://www.myserver.com:555/hello/hithere/";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.addHeader("Host", "www.myserver.com");
+        request.setScheme("https");
+        request.setSecure(true);
+        request.setServerPort(555);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+                serverNameList, "ticket", false);
+        assertEquals(CONST_MY_URL, constructedUrl);
+    }
+
+    public void testConstructUrlNonStandardPortAndNoScheme() {
+        constructUrlNonStandardPortAndNoPortInConfigTest("www.myserver.com");
+    }
+
+    public void testConstructUrlNonStandardPortAndScheme() {
+        constructUrlNonStandardPortAndNoPortInConfigTest("https://www.myserver.com");
+    }
+
     public void testConstructUrlWithMultipleHostsNoPortsOrProtocol() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
