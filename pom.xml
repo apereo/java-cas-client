@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.jasig.parent</groupId>
         <artifactId>jasig-parent</artifactId>
-        <version>38</version>
+        <version>39</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas.client</groupId>
@@ -12,7 +12,7 @@
 
     <name>Jasig CAS Client for Java</name>
     <description>
-        Jasig CAS Client for Java is the integration point forapplications that want to speak with a CAS
+        Jasig CAS Client for Java is the integration point for applications that want to speak with a CAS
         server, either via the CAS 1.0 or CAS 2.0 protocol.
     </description>
     <url>http://www.jasig.org/cas</url>
@@ -102,15 +102,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.2.1</version>
-                <configuration>
-                    <mavenExecutorId>forked-path</mavenExecutorId>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
