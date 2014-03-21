@@ -28,7 +28,6 @@ import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.jasig.cas.client.session.SessionMappingStorage;
 import org.jasig.cas.client.session.SingleSignOutHandler;
-import org.jasig.cas.client.util.CommonUtils;
 
 /**
  * Handles logout request messages sent from the CAS server by ending the current
@@ -46,57 +45,41 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
     private final SingleSignOutHandler handler = new SingleSignOutHandler();
 
     public void setArtifactParameterName(final String name) {
-        handler.setArtifactParameterName(name);
+        this.handler.setArtifactParameterName(name);
     }
 
     public void setLogoutParameterName(final String name) {
-        handler.setLogoutParameterName(name);
+        this.handler.setLogoutParameterName(name);
     }
 
     public void setFrontLogoutParameterName(final String name) {
-        handler.setFrontLogoutParameterName(name);
+        this.handler.setFrontLogoutParameterName(name);
     }
 
     public void setRelayStateParameterName(final String name) {
-        handler.setRelayStateParameterName(name);
+        this.handler.setRelayStateParameterName(name);
     }
 
     public void setCasServerUrlPrefix(final String casServerUrlPrefix) {
-        handler.setCasServerUrlPrefix(casServerUrlPrefix);
+        this.handler.setCasServerUrlPrefix(casServerUrlPrefix);
     }
 
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
-        handler.setSessionMappingStorage(storage);
+        this.handler.setSessionMappingStorage(storage);
     }
 
     /** {@inheritDoc} */
     public void start() throws LifecycleException {
         super.start();
-        handler.init();
+        this.handler.init();
         logger.info("Startup completed.");
     }
 
     /** {@inheritDoc} */
     public void invoke(final Request request, final Response response) throws IOException, ServletException {
-        if (this.handler.isTokenRequest(request)) {
-            this.handler.recordSession(request);
-            request.getSessionInternal(true).addSessionListener(this);
-        } else if (this.handler.isBackChannelLogoutRequest(request)) {
-            this.handler.destroySession(request);
-            // Do not proceed up valve chain
-            return;
-        } else if (this.handler.isFrontChannelLogoutRequest(request)) {
-            this.handler.destroySession(request);
-            // redirection url to the CAS server
-            final String redirectionUrl = handler.computeRedirectionToServer(request);
-            if (redirectionUrl != null) {
-                CommonUtils.sendRedirect(response, redirectionUrl);
-            }
-            return;
-        } else {
-            logger.debug("Ignoring URI {}", request.getRequestURI());
+        if (this.handler.process(request, response)) {
+            getNext().invoke(request, response);
         }
-        getNext().invoke(request, response);
     }
 
     /** {@inheritDoc} */
@@ -111,5 +94,4 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
     protected String getName() {
         return NAME;
     }
-
 }

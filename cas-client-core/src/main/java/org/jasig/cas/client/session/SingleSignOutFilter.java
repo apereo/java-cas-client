@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.util.AbstractConfigurationFilter;
-import org.jasig.cas.client.util.CommonUtils;
 
 /**
  * Implements the Single Sign Out protocol.  It handles registering the session and destroying the session.
@@ -85,25 +84,9 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (handler.isTokenRequest(request)) {
-            handler.recordSession(request);
-        } else if (handler.isBackChannelLogoutRequest(request)) {
-            handler.destroySession(request);
-            // Do not continue up filter chain
-            return;
-        } else if (handler.isFrontChannelLogoutRequest(request)) {
-            handler.destroySession(request);
-            // redirection url to the CAS server
-            final String redirectionUrl = handler.computeRedirectionToServer(request);
-            if (redirectionUrl != null) {
-                CommonUtils.sendRedirect(response, redirectionUrl);
-            }
-            return;
-        } else {
-            logger.trace("Ignoring URI {}", request.getRequestURI());
+        if (handler.process(request, response)) {
+            filterChain.doFilter(servletRequest, servletResponse);
         }
-
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     public void destroy() {
