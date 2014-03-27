@@ -18,10 +18,8 @@
  */
 package org.jasig.cas.client.session;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 import javax.servlet.ServletException;
@@ -50,7 +48,9 @@ public final class SingleSignOutHandler {
     public final static String DEFAULT_LOGOUT_PARAMETER_NAME = "logoutRequest";
     public final static String DEFAULT_FRONT_LOGOUT_PARAMETER_NAME = "SAMLRequest";
     public final static String DEFAULT_RELAY_STATE_PARAMETER_NAME = "RelayState";
-    
+
+    private final static int DECOMPRESSION_FACTOR = 10;
+
     /** Logger instance */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -154,7 +154,7 @@ public final class SingleSignOutHandler {
      *
      * @return True if request contains authentication token, false otherwise.
      */
-    protected boolean isTokenRequest(final HttpServletRequest request) {
+    private boolean isTokenRequest(final HttpServletRequest request) {
         return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.artifactParameterName,
                 this.safeParameters));
     }
@@ -166,7 +166,7 @@ public final class SingleSignOutHandler {
      *
      * @return True if request is logout request, false otherwise.
      */
-    protected boolean isBackChannelLogoutRequest(final HttpServletRequest request) {
+    private boolean isBackChannelLogoutRequest(final HttpServletRequest request) {
         return "POST".equals(request.getMethod())
                 && !isMultipartRequest(request)
                 && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
@@ -180,7 +180,7 @@ public final class SingleSignOutHandler {
      *
      * @return True if request is logout request, false otherwise.
      */
-    protected boolean isFrontChannelLogoutRequest(final HttpServletRequest request) {
+    private boolean isFrontChannelLogoutRequest(final HttpServletRequest request) {
         return "GET".equals(request.getMethod())
                 && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.frontLogoutParameterName));
     }
@@ -194,12 +194,17 @@ public final class SingleSignOutHandler {
      */
     public boolean process(final HttpServletRequest request, final HttpServletResponse response) {
         if (isTokenRequest(request)) {
+            logger.trace("Received a token request");
             recordSession(request);
+            return true;
+
         } else if (isBackChannelLogoutRequest(request)) {
+            logger.trace("Received a back channel logout request");
             destroySession(request);
-            // Do not continue up filter chain
             return false;
+
         } else if (isFrontChannelLogoutRequest(request)) {
+            logger.trace("Received a front channel logout request");
             destroySession(request);
             // redirection url to the CAS server
             final String redirectionUrl = computeRedirectionToServer(request);
@@ -207,10 +212,11 @@ public final class SingleSignOutHandler {
                 CommonUtils.sendRedirect(response, redirectionUrl);
             }
             return false;
+
         } else {
             logger.trace("Ignoring URI {}", request.getRequestURI());
+            return true;
         }
-        return true;
     }
 
     /**
@@ -219,7 +225,7 @@ public final class SingleSignOutHandler {
      * 
      * @param request HTTP request containing an authentication token.
      */
-    protected void recordSession(final HttpServletRequest request) {
+    private void recordSession(final HttpServletRequest request) {
         final HttpSession session = request.getSession(this.eagerlyCreateSessions);
 
         if (session == null) {
@@ -244,8 +250,7 @@ public final class SingleSignOutHandler {
      * @param originalMessage the original logout message.
      * @return the uncompressed logout message.
      */
-    protected String uncompressLogoutMessage(final String originalMessage) {
-        // base64 decode
+    private String uncompressLogoutMessage(final String originalMessage) {
         final byte[] binaryMessage = Base64.decodeBase64(originalMessage);
 
         Inflater decompresser = null;
@@ -253,39 +258,13 @@ public final class SingleSignOutHandler {
             // decompress the bytes
             decompresser = new Inflater();
             decompresser.setInput(binaryMessage);
+            final byte[] result = new byte[binaryMessage.length * DECOMPRESSION_FACTOR];
 
-            /* The received logout message is compressed, so this number (10) is the multiplier of the original size
-             * of the logout message (binaryMessage.length) to compute the size of the buffer where the logout message
-             * will be decompressed.
-             * It's somehow the decompression factor.
-             *
-             * For the buffer, we could also have a fixed size for the buffer (like 10k), but I thought that ten times
-             * would be a sufficient multiplier...
-             *
-             * A real test:
-             *  String sessionIndex = "ST-45-fs45646r84ffs1d31f554f5d4f64fg6r8eq5s4d6f4fddsf46-cas";
-             *  String bm = LogoutMessageGenerator.generateBackChannelLogoutMessage(sessionIndex);
-             *  System.out.println("bm.size = " + bm.length());
-             *  String fm = new String(Base64.decodeBase64(LogoutMessageGenerator.
-             *                                                 generateFrontChannelLogoutMessage(sessionIndex)));
-             *  System.out.println("fm.size = " + fm.length());
-             *
-             * And the result:
-             *  bm.size = 354
-             *  fm.size = 224
-             *
-             * So ten times is enough, it's even too much...
-             */
-            byte[] result = new byte[binaryMessage.length * 10];
-
-            int resultLength = decompresser.inflate(result);
+            final int resultLength = decompresser.inflate(result);
 
             // decode the bytes into a String
             return new String(result, 0, resultLength, "UTF-8");
-        } catch (DataFormatException e) {
-            logger.error("Unable to decompress logout message", e);
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             logger.error("Unable to decompress logout message", e);
             throw new RuntimeException(e);
         } finally {
@@ -300,8 +279,8 @@ public final class SingleSignOutHandler {
      *
      * @param request HTTP request containing a CAS logout message.
      */
-    protected void destroySession(final HttpServletRequest request) {
-        String logoutMessage;
+    private void destroySession(final HttpServletRequest request) {
+        final String logoutMessage;
         // front channel logout -> the message needs to be base64 decoded + decompressed
         if ("GET".equals(request.getMethod())) {
             logoutMessage = uncompressLogoutMessage(CommonUtils.safeGetParameter(request,
@@ -341,12 +320,11 @@ public final class SingleSignOutHandler {
      * @param request The HTTP request.
      * @return the redirection url to the CAS server.
      */
-    protected String computeRedirectionToServer(final HttpServletRequest request) {
-        // relay state value
+    private String computeRedirectionToServer(final HttpServletRequest request) {
         final String relayStateValue = CommonUtils.safeGetParameter(request, this.relayStateParameterName);
         // if we have a state value -> redirect to the CAS server to continue the logout process
         if (StringUtils.isNotBlank(relayStateValue)) {
-            final StringBuffer buffer = new StringBuffer();
+            final StringBuilder buffer = new StringBuilder();
             buffer.append(casServerUrlPrefix);
             if (!this.casServerUrlPrefix.endsWith("/")) {
                 buffer.append("/");

@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 
 /**
@@ -38,144 +39,144 @@ public final class SingleSignOutHandlerTests {
     private final static String ANOTHER_PARAMETER = "anotherParameter";
     private final static String TICKET = "ST-xxxxxxxx";
     private final static String URL = "http://mycasserver";
+    private final static String LOGOUT_PARAMETER_NAME = "logoutRequest2";
+    private final static String FRONT_LOGOUT_PARAMETER_NAME = "SAMLRequest2";
+    private final static String RELAY_STATE_PARAMETER_NAME = "RelayState2";
+    private final static String ARTIFACT_PARAMETER_NAME = "ticket2";
 
     private SingleSignOutHandler handler;
     private MockHttpServletRequest request;
-    private final static String logoutParameterName = "logoutRequest2";
-    private final static String frontLogoutParameterName = "SAMLRequest2";
-    private final static String relayStateParameterName = "RelayState2";
-    private final static String artifactParameterName = "ticket2";
+    private MockHttpServletResponse response;
 
     @Before
     public void setUp() throws Exception {
         handler = new SingleSignOutHandler();
-        handler.setLogoutParameterName(logoutParameterName);
-        handler.setFrontLogoutParameterName(frontLogoutParameterName);
-        handler.setRelayStateParameterName(relayStateParameterName);
-        handler.setArtifactParameterName(artifactParameterName);
+        handler.setLogoutParameterName(LOGOUT_PARAMETER_NAME);
+        handler.setFrontLogoutParameterName(FRONT_LOGOUT_PARAMETER_NAME);
+        handler.setRelayStateParameterName(RELAY_STATE_PARAMETER_NAME);
+        handler.setArtifactParameterName(ARTIFACT_PARAMETER_NAME);
         handler.setCasServerUrlPrefix(URL);
         handler.init();
         request = new MockHttpServletRequest();
+        response = new MockHttpServletResponse();
     }
 
     @Test
-    public void isBackChannelLogoutRequest() throws Exception {
-        request.setParameter(logoutParameterName, TICKET);
-        request.setMethod("POST");
-
-        assertTrue(handler.isBackChannelLogoutRequest(request));
-    }
-
-    /**
-     * Tests that a multipart request is not considered logoutRequest. Verifies issue CASC-147.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void isBackChannelLogoutRequestMultipart() throws Exception {
-        request.setParameter(logoutParameterName, TICKET);
-        request.setMethod("POST");
-        request.setContentType("multipart/form-data");
-
-        assertFalse(handler.isBackChannelLogoutRequest(request));
-    }
-
-    @Test
-    public void isFrontChannelLogoutRequest() {
-        request.setParameter(frontLogoutParameterName, TICKET);
-        request.setMethod("GET");
-        request.setQueryString(frontLogoutParameterName + "=" + TICKET);
-        
-        assertTrue(handler.isFrontChannelLogoutRequest(request));
-    }
-
-    @Test
-    public void isFrontChannelLogoutRequestKO() {
-        request.setParameter(ANOTHER_PARAMETER, TICKET);
-        request.setMethod("GET");
-        request.setQueryString(ANOTHER_PARAMETER + "=" + TICKET);
-        
-        assertFalse(handler.isFrontChannelLogoutRequest(request));
-    }
-    
-    @Test
-    public void recordSessionKOIfNoSession() {
+    public void tokenRequestKOIfNoSession() {
         handler.setEagerlyCreateSessions(false);
         request.setSession(null);
-        request.setParameter(artifactParameterName, TICKET);
-        request.setQueryString(artifactParameterName + "=" + TICKET);
-        handler.recordSession(request);
+        request.setParameter(ARTIFACT_PARAMETER_NAME, TICKET);
+        request.setQueryString(ARTIFACT_PARAMETER_NAME + "=" + TICKET);
+        assertTrue(handler.process(request, response));
         final SessionMappingStorage storage = handler.getSessionMappingStorage();
         assertNull(storage.removeSessionByMappingId(TICKET));
     }
 
     @Test
-    public void recordSessionOK() {
+    public void tokenRequestKOBadParameter() {
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
-        request.setParameter(artifactParameterName, TICKET);
-        request.setQueryString(artifactParameterName + "=" + TICKET);
-        handler.recordSession(request);
+        request.setParameter(ANOTHER_PARAMETER, TICKET);
+        request.setQueryString(ANOTHER_PARAMETER + "=" + TICKET);
+        assertTrue(handler.process(request, response));
+        final SessionMappingStorage storage = handler.getSessionMappingStorage();
+        assertNull(storage.removeSessionByMappingId(TICKET));
+    }
+
+    @Test
+    public void tokenRequestOK() {
+        final MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+        request.setParameter(ARTIFACT_PARAMETER_NAME, TICKET);
+        request.setQueryString(ARTIFACT_PARAMETER_NAME + "=" + TICKET);
+        assertTrue(handler.process(request, response));
         final SessionMappingStorage storage = handler.getSessionMappingStorage();
         assertEquals(session, storage.removeSessionByMappingId(TICKET));
     }
-    
-    @Test
-    public void destorySessionPOSTKONoSessionIndex() {
-        final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage("");
-        request.setParameter(logoutParameterName, logoutMessage);
-        request.setMethod("POST");
-        final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        handler.destroySession(request);
-        assertFalse(session.isInvalid());
-    }
 
     @Test
-    public void destorySessionPOST() {
+    public void backChannelLogoutKOMultipart() {
         final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
-        request.setParameter(logoutParameterName, logoutMessage);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
+        request.setContentType("multipart/form-data");
         final MockHttpSession session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        handler.destroySession(request);
-        assertTrue(session.isInvalid());
-    }
-
-    @Test
-    public void destorySessionGETNoSessionIndex() {
-        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage("");
-        request.setParameter(frontLogoutParameterName, logoutMessage);
-        request.setQueryString(frontLogoutParameterName + "=" + logoutMessage);
-        request.setMethod("GET");
-        final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        handler.destroySession(request);
+        assertTrue(handler.process(request, response));
         assertFalse(session.isInvalid());
     }
 
     @Test
-    public void destorySessionGET() {
-        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
-        request.setParameter(frontLogoutParameterName, logoutMessage);
-        request.setQueryString(frontLogoutParameterName + "=" + logoutMessage);
-        request.setMethod("GET");
+    public void backChannelLogoutKONoSessionIndex() {
+        final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage("");
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setMethod("POST");
         final MockHttpSession session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        handler.destroySession(request);
+        assertFalse(handler.process(request, response));
+        assertFalse(session.isInvalid());
+    }
+
+    @Test
+    public void backChannelLogoutOK() {
+        final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setMethod("POST");
+        final MockHttpSession session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+        assertFalse(handler.process(request, response));
         assertTrue(session.isInvalid());
     }
 
     @Test
-    public void computeRedirectionNoRelayState() {
-        assertNull(handler.computeRedirectionToServer(request));
+    public void frontChannelLogoutKOBadParameter() {
+        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        request.setParameter(ANOTHER_PARAMETER, logoutMessage);
+        request.setMethod("GET");
+        request.setQueryString(ANOTHER_PARAMETER + "=" + logoutMessage);
+        final MockHttpSession session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+        assertTrue(handler.process(request, response));
+        assertFalse(session.isInvalid());
     }
 
     @Test
-    public void computeRedirection() {
-        request.setParameter(relayStateParameterName, TICKET);
-        request.setQueryString(relayStateParameterName + "=" + TICKET);
-        assertEquals(URL + "/logout?_eventId=next&" + relayStateParameterName + "=" + TICKET,
-                handler.computeRedirectionToServer(request));
+    public void frontChannelLogoutKONoSessionIndex() {
+        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage("");
+        request.setParameter(FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
+        request.setMethod("GET");
+        final MockHttpSession session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+        assertFalse(handler.process(request, response));
+        assertFalse(session.isInvalid());
+    }
+
+    @Test
+    public void frontChannelLogoutOK() {
+        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        request.setParameter(FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
+        request.setMethod("GET");
+        final MockHttpSession session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+        assertFalse(handler.process(request, response));
+        assertTrue(session.isInvalid());
+        assertNull(response.getRedirectedUrl());
+    }
+
+    @Test
+    public void frontChannelLogoutRelayStateOK() {
+        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        request.setParameter(FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setParameter(RELAY_STATE_PARAMETER_NAME, TICKET);
+        request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" + RELAY_STATE_PARAMETER_NAME + "=" + TICKET);
+        request.setMethod("GET");
+        final MockHttpSession session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+        assertFalse(handler.process(request, response));
+        assertTrue(session.isInvalid());
+        assertEquals(URL + "/logout?_eventId=next&" + RELAY_STATE_PARAMETER_NAME + "=" + TICKET,
+                response.getRedirectedUrl());
     }
 }
