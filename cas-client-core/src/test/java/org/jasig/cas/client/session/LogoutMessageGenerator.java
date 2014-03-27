@@ -11,7 +11,7 @@ import org.apache.commons.codec.binary.Base64;
  * Greatly inspired by the source code in the CAS server itself.
  * 
  * @author Jerome Leleu
- * @since 3.3.1
+ * @since 3.4.0
  */
 public final class LogoutMessageGenerator {
 
@@ -20,11 +20,11 @@ public final class LogoutMessageGenerator {
             + "IssueInstant=\"%s\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@"
             + "</saml:NameID><samlp:SessionIndex>%s</samlp:SessionIndex></samlp:LogoutRequest>";
 
-    public static String generateBackChannelLogoutMessage(String sessionIndex) {
+    public static String generateBackChannelLogoutMessage(final String sessionIndex) {
         return String.format(LOGOUT_REQUEST_TEMPLATE, new Date(), sessionIndex);
     }
 
-    public static String generateFrontChannelLogoutMessage(String sessionIndex) {
+    public static String generateFrontChannelLogoutMessage(final String sessionIndex) {
         final String logoutMessage = generateBackChannelLogoutMessage(sessionIndex);
         final Deflater deflater = new Deflater();
         deflater.setInput(logoutMessage.getBytes(Charset.forName("ASCII")));
