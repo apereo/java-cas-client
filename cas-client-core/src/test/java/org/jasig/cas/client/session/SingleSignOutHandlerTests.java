@@ -62,7 +62,7 @@ public final class SingleSignOutHandlerTests {
     }
 
     @Test
-    public void tokenRequestKOIfNoSession() {
+    public void tokenRequestFailsIfNoSession() {
         handler.setEagerlyCreateSessions(false);
         request.setSession(null);
         request.setParameter(ARTIFACT_PARAMETER_NAME, TICKET);
@@ -73,7 +73,7 @@ public final class SingleSignOutHandlerTests {
     }
 
     @Test
-    public void tokenRequestKOBadParameter() {
+    public void tokenRequestFailsIfBadParameter() {
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
         request.setParameter(ANOTHER_PARAMETER, TICKET);
@@ -95,7 +95,7 @@ public final class SingleSignOutHandlerTests {
     }
 
     @Test
-    public void backChannelLogoutKOMultipart() {
+    public void backChannelLogoutFailsIfMultipart() {
         final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
@@ -107,7 +107,7 @@ public final class SingleSignOutHandlerTests {
     }
 
     @Test
-    public void backChannelLogoutKONoSessionIndex() {
+    public void backChannelLogoutFailsIfNoSessionIndex() {
         final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage("");
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
@@ -129,7 +129,7 @@ public final class SingleSignOutHandlerTests {
     }
 
     @Test
-    public void frontChannelLogoutKOBadParameter() {
+    public void frontChannelLogoutFailsIfBadParameter() {
         final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
         request.setParameter(ANOTHER_PARAMETER, logoutMessage);
         request.setMethod("GET");
@@ -141,7 +141,7 @@ public final class SingleSignOutHandlerTests {
     }
 
     @Test
-    public void frontChannelLogoutKONoSessionIndex() {
+    public void frontChannelLogoutFailsIfNoSessionIndex() {
         final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage("");
         request.setParameter(FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
