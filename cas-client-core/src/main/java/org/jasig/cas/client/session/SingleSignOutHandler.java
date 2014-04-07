@@ -214,7 +214,7 @@ public final class SingleSignOutHandler {
             return false;
 
         } else {
-            logger.trace("Ignoring URI {}", request.getRequestURI());
+            logger.trace("Ignoring URI for logout: {}", request.getRequestURI());
             return true;
         }
     }
@@ -264,7 +264,7 @@ public final class SingleSignOutHandler {
 
             // decode the bytes into a String
             return new String(result, 0, resultLength, "UTF-8");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Unable to decompress logout message", e);
             throw new RuntimeException(e);
         } finally {
@@ -282,7 +282,7 @@ public final class SingleSignOutHandler {
     private void destroySession(final HttpServletRequest request) {
         final String logoutMessage;
         // front channel logout -> the message needs to be base64 decoded + decompressed
-        if ("GET".equals(request.getMethod())) {
+        if (isFrontChannelLogoutRequest(request)) {
             logoutMessage = uncompressLogoutMessage(CommonUtils.safeGetParameter(request,
                     this.frontLogoutParameterName));
         } else {
