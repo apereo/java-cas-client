@@ -160,10 +160,19 @@ public final class CommonUtils {
      */
     public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName,
             final String serviceUrl, final boolean renew, final boolean gateway) {
+        return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="
+                + urlEncode(serviceUrl) + (renew ? "&renew=true" : "") + (gateway ? "&gateway=true" : "");
+    }
+
+    /**
+     * Url encode a value using UTF-8 encoding.
+     * 
+     * @param value the value to encode.
+     * @return the encoded value.
+     */
+    public static String urlEncode(String value) {
         try {
-            return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="
-                    + URLEncoder.encode(serviceUrl, "UTF-8") + (renew ? "&renew=true" : "")
-                    + (gateway ? "&gateway=true" : "");
+            return URLEncoder.encode(value, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
