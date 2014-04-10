@@ -50,7 +50,10 @@ public class Cas10TicketValidationFilterTests {
         final MockServletContext context = new MockServletContext();
         context.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         context.addInitParameter("renew", "true");
-        final TicketValidator validator = f.getTicketValidator(new MockFilterConfig(context));
+        context.addInitParameter("service", "http://www.jasig.org");
+        final MockFilterConfig config = new MockFilterConfig(context);
+        f.init(config);
+        final TicketValidator validator = f.getTicketValidator(config);
         assertTrue(validator instanceof Cas10TicketValidator);
         assertTrue(((Cas10TicketValidator) validator).isRenew());
     }
