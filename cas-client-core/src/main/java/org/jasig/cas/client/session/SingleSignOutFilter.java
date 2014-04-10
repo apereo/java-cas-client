@@ -42,6 +42,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     private AtomicBoolean handlerInitialized = new AtomicBoolean(false);
 
     public void init(final FilterConfig filterConfig) throws ServletException {
+        super.init(filterConfig);
         if (!isIgnoreInitConfiguration()) {
             setArtifactParameterName(getString(ConfigurationKeys.ARTIFACT_PARAMETER_NAME));
             setLogoutParameterName(getString(ConfigurationKeys.LOGOUT_PARAMETER_NAME));
