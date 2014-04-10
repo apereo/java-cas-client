@@ -39,12 +39,13 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     private static final SingleSignOutHandler handler = new SingleSignOutHandler();
 
     public void init(final FilterConfig filterConfig) throws ServletException {
+        super.init(filterConfig);
         if (!isIgnoreInitConfiguration()) {
-            handler.setArtifactParameterName(getString(ConfigurationKey.ARTIFACT_PARAMETER_NAME, SingleSignOutHandler.DEFAULT_ARTIFACT_PARAMETER_NAME));
-            handler.setLogoutParameterName(getString(ConfigurationKey.LOGOUT_PARAMETER_NAME, SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME));
-            handler.setFrontLogoutParameterName(getString(ConfigurationKey.FRONT_LOGOUT_PARAMETER_NAME, SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME));
-            handler.setRelayStateParameterName(getString(ConfigurationKey.RELAY_STATE_PARAMETER_NAME, SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME));
-            handler.setCasServerUrlPrefix(getString(ConfigurationKey.CAS_SERVER_LOGIN_URL, null));
+            setArtifactParameterName(getString(ConfigurationKey.ARTIFACT_PARAMETER_NAME, SingleSignOutHandler.DEFAULT_ARTIFACT_PARAMETER_NAME));
+            setLogoutParameterName(getString(ConfigurationKey.LOGOUT_PARAMETER_NAME, SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME));
+            setFrontLogoutParameterName(getString(ConfigurationKey.FRONT_LOGOUT_PARAMETER_NAME, SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME));
+            setRelayStateParameterName(getString(ConfigurationKey.RELAY_STATE_PARAMETER_NAME, SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME));
+            setCasServerUrlPrefix(getString(ConfigurationKey.CAS_SERVER_LOGIN_URL, null));
             handler.setArtifactParameterOverPost(getBoolean(ConfigurationKey.ARTIFACT_PARAMETER_OVER_POST, false));
             handler.setEagerlyCreateSessions(getBoolean(ConfigurationKey.EAGERLY_CREATE_SESSIONS, true));
         }
