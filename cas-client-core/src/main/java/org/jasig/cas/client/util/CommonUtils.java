@@ -96,11 +96,25 @@ public final class CommonUtils {
      * Assert that the statement is true, otherwise throw an exception with the
      * provided message.
      *
-     * @param cond    the codition to assert is true.
+     * @param cond    the condition to assert is true.
      * @param message the message to display if the condition is not true.
      */
     public static void assertTrue(final boolean cond, final String message) {
         if (!cond) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+
+    /**
+     * Assert that the statement is true, otherwise throw an exception with the
+     * provided message.
+     *
+     * @param cond    the condition to assert is false.
+     * @param message the message to display if the condition is not false.
+     */
+    public static void assertFalse(final boolean cond, final String message) {
+        if (cond) {
             throw new IllegalArgumentException(message);
         }
     }

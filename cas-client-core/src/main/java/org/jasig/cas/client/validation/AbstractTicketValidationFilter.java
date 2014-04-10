@@ -25,6 +25,8 @@ import javax.net.ssl.HostnameVerifier;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jasig.cas.client.configuration.ConfigurationKey;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
@@ -81,12 +83,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     /**
      * Gets the ssl config to use for HTTPS connections
      * if one is configured for this filter.
-     * @param filterConfig Servlet filter configuration.
      * @return Properties that can contains key/trust info for Client Side Certificates
      */
-    protected Properties getSSLConfig(final FilterConfig filterConfig) {
+    protected Properties getSSLConfig() {
         final Properties properties = new Properties();
-        final String fileName = getPropertyFromInitParams(filterConfig, "sslConfigFile", null);
+        final String fileName = getString(ConfigurationKey.SSL_CONFIG_FILE, null);
 
         if (fileName != null) {
             FileInputStream fis = null;
@@ -106,13 +107,12 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     /**
      * Gets the configured {@link HostnameVerifier} to use for HTTPS connections
      * if one is configured for this filter.
-     * @param filterConfig Servlet filter configuration.
      * @return Instance of specified host name verifier or null if none specified.
      */
-    protected HostnameVerifier getHostnameVerifier(final FilterConfig filterConfig) {
-        final String className = getPropertyFromInitParams(filterConfig, "hostnameVerifier", null);
+    protected HostnameVerifier getHostnameVerifier() {
+        final Class<? extends HostnameVerifier> className = getClass(ConfigurationKey.HOSTNAME_VERIFIER, null);
         logger.trace("Using hostnameVerifier parameter: {}", className);
-        final String config = getPropertyFromInitParams(filterConfig, "hostnameVerifierConfig", null);
+        final String config = getString(ConfigurationKey.HOSTNAME_VERIFIER_CONFIG, null);
         logger.trace("Using hostnameVerifierConfig parameter: {}", config);
         if (className != null) {
             if (config != null) {
@@ -125,13 +125,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     }
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
-        setExceptionOnValidationFailure(parseBoolean(getPropertyFromInitParams(filterConfig,
-                "exceptionOnValidationFailure", "false")));
+        setExceptionOnValidationFailure(getBoolean(ConfigurationKey.EXCEPTION_ON_VALIDATION_FAILURE, false));
         logger.trace("Setting exceptionOnValidationFailure parameter: {}", this.exceptionOnValidationFailure);
-        setRedirectAfterValidation(parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation",
-                "true")));
+        setRedirectAfterValidation(getBoolean(ConfigurationKey.REDIRECT_AFTER_VALIDATION, true));
         logger.trace("Setting redirectAfterValidation parameter: {}", this.redirectAfterValidation);
-        setUseSession(parseBoolean(getPropertyFromInitParams(filterConfig, "useSession", "true")));
+        setUseSession(getBoolean(ConfigurationKey.USE_SESSION, true));
         logger.trace("Setting useSession parameter: {}", this.useSession);
 
         if (!this.useSession && this.redirectAfterValidation) {

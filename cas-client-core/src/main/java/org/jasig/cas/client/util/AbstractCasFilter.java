@@ -18,6 +18,8 @@
  */
 package org.jasig.cas.client.util;
 
+import org.jasig.cas.client.configuration.ConfigurationKey;
+
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -60,16 +62,17 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     private String service;
 
     public final void init(final FilterConfig filterConfig) throws ServletException {
+        super.init(filterConfig);
         if (!isIgnoreInitConfiguration()) {
-            setServerName(getPropertyFromInitParams(filterConfig, "serverName", null));
+            setServerName(getString(ConfigurationKey.SERVER_NAME, null));
             logger.trace("Loading serverName property: {}", this.serverName);
-            setService(getPropertyFromInitParams(filterConfig, "service", null));
+            setService(getString(ConfigurationKey.SERVICE, null));
             logger.trace("Loading service property: {}", this.service);
-            setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName", "ticket"));
+            setArtifactParameterName(getString(ConfigurationKey.ARTIFACT_PARAMETER_NAME, "ticket"));
             logger.trace("Loading artifact parameter name property: {}", this.artifactParameterName);
-            setServiceParameterName(getPropertyFromInitParams(filterConfig, "serviceParameterName", "service"));
+            setServiceParameterName(getString(ConfigurationKey.SERVICE_PARAMETER_NAME, "service"));
             logger.trace("Loading serviceParameterName property: {} ", this.serviceParameterName);
-            setEncodeServiceUrl(parseBoolean(getPropertyFromInitParams(filterConfig, "encodeServiceUrl", "true")));
+            setEncodeServiceUrl(getBoolean(ConfigurationKey.ENCODE_SERVICE_URL, true));
             logger.trace("Loading encodeServiceUrl property: {}", this.encodeServiceUrl);
             
             initInternal(filterConfig);

@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.jasig.cas.client.configuration.ConfigurationKey;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
@@ -83,17 +84,17 @@ public class AuthenticationFilter extends AbstractCasFilter {
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
-            setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
+            setCasServerLoginUrl(getString(ConfigurationKey.CAS_SERVER_LOGIN_URL, null));
             logger.trace("Loaded CasServerLoginUrl parameter: {}", this.casServerLoginUrl);
-            setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+            setRenew(getBoolean(ConfigurationKey.RENEW, false));
             logger.trace("Loaded renew parameter: {}", this.renew);
-            setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
+            setGateway(getBoolean(ConfigurationKey.GATEWAY, false));
             logger.trace("Loaded gateway parameter: {}", this.gateway);
                        
-            final String ignorePattern = getPropertyFromInitParams(filterConfig, "ignorePattern", null);
+            final String ignorePattern = getString(ConfigurationKey.IGNORE_PATTERN, null);
             logger.trace("Loaded ignorePattern parameter: {}", ignorePattern);
             
-            final String ignoreUrlPatternType = getPropertyFromInitParams(filterConfig, "ignoreUrlPatternType", "REGEX");
+            final String ignoreUrlPatternType = getString(ConfigurationKey.IGNORE_URL_PATTERN_TYPE, "REGEX");
             logger.trace("Loaded ignoreUrlPatternType parameter: {}", ignoreUrlPatternType);
             
             if (ignorePattern != null) {
@@ -113,14 +114,13 @@ public class AuthenticationFilter extends AbstractCasFilter {
                 }
             }
             
-            final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
+            final Class<? extends GatewayResolver> gatewayStorageClass = getClass(ConfigurationKey.GATEWAY_STORAGE_CLASS, null);
 
             if (gatewayStorageClass != null) {
-                this.gatewayStorage = ReflectUtils.newInstance(gatewayStorageClass);
+                setGatewayStorage(ReflectUtils.newInstance(gatewayStorageClass));
             }
             
-            final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig,
-                    "authenticationRedirectStrategyClass", null);
+            final Class<? extends AuthenticationRedirectStrategy> authenticationRedirectStrategyClass = getClass(ConfigurationKey.AUTHENTICATION_REDIRECT_STRATEGY_CLASS, null);
 
             if (authenticationRedirectStrategyClass != null) {
                 this.authenticationRedirectStrategy = ReflectUtils.newInstance(authenticationRedirectStrategyClass);
