@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
@@ -79,22 +81,24 @@ public class AuthenticationFilter extends AbstractCasFilter {
         PATTERN_MATCHER_TYPES.put("REGEX", RegexUrlPatternMatcherStrategy.class);
         PATTERN_MATCHER_TYPES.put("EXACT", ExactUrlPatternMatcherStrategy.class);
     }
+
+    public AuthenticationFilter() {
+        this(Protocol.CAS2);
+    }
+
+    protected AuthenticationFilter(final Protocol protocol) {
+        super(protocol);
+    }
     
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
-            setCasServerLoginUrl(getPropertyFromInitParams(filterConfig, "casServerLoginUrl", null));
-            logger.trace("Loaded CasServerLoginUrl parameter: {}", this.casServerLoginUrl);
-            setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
-            logger.trace("Loaded renew parameter: {}", this.renew);
-            setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")));
-            logger.trace("Loaded gateway parameter: {}", this.gateway);
+            setCasServerLoginUrl(getString(ConfigurationKeys.CAS_SERVER_LOGIN_URL));
+            setRenew(getBoolean(ConfigurationKeys.RENEW));
+            setGateway(getBoolean(ConfigurationKeys.GATEWAY));
                        
-            final String ignorePattern = getPropertyFromInitParams(filterConfig, "ignorePattern", null);
-            logger.trace("Loaded ignorePattern parameter: {}", ignorePattern);
-            
-            final String ignoreUrlPatternType = getPropertyFromInitParams(filterConfig, "ignoreUrlPatternType", "REGEX");
-            logger.trace("Loaded ignoreUrlPatternType parameter: {}", ignoreUrlPatternType);
+            final String ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
+            final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
             
             if (ignorePattern != null) {
                 final Class<? extends UrlPatternMatcherStrategy> ignoreUrlMatcherClass = PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
@@ -113,14 +117,13 @@ public class AuthenticationFilter extends AbstractCasFilter {
                 }
             }
             
-            final String gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null);
+            final Class<? extends GatewayResolver> gatewayStorageClass = getClass(ConfigurationKeys.GATEWAY_STORAGE_CLASS);
 
             if (gatewayStorageClass != null) {
-                this.gatewayStorage = ReflectUtils.newInstance(gatewayStorageClass);
+                setGatewayStorage(ReflectUtils.newInstance(gatewayStorageClass));
             }
             
-            final String authenticationRedirectStrategyClass = getPropertyFromInitParams(filterConfig,
-                    "authenticationRedirectStrategyClass", null);
+            final Class<? extends AuthenticationRedirectStrategy> authenticationRedirectStrategyClass = getClass(ConfigurationKeys.AUTHENTICATION_REDIRECT_STRATEGY_CLASS);
 
             if (authenticationRedirectStrategyClass != null) {
                 this.authenticationRedirectStrategy = ReflectUtils.newInstance(authenticationRedirectStrategyClass);
@@ -175,7 +178,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         logger.debug("Constructed service url: {}", modifiedServiceUrl);
 
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
-                getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
+                getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
         this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);

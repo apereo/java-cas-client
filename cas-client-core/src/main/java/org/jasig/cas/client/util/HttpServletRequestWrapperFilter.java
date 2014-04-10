@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.validation.Assertion;
 
 /**
@@ -82,8 +83,9 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
     }
 
     public void init(final FilterConfig filterConfig) throws ServletException {
-        this.roleAttribute = getPropertyFromInitParams(filterConfig, "roleAttribute", null);
-        this.ignoreCase = Boolean.parseBoolean(getPropertyFromInitParams(filterConfig, "ignoreCase", "false"));
+        super.init(filterConfig);
+        this.roleAttribute = getString(ConfigurationKeys.ROLE_ATTRIBUTE);
+        this.ignoreCase = getBoolean(ConfigurationKeys.IGNORE_CASE);
     }
 
     final class CasHttpServletRequestWrapper extends HttpServletRequestWrapper {

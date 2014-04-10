@@ -27,6 +27,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.jaas.AssertionPrincipal;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
@@ -50,12 +52,16 @@ import org.jboss.web.tomcat.security.login.WebAuthentication;
  */
 public final class WebAuthenticationFilter extends AbstractCasFilter {
 
+    public WebAuthenticationFilter() {
+        super(Protocol.CAS2);
+    }
+
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
             final FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession();
-        final String ticket = CommonUtils.safeGetParameter(request, getArtifactParameterName());
+        final String ticket = CommonUtils.safeGetParameter(request, getProtocol().getArtifactParameterName());
 
         if (session != null && session.getAttribute(CONST_CAS_ASSERTION) == null && ticket != null) {
             try {

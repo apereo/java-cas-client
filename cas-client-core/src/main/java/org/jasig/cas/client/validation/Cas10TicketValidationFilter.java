@@ -19,29 +19,36 @@
 package org.jasig.cas.client.validation;
 
 import javax.servlet.FilterConfig;
+
+import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 
 /**
- * Implementation of AbstractTicketValidatorFilter that instanciates a Cas10TicketValidator.
+ * Implementation of AbstractTicketValidatorFilter that creates a Cas10TicketValidator.
  * <p>Deployers can provide the "casServerPrefix" and the "renew" attributes via the standard context or filter init
  * parameters.
- * 
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.1
  */
 public class Cas10TicketValidationFilter extends AbstractTicketValidationFilter {
 
-    protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
-        final String casServerUrlPrefix = getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null);
-        final Cas10TicketValidator validator = new Cas10TicketValidator(casServerUrlPrefix);
-        validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+    public Cas10TicketValidationFilter() {
+        super(Protocol.CAS1);
+    }
 
-        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig),
-                getSSLConfig(filterConfig));
+    protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
+        final String casServerUrlPrefix = getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX);
+        final Cas10TicketValidator validator = new Cas10TicketValidator(casServerUrlPrefix);
+        validator.setRenew(getBoolean(ConfigurationKeys.RENEW));
+
+        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(),
+                getSSLConfig());
         validator.setURLConnectionFactory(factory);
-        validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
+        validator.setEncoding(getString(ConfigurationKeys.ENCODING));
 
         return validator;
     }
