@@ -19,13 +19,15 @@
 package org.jasig.cas.client.validation;
 
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+
+import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 
 /**
  * Implementation of TicketValidationFilter that can instanciate a SAML 1.1 Ticket Validator.
- * <p>
+ * <p/>
  * Deployers can provide the "casServerUrlPrefix" and "tolerance" properties of the Saml11TicketValidator via the
  * context or filter init parameters.
  *
@@ -36,34 +38,21 @@ import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter {
 
     public Saml11TicketValidationFilter() {
-        setArtifactParameterName("SAMLart");
-        setServiceParameterName("TARGET");
-    }
-
-    protected final void initInternal(final FilterConfig filterConfig) throws ServletException {
-        super.initInternal(filterConfig);
-
-        logger.warn("SAML1.1 compliance requires the [artifactParameterName] and [serviceParameterName] to be set to specified values.");
-        logger.warn("This filter will overwrite any user-provided values (if any are provided)");
-
-        setArtifactParameterName("SAMLart");
-        setServiceParameterName("TARGET");
+        super(Protocol.SAML11);
     }
 
     protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
-        final Saml11TicketValidator validator = new Saml11TicketValidator(getPropertyFromInitParams(filterConfig,
-                "casServerUrlPrefix", null));
-        final String tolerance = getPropertyFromInitParams(filterConfig, "tolerance", "1000");
-        validator.setTolerance(Long.parseLong(tolerance));
-        validator.setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")));
+        final Saml11TicketValidator validator = new Saml11TicketValidator(getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX));
+        final long tolerance = getLong(ConfigurationKeys.TOLERANCE);
+        validator.setTolerance(tolerance);
+        validator.setRenew(getBoolean(ConfigurationKeys.RENEW));
 
-        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(filterConfig),
-                getSSLConfig(filterConfig));
+        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(),
+                getSSLConfig());
         validator.setURLConnectionFactory(factory);
 
-        validator.setEncoding(getPropertyFromInitParams(filterConfig, "encoding", null));
-        validator.setDisableXmlSchemaValidation(parseBoolean(getPropertyFromInitParams(filterConfig,
-                "disableXmlSchemaValidation", "false")));
+        validator.setEncoding(getString(ConfigurationKeys.ENCODING));
+        validator.setDisableXmlSchemaValidation(getBoolean(ConfigurationKeys.DISABLE_XML_SCHEMA_VALIDATION));
         return validator;
     }
 }

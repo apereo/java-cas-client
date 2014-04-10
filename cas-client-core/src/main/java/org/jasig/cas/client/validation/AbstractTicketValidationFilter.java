@@ -25,6 +25,9 @@ import javax.net.ssl.HostnameVerifier;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
@@ -68,6 +71,10 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      */
     private boolean useSession = true;
 
+    protected AbstractTicketValidationFilter(final Protocol protocol) {
+        super(protocol);
+    }
+
     /**
      * Template method to return the appropriate validator.
      *
@@ -81,12 +88,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     /**
      * Gets the ssl config to use for HTTPS connections
      * if one is configured for this filter.
-     * @param filterConfig Servlet filter configuration.
      * @return Properties that can contains key/trust info for Client Side Certificates
      */
-    protected Properties getSSLConfig(final FilterConfig filterConfig) {
+    protected Properties getSSLConfig() {
         final Properties properties = new Properties();
-        final String fileName = getPropertyFromInitParams(filterConfig, "sslConfigFile", null);
+        final String fileName = getString(ConfigurationKeys.SSL_CONFIG_FILE);
 
         if (fileName != null) {
             FileInputStream fis = null;
@@ -106,14 +112,11 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     /**
      * Gets the configured {@link HostnameVerifier} to use for HTTPS connections
      * if one is configured for this filter.
-     * @param filterConfig Servlet filter configuration.
      * @return Instance of specified host name verifier or null if none specified.
      */
-    protected HostnameVerifier getHostnameVerifier(final FilterConfig filterConfig) {
-        final String className = getPropertyFromInitParams(filterConfig, "hostnameVerifier", null);
-        logger.trace("Using hostnameVerifier parameter: {}", className);
-        final String config = getPropertyFromInitParams(filterConfig, "hostnameVerifierConfig", null);
-        logger.trace("Using hostnameVerifierConfig parameter: {}", config);
+    protected HostnameVerifier getHostnameVerifier() {
+        final Class<? extends HostnameVerifier> className = getClass(ConfigurationKeys.HOSTNAME_VERIFIER);
+        final String config = getString(ConfigurationKeys.HOSTNAME_VERIFIER_CONFIG);
         if (className != null) {
             if (config != null) {
                 return ReflectUtils.newInstance(className, config);
@@ -125,14 +128,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     }
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
-        setExceptionOnValidationFailure(parseBoolean(getPropertyFromInitParams(filterConfig,
-                "exceptionOnValidationFailure", "false")));
-        logger.trace("Setting exceptionOnValidationFailure parameter: {}", this.exceptionOnValidationFailure);
-        setRedirectAfterValidation(parseBoolean(getPropertyFromInitParams(filterConfig, "redirectAfterValidation",
-                "true")));
-        logger.trace("Setting redirectAfterValidation parameter: {}", this.redirectAfterValidation);
-        setUseSession(parseBoolean(getPropertyFromInitParams(filterConfig, "useSession", "true")));
-        logger.trace("Setting useSession parameter: {}", this.useSession);
+        setExceptionOnValidationFailure(getBoolean(ConfigurationKeys.EXCEPTION_ON_VALIDATION_FAILURE));
+        setRedirectAfterValidation(getBoolean(ConfigurationKeys.REDIRECT_AFTER_VALIDATION));
+        setUseSession(getBoolean(ConfigurationKeys.USE_SESSION));
 
         if (!this.useSession && this.redirectAfterValidation) {
             logger.warn("redirectAfterValidation parameter may not be true when useSession parameter is false. Resetting it to false in order to prevent infinite redirects.");
