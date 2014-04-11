@@ -160,10 +160,19 @@ public final class CommonUtils {
      */
     public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName,
             final String serviceUrl, final boolean renew, final boolean gateway) {
+        return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="
+                + urlEncode(serviceUrl) + (renew ? "&renew=true" : "") + (gateway ? "&gateway=true" : "");
+    }
+
+    /**
+     * Url encode a value using UTF-8 encoding.
+     * 
+     * @param value the value to encode.
+     * @return the encoded value.
+     */
+    public static String urlEncode(String value) {
         try {
-            return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="
-                    + URLEncoder.encode(serviceUrl, "UTF-8") + (renew ? "&renew=true" : "")
-                    + (gateway ? "&gateway=true" : "");
+            return URLEncoder.encode(value, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -225,6 +234,21 @@ public final class CommonUtils {
         return serverNames[0];
     }
 
+    private static boolean serverNameContainsPort(final boolean containsScheme, final String serverName) {
+        if (!containsScheme && serverName.contains(":")) {
+            return true;
+        }
+
+        final int schemeIndex = serverName.indexOf(":");
+        final int portIndex = serverName.lastIndexOf(":");
+        return schemeIndex != portIndex;
+    }
+
+    private static boolean requestIsOnStandardPort(final HttpServletRequest request) {
+        final int serverPort = request.getServerPort();
+        return serverPort == 80 || serverPort == 443;
+    }
+
     /**
          * Constructs a service url from the HttpServletRequest or from the given
          * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
@@ -250,11 +274,19 @@ public final class CommonUtils {
 
         final String serverName = findMatchingServerName(request, serverNames);
 
+        boolean containsScheme = true;
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
             buffer.append(request.isSecure() ? "https://" : "http://");
+            containsScheme = false;
         }
 
         buffer.append(serverName);
+
+        if (!serverNameContainsPort(containsScheme, serverName) && !requestIsOnStandardPort(request)) {
+            buffer.append(":");
+            buffer.append(request.getServerPort());
+        }
+
         buffer.append(request.getRequestURI());
 
         if (CommonUtils.isNotBlank(request.getQueryString())) {
