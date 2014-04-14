@@ -19,10 +19,13 @@
 package org.jasig.cas.client.validation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Pattern;
+import org.jasig.cas.client.authentication.ExactUrlPatternMatcherStrategy;
+import org.jasig.cas.client.authentication.RegexUrlPatternMatcherStrategy;
+import org.jasig.cas.client.authentication.UrlPatternMatcherStrategy;
 import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Holding class for the proxy list to make Spring configuration easier.
@@ -33,20 +36,28 @@ import org.jasig.cas.client.util.CommonUtils;
  */
 public final class ProxyList {
 
-    private final List<String[]> proxyChains;
-    private final HashMap<String, Pattern> proxyChainRegexCache;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    private final List<List<UrlPatternMatcherStrategy>> proxyChains;
 
     public ProxyList(final List<String[]> proxyChains) {
         CommonUtils.assertNotNull(proxyChains, "List of proxy chains cannot be null.");
-        this.proxyChains = proxyChains;
 
-        this.proxyChainRegexCache = new HashMap<String, Pattern>();
-        for (final String[] list : this.proxyChains) {
+        this.proxyChains = new ArrayList<List<UrlPatternMatcherStrategy>>();
+
+        for (final String[] list : proxyChains) {
+            final List<UrlPatternMatcherStrategy> chain = new ArrayList<UrlPatternMatcherStrategy>();
+
             for (final String item : list) {
                 if (item.startsWith("^")) {
-                    this.proxyChainRegexCache.put(item, Pattern.compile(item));
+                    chain.add(new RegexUrlPatternMatcherStrategy(item));
+                }
+                else {
+                    chain.add(new ExactUrlPatternMatcherStrategy(item));
                 }
             }
+
+            this.proxyChains.add(chain);
         }
     }
 
@@ -55,28 +66,33 @@ public final class ProxyList {
     }
 
     public boolean contains(String[] proxiedList) {
-        for (final String[] proxyChain : this.proxyChains) {
+        StringBuilder loggingOutput;
 
-            if (proxyChain.length == proxiedList.length) {
+        for (final List<UrlPatternMatcherStrategy> proxyChain : this.proxyChains) {
+            loggingOutput = new StringBuilder();
 
-                for (int linkIndex = 0; linkIndex < proxyChain.length; linkIndex++) {
-                    String link = proxyChain[linkIndex];
+            if (proxyChain.size() == proxiedList.length) {
+                for (int linkIndex = 0; linkIndex < proxyChain.size(); linkIndex++) {
+                    final String linkToTest = proxiedList[linkIndex];
+                    loggingOutput.append(linkToTest);
 
-                    if (link.equals(proxiedList[linkIndex])
-                           || (link.startsWith("^") && proxyChainRegexCache.get(link).matcher(proxiedList[linkIndex]).matches())) {
-
+                    if (proxyChain.get(linkIndex).matches(linkToTest)) {
                         //If we are at the last link, we found a good proxyChain.
-                        if (linkIndex == proxyChain.length-1) {
+                        if (linkIndex == proxyChain.size()-1) {
+                            logger.info("Proxy chain matched: {}", loggingOutput.toString());
                             return true;
                         }
 
                     } else {
+                        logger.warn("Proxy chain did not match at {}. Skipping to next allowedProxyChain", loggingOutput.toString());
                         break;
                     }
+                    loggingOutput.append("->");
                 }
             }
         }
 
+        logger.warn("No proxy chain matched the allowedProxyChains list.");
         return false;
     }
 
