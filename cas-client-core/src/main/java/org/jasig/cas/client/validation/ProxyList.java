@@ -51,8 +51,7 @@ public final class ProxyList {
             for (final String item : list) {
                 if (item.startsWith("^")) {
                     chain.add(new RegexUrlPatternMatcherStrategy(item));
-                }
-                else {
+                } else {
                     chain.add(new ExactUrlPatternMatcherStrategy(item));
                 }
             }
@@ -78,7 +77,7 @@ public final class ProxyList {
 
                     if (proxyChain.get(linkIndex).matches(linkToTest)) {
                         //If we are at the last link, we found a good proxyChain.
-                        if (linkIndex == proxyChain.size()-1) {
+                        if (linkIndex == proxyChain.size() - 1) {
                             logger.info("Proxy chain matched: {}", loggingOutput.toString());
                             return true;
                         }
