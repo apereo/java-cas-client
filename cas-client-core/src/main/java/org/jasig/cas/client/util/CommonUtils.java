@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
@@ -54,6 +55,8 @@ public final class CommonUtils {
      * Constant representing the ProxyGrantingTicket Request Parameter.
      */
     private static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
+
+    private static final HttpURLConnectionFactory DEFAULT_URL_CONNECTION_FACTORY = new HttpsURLConnectionFactory();
 
     private CommonUtils() {
         // nothing to do
@@ -346,6 +349,19 @@ public final class CommonUtils {
 
     public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
         return safeGetParameter(request, parameter, Arrays.asList("logoutRequest"));
+    }
+
+
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the url to contact.
+     * @param encoding the encoding to use.
+     * @return the response.
+     */
+    @Deprecated
+    public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
+        return getResponseFromServer(constructedUrl, DEFAULT_URL_CONNECTION_FACTORY, encoding);
     }
 
     /**
