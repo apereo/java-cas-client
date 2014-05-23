@@ -60,12 +60,6 @@ public class SingleSignOutFilterTests {
         response = new MockHttpServletResponse();
         filterChain = new MockFilterChain();
     }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void initWithoutCasServerUrlPrefix() throws ServletException {
-        filter = new SingleSignOutFilter();
-        filter.init(new MockFilterConfig());
-    }
     
     @Test
     public void tokenRequest() throws IOException, ServletException {

@@ -19,6 +19,7 @@
 package org.jasig.cas.client.session;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,49 +35,52 @@ import org.jasig.cas.client.util.AbstractConfigurationFilter;
  */
 public final class SingleSignOutFilter extends AbstractConfigurationFilter {
 
-    private static final SingleSignOutHandler handler = new SingleSignOutHandler();
+    private static final SingleSignOutHandler HANDLER = new SingleSignOutHandler();
+
+    private AtomicBoolean handlerInitialized = new AtomicBoolean(false);
 
     public void init(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
-            handler.setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName",
+            HANDLER.setArtifactParameterName(getPropertyFromInitParams(filterConfig, "artifactParameterName",
                     SingleSignOutHandler.DEFAULT_ARTIFACT_PARAMETER_NAME));
-            handler.setLogoutParameterName(getPropertyFromInitParams(filterConfig, "logoutParameterName",
+            HANDLER.setLogoutParameterName(getPropertyFromInitParams(filterConfig, "logoutParameterName",
                     SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME));
-            handler.setFrontLogoutParameterName(getPropertyFromInitParams(filterConfig, "frontLogoutParameterName",
+            HANDLER.setFrontLogoutParameterName(getPropertyFromInitParams(filterConfig, "frontLogoutParameterName",
                     SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME));
-            handler.setRelayStateParameterName(getPropertyFromInitParams(filterConfig, "relayStateParameterName",
+            HANDLER.setRelayStateParameterName(getPropertyFromInitParams(filterConfig, "relayStateParameterName",
                     SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME));
-            handler.setCasServerUrlPrefix(getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null));
-            handler.setArtifactParameterOverPost(parseBoolean(getPropertyFromInitParams(filterConfig,
+            HANDLER.setCasServerUrlPrefix(getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null));
+            HANDLER.setArtifactParameterOverPost(parseBoolean(getPropertyFromInitParams(filterConfig,
                     "artifactParameterOverPost", "false")));
-            handler.setEagerlyCreateSessions(parseBoolean(getPropertyFromInitParams(filterConfig,
+            HANDLER.setEagerlyCreateSessions(parseBoolean(getPropertyFromInitParams(filterConfig,
                     "eagerlyCreateSessions", "true")));
         }
-        handler.init();
+        HANDLER.init();
+        handlerInitialized.set(true);
     }
 
     public void setArtifactParameterName(final String name) {
-        handler.setArtifactParameterName(name);
+        HANDLER.setArtifactParameterName(name);
     }
 
     public void setLogoutParameterName(final String name) {
-        handler.setLogoutParameterName(name);
+        HANDLER.setLogoutParameterName(name);
     }
 
     public void setFrontLogoutParameterName(final String name) {
-        handler.setFrontLogoutParameterName(name);
+        HANDLER.setFrontLogoutParameterName(name);
     }
 
     public void setRelayStateParameterName(final String name) {
-        handler.setRelayStateParameterName(name);
+        HANDLER.setRelayStateParameterName(name);
     }
 
     public void setCasServerUrlPrefix(final String casServerUrlPrefix) {
-        handler.setCasServerUrlPrefix(casServerUrlPrefix);
+        HANDLER.setCasServerUrlPrefix(casServerUrlPrefix);
     }
 
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
-        handler.setSessionMappingStorage(storage);
+        HANDLER.setSessionMappingStorage(storage);
     }
 
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
@@ -84,7 +88,15 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (handler.process(request, response)) {
+        /**
+         * <p>Workaround for now for the fact that Spring Security will fail since it doesn't call {@link #init(javax.servlet.FilterConfig)}.</p>
+         * <p>Ultimately we need to allow deployers to actually inject their fully-initialized {@link org.jasig.cas.client.session.SingleSignOutHandler}.</p>
+         */
+        if (!this.handlerInitialized.getAndSet(true)) {
+            HANDLER.init();
+        }
+
+        if (HANDLER.process(request, response)) {
             filterChain.doFilter(servletRequest, servletResponse);
         }
     }
@@ -94,6 +106,6 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     }
 
     protected static SingleSignOutHandler getSingleSignOutHandler() {
-        return handler;
+        return HANDLER;
     }
 }
