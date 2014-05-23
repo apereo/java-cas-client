@@ -132,18 +132,20 @@ public final class SingleSignOutHandler {
     /**
      * Initializes the component for use.
      */
-    public void init() {
-        CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.logoutParameterName, "logoutParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.frontLogoutParameterName, "frontLogoutParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannot be null.");
-        CommonUtils.assertNotNull(this.relayStateParameterName, "relayStateParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
+    public synchronized void init() {
+        if (this.safeParameters == null) {
+            CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
+            CommonUtils.assertNotNull(this.logoutParameterName, "logoutParameterName cannot be null.");
+            CommonUtils.assertNotNull(this.frontLogoutParameterName, "frontLogoutParameterName cannot be null.");
+            CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannot be null.");
+            CommonUtils.assertNotNull(this.relayStateParameterName, "relayStateParameterName cannot be null.");
+            CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
 
-        if (this.artifactParameterOverPost) {
-            this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
-        } else {
-            this.safeParameters = Arrays.asList(this.logoutParameterName);
+            if (this.artifactParameterOverPost) {
+                this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
+            } else {
+                this.safeParameters = Arrays.asList(this.logoutParameterName);
+            }
         }
     }
 
