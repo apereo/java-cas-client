@@ -70,7 +70,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @param urlParameters the Map containing the existing parameters to send to the server.
      */
     protected final void populateUrlAttributeMap(final Map<String, String> urlParameters) {
-        urlParameters.put("pgtUrl", encodeUrl(this.proxyCallbackUrl));
+        urlParameters.put("pgtUrl", this.proxyCallbackUrl);
     }
 
     protected String getUrlSuffix() {
