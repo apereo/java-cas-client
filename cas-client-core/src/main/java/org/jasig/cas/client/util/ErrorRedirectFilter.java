@@ -65,13 +65,13 @@ public final class ErrorRedirectFilter implements Filter {
         try {
             filterChain.doFilter(request, response);
         } catch (final ServletException e) {
-            final Throwable t = null == e.getCause() ? e : e.getCause();
+            final Throwable rootCause = e.getCause() == null ? e : e.getCause();
             ErrorHolder currentMatch = null;
             for (final ErrorHolder errorHolder : this.errors) {
-                if (errorHolder.exactMatch(t)) {
+                if (errorHolder.exactMatch(rootCause)) {
                     currentMatch = errorHolder;
                     break;
-                } else if (errorHolder.inheritanceMatch(t)) {
+                } else if (errorHolder.inheritanceMatch(rootCause)) {
                     currentMatch = errorHolder;
                 }
             }
