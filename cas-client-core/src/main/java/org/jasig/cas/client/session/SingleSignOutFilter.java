@@ -49,7 +49,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
                     SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME));
             HANDLER.setRelayStateParameterName(getPropertyFromInitParams(filterConfig, "relayStateParameterName",
                     SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME));
-            HANDLER.setCasServerUrlPrefix(getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", null));
+            HANDLER.setCasServerUrlPrefix(getPropertyFromInitParams(filterConfig, "casServerUrlPrefix", ""));
             HANDLER.setArtifactParameterOverPost(parseBoolean(getPropertyFromInitParams(filterConfig,
                     "artifactParameterOverPost", "false")));
             HANDLER.setEagerlyCreateSessions(parseBoolean(getPropertyFromInitParams(filterConfig,
