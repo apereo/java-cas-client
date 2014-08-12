@@ -18,11 +18,11 @@
  */
 package org.jasig.cas.client.session;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.Inflater;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -78,7 +78,7 @@ public final class SingleSignOutHandler {
 
     private List<String> safeParameters;
 
-    private Method httpRequestLogoutMethod = retrieveHttpRequestLogoutMethod();
+    private LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
 
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         this.sessionMappingStorage = storage;
@@ -308,7 +308,7 @@ public final class SingleSignOutHandler {
                 } catch (final IllegalStateException e) {
                     logger.debug("Error invalidating session.", e);
                 }
-                executeHttpServletRequestLogoutIfPossible(request);
+                this.logoutStrategy.logout(request);
             }
         }
     }
@@ -344,21 +344,38 @@ public final class SingleSignOutHandler {
         return request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart");
     }
 
-    private void executeHttpServletRequestLogoutIfPossible(final HttpServletRequest request) {
-        if (this.httpRequestLogoutMethod != null) {
-            try {
-                this.httpRequestLogoutMethod.invoke(request);
-            } catch (final Exception e) {
-                logger.debug("Error performing request.logout.");
-            }
+    private static boolean isServlet30() {
+        try {
+            return HttpServletRequest.class.getMethod("logout") != null;
+        } catch (final NoSuchMethodException e) {
+            return false;
         }
     }
 
-    private static Method retrieveHttpRequestLogoutMethod() {
-        try {
-            return HttpServletRequest.class.getMethod("logout");
-        } catch (final NoSuchMethodException e) {
-            return null;
+
+    /**
+     * Abstracts the ways we can force logout with the Servlet spec.
+     */
+    private interface LogoutStrategy {
+
+        void logout(HttpServletRequest request);
+    }
+
+    private class Servlet25LogoutStrategy implements LogoutStrategy {
+
+        public void logout(final HttpServletRequest request) {
+            // nothing additional to do here
+        }
+    }
+
+    private class Servlet30LogoutStrategy implements LogoutStrategy {
+
+        public void logout(final HttpServletRequest request) {
+            try {
+                request.logout();
+            } catch (final ServletException e) {
+                logger.debug("Error performing request.logout.");
+            }
         }
     }
 }
