@@ -55,6 +55,11 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
     /** Url connection factory to use when communicating with the server **/
     private final HttpURLConnectionFactory urlConnectionFactory;
 
+    @Deprecated
+    public Cas20ProxyRetriever(final String casServerUrl, final String encoding) {
+        this(casServerUrl, encoding, null);
+    }
+
     /**
      * Main Constructor.
      *
@@ -75,7 +80,13 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
         CommonUtils.assertNotNull(targetService, "targetService cannot be null.");
 
         final URL url = constructUrl(proxyGrantingTicketId, targetService);
-        final String response = CommonUtils.getResponseFromServer(url, this.urlConnectionFactory, this.encoding);
+        final String response;
+
+        if (this.urlConnectionFactory != null) {
+            response = CommonUtils.getResponseFromServer(url, this.urlConnectionFactory, this.encoding);
+        } else {
+            response = CommonUtils.getResponseFromServer(url, this.encoding);
+        }
         final String error = XmlUtils.getTextForElement(response, "proxyFailure");
 
         if (CommonUtils.isNotEmpty(error)) {
