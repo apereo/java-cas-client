@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License.
 
 This project includes:
+  "Java Concurrency in Practice" book annotations under Creative Commons Attribution License
   Apache Santuario under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
   Bouncy Castle Provider under Bouncy Castle Licence
@@ -27,7 +28,6 @@ This project includes:
   Jasig CAS Client for Java - Core under Apache License Version 2.0
   Jasig CAS Client for Java - Distributed Proxy Storage Support: EhCache under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
-  jcip-annotations under Creative Commons Attribution License
   JCL 1.1.1 implemented over SLF4J under MIT License
   Joda time under Apache 2
   JUL to SLF4J bridge under MIT License
