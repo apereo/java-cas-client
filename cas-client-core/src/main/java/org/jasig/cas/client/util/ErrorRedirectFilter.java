@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,19 +55,23 @@ public final class ErrorRedirectFilter implements Filter {
         // nothing to do here
     }
 
+    /**
+     * Process through the remaining filter chain. If a ServletException occurs, redirect to the configured page.
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     */
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
         try {
             filterChain.doFilter(request, response);
         } catch (final ServletException e) {
-            final Throwable t = e.getCause();
+            final Throwable rootCause = e.getCause() == null ? e : e.getCause();
             ErrorHolder currentMatch = null;
             for (final ErrorHolder errorHolder : this.errors) {
-                if (errorHolder.exactMatch(t)) {
+                if (errorHolder.exactMatch(rootCause)) {
                     currentMatch = errorHolder;
                     break;
-                } else if (errorHolder.inheritanceMatch(t)) {
+                } else if (errorHolder.inheritanceMatch(rootCause)) {
                     currentMatch = errorHolder;
                 }
             }
