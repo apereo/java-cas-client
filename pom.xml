@@ -19,9 +19,9 @@
         <url>http://www.Jasig.org/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:svn:https://source.jasig.org/cas-clients/java-client/tags/cas-client-3.2.1</connection>
-        <developerConnection>scm:svn:https://source.jasig.org/cas-clients/java-client/tags/cas-client-3.2.1</developerConnection>
-        <url>https://source.jasig.org/cas-clients/java-client/tags/cas-client-3.2.1</url>
+        <connection>scm:git:git@github.com:Jasig/java-cas-client.git</connection>
+        <developerConnection>scm:git:git@github.com:Jasig/java-cas-client.git</developerConnection>
+        <url>https://github.com/Jasig/java-cas-client/tree/3.2.x</url>
     </scm>
     <inceptionYear>2006</inceptionYear>
 
