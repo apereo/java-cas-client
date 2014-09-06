@@ -6,7 +6,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas.client</groupId>
-    <version>3.2.1</version>
+    <version>3.2.2-SNAPSHOT</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
     <name>Jasig CAS Client for Java</name>
