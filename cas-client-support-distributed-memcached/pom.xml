@@ -21,13 +21,12 @@
             <type>jar</type>
         </dependency>
 
-        <!-- available from http://code.google.com/p/spymemcached/ -->
         <dependency>
-            <groupId>spy</groupId>
-            <artifactId>memcached</artifactId>
-            <version>2.5</version>
+            <groupId>net.spy</groupId>
+            <artifactId>spymemcached</artifactId>
+            <version>2.11.4</version>
             <type>jar</type>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
