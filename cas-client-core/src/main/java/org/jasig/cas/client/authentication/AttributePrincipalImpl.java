@@ -45,7 +45,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
     private final String proxyGrantingTicket;
 
     /** The method to retrieve a proxy ticket from a CAS server. */
-    private final ProxyRetriever proxyRetriever;
+    private transient final ProxyRetriever proxyRetriever;
 
     /**
      * Constructs a new principal with an empty map of attributes.
