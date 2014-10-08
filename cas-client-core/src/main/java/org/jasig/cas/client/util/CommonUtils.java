@@ -234,7 +234,6 @@ public final class CommonUtils {
         final String xHost = request.getHeader("X-Forwarded-Host");
 
         final String comparisonHost;
-        //if (xHost != null && host == "localhost") {
         if (xHost != null) {
             comparisonHost = xHost;
         } else {
