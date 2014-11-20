@@ -7,7 +7,6 @@ import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockServletContext;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public final class WebXmlConfigurationStrategyImplTests {
 
