@@ -1,5 +1,7 @@
 package org.jasig.cas.client.configuration;
 
+import org.jasig.cas.client.util.CommonUtils;
+
 /**
  * Holder class to represent a particular configuration key and its optional default value.
  *
@@ -17,6 +19,7 @@ public final class ConfigurationKey<E> {
     }
 
     public ConfigurationKey(final String name, final E defaultValue) {
+        CommonUtils.assertNotNull(name, "name must not be null.");
         this.name = name;
         this.defaultValue = defaultValue;
     }

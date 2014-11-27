@@ -21,7 +21,7 @@ package org.jasig.cas.client.authentication;
 import org.jasig.cas.client.Protocol;
 
 /**
- * Extension to the default Authentication filter that sets the required SAML11.1 artifact parameter name and service parameter name.
+ * Extension to the default Authentication filter that sets the required SAML1.1 artifact parameter name and service parameter name.
  * <p>
  * Note, as of 3.3, the final keyword was removed to allow you to override the method to retrieve tickets, per CASC-154
  *

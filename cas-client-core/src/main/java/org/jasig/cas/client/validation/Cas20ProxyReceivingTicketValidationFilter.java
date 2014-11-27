@@ -32,6 +32,8 @@ import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 
+import static org.jasig.cas.client.configuration.ConfigurationKeys.*;
+
 /**
  * Creates either a CAS20ProxyTicketValidator or a CAS20ServiceTicketValidator depending on whether any of the
  * proxy parameters are set.
@@ -46,11 +48,14 @@ import org.jasig.cas.client.util.ReflectUtils;
  */
 public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketValidationFilter {
 
-    private static final String[] RESERVED_INIT_PARAMS = new String[]{"proxyGrantingTicketStorageClass",
-            "proxyReceptorUrl", "acceptAnyProxy", "allowedProxyChains", "casServerUrlPrefix", "proxyCallbackUrl",
-            "renew", "exceptionOnValidationFailure", "redirectAfterValidation", "useSession", "serverName", "service",
-            "artifactParameterName", "serviceParameterName", "encodeServiceUrl", "millisBetweenCleanUps",
-            "hostnameVerifier", "encoding", "config", "ticketValidatorClass"};
+    private static final String[] RESERVED_INIT_PARAMS = new String[]{ARTIFACT_PARAMETER_NAME.getName(), SERVER_NAME.getName(), SERVICE.getName(), RENEW.getName(), LOGOUT_PARAMETER_NAME.getName(),
+            ARTIFACT_PARAMETER_OVER_POST.getName(), EAGERLY_CREATE_SESSIONS.getName(), ENCODE_SERVICE_URL.getName(), SSL_CONFIG_FILE.getName(), ROLE_ATTRIBUTE.getName(), IGNORE_CASE.getName(),
+            CAS_SERVER_LOGIN_URL.getName(), GATEWAY.getName(), AUTHENTICATION_REDIRECT_STRATEGY_CLASS.getName(), GATEWAY_STORAGE_CLASS.getName(), CAS_SERVER_URL_PREFIX.getName(), ENCODING.getName(),
+            TOLERANCE.getName(), DISABLE_XML_SCHEMA_VALIDATION.getName(), IGNORE_PATTERN.getName(), IGNORE_URL_PATTERN_TYPE.getName(), HOSTNAME_VERIFIER.getName(), HOSTNAME_VERIFIER_CONFIG.getName(),
+            EXCEPTION_ON_VALIDATION_FAILURE.getName(), REDIRECT_AFTER_VALIDATION.getName(), USE_SESSION.getName(), SECRET_KEY.getName(), CIPHER_ALGORITHM.getName(), PROXY_RECEPTOR_URL.getName(),
+            PROXY_GRANTING_TICKET_STORAGE_CLASS.getName(), MILLIS_BETWEEN_CLEAN_UPS.getName(), ACCEPT_ANY_PROXY.getName(), ALLOWED_PROXY_CHAINS.getName(), TICKET_VALIDATOR_CLASS.getName(),
+            PROXY_CALLBACK_URL.getName(), FRONT_LOGOUT_PARAMETER_NAME.getName(), RELAY_STATE_PARAMETER_NAME.getName()
+    };
 
     /**
      * The URL to send to the CAS server as the URL that will process proxying requests on the CAS client.
