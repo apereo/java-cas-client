@@ -11,7 +11,6 @@ import javax.servlet.FilterConfig;
  */
 public interface ConfigurationStrategy {
 
-
     /**
      * Retrieves the value for the provided {@param configurationKey}, falling back to the {@param configurationKey}'s {@link ConfigurationKey#getDefaultValue()} if nothing can be found.
      *
