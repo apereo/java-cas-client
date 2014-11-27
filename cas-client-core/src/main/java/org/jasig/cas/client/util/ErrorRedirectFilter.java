@@ -58,7 +58,7 @@ public final class ErrorRedirectFilter implements Filter {
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
         try {
             filterChain.doFilter(request, response);
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             final Throwable t = extractErrorToCompare(e);
             ErrorHolder currentMatch = null;
             for (final ErrorHolder errorHolder : this.errors) {
