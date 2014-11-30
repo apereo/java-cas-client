@@ -1,6 +1,8 @@
 package org.jasig.cas.client.configuration;
 
 import org.jasig.cas.client.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Enumeration to map simple names to the underlying classes so that deployers can reference the simple name in the
@@ -12,6 +14,8 @@ import org.jasig.cas.client.util.CommonUtils;
 public enum ConfigurationStrategyName {
 
     DEFAULT(LegacyConfigurationStrategyImpl.class), JNDI(JndiConfigurationStrategyImpl.class), WEB_XML(WebXmlConfigurationStrategyImpl.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationStrategyName.class);
 
     private final Class<? extends ConfigurationStrategy> configurationStrategyClass;
 
@@ -43,7 +47,7 @@ public enum ConfigurationStrategyName {
                 return (Class<? extends ConfigurationStrategy>) clazz;
             }
         }   catch (final ClassNotFoundException e) {
-            // nothing we can do here
+            LOGGER.error("Unable to locate strategy {} by name or class name.  Using default strategy instead.", value, e);
         }
 
         return DEFAULT.configurationStrategyClass;
