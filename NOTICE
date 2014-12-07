@@ -16,21 +16,22 @@ specific language governing permissions and limitations
 under the License.
 
 This project includes:
+  "Java Concurrency in Practice" book annotations under Creative Commons Attribution License
   AOP alliance under Public Domain
   Apache Log4j under The Apache Software License, Version 2.0
   Apache Santuario under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
   Apache XML Security under The Apache Software License, Version 2.0
-  Atlassian JIRA - Code - Core under Atlassian End User License
-  Atlassian Seraph under BSD License
-  atlassian-osuser under BSD License
   Bouncy Castle Provider under Bouncy Castle Licence
   catalina under Apache License, Version 2.0
   Codec under The Apache Software License, Version 2.0
+  com.atlassian.confluence:confluence under Atlassian End User License
   com.atlassian.event:atlassian-event under Atlassian End User License
+  com.atlassian.jira:jira-core under Atlassian End User License
+  com.atlassian.osuser:atlassian-osuser under Atlassian End User License
+  com.atlassian.seraph:atlassian-seraph under Atlassian End User License
   Commons Codec under The Apache Software License, Version 2.0
   commons-collections under Apache License, Version 2.0
-  Confluence Core under Atlassian End User License
   Ehcache Core under The Apache Software License, Version 2.0
   ESAPI 2.0 under BSD or Creative Commons 3.0 BY-SA
   Google Collections Library under The Apache Software License, Version 2.0
@@ -49,7 +50,6 @@ This project includes:
   JavaBeans Activation Framework (JAF) under Common Development and Distribution License (CDDL) v1.0
   JavaMail API under Common Development and Distribution License (CDDL) v1.0
   JBoss Application Server Tomcat under lgpl
-  jcip-annotations under Creative Commons Attribution License
   JCL 1.1.1 implemented over SLF4J under MIT License
   Joda time under Apache 2
   JUL to SLF4J bridge under MIT License

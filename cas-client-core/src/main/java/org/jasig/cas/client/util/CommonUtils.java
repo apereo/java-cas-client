@@ -375,11 +375,16 @@ public final class CommonUtils {
      */
     @Deprecated
     public static String getResponseFromServer(final String constructedUrl, final String encoding) {
-	try {
-        	return getResponseFromServer(new URL(constructedUrl), DEFAULT_URL_CONNECTION_FACTORY, encoding);
-	} catch (final Exception e) {
-		throw new RuntimeException(e);
-	}
+        try {
+            return getResponseFromServer(new URL(constructedUrl), DEFAULT_URL_CONNECTION_FACTORY, encoding);
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Deprecated
+    public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
+        return getResponseFromServer(constructedUrl, DEFAULT_URL_CONNECTION_FACTORY, encoding);
     }
 
     /**
