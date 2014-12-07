@@ -18,6 +18,8 @@
  */
 package org.jasig.cas.client.proxy;
 
+import org.jasig.cas.client.configuration.ConfigurationKeys;
+
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -36,11 +38,9 @@ import javax.crypto.spec.DESedeKeySpec;
  */
 public abstract class AbstractEncryptedProxyGrantingTicketStorageImpl implements ProxyGrantingTicketStorage {
 
-    public static final String DEFAULT_ENCRYPTION_ALGORITHM = "DESede";
-
     private Key key;
 
-    private String cipherAlgorithm = DEFAULT_ENCRYPTION_ALGORITHM;
+    private String cipherAlgorithm = ConfigurationKeys.CIPHER_ALGORITHM.getDefaultValue();
 
     public final void setSecretKey(final String key) throws NoSuchAlgorithmException, InvalidKeyException,
             InvalidKeySpecException {
