@@ -18,6 +18,7 @@
  */
 package org.jasig.cas.client.ssl;
 
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -28,7 +29,7 @@ import java.net.URLConnection;
  * @author Misagh Moayyed
  * @since 3.3
  */
-public interface HttpURLConnectionFactory {
+public interface HttpURLConnectionFactory extends Serializable {
 
     /**
      * Receives a {@link URLConnection} instance typically as a result of a {@link URL}
