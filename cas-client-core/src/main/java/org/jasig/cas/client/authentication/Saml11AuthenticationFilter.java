@@ -18,13 +18,12 @@
  */
 package org.jasig.cas.client.authentication;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+import org.jasig.cas.client.Protocol;
 
 /**
  * Extension to the default Authentication filter that sets the required SAML1.1 artifact parameter name and service parameter name.
  * <p>
- * Note, as of 3.3, the final keyword was removed to allow you to override the method to retrieve tickets, per CASC-154s
+ * Note, as of 3.3, the final keyword was removed to allow you to override the method to retrieve tickets, per CASC-154
  *
  * @author Scott Battaglia
  * @since 3.1.12
@@ -32,13 +31,7 @@ import javax.servlet.ServletException;
  */
 public class Saml11AuthenticationFilter extends AuthenticationFilter {
 
-    protected final void initInternal(final FilterConfig filterConfig) throws ServletException {
-        super.initInternal(filterConfig);
-
-        logger.warn("SAML1.1 compliance requires the [artifactParameterName] and [serviceParameterName] to be set to specified values.");
-        logger.warn("This filter will overwrite any user-provided values (if any are provided)");
-
-        setArtifactParameterName("SAMLart");
-        setServiceParameterName("TARGET");
+    private Saml11AuthenticationFilter() {
+        super(Protocol.SAML11);
     }
 }

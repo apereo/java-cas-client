@@ -25,6 +25,7 @@ import org.jasig.cas.client.proxy.CleanUpTimerTask;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.util.MethodFlag;
+import org.junit.Test;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockServletContext;
 
@@ -148,32 +149,40 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
 
     public void testGetTicketValidator() throws Exception {
         Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
-        filter.setProxyGrantingTicketStorage(storage);
-        filter.setMillisBetweenCleanUps(250);
-        filter.setTimer(defaultTimer);
-        filter.setTimerTask(new TimerTask() {
-            public void run() {
-            }
-        });
-        filter.init();
 
         // Test case #1
         final MockFilterConfig config1 = new MockFilterConfig();
         config1.addInitParameter("allowedProxyChains", "https://a.example.com");
         config1.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
+        config1.addInitParameter("service", "http://www.jasig.org");
+        filter.init(config1);
         assertNotNull(filter.getTicketValidator(config1));
+    }
 
+    @Test
+    public void getTicketValidatorWithProxyChains() throws Exception {
+        Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
         // Test case #2
         final MockFilterConfig config2 = new MockFilterConfig();
         config2.addInitParameter("allowedProxyChains", "https://a.example.com https://b.example.com");
         config2.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
+        config2.addInitParameter("service", "http://www.jasig.org");
+        filter.init(config2);
         assertNotNull(filter.getTicketValidator(config2));
+    }
+
+
+    @Test
+    public void getTIcketValidatorWithProxyChainsAndLineBreak() throws Exception {
+        Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
 
         // Test case #3
         final MockFilterConfig config3 = new MockFilterConfig();
         config3.addInitParameter("allowedProxyChains",
                 "https://a.example.com https://b.example.com\nhttps://c.example.com");
         config3.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
+        config3.addInitParameter("service", "http://www.jasig.org");
+        filter.init(config3);
         assertNotNull(filter.getTicketValidator(config3));
     }
 
@@ -195,7 +204,10 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         final MockServletContext context = new MockServletContext();
         context.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         context.addInitParameter("renew", "true");
-        final TicketValidator validator = f.getTicketValidator(new MockFilterConfig(context));
+        context.addInitParameter("service", "http://www.jasig.org");
+        final MockFilterConfig config = new MockFilterConfig(context);
+        f.init(config);
+        final TicketValidator validator = f.getTicketValidator(config);
         assertTrue(validator instanceof AbstractUrlBasedTicketValidator);
         assertTrue(((AbstractUrlBasedTicketValidator) validator).isRenew());
     }

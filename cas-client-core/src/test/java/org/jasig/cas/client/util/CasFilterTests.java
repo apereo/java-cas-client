@@ -24,6 +24,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import org.jasig.cas.client.Protocol;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -55,6 +57,10 @@ public final class CasFilterTests {
     }
 
     private static class TestCasFilter extends AbstractCasFilter {
+
+        public TestCasFilter() {
+            super(Protocol.CAS2);
+        }
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
                 ServletException {
             // nothing to do

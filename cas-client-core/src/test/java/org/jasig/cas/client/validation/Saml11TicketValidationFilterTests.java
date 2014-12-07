@@ -20,6 +20,7 @@ package org.jasig.cas.client.validation;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import org.junit.Test;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockServletContext;
@@ -50,7 +51,10 @@ public class Saml11TicketValidationFilterTests {
         final MockServletContext context = new MockServletContext();
         context.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         context.addInitParameter("renew", "true");
-        final TicketValidator validator = f.getTicketValidator(new MockFilterConfig(context));
+        context.addInitParameter("service", "http://www.jasig.org");
+        final MockFilterConfig config = new MockFilterConfig(context);
+        f.init(config);
+        final TicketValidator validator = f.getTicketValidator(config);
         assertTrue(validator instanceof Saml11TicketValidator);
         assertTrue(((Saml11TicketValidator) validator).isRenew());
     }

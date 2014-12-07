@@ -25,6 +25,8 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 
+import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockFilterChain;
@@ -35,12 +37,12 @@ import org.springframework.mock.web.MockHttpSession;
 
 /**
  * Tests {@link SingleSignOutFilter}.
- * 
+ *
  * @author Jerome Leleu
  * @since 3.3.1
  */
 public class SingleSignOutFilterTests {
-    
+
     private final static String CAS_SERVER_URL_PREFIX = "http://myhost.com/mycasserver";
     private final static String TICKET = "ST-yyyyy";
     private final static String RELAY_STATE = "e1s1";
@@ -49,7 +51,7 @@ public class SingleSignOutFilterTests {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private MockFilterChain filterChain;
-    
+
     @Before
     public void setUp() throws Exception {
         filter = new SingleSignOutFilter();
@@ -60,11 +62,11 @@ public class SingleSignOutFilterTests {
         response = new MockHttpServletResponse();
         filterChain = new MockFilterChain();
     }
-    
+
     @Test
     public void tokenRequest() throws IOException, ServletException {
-        request.setParameter(SingleSignOutHandler.DEFAULT_ARTIFACT_PARAMETER_NAME, TICKET);
-        request.setQueryString(SingleSignOutHandler.DEFAULT_ARTIFACT_PARAMETER_NAME + "=" + TICKET);
+        request.setParameter(Protocol.CAS2.getArtifactParameterName(), TICKET);
+        request.setQueryString(Protocol.CAS2.getArtifactParameterName() + "=" + TICKET);
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
         filter.doFilter(request, response, filterChain);
@@ -73,7 +75,7 @@ public class SingleSignOutFilterTests {
 
     @Test
     public void backChannelRequest() throws IOException, ServletException {
-        request.setParameter(SingleSignOutHandler.DEFAULT_LOGOUT_PARAMETER_NAME,
+        request.setParameter(ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue(),
                 LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET));
         request.setMethod("POST");
         final MockHttpSession session = new MockHttpSession();
@@ -85,8 +87,8 @@ public class SingleSignOutFilterTests {
     @Test
     public void frontChannelRequest() throws IOException, ServletException {
         final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
-        request.setParameter(SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
-        request.setQueryString(SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
+        request.setParameter(ConfigurationKeys.FRONT_LOGOUT_PARAMETER_NAME.getDefaultValue(), logoutMessage);
+        request.setQueryString(ConfigurationKeys.FRONT_LOGOUT_PARAMETER_NAME.getDefaultValue() + "=" + logoutMessage);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
         SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
@@ -98,16 +100,16 @@ public class SingleSignOutFilterTests {
     @Test
     public void frontChannelRequestRelayState() throws IOException, ServletException {
         final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
-        request.setParameter(SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
-        request.setParameter(SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME, RELAY_STATE);
-        request.setQueryString(SingleSignOutHandler.DEFAULT_FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" +
-                SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME + "=" + RELAY_STATE);
+        request.setParameter(ConfigurationKeys.FRONT_LOGOUT_PARAMETER_NAME.getDefaultValue(), logoutMessage);
+        request.setParameter(ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue(), RELAY_STATE);
+        request.setQueryString(ConfigurationKeys.FRONT_LOGOUT_PARAMETER_NAME.getDefaultValue() + "=" + logoutMessage + "&" +
+                ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue() + "=" + RELAY_STATE);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
         SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
         filter.doFilter(request, response, filterChain);
         assertNull(SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));
         assertEquals(CAS_SERVER_URL_PREFIX + "/logout?_eventId=next&" +
-        SingleSignOutHandler.DEFAULT_RELAY_STATE_PARAMETER_NAME + "=" + RELAY_STATE, response.getRedirectedUrl());
+                ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue() + "=" + RELAY_STATE, response.getRedirectedUrl());
     }
 }
