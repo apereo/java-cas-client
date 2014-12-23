@@ -43,7 +43,7 @@ import junit.framework.TestCase;
  */
 public class WhitelistHostnameVerifierTests extends TestCase {
     /**
-     * Test method for {@link WhitelistHostnameVerifier#verify(String, SSLSession)}.
+     * Test method for {@link WhitelistHostnameVerifier#verify(String, javax.net.ssl.SSLSession)}.
      */
     public void testVerify() {
         final WhitelistHostnameVerifier verifier = new WhitelistHostnameVerifier("red.vt.edu, green.vt.edu,blue.vt.edu");
