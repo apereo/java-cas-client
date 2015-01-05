@@ -26,7 +26,7 @@ package org.jasig.cas.client;
  */
 public enum Protocol {
 
-    CAS1("ticket", "service"), CAS2(CAS1), SAML11("SAMLart", "TARGET");
+    CAS1("ticket", "service"), CAS2(CAS1), CAS3(CAS2), SAML11("SAMLart", "TARGET");
 
     private final String artifactParameterName;
 
