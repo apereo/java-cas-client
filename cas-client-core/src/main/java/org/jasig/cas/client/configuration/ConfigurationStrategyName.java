@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
  */
 public enum ConfigurationStrategyName {
 
-    DEFAULT(LegacyConfigurationStrategyImpl.class), JNDI(JndiConfigurationStrategyImpl.class), WEB_XML(WebXmlConfigurationStrategyImpl.class), PROPERTY_FILE(PropertiesConfigurationStrategyImpl.class);
+    DEFAULT(LegacyConfigurationStrategyImpl.class), JNDI(JndiConfigurationStrategyImpl.class), WEB_XML(WebXmlConfigurationStrategyImpl.class),
+    PROPERTY_FILE(PropertiesConfigurationStrategyImpl.class), SYSTEM_PROPERTIES(SystemPropertiesConfigurationStrategyImpl.class);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationStrategyName.class);
 

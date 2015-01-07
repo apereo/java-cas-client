@@ -28,6 +28,8 @@ public final class ConfigurationStrategyNameTests {
     public void stringToClass() {
         assertEquals(JndiConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy(ConfigurationStrategyName.JNDI.name()));
         assertEquals(WebXmlConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy(ConfigurationStrategyName.WEB_XML.name()));
+        assertEquals(PropertiesConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy(ConfigurationStrategyName.PROPERTY_FILE.name()));
+        assertEquals(SystemPropertiesConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy(ConfigurationStrategyName.SYSTEM_PROPERTIES.name()));
         assertEquals(LegacyConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy(ConfigurationStrategyName.DEFAULT.name()));
         assertEquals(LegacyConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy("bleh!"));
     }
