@@ -42,6 +42,13 @@ public class AssertionCasRealm extends AbstractCasRealm {
         delegate.setRoleAttributeName(name);
     }
 
+    /**
+     * @param names Comma delimited list of role names to add to all authenticated users.
+     */
+    public void setCommonRoles(final String names) {
+        this.delegate.setCommonRoles(names);
+    }
+
     /** {@inheritDoc} */
     protected CasRealm getDelegate() {
         return delegate;
