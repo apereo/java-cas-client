@@ -56,8 +56,11 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
     static {
         try {
-            // we really only need to do this once, so this is why its here.
-            DefaultBootstrap.bootstrap();
+            // Check for prior OpenSAML initialization to prevent double init
+            // that would overwrite existing OpenSAML configuration
+            if (Configuration.getParserPool() == null) {
+                DefaultBootstrap.bootstrap();
+            }
         } catch (final ConfigurationException e) {
             throw new RuntimeException(e);
         }
