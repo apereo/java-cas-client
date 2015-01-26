@@ -31,7 +31,7 @@ import org.jasig.cas.client.Protocol;
  */
 public class Saml11AuthenticationFilter extends AuthenticationFilter {
 
-    private Saml11AuthenticationFilter() {
+    public Saml11AuthenticationFilter() {
         super(Protocol.SAML11);
     }
 }
