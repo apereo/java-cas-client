@@ -26,10 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
-import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.IOUtils;
-import org.jasig.cas.client.util.MapNamespaceContext;
-import org.jasig.cas.client.util.XmlUtils;
+import org.jasig.cas.client.util.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
@@ -54,25 +51,30 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     private static final String SAML_REQUEST_TEMPLATE;
 
     /** SAML 1.1. namespace context. */
-    private static final NamespaceContext SAML_NS_CONTEXT = new MapNamespaceContext(
+    private static final NamespaceContext NS_CONTEXT = new MapNamespaceContext(
             "soap->http://schemas.xmlsoap.org/soap/envelope/",
             "sa->urn:oasis:names:tc:SAML:1.0:assertion",
             "sp->urn:oasis:names:tc:SAML:1.0:protocol");
 
     /** XPath expression to extract Assertion validity start date. */
-    private static final String XPATH_ASSERTION_DATE_START = "//sa:Assertion/sa:Conditions/@NotBefore";
+    private static final ThreadLocalXPathExpression XPATH_ASSERTION_DATE_START =
+            new ThreadLocalXPathExpression("//sa:Assertion/sa:Conditions/@NotBefore", NS_CONTEXT);
 
     /** XPath expression to extract Assertion validity end date. */
-    private static final String XPATH_ASSERTION_DATE_END = "//sa:Assertion/sa:Conditions/@NotOnOrAfter";
+    private static final ThreadLocalXPathExpression XPATH_ASSERTION_DATE_END =
+            new ThreadLocalXPathExpression("//sa:Assertion/sa:Conditions/@NotOnOrAfter", NS_CONTEXT);
 
     /** XPath expression to extract NameIdentifier. */
-    private static final String XPATH_NAME_ID = "//sa:AuthenticationStatement/sa:Subject/sa:NameIdentifier";
+    private static final ThreadLocalXPathExpression XPATH_NAME_ID =
+            new ThreadLocalXPathExpression("//sa:AuthenticationStatement/sa:Subject/sa:NameIdentifier", NS_CONTEXT);
 
     /** XPath expression to extract authentication method. */
-    private static final String XPATH_AUTH_METHOD = "//sa:AuthenticationStatement/@AuthenticationMethod";
+    private static final ThreadLocalXPathExpression XPATH_AUTH_METHOD =
+            new ThreadLocalXPathExpression("//sa:AuthenticationStatement/@AuthenticationMethod", NS_CONTEXT);
 
     /** XPath expression to extract attributes. */
-    private static final String XPATH_ATTRIBUTES = "//sa:AttributeStatement/sa:Attribute";
+    private static final ThreadLocalXPathExpression XPATH_ATTRIBUTES =
+            new ThreadLocalXPathExpression("//sa:AttributeStatement/sa:Attribute", NS_CONTEXT);
 
     private static final String HEX_CHARS = "0123456789abcdef";
 
@@ -118,18 +120,18 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         try {
             final Document document = XmlUtils.newDocument(response);
             final Date assertionValidityStart = CommonUtils.parseUtcDate(
-                    XmlUtils.evaluateXPathString(XPATH_ASSERTION_DATE_START, SAML_NS_CONTEXT, document));
+                    XPATH_ASSERTION_DATE_START.evaluateAsString(document));
             final Date assertionValidityEnd = CommonUtils.parseUtcDate(
-                    XmlUtils.evaluateXPathString(XPATH_ASSERTION_DATE_END, SAML_NS_CONTEXT, document));
+                    XPATH_ASSERTION_DATE_END.evaluateAsString(document));
             if (!isValidAssertion(assertionValidityStart, assertionValidityEnd)) {
                 throw new TicketValidationException("Invalid SAML assertion");
             }
-            final String nameId = XmlUtils.evaluateXPathString(XPATH_NAME_ID, SAML_NS_CONTEXT, document);
+            final String nameId = XPATH_NAME_ID.evaluateAsString(document);
             if (nameId == null) {
                 throw new TicketValidationException("SAML assertion does not contain NameIdentifier element");
             }
-            final String authMethod = XmlUtils.evaluateXPathString(XPATH_AUTH_METHOD, SAML_NS_CONTEXT, document);
-            final NodeList attributes = XmlUtils.evaluateXPathNodeList(XPATH_ATTRIBUTES, SAML_NS_CONTEXT, document);
+            final String authMethod = XPATH_AUTH_METHOD.evaluateAsString(document);
+            final NodeList attributes = XPATH_ATTRIBUTES.evaluateAsNodeList(document);
             final Map<String, Object> principalAttributes = new HashMap<String, Object>(attributes.getLength());
             Element attribute;
             NodeList values;
