@@ -54,7 +54,6 @@ public interface ConfigurationKeys {
     ConfigurationKey<String> CAS_SERVER_URL_PREFIX = new ConfigurationKey<String>("casServerUrlPrefix", null);
     ConfigurationKey<String> ENCODING = new ConfigurationKey<String>("encoding", null);
     ConfigurationKey<Long> TOLERANCE = new ConfigurationKey<Long>("tolerance", 1000L);
-    ConfigurationKey<Boolean> DISABLE_XML_SCHEMA_VALIDATION = new ConfigurationKey<Boolean>("disableXmlSchemaValidation", Boolean.FALSE);
     ConfigurationKey<String> IGNORE_PATTERN = new ConfigurationKey<String>("ignorePattern", null);
     ConfigurationKey<String> IGNORE_URL_PATTERN_TYPE = new ConfigurationKey<String>("ignoreUrlPatternType", "REGEX");
     ConfigurationKey<Class<? extends HostnameVerifier>> HOSTNAME_VERIFIER = new ConfigurationKey<Class<? extends HostnameVerifier>>("hostnameVerifier", null);
