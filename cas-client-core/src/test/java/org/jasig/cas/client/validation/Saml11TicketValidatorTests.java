@@ -21,6 +21,7 @@ package org.jasig.cas.client.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.Date;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.util.CommonUtils;
@@ -117,11 +118,17 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
                 + "\" NotOnOrAfter=\""
                 + CommonUtils.formatForUtcTime(range.getEnd().toDate())
                 + "\">"
-                + "<saml1:AudienceRestrictionCondition><saml1:Audience>https://example.com/test-client/secure/</saml1:Audience></saml1:AudienceRestrictionCondition></saml1:Conditions>"
+                + "<saml1:AudienceRestrictionCondition><saml1:Audience>https://example.com/test-client/secure/</saml1:Audience>"
+                + "</saml1:AudienceRestrictionCondition></saml1:Conditions>"
                 + "<saml1:AuthenticationStatement AuthenticationInstant=\""
                 + CommonUtils.formatForUtcTime(now)
                 + "\" AuthenticationMethod=\"urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport\">"
-                + "<saml1:Subject><saml1:NameIdentifier>testPrincipal</saml1:NameIdentifier><saml1:SubjectConfirmation><saml1:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</saml1:ConfirmationMethod></saml1:SubjectConfirmation></saml1:Subject></saml1:AuthenticationStatement><saml1:AttributeStatement><saml1:Subject><saml1:NameIdentifier>testPrincipal</saml1:NameIdentifier><saml1:SubjectConfirmation><saml1:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</saml1:ConfirmationMethod></saml1:SubjectConfirmation></saml1:Subject><saml1:Attribute AttributeName=\"uid\" AttributeNamespace=\"http://www.ja-sig.org/products/cas/\"><saml1:AttributeValue xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">12345</saml1:AttributeValue>"
+                + "<saml1:Subject><saml1:NameIdentifier>testPrincipal</saml1:NameIdentifier>"
+                + "<saml1:SubjectConfirmation><saml1:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</saml1:ConfirmationMethod></saml1:SubjectConfirmation>"
+                + "</saml1:Subject></saml1:AuthenticationStatement>"
+                + "<saml1:AttributeStatement><saml1:Subject><saml1:NameIdentifier>testPrincipal</saml1:NameIdentifier>"
+                + "<saml1:SubjectConfirmation><saml1:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</saml1:ConfirmationMethod></saml1:SubjectConfirmation></saml1:Subject>"
+                + "<saml1:Attribute AttributeName=\"uid\" AttributeNamespace=\"http://www.ja-sig.org/products/cas/\"><saml1:AttributeValue xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">12345</saml1:AttributeValue>"
                 + "</saml1:Attribute><saml1:Attribute AttributeName=\"accountState\" AttributeNamespace=\"http://www.ja-sig.org/products/cas/\">"
                 + "<saml1:AttributeValue xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">ACTIVE</saml1:AttributeValue>"
                 + "</saml1:Attribute><saml1:Attribute AttributeName=\"eduPersonAffiliation\" AttributeNamespace=\"http://www.ja-sig.org/products/cas/\">"
@@ -132,7 +139,13 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
         server.content = response.getBytes(server.encoding);
         try {
             final Assertion a = this.validator.validate("test", "test");
+            assertEquals(
+                    "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport",
+                    a.getAttributes().get(Saml11TicketValidator.AUTH_METHOD_ATTRIBUTE));
             assertEquals("testPrincipal", a.getPrincipal().getName());
+            assertEquals("12345", a.getPrincipal().getAttributes().get("uid"));
+            assertEquals("ACTIVE", a.getPrincipal().getAttributes().get("accountState"));
+            assertEquals(3, ((Collection) a.getPrincipal().getAttributes().get("eduPersonAffiliation")).size());
         } catch (final TicketValidationException e) {
             fail(e.toString());
         }

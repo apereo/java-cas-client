@@ -47,12 +47,10 @@ public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter
         validator.setTolerance(tolerance);
         validator.setRenew(getBoolean(ConfigurationKeys.RENEW));
 
-        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(),
-                getSSLConfig());
+        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(), getSSLConfig());
         validator.setURLConnectionFactory(factory);
 
         validator.setEncoding(getString(ConfigurationKeys.ENCODING));
-        validator.setDisableXmlSchemaValidation(getBoolean(ConfigurationKeys.DISABLE_XML_SCHEMA_VALIDATION));
         return validator;
     }
 }

@@ -21,6 +21,8 @@ package org.jasig.cas.client.util;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+
 import junit.framework.TestCase;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
@@ -191,5 +193,10 @@ public final class CommonUtilsTests extends TestCase {
     
     public void testUrlEncode() {
         assertEquals("this+is+a+very+special+parameter+with+%3D%25%2F", CommonUtils.urlEncode("this is a very special parameter with =%/"));
+    }
+
+    public void testParseUtcDate() {
+        final Date expected = new Date(1424437961025L);
+        assertEquals(expected, CommonUtils.parseUtcDate("2015-02-20T08:12:41.025-0500"));
     }
 }

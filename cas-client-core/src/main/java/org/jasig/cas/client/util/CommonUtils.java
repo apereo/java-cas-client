@@ -23,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,11 @@ import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +64,22 @@ public final class CommonUtils {
 
     private static final HttpURLConnectionFactory DEFAULT_URL_CONNECTION_FACTORY = new HttpsURLConnectionFactory();
 
+    private static final DateTimeFormatter ISO_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+
     private CommonUtils() {
         // nothing to do
     }
 
     public static String formatForUtcTime(final Date date) {
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return dateFormat.format(date);
+        return ISO_FORMAT.print(new DateTime(date).withZone(DateTimeZone.UTC));
+    }
+
+
+    public static Date parseUtcDate(final String date) {
+        if (isEmpty(date)) {
+            return null;
+        }
+        return ISODateTimeFormat.dateTimeParser().parseDateTime(date).toDate();
     }
 
     /**

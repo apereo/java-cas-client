@@ -19,17 +19,24 @@
 package org.jasig.cas.client.util;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.xpath.*;
 
 /**
  * Common utilities for easily parsing XML without duplicating logic.
@@ -44,6 +51,93 @@ public final class XmlUtils {
      * Static instance of Commons Logging.
      */
     private final static Logger LOGGER = LoggerFactory.getLogger(XmlUtils.class);
+
+
+    /**
+     * Creates a new namespace-aware DOM document object by parsing the given XML.
+     *
+     * @param xml XML content.
+     *
+     * @return DOM document.
+     */
+    public static Document newDocument(final String xml) {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        final Map<String, Boolean> features = new HashMap<String, Boolean>();
+        features.put(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        features.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        for (final Map.Entry<String, Boolean> entry : features.entrySet()) {
+            try {
+                factory.setFeature(entry.getKey(), entry.getValue());
+            } catch (ParserConfigurationException e) {
+                LOGGER.warn("Failed setting XML feature {}: {}", entry.getKey(), e);
+            }
+        }
+        factory.setNamespaceAware(true);
+        try {
+            return factory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+        } catch (Exception e) {
+            throw new RuntimeException("XML parsing error: " + e);
+        }
+    }
+
+
+    /**
+     * Compiles the given XPath expression.
+     *
+     * @param expression XPath expression.
+     * @param nsContext XML namespace context for resolving namespace prefixes in XPath expressions.
+     *
+     * @return Compiled XPath expression.
+     */
+    public static XPathExpression compileXPath(final String expression, final NamespaceContext nsContext) {
+        try {
+            final XPath xPath = XPathFactory.newInstance().newXPath();
+            xPath.setNamespaceContext(nsContext);
+            return xPath.compile(expression);
+        } catch (XPathExpressionException e) {
+            throw new IllegalArgumentException("Invalid XPath expression");
+        }
+    }
+
+
+    /**
+     * Evaluates the given XPath expression as a string result.
+     *
+     * @param expression XPath expression.
+     * @param nsContext XML namespace context for resolving namespace prefixes in XPath expressions.
+     * @param document DOM document on which to evaluate expression.
+     *
+     * @return Evaluated XPath expression as a string.
+     */
+    public static String evaluateXPathString(
+            final String expression, final NamespaceContext nsContext, final Document document) {
+        try {
+            return (String) compileXPath(expression, nsContext).evaluate(document, XPathConstants.STRING);
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("XPath evaluation error", e);
+        }
+    }
+
+
+
+    /**
+     * Evaluates the given XPath expression as a node list result.
+     *
+     * @param expression XPath expression.
+     * @param nsContext XML namespace context for resolving namespace prefixes in XPath expressions.
+     * @param document DOM document on which to evaluate expression.
+     *
+     * @return Evaluated XPath expression as a node list.
+     */
+    public static NodeList evaluateXPathNodeList(
+            final String expression, final NamespaceContext nsContext, final Document document) {
+        try {
+            return (NodeList) compileXPath(expression, nsContext).evaluate(document, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("XPath evaluation error", e);
+        }
+    }
+
 
     /**
      * Get an instance of an XML reader from the XMLReaderFactory.
@@ -61,6 +155,7 @@ public final class XmlUtils {
             throw new RuntimeException("Unable to create XMLReader", e);
         }
     }
+
 
     /**
      * Retrieve the text for a group of elements. Each text element is an entry
