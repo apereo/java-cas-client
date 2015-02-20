@@ -10,7 +10,7 @@ import java.util.Map;
  * Namespace context implementation backed by a map of XML prefixes to namespace URIs.
  *
  * @author Marvin S. Addison
- * @since 3.3.1
+ * @since 3.3.4
  */
 public class MapNamespaceContext implements NamespaceContext {
 
