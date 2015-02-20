@@ -11,7 +11,7 @@ import javax.xml.xpath.*;
  * Thread local XPath expression.
  *
  * @author Marvin S. Addison
- * @since 3.3
+ * @since 3.3.4
  */
 public class ThreadLocalXPathExpression extends ThreadLocal<XPathExpression> implements XPathExpression {
 
