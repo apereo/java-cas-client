@@ -46,6 +46,8 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
      */
     private static final String DEFAULT_CONFIGURATION_FILE_LOCATION = "/etc/java-cas-client.properties";
 
+	private static final String CLASSPATH_PREFIX = "classpath:";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfigurationStrategyImpl.class);
 
     private String simpleFilterName;
@@ -86,6 +88,18 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
         if (CommonUtils.isEmpty(file)) {
             return false;
         }
+
+		if(file.startsWith(CLASSPATH_PREFIX)){
+			String classpathFile = file.substring(CLASSPATH_PREFIX.length());
+			try {
+				properties.load(this.getClass().getClassLoader().getResourceAsStream(classpathFile));
+				return true;
+			} catch (IOException e) {
+				LOGGER.warn("Unable to load properties for file {}", file, e);
+				return false;
+			}
+		}
+
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(file);
