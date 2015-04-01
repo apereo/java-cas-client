@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
+ * This implement support loading properties file from classpath or normal file system.
+ * 1. loading from classpath (classpath:/some_path/cas-java-client.properties)
+ * 2. loading from file system (/etc/cas-java-client.properties)
  * @author Scott Battaglia
  * @since 3.4.0
  */
@@ -46,7 +49,10 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
      */
     private static final String DEFAULT_CONFIGURATION_FILE_LOCATION = "/etc/java-cas-client.properties";
 
-	private static final String CLASSPATH_PREFIX = "classpath:";
+    /**
+     * The classpath file prefix. While file name starts with this, read properties from classpath 
+     */
+    private static final String CLASSPATH_PREFIX = "classpath:";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfigurationStrategyImpl.class);
 
@@ -89,27 +95,27 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
             return false;
         }
 
-		if(file.startsWith(CLASSPATH_PREFIX)){
-			String classpathFile = file.substring(CLASSPATH_PREFIX.length());
-			try {
-				properties.load(this.getClass().getClassLoader().getResourceAsStream(classpathFile));
-				return true;
-			} catch (IOException e) {
-				LOGGER.warn("Unable to load properties for file {}", file, e);
-				return false;
-			}
+	if(file.startsWith(CLASSPATH_PREFIX)){
+		String classpathFile = file.substring(CLASSPATH_PREFIX.length());
+		try {
+			properties.load(this.getClass().getClassLoader().getResourceAsStream(classpathFile));
+			return true;
+		} catch (IOException e) {
+			LOGGER.warn("Unable to load properties for file {}", file, e);
+			return false;
 		}
-
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            this.properties.load(fis);
-            return true;
-        } catch (final IOException e) {
-            LOGGER.warn("Unable to load properties for file {}", file, e);
-            return false;
-        } finally {
-            CommonUtils.closeQuietly(fis);
-        }
+	}else{
+		FileInputStream fis = null;
+	        try {
+	            fis = new FileInputStream(file);
+	            this.properties.load(fis);
+	            return true;
+	        } catch (final IOException e) {
+	            LOGGER.warn("Unable to load properties for file {}", file, e);
+	            return false;
+	        } finally {
+	            CommonUtils.closeQuietly(fis);
+	        }	
+	}
     }
 }
