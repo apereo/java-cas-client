@@ -95,7 +95,7 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
             return false;
         }
 
-	if(file.startsWith(CLASSPATH_PREFIX)){
+	if (file.startsWith(CLASSPATH_PREFIX)) {
 		String classpathFile = file.substring(CLASSPATH_PREFIX.length());
 		try {
 			properties.load(this.getClass().getClassLoader().getResourceAsStream(classpathFile));
@@ -104,7 +104,7 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
 			LOGGER.warn("Unable to load properties for file {}", file, e);
 			return false;
 		}
-	}else{
+	} else {
 		FileInputStream fis = null;
 	        try {
 	            fis = new FileInputStream(file);
