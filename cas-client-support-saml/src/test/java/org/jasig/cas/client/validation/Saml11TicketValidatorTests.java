@@ -46,7 +46,7 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
 
     @Before
     public void setUp() throws Exception {
-        this.validator = new Saml11TicketValidator(CONST_CAS_SERVER_URL_PREFIX + "9051");
+        this.validator = new Saml11TicketValidator(AbstractTicketValidatorTests.CONST_CAS_SERVER_URL_PREFIX + "9051");
         this.validator.setTolerance(1000L);
     }
 
