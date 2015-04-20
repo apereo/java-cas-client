@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -48,6 +47,17 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
      * Default location of the configuration file.  Mostly for testing/demo.  You will most likely want to configure an alternative location.
      */
     private static final String DEFAULT_CONFIGURATION_FILE_LOCATION = "/etc/java-cas-client.properties";
+
+    /**
+     * Indicate which system properties should be defined as context-aware
+     */
+    private static final String ENV_PROFILE_REF_KEY = "envProfileKey";
+
+    private static final String DEFAULT_ENV_PROFILE_KEY = "spring.profiles.active";
+
+    private static final String DEFAULT_SPRING_ENV_PROFILE_KEY = "spring.profiles.default";
+
+    private String envProfile;
 
     /**
      * The classpath file prefix. While file name starts with this, read properties from classpath 
@@ -75,6 +85,9 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
     }
 
     public void init(final FilterConfig filterConfig, final Class<? extends Filter> filterClazz) {
+
+        initEnvProfile(filterConfig);
+
         this.simpleFilterName = filterClazz.getSimpleName();
         final String fileLocationFromFilterConfig = filterConfig.getInitParameter(CONFIGURATION_FILE_LOCATION);
         final boolean filterConfigFileLoad = loadPropertiesFromFile(fileLocationFromFilterConfig);
@@ -90,32 +103,56 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
         }
     }
 
+    private void initEnvProfile(FilterConfig filterConfig) {
+        String envProfileRefKey = filterConfig.getInitParameter(ENV_PROFILE_REF_KEY);
+        if(envProfileRefKey == null){
+            envProfileRefKey = DEFAULT_ENV_PROFILE_KEY;
+        }
+
+        this.envProfile = System.getProperty(envProfileRefKey);
+        if(this.envProfile == null){
+            //load from context param for spring.profiles.default
+            this.envProfile = filterConfig.getServletContext().getInitParameter(DEFAULT_SPRING_ENV_PROFILE_KEY);
+        }
+
+        if(this.envProfile == null){
+            throw new RuntimeException("environment profile key can't be null. such as spring.profiles.active ?");
+        }
+    }
+
     private boolean loadPropertiesFromFile(final String file) {
         if (CommonUtils.isEmpty(file)) {
             return false;
         }
 
-	if (file.startsWith(CLASSPATH_PREFIX)) {
-		String classpathFile = file.substring(CLASSPATH_PREFIX.length());
-		try {
-			properties.load(this.getClass().getClassLoader().getResourceAsStream(classpathFile));
-			return true;
-		} catch (IOException e) {
-			LOGGER.warn("Unable to load properties for file {}", file, e);
-			return false;
-		}
-	} else {
-		FileInputStream fis = null;
-	        try {
-	            fis = new FileInputStream(file);
-	            this.properties.load(fis);
-	            return true;
-	        } catch (final IOException e) {
-	            LOGGER.warn("Unable to load properties for file {}", file, e);
-	            return false;
-	        } finally {
-	            CommonUtils.closeQuietly(fis);
-	        }	
-	}
+        //filter config file name
+        String filteredFile = filterFileName(file);
+
+        if (filteredFile.startsWith(CLASSPATH_PREFIX)) {
+            String classpathFile = filteredFile.substring(CLASSPATH_PREFIX.length());
+            try {
+                properties.load(this.getClass().getClassLoader().getResourceAsStream(classpathFile));
+                return true;
+            } catch (IOException e) {
+                LOGGER.warn("Unable to load properties for file {}", filteredFile, e);
+                return false;
+            }
+        } else {
+            FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(filteredFile);
+                    this.properties.load(fis);
+                    return true;
+                } catch (final IOException e) {
+                    LOGGER.warn("Unable to load properties for file {}", filteredFile, e);
+                    return false;
+                } finally {
+                    CommonUtils.closeQuietly(fis);
+                }
+        }
+    }
+
+    private String filterFileName(String file) {
+        return String.format(file,this.envProfile);
     }
 }
