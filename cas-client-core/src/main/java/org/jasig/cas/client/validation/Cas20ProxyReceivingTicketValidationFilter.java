@@ -68,13 +68,23 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
     private int millisBetweenCleanUps;
 
+    protected Class<? extends Cas20ServiceTicketValidator> defaultServiceTicketValidatorClass;
+
+    protected Class<? extends Cas20ProxyTicketValidator> defaultProxyTicketValidatorClass;
+
     /**
      * Storage location of ProxyGrantingTickets and Proxy Ticket IOUs.
      */
     private ProxyGrantingTicketStorage proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
 
     public Cas20ProxyReceivingTicketValidationFilter() {
-        super(Protocol.CAS2);
+        this(Protocol.CAS2);
+        this.defaultServiceTicketValidatorClass = Cas20ServiceTicketValidator.class;
+        this.defaultProxyTicketValidatorClass = Cas20ProxyTicketValidator.class;
+    }
+
+    protected Cas20ProxyReceivingTicketValidationFilter(final Protocol protocol) {
+        super(protocol);
     }
 
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
@@ -144,13 +154,13 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
 
         if (allowAnyProxy || CommonUtils.isNotBlank(allowedProxyChains)) {
             final Cas20ProxyTicketValidator v = createNewTicketValidator(ticketValidatorClass, casServerUrlPrefix,
-                    Cas20ProxyTicketValidator.class);
+                    this.defaultProxyTicketValidatorClass);
             v.setAcceptAnyProxy(allowAnyProxy);
             v.setAllowedProxyChains(CommonUtils.createProxyList(allowedProxyChains));
             validator = v;
         } else {
             validator = createNewTicketValidator(ticketValidatorClass, casServerUrlPrefix,
-                    Cas20ServiceTicketValidator.class);
+                    this.defaultServiceTicketValidatorClass);
         }
         validator.setProxyCallbackUrl(getString(ConfigurationKeys.PROXY_CALLBACK_URL));
         validator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
