@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
  * @author Marvin S. Addison
  * @since 3.3.4
  */
-public class IOUtils {
+public final class IOUtils {
 
     /** UTF-8 character set. */
     public static final Charset UTF8 = Charset.forName("UTF-8");
