@@ -16,10 +16,10 @@ import javax.xml.xpath.*;
 public class ThreadLocalXPathExpression extends ThreadLocal<XPathExpression> implements XPathExpression {
 
     /** XPath expression */
-    private String expression;
+    private final String expression;
 
     /** Namespace context. */
-    private NamespaceContext context;
+    private final NamespaceContext context;
 
     /**
      * Creates a new instance from an XPath expression and namespace context.
