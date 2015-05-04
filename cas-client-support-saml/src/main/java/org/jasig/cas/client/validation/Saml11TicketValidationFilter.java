@@ -32,6 +32,7 @@ import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
  * context or filter init parameters.
  *
  * @author Scott Battaglia
+ * @author Marvin S. Addison
  * @version $Revision$ $Date$
  * @since 3.1
  */

@@ -40,6 +40,7 @@ import javax.xml.namespace.NamespaceContext;
  * TicketValidator that can understand validating a SAML artifact.  This includes the SOAP request/response.
  *
  * @author Scott Battaglia
+ * @author Marvin S. Addison
  * @since 3.1
  */
 public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator {
