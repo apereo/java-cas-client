@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Date;
 import org.jasig.cas.client.PublicTestHttpServer;
-import org.jasig.cas.client.util.CommonUtils;
+import org.jasig.cas.client.util.SamlUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
@@ -83,13 +83,13 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
         final Interval range = currentTimeRangeInterval();
         final Date now = new Date();
         final String RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><Response xmlns=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" IssueInstant=\""
-                + CommonUtils.formatForUtcTime(now)
+                + SamlUtils.formatForUtcTime(now)
                 + "\" MajorVersion=\"1\" MinorVersion=\"1\" Recipient=\"test\" ResponseID=\"_e1e2124c08ab456eab0bbab3e1c0c433\"><Status><StatusCode Value=\"samlp:Success\"></StatusCode></Status><Assertion xmlns=\"urn:oasis:names:tc:SAML:1.0:assertion\" AssertionID=\"_d2fd0d6e4da6a6d7d2ba5274ab570d5c\" IssueInstant=\""
-                + CommonUtils.formatForUtcTime(now)
+                + SamlUtils.formatForUtcTime(now)
                 + "\" Issuer=\"testIssuer\" MajorVersion=\"1\" MinorVersion=\"1\"><Conditions NotBefore=\""
-                + CommonUtils.formatForUtcTime(range.getStart().toDate())
+                + SamlUtils.formatForUtcTime(range.getStart().toDate())
                 + "\" NotOnOrAfter=\""
-                + CommonUtils.formatForUtcTime(range.getEnd().toDate())
+                + SamlUtils.formatForUtcTime(range.getEnd().toDate())
                 + "\"><AudienceRestrictionCondition><Audience>test</Audience></AudienceRestrictionCondition></Conditions><AuthenticationStatement AuthenticationInstant=\"2008-06-19T14:34:44.426Z\" AuthenticationMethod=\"urn:ietf:rfc:2246\"><Subject><NameIdentifier>testPrincipal</NameIdentifier><SubjectConfirmation><ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</ConfirmationMethod></SubjectConfirmation></Subject></AuthenticationStatement></Assertion></Response></SOAP-ENV:Body></SOAP-ENV:Envelope>";
         server.content = RESPONSE.getBytes(server.encoding);
         try {
@@ -107,21 +107,21 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
 
         final String response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap11:Envelope xmlns:soap11=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap11:Body>"
                 + "<saml1p:Response xmlns:saml1p=\"urn:oasis:names:tc:SAML:1.0:protocol\" InResponseTo=\"_fd1632b5dfa921623e7ca6f9ab727161\" IssueInstant=\""
-                + CommonUtils.formatForUtcTime(now)
+                + SamlUtils.formatForUtcTime(now)
                 + "\" MajorVersion=\"1\" MinorVersion=\"1\" Recipient=\"https://example.com/test-client/secure/?TARGET=https%3A%2F%2Fexample.com%2Ftest-client%2Fsecure%2F\" ResponseID=\"_436dbb2cca5166af29250f431a07888f\">"
                 + "<saml1p:Status><saml1p:StatusCode Value=\"saml1p:Success\"/></saml1p:Status>"
                 + "<saml1:Assertion xmlns:saml1=\"urn:oasis:names:tc:SAML:1.0:assertion\" IssueInstant=\""
-                + CommonUtils.formatForUtcTime(now)
+                + SamlUtils.formatForUtcTime(now)
                 + "\" Issuer=\"localhost\" MajorVersion=\"1\" MinorVersion=\"1\">"
                 + "<saml1:Conditions NotBefore=\""
-                + CommonUtils.formatForUtcTime(range.getStart().toDate())
+                + SamlUtils.formatForUtcTime(range.getStart().toDate())
                 + "\" NotOnOrAfter=\""
-                + CommonUtils.formatForUtcTime(range.getEnd().toDate())
+                + SamlUtils.formatForUtcTime(range.getEnd().toDate())
                 + "\">"
                 + "<saml1:AudienceRestrictionCondition><saml1:Audience>https://example.com/test-client/secure/</saml1:Audience>"
                 + "</saml1:AudienceRestrictionCondition></saml1:Conditions>"
                 + "<saml1:AuthenticationStatement AuthenticationInstant=\""
-                + CommonUtils.formatForUtcTime(now)
+                + SamlUtils.formatForUtcTime(now)
                 + "\" AuthenticationMethod=\"urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport\">"
                 + "<saml1:Subject><saml1:NameIdentifier>testPrincipal</saml1:NameIdentifier>"
                 + "<saml1:SubjectConfirmation><saml1:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</saml1:ConfirmationMethod></saml1:SubjectConfirmation>"
