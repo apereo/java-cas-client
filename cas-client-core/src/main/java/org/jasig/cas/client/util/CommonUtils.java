@@ -18,15 +18,28 @@
  */
 package org.jasig.cas.client.util;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
@@ -55,6 +68,11 @@ public final class CommonUtils {
      * Constant representing the ProxyGrantingTicket Request Parameter.
      */
     private static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
+    
+    /**
+     * A pattern to parse a server name into scheme, host, and port
+     */
+    private static final Pattern PATTERN_SERVER_NAME = Pattern.compile("(?:(https?)://)?([^:]*):?(\\d+)?");
 
     private static final HttpURLConnectionFactory DEFAULT_URL_CONNECTION_FACTORY = new HttpsURLConnectionFactory();
 
@@ -230,7 +248,7 @@ public final class CommonUtils {
         final String xHost = request.getHeader("X-Forwarded-Host");
 
         final String comparisonHost;
-        if (xHost != null && host == "localhost") {
+        if (xHost != null) {
             comparisonHost = xHost;
         } else {
             comparisonHost = host;
@@ -251,19 +269,14 @@ public final class CommonUtils {
         return serverNames[0];
     }
 
-    private static boolean serverNameContainsPort(final boolean containsScheme, final String serverName) {
-        if (!containsScheme && serverName.contains(":")) {
-            return true;
+    private static int standardPort(String scheme) {
+        if ("https".equalsIgnoreCase(scheme)) {
+            return 443;
         }
-
-        final int schemeIndex = serverName.indexOf(":");
-        final int portIndex = serverName.lastIndexOf(":");
-        return schemeIndex != portIndex;
-    }
-
-    private static boolean requestIsOnStandardPort(final HttpServletRequest request) {
-        final int serverPort = request.getServerPort();
-        return serverPort == 80 || serverPort == 443;
+        else if ("http".equalsIgnoreCase(scheme)) {
+            return 80;
+        }
+        throw new IllegalArgumentException("unknown scheme [" + scheme + "]");
     }
 
     /**
@@ -291,19 +304,55 @@ public final class CommonUtils {
 
         final String serverName = findMatchingServerName(request, serverNames);
 
-        boolean containsScheme = true;
-        if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
-            buffer.append(request.isSecure() ? "https://" : "http://");
-            containsScheme = false;
+        String scheme = null;
+        String hostname = null;
+        int port = -1;
+
+        // parser serverName to see which parts it defines
+        Matcher matcher = PATTERN_SERVER_NAME.matcher(serverName);
+        if (matcher.find()) {
+            if (matcher.group(1) != null) {
+                scheme = matcher.group(1);
+            }
+            hostname = matcher.group(2);
+            if (matcher.group( 3 ) != null) {
+                port = Integer.parseInt(matcher.group(3));
+            }
+        }
+        else {
+            throw new IllegalArgumentException( "serverName [" + serverName + "] is invalid" );
         }
 
-        buffer.append(serverName);
-
-        if (!serverNameContainsPort(containsScheme, serverName) && !requestIsOnStandardPort(request)) {
-            buffer.append(":");
-            buffer.append(request.getServerPort());
+        if (scheme == null) {
+            String forwardedScheme = request.getHeader("X-Forwarded-Proto");
+            if ( forwardedScheme != null && !forwardedScheme.isEmpty() ) {
+                scheme = forwardedScheme.split(",")[0].trim();
+            }
+            else {
+                scheme = request.isSecure() ? "https" : "http";
+            }
         }
 
+        if (port < 0) {
+            port = request.getServerPort();
+
+            String forwardedHost = request.getHeader("X-Forwarded-Host");
+            if (forwardedHost != null && !forwardedHost.isEmpty()) {
+                String[] hostAndPort = forwardedHost.split(",")[0].split(":");   
+                if (hostAndPort.length > 1) {
+                    port = Integer.parseInt(hostAndPort[1].trim());
+                }
+                else {
+                    port = standardPort(scheme);
+                }
+            }
+        }
+
+        buffer.append(scheme).append("://").append(hostname);
+        if (port != standardPort(scheme)) {
+            buffer.append(":").append(port);
+        }
+            
         buffer.append(request.getRequestURI());
 
         if (CommonUtils.isNotBlank(request.getQueryString())) {

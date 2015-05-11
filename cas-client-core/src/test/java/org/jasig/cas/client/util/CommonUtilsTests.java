@@ -129,6 +129,7 @@ public final class CommonUtilsTests extends TestCase {
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
+        request.setServerPort(443);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
                 "ticket", false);
@@ -163,6 +164,7 @@ public final class CommonUtilsTests extends TestCase {
         request.addHeader("Host", "www.myserver.com");
         request.setScheme("https");
         request.setSecure(true);
+        request.setServerPort(443);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
                 "www.amazon.com www.bestbuy.com www.myserver.com", "ticket", false);
@@ -175,9 +177,25 @@ public final class CommonUtilsTests extends TestCase {
         request.addHeader("Host", "www.myserver.com");
         request.setScheme("https");
         request.setSecure(true);
+        request.setServerPort(443);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
                 "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "ticket", false);
+        assertEquals(CONST_MY_URL, constructedUrl);
+    }
+
+    public void testConstructURlWithXForwarded() {
+        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.addHeader("Host", "internal.myserver.com:12345");
+        request.addHeader("X-Forwarded-Host", "www.myserver.com");
+        request.addHeader("X-Forwarded-Proto", "https");
+        request.setScheme("http");
+        request.setSecure(false);
+        request.setServerPort(80);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+                "http://notme https://www.myserver.com https://notmeeither", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
