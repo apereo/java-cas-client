@@ -40,10 +40,7 @@ public final class AssertionThreadLocalFilter implements Filter {
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
             final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpSession session = request.getSession(false);
-        final Assertion assertion = (Assertion) (session == null ? request
-                .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : session
-                .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION));
+        final Assertion assertion = CommonUtils.retrieveAssertionFromRequestOrSession(request);
 
         try {
             AssertionHolder.setAssertion(assertion);

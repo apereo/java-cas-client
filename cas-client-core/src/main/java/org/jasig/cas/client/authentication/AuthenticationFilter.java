@@ -25,7 +25,6 @@ import java.util.Map;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
@@ -148,8 +147,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             return;
         }
         
-        final HttpSession session = request.getSession(false);
-        final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
+        final Assertion assertion = CommonUtils.retrieveAssertionFromRequestOrSession(request);
 
         if (assertion != null) {
             filterChain.doFilter(request, response);

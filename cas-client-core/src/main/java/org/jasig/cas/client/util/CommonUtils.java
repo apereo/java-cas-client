@@ -27,9 +27,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
+import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
@@ -465,5 +468,17 @@ public final class CommonUtils {
         } catch (final IOException e) {
             //ignore
         }
+    }
+
+    /**
+     * Retrieves the {@link Assertion} object from request or session.
+     * @param request the HttpServletRequest.  CANNOT be NULL.
+     * @return the {@link Assertion} object if it exists, null otherwise.
+     */
+    public static Assertion retrieveAssertionFromRequestOrSession(final HttpServletRequest request) {
+        final HttpSession session = request.getSession(false);
+        return (Assertion) (session == null ? request
+                .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : session
+                .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION));
     }
 }
