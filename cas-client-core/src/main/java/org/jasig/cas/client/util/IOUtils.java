@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
  * IO utility class.
  *
  * @author Marvin S. Addison
- * @since 3.3.4
+ * @since 3.4
  */
 public final class IOUtils {
 

@@ -3,7 +3,7 @@
     <parent>
         <artifactId>cas-client</artifactId>
         <groupId>org.jasig.cas.client</groupId>
-        <version>3.3.4-SNAPSHOT</version>
+        <version>3.4.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Jasig CAS Client for Java - Distributed Proxy Storage Support: EhCache
