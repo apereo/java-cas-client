@@ -120,9 +120,9 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         try {
             final Document document = XmlUtils.newDocument(response);
-            final Date assertionValidityStart = CommonUtils.parseUtcDate(
+            final Date assertionValidityStart = SamlUtils.parseUtcDate(
                     XPATH_ASSERTION_DATE_START.evaluateAsString(document));
-            final Date assertionValidityEnd = CommonUtils.parseUtcDate(
+            final Date assertionValidityEnd = SamlUtils.parseUtcDate(
                     XPATH_ASSERTION_DATE_END.evaluateAsString(document));
             if (!isValidAssertion(assertionValidityStart, assertionValidityEnd)) {
                 throw new TicketValidationException("Invalid SAML assertion");
@@ -191,7 +191,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         final String request = String.format(
                 SAML_REQUEST_TEMPLATE,
                 generateId(),
-                CommonUtils.formatForUtcTime(new Date()),
+                SamlUtils.formatForUtcTime(new Date()),
                 ticket);
         HttpURLConnection conn = null;
         try {
