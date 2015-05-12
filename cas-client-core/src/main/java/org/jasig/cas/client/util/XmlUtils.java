@@ -19,16 +19,20 @@
 package org.jasig.cas.client.util;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
@@ -44,6 +48,34 @@ public final class XmlUtils {
      * Static instance of Commons Logging.
      */
     private final static Logger LOGGER = LoggerFactory.getLogger(XmlUtils.class);
+
+
+    /**
+     * Creates a new namespace-aware DOM document object by parsing the given XML.
+     *
+     * @param xml XML content.
+     *
+     * @return DOM document.
+     */
+    public static Document newDocument(final String xml) {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        final Map<String, Boolean> features = new HashMap<String, Boolean>();
+        features.put(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        features.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        for (final Map.Entry<String, Boolean> entry : features.entrySet()) {
+            try {
+                factory.setFeature(entry.getKey(), entry.getValue());
+            } catch (ParserConfigurationException e) {
+                LOGGER.warn("Failed setting XML feature {}: {}", entry.getKey(), e);
+            }
+        }
+        factory.setNamespaceAware(true);
+        try {
+            return factory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+        } catch (Exception e) {
+            throw new RuntimeException("XML parsing error: " + e);
+        }
+    }
 
     /**
      * Get an instance of an XML reader from the XMLReaderFactory.
@@ -61,6 +93,7 @@ public final class XmlUtils {
             throw new RuntimeException("Unable to create XMLReader", e);
         }
     }
+
 
     /**
      * Retrieve the text for a group of elements. Each text element is an entry

@@ -34,10 +34,6 @@ public abstract class AbstractCasProtocolUrlBasedTicketValidator extends Abstrac
         super(casServerUrlPrefix);
     }
 
-    protected final void setDisableXmlSchemaValidation(final boolean disable) {
-        // nothing to do
-    }
-
     /**
      * Retrieves the response from the server by opening a connection and merely reading the response.
      */

@@ -1,0 +1,8 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns="urn:oasis:names:tc:SAML:1.0:protocol">
+    <soap:Header/>
+    <soap:Body>
+        <Request MajorVersion="1" MinorVersion="1" RequestID="%s" IssueInstant="%s">
+            <AssertionArtifact>%s</AssertionArtifact>
+        </Request>
+    </soap:Body>
+</soap:Envelope>
