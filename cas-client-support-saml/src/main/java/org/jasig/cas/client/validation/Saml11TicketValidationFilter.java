@@ -32,6 +32,7 @@ import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
  * context or filter init parameters.
  *
  * @author Scott Battaglia
+ * @author Marvin S. Addison
  * @version $Revision$ $Date$
  * @since 3.1
  */
@@ -47,12 +48,10 @@ public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter
         validator.setTolerance(tolerance);
         validator.setRenew(getBoolean(ConfigurationKeys.RENEW));
 
-        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(),
-                getSSLConfig());
+        final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(), getSSLConfig());
         validator.setURLConnectionFactory(factory);
 
         validator.setEncoding(getString(ConfigurationKeys.ENCODING));
-        validator.setDisableXmlSchemaValidation(getBoolean(ConfigurationKeys.DISABLE_XML_SCHEMA_VALIDATION));
         return validator;
     }
 }
