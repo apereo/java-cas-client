@@ -20,6 +20,7 @@ package org.jasig.cas.client.util;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
@@ -259,70 +260,59 @@ public final class CommonUtils {
     }
 
     /**
-         * Constructs a service url from the HttpServletRequest or from the given
-         * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
-         * serviceName.
-         *
-         * @param request  the HttpServletRequest
-         * @param response the HttpServletResponse
-         * @param service the configured service url (this will be used if not null)
-         * @param serverNames the server name to  use to constuct the service url if the service param is empty.  Note, prior to CAS Client 3.3, this was a single value.
-         *           As of 3.3, it can be a space-separated value.  We keep it as a single value, but will convert it to an array internally to get the matching value. This keeps backward compatability with anything using this public
-         *           method.
-         * @param artifactParameterName the artifact parameter name to remove (i.e. ticket)
-         * @param encode whether to encode the url or not (i.e. Jsession).    
-         * @return the service url to use.
-         */
+     * Constructs a service url from the HttpServletRequest or from the given
+     * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
+     * serviceName.
+     *
+     * @param request the HttpServletRequest
+     * @param response the HttpServletResponse
+     * @param service the configured service url (this will be used if not null)
+     * @param serverNames the server name to  use to constuct the service url if the service param is empty.  Note, prior to CAS Client 3.3, this was a single value.
+     *           As of 3.3, it can be a space-separated value.  We keep it as a single value, but will convert it to an array internally to get the matching value. This keeps backward compatability with anything using this public
+     *           method.
+     * @param serviceParameterName the service parameter name to remove (i.e. service)
+     * @param artifactParameterName the artifact parameter name to remove (i.e. ticket)
+     * @param encode whether to encode the url or not (i.e. Jsession).
+     * @return the service url to use.
+     */
     public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response,
-            final String service, final String serverNames, final String artifactParameterName, final boolean encode) {
+            final String service, final String serverNames, final String serviceParameterName,
+            final String artifactParameterName, final boolean encode) {
         if (CommonUtils.isNotBlank(service)) {
             return encode ? response.encodeURL(service) : service;
         }
 
-        final StringBuilder buffer = new StringBuilder();
-
         final String serverName = findMatchingServerName(request, serverNames);
+        final URIBuilder originalRequestUrl = new URIBuilder(request.getRequestURL().toString(), encode);
+        originalRequestUrl.setParameters(request.getQueryString());
+
+        URIBuilder builder = null;
 
         boolean containsScheme = true;
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
-            buffer.append(request.isSecure() ? "https://" : "http://");
+            builder = new URIBuilder(encode);
+            builder.setScheme(request.isSecure() ? "https" : "http");
+            builder.setHost(serverName);
             containsScheme = false;
+        }  else {
+            builder = new URIBuilder(serverName, encode);
         }
 
-        buffer.append(serverName);
 
         if (!serverNameContainsPort(containsScheme, serverName) && !requestIsOnStandardPort(request)) {
-            buffer.append(":");
-            buffer.append(request.getServerPort());
+            builder.setPort(request.getServerPort());
         }
 
-        buffer.append(request.getRequestURI());
+        builder.setEncodedPath(request.getRequestURI());
 
-        if (CommonUtils.isNotBlank(request.getQueryString())) {
-            final int location = request.getQueryString().indexOf(artifactParameterName + "=");
-
-            if (location == 0) {
-                final String returnValue = encode ? response.encodeURL(buffer.toString()) : buffer.toString();
-                LOGGER.debug("serviceUrl generated: {}", returnValue);
-                return returnValue;
-            }
-
-            buffer.append("?");
-
-            if (location == -1) {
-                buffer.append(request.getQueryString());
-            } else if (location > 0) {
-                final int actualLocation = request.getQueryString().indexOf("&" + artifactParameterName + "=");
-
-                if (actualLocation == -1) {
-                    buffer.append(request.getQueryString());
-                } else if (actualLocation > 0) {
-                    buffer.append(request.getQueryString().substring(0, actualLocation));
-                }
+        for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
+            if (!pair.getName().equals(artifactParameterName) && !pair.getName().equals(serviceParameterName)) {
+                builder.addParameter(pair.getName(), pair.getValue());
             }
         }
 
-        final String returnValue = encode ? response.encodeURL(buffer.toString()) : buffer.toString();
+        final String result = builder.toString();
+        final String returnValue = encode ? response.encodeURL(result) : result;
         LOGGER.debug("serviceUrl generated: {}", returnValue);
         return returnValue;
     }
