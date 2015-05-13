@@ -102,6 +102,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
 
     protected final String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response) {
         return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName,
+                this.protocol.getServiceParameterName(),
                 this.protocol.getArtifactParameterName(), this.encodeServiceUrl);
     }
 

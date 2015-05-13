@@ -86,7 +86,7 @@ public final class AuthenticatorDelegate {
             logger.debug("CAS assertion not found in session -- authentication required.");
             final String token = request.getParameter(this.artifactParameterName);
             final String service = CommonUtils.constructServiceUrl(request, response, this.serviceUrl, this.serverName,
-                    this.artifactParameterName, true);
+                    this.serviceParameterName, this.artifactParameterName, true);
             if (CommonUtils.isBlank(token)) {
                 final String redirectUrl = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
                         this.serviceParameterName, service, false, false);
