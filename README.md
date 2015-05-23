@@ -92,6 +92,35 @@ All client artifacts are published to Maven central. Depending on functionality,
 <a name="configurtion"></a>
 ## Configurtion
 
+### Strategies
+The client provide multiple strategies/options for the deployer to provide options and settings. The following strategies are supported:
+
+- JNDI (`JNDI`)
+- Properties File (`PROPERTY_FILE`). The configuration is provided via an external properties file. The path may be specified in the web context as such:
+
+```xml
+<context-param>
+    <param-name>configFileLocation</param-name>
+    <param-value>/etc/cas/file.properties</param-value>
+</context-param>
+```
+If no location is specified, by default `/etc/java-cas-client.properties` will be used.
+
+- System Properties (`SYSTEM_PROPERTIES`)
+- Web Context (`WEB_XML`)
+- Default (`DEFAULT`)
+
+In order to instruct the client to pick a strategy, strategy name must be specified in the web application's context:
+
+```xml
+<context-param>
+    <param-name>configurationStrategy</param-name>
+    <param-value>DEFAULT</param-value>
+</context-param>
+```
+
+If no `configurationStrategy` is defined, `DEFAULT` is used which is a combination of `WEB_XML` and `JNDI`. 
+
 <a name="client-configuration-using-webxml"></a>
 ### Client Configuration Using `web.xml`
 
@@ -270,7 +299,6 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 | `ticketValidatorClass` | Ticket validator class to use/create | No
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
-<a name="orgjasigcasclientvalidationcas30proxyreceivingticketvalidationfilter"></a>
 #### org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
 
@@ -526,7 +554,6 @@ The Single Sign Out support in CAS consists of configuring one `SingleSignOutFil
 
 The `SingleSignOutFilter` can affect character encoding. This becomes most obvious when used in conjunction with applications such as Atlassian Confluence. Its recommended you explicitly configure either the [VT Character Encoding Filter](http://code.google.com/p/vt-middleware/wiki/vtservletfilters#CharacterEncodingFilter) or the [Spring Character Encoding Filter](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/filter/CharacterEncodingFilter.html) with explicit encodings.
 
-<a name="configuration"></a>
 #### Configuration
 
 | Property | Description | Required
@@ -632,7 +659,6 @@ cas {
 | `cacheTimeout` | Assertion cache timeout in minutes. | No
 | `tolerance` | The tolerance for drifting clocks when validating SAML tickets. | No
 
-<a name="programmatic-jaas-login-using-the-servlet-3"></a>
 ### Programmatic JAAS login using the Servlet 3
 A `org.jasig.cas.client.jaas.Servlet3AuthenticationFilter` servlet filter that performs a programmatic JAAS login using the Servlet 3.0 `HttpServletRequest#login()` facility. This component should be compatible with any servlet container that supports the Servlet 3.0/JEE6 specification.
  
@@ -864,7 +890,7 @@ The following example shows how to configure a Context for dynamic role data pro
 ## Atlassian Integration
 The clien includes Atlassian Confluence and JIRA support. Support is enabled by a custom CAS authenticator that extends the default authenticators.
 
-<a name="configuration-1"></a>
+<a name="configuration"></a>
 ### Configuration
 
 <a name="jira_home-location"></a>
