@@ -1,57 +1,5 @@
 # Java Apereo CAS Client [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jasig.cas.client/cas-client-core/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.jasig.cas/cas-server)
 
-<!-- MarkdownTOC -->
-
-- [Intro][intro]
-- [Components][components]
-- [Configurtion][configurtion]
-  - [Client Configuration Using `web.xml`][client-configuration-using-webxml]
-    - [org.jasig.cas.client.authentication.AuthenticationFilter][orgjasigcasclientauthenticationauthenticationfilter]
-    - [org.jasig.cas.client.authentication.Saml11AuthenticationFilter][orgjasigcasclientauthenticationsaml11authenticationfilter]
-    - [rg.jasig.cas.client.validation.Cas10TicketValidationFilter][rgjasigcasclientvalidationcas10ticketvalidationfilter]
-    - [org.jasig.cas.client.validation.Saml11TicketValidationFilter][orgjasigcasclientvalidationsaml11ticketvalidationfilter]
-    - [org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter][orgjasigcasclientvalidationcas20proxyreceivingticketvalidationfilter]
-    - [org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter][orgjasigcasclientvalidationcas30proxyreceivingticketvalidationfilter]
-    - [org.jasig.cas.client.util.HttpServletRequestWrapperFilter][orgjasigcasclientutilhttpservletrequestwrapperfilter]
-    - [org.jasig.cas.client.util.AssertionThreadLocalFilter][orgjasigcasclientutilassertionthreadlocalfilter]
-  - [Client Configuration Using Spring][client-configuration-using-spring]
-    - [Bean Configuration][bean-configuration]
-  - [Client Configuration Using JNDI][client-configuration-using-jndi]
-    - [Example][example]
-  - [Configuring Single Sign Out][configuring-single-sign-out]
-    - [Configuration][configuration]
-    - [CAS Protocol][cas-protocol]
-    - [SAML Protocol][saml-protocol]
-    - [Recommend Logout Procedure][recommend-logout-procedure]
-- [JAAS][jaas]
-  - [Configure CasLoginModule][configure-casloginmodule]
-  - [Programmatic JAAS login using the Servlet 3][programmatic-jaas-login-using-the-servlet-3]
-- [JBoss Integration][jboss-integration]
-  - [Configure Servlet Filters][configure-servlet-filters]
-- [Tomcat 6/7 Integration][tomcat-67-integration]
-  - [Component Overview][component-overview]
-    - [Authenticators][authenticators]
-    - [Realms][realms]
-    - [Valves][valves]
-  - [Container Setup][container-setup]
-  - [Context Configuration][context-configuration]
-- [Atlassian Integration][atlassian-integration]
-  - [Configuration][configuration-1]
-    - [$JIRA_HOME Location][jira_home-location]
-    - [$CONFLUENCE_INSTALL Description][confluence_install-description]
-    - [Changes to web.xml][changes-to-webxml]
-    - [Modify the seraph-config.xml][modify-the-seraph-configxml]
-    - [CAS Authenticator][cas-authenticator]
-    - [Confluence CAS Logout][confluence-cas-logout]
-    - [Copy Jars][copy-jars]
-- [Spring Security Integration][spring-security-integration]
-  - [Changes to web.xml][changes-to-webxml-1]
-  - [Changes to applicationContext-security.xml][changes-to-applicationcontext-securityxml]
-- [Build][build]
-
-<!-- /MarkdownTOC -->
-
-
 <a name="intro"></a>
 ## Intro
 This is the official home of the Java Apereo CAS client. The client consists of a collection of Servlet filters that are suitable for most Java-based web applications. It also serves as an API platform to interact with the CAS server programmatically to make authentication requests, validate tickets and consume principal attributes.
