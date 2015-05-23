@@ -543,7 +543,7 @@ A general JAAS authentication module, `CasLoginModule`, is available with the sp
 ### Configure CasLoginModule
 It is expected that for JEE applications both authentication and authorization services will be required for CAS integration. The following JAAS module configuration file excerpt demonstrates how to leverage SAML 1.1 attribute release in CAS to provide authorization data in addition to authentication:
 
-```json
+```
 cas {
   org.jasig.cas.client.jaas.CasLoginModule required
     ticketValidatorClass="org.jasig.cas.client.validation.Saml11TicketValidator"
@@ -644,9 +644,144 @@ If you have any trouble, you can enable the log of cas in `jboss-logging.xml` by
 </logger>
 ``` 
 
-## Tomcat 6 Integration
+## Tomcat 6/7 Integration
+The client supports container-based CAS authentication and authorization support for the Tomcat servlet container. 
 
-## Tomcat 7 Integration
+Suppose a single Tomcat container hosts multiple Web applications with similar authentication and authorization needs. Prior to Tomcat container support, each application would require a similar configuration of CAS servlet filters and authorization configuration in the `web.xml` servlet descriptor. Using the new container-based authentication/authorization feature, a single CAS configuration can be applied to the container and leveraged by all Web applications hosted by the container.
+
+CAS authentication support for Tomcat is based on the Tomcat-specific Realm component. The Realm component has a fairly broad surface area and RealmBase is provided as a convenient superclass for custom implementations; the CAS realm implementations derive from `RealmBase`. Unfortunately RealmBase and related components have proven to change over both major and minor number releases, which requires version-specific CAS components for integration. We have provided two packages with similar components with the hope of supporting all 6.x and 7.x versions. **No support for 5.x is provided.**
+
+### Component Overview
+In the following discussion of components, only the Tomcat 6.x components are mentioned. The Tomcat 7.0.x components have exactly the same name, but **are in the tomcat.v7 package**, e.g. `org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator`.
+
+#### Authenticators
+Authenticators are responsible for performing CAS authentication using a particular protocol. All protocols supported by the Jasig Java CAS client are supported: CAS 1.0, CAS 2.0, and SAML 1.1. The following components provide protocol-specific support:
+
+```
+org.jasig.cas.client.tomcat.v6.Cas10CasAuthenticator
+org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator
+org.jasig.cas.client.tomcat.v6.Cas20ProxyCasAuthenticator
+org.jasig.cas.client.tomcat.v6.Saml11Authenticator
+```
+
+#### Realms
+In terms of CAS configuration, Tomcat realms serve as containers for users and role definitions. The roles defined in a Tomcat realm may be referenced in the web.xml servlet descriptor to define authorization constraints on Web applications hosted by the container. Two sources of user/role data are supported:
+
+```
+org.jasig.cas.client.tomcat.v6.PropertiesCasRealm
+org.jasig.cas.client.tomcat.v6.AssertionCasRealm
+```
+
+`PropertiesCasRealm` uses a Java properties file as a source of static user/role information. This component is conceptually similar to the `MemoryRealm` component that ships with Tomcat and defines user/role data via XML configuration. The PropertiesCasRealm is different in that it explicitly lacks support for passwords, which have no use with CAS.
+
+`AssertionCasRealm` is designed to be used in conjunction with the SAML 1.1. protocol to take advantage of CAS attribute release to provide for dynamic user/role data driven by the CAS server. With this component the deployer may define a role attribute, e.g. memberOf, which could be backed by LDAP group membership information. In that case the user would be added to all roles defined in the SAML attribute assertion for values of the the `memberOf` attribute.
+
+#### Valves
+A number of Tomcat valves are provided to handle functionality outside Realms and Authenticators.
+
+##### Logout Valves
+Logout valves provide a way of destroying the CAS authentication state bound to the container for a particular user/session; the destruction of authenticated state is synonymous with logout for the container and its hosted applications. (Note this does not destroy the CAS SSO session.) The implementations provide various strategies to map a URI onto the state-destroying logout function.
+
+```
+org.jasig.cas.client.tomcat.v6.StaticUriLogoutValve
+org.jasig.cas.client.tomcat.v6.RegexUriLogoutValve
+```
+
+##### SingleSignOutValve
+The `org.jasig.cas.client.tomcat.v6.SingleSignOutValve` allows the container to participate in CAS single sign-out. In particular this valve handles the SAML LogoutRequest message sent from the CAS server that is delivered when the CAS SSO session ends.
+
+##### ProxyCallbackValve
+The `org.jasig.cas.client.tomcat.v6.ProxyCallbackValve` provides a handler for watching request URIs for requests that contain a proxy callback request in support of the CAS 2.0 protocol proxy feature.
+
+### Container Setup
+The version-specific CAS libraries must be placed on the container classpath, `$CATALINA_HOME/lib`.
+
+### Context Configuration
+The Realm, Authenticator, and Valve components are wired together inside a Tomcat Context configuration element. The location and scope of the Context determines the scope of the applied configuration. To apply a CAS configuration to every Web application hosted in the container, configure the default Context at `$CATALINA_HOME/conf/context.xml`. Note that individual Web applications/servlets can override the default context; see the Context Container reference for more information. 
+
+Alternatively, CAS configuration can be applied to individual Web applications through a Context configuration element located in a `$CONTEXT_NAME.xml` file placed in `$CATALINA_HOME/conf/$ENGINE/$HOST`, where `$ENGINE` is typically Catalina and `$HOST` is `localhost`, `$CATALINA_HOME/conf/Catalina/localhost`. For example, to configure the Tomcat manager servlet, a `manager.xml` file contains Context configuration elements.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Context privileged="true">
+  <!--
+    The following configuration uses the CAS 2.0 protocol and a static
+    properties file to define allowed users to the Tomcat manager application.
+    The content of manager-users.properties contains entries like the following:
+ 
+      admin=manager-gui,manager-script,manager-jmx,manager-status
+      operator=manager-status
+      deployer=manager-script
+ 
+    Where admin, operator, and deployer are valid logins for the CAS server.
+    The path to the properties file is relative to $CATALINA_HOME.
+ 
+    This example also configures the container for CAS single sign-out.
+  -->
+  <Realm
+    className="org.jasig.cas.client.tomcat.v6.PropertiesCasRealm"
+    propertiesFilePath="conf/manager-user-roles.properties"
+    />
+  <Valve
+    className="org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator"
+    encoding="UTF-8"
+    casServerLoginUrl="https://server.example.com/cas/login"
+    casServerUrlPrefix="https://server.example.com/cas/"
+    serverName="client.example.com"
+    />
+ 
+  <!-- Single sign-out support -->
+  <Valve
+    className="org.jasig.cas.client.tomcat.v6.SingleSignOutValve"
+    artifactParameterName="SAMLart"
+    />
+ 
+  <!--
+    Uncomment one of these valves to provide a logout URI for the
+    manager servlet.
+  -->
+  <!--
+  <Valve
+    className="org.jasig.cas.client.tomcat.v6.RegexUriLogoutValve"
+    logoutUriRegex="/manager/logout.*"
+    />
+  <Valve
+    className="org.jasig.cas.client.tomcat.v6.StaticUriLogoutValve"
+    logoutUri="/manager/logout.html"
+    />
+  -->
+</Context>
+```
+
+The following example shows how to configure a Context for dynamic role data provided by the CAS attribute release feature.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Context privileged="true">
+  <!--
+    The following configuration uses the SAML 1.1 protocol and role data
+    provided by the assertion to enable dynamic server-driven role data.
+    The attribute used for role data is "memberOf".
+  -->
+  <Realm
+    className="org.jasig.cas.client.tomcat.v6.AssertionCasRealm"
+    roleAttributeName="memberOf"
+    />
+  <Valve
+    className="org.jasig.cas.client.tomcat.v6.Saml11Authenticator"
+    encoding="UTF-8"
+    casServerLoginUrl="https://server.example.com/cas/login"
+    casServerUrlPrefix="https://server.example.com/cas/"
+    serverName="client.example.com"
+    />
+ 
+  <!-- Single sign-out support -->
+  <Valve
+    className="org.jasig.cas.client.tomcat.v6.SingleSignOutValve"
+    artifactParameterName="SAMLart"
+    />
+</Context>
+```
 
 ## Atlassian Integration
 The clien includes Atlassian Confluence and JIRA support. Support is enabled by a custom CAS authenticator that extends the default authenticators.
@@ -947,4 +1082,4 @@ mvn clean package
 
 Please note that to be deployed in Maven Central, we mark a number of JARs as provided (related to JBoss and Memcache
 Clients).  In order to build the clients, you must enable the commented out repositories in the appropriate `pom.xml`
-files in the modules (cas-client-integration-jboss and cas-client-support-distributed-memcached) or follow the instructions on how to install the file manually.
+files in the modules (`cas-client-integration-jboss` and `cas-client-support-distributed-memcached`) or follow the instructions on how to install the file manually.
