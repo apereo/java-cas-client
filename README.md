@@ -1,10 +1,64 @@
 # Java Apereo CAS Client [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jasig.cas.client/cas-client-core/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.jasig.cas/cas-server)
 
+<!-- MarkdownTOC -->
+
+- [Intro][intro]
+- [Components][components]
+- [Configurtion][configurtion]
+  - [Client Configuration Using `web.xml`][client-configuration-using-webxml]
+    - [org.jasig.cas.client.authentication.AuthenticationFilter][orgjasigcasclientauthenticationauthenticationfilter]
+    - [org.jasig.cas.client.authentication.Saml11AuthenticationFilter][orgjasigcasclientauthenticationsaml11authenticationfilter]
+    - [rg.jasig.cas.client.validation.Cas10TicketValidationFilter][rgjasigcasclientvalidationcas10ticketvalidationfilter]
+    - [org.jasig.cas.client.validation.Saml11TicketValidationFilter][orgjasigcasclientvalidationsaml11ticketvalidationfilter]
+    - [org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter][orgjasigcasclientvalidationcas20proxyreceivingticketvalidationfilter]
+    - [org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter][orgjasigcasclientvalidationcas30proxyreceivingticketvalidationfilter]
+    - [org.jasig.cas.client.util.HttpServletRequestWrapperFilter][orgjasigcasclientutilhttpservletrequestwrapperfilter]
+    - [org.jasig.cas.client.util.AssertionThreadLocalFilter][orgjasigcasclientutilassertionthreadlocalfilter]
+  - [Client Configuration Using Spring][client-configuration-using-spring]
+    - [Bean Configuration][bean-configuration]
+  - [Client Configuration Using JNDI][client-configuration-using-jndi]
+    - [Example][example]
+  - [Configuring Single Sign Out][configuring-single-sign-out]
+    - [Configuration][configuration]
+    - [CAS Protocol][cas-protocol]
+    - [SAML Protocol][saml-protocol]
+    - [Recommend Logout Procedure][recommend-logout-procedure]
+- [JAAS][jaas]
+  - [Configure CasLoginModule][configure-casloginmodule]
+  - [Programmatic JAAS login using the Servlet 3][programmatic-jaas-login-using-the-servlet-3]
+- [JBoss Integration][jboss-integration]
+  - [Configure Servlet Filters][configure-servlet-filters]
+- [Tomcat 6/7 Integration][tomcat-67-integration]
+  - [Component Overview][component-overview]
+    - [Authenticators][authenticators]
+    - [Realms][realms]
+    - [Valves][valves]
+  - [Container Setup][container-setup]
+  - [Context Configuration][context-configuration]
+- [Atlassian Integration][atlassian-integration]
+  - [Configuration][configuration-1]
+    - [$JIRA_HOME Location][jira_home-location]
+    - [$CONFLUENCE_INSTALL Description][confluence_install-description]
+    - [Changes to web.xml][changes-to-webxml]
+    - [Modify the seraph-config.xml][modify-the-seraph-configxml]
+    - [CAS Authenticator][cas-authenticator]
+    - [Confluence CAS Logout][confluence-cas-logout]
+    - [Copy Jars][copy-jars]
+- [Spring Security Integration][spring-security-integration]
+  - [Changes to web.xml][changes-to-webxml-1]
+  - [Changes to applicationContext-security.xml][changes-to-applicationcontext-securityxml]
+- [Build][build]
+
+<!-- /MarkdownTOC -->
+
+
+<a name="intro"></a>
 ## Intro
 This is the official home of the Java Apereo CAS client. The client consists of a collection of Servlet filters that are suitable for most Java-based web applications. It also serves as an API platform to interact with the CAS server programmatically to make authentication requests, validate tickets and consume principal attributes.
 
 All client artifacts are published to Maven central. Depending on functionality, applications will need include one or more of the listed dependencies in their configuration.
 
+<a name="components"></a>
 ## Components
 
 - Core functionality, which includes CAS authentication/validation filters.
@@ -87,8 +141,10 @@ All client artifacts are published to Maven central. Depending on functionality,
 </dependency>
 ```
 
+<a name="configurtion"></a>
 ## Configurtion
 
+<a name="client-configuration-using-webxml"></a>
 ### Client Configuration Using `web.xml`
 
 The client can be configured via `web.xml` via a series of `context-param`s and filter `init-param`s. Each filter for the client has a required (and optional) set of properties. The filters are designed to look for these properties in the following way:
@@ -101,6 +157,7 @@ The client can be configured via `web.xml` via a series of `context-param`s and 
 
 An example application that is protected by the client is [available here](https://github.com/UniconLabs/cas-sample-java-webapp).
 
+<a name="orgjasigcasclientauthenticationauthenticationfilter"></a>
 #### org.jasig.cas.client.authentication.AuthenticationFilter
 The `AuthenticationFilter` is what detects whether a user needs to be authenticated or not. If a user needs to be authenticated, it will redirect the user to the CAS server.
 
@@ -128,8 +185,13 @@ The `AuthenticationFilter` is what detects whether a user needs to be authentica
 | `gateway ` | specifies whether `gateway=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all) | No
 | `artifactParameterName ` | specifies the name of the request parameter on where to find the artifact (i.e. `ticket`). | No
 | `serviceParameterName ` | specifies the name of the request parameter on where to find the service (i.e. `service`) | No
+| `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
+| `ignorePattern` | Defines the url pattern to ignore, when intercepting authentication requests. | No
+| `ignoreUrlPatternType` | Defines the type of the pattern specified. Defaults to `REGEX`. Other types are `CONTAINS`, `EXACT`. | No
+| `gatewayStorageClass` | The storage class used to record gateway requests | No
+| `authenticationRedirectStrategyClass` | The class name of the component to decide how to handle authn redirects to CAS | No
 
-
+<a name="orgjasigcasclientauthenticationsaml11authenticationfilter"></a>
 #### org.jasig.cas.client.authentication.Saml11AuthenticationFilter
 The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be authenticated or not. If a user needs to be authenticated, it will redirect the user to the CAS server.
 
@@ -157,8 +219,9 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 | `gateway ` | specifies whether `gateway=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all) | No
 | `artifactParameterName ` | specifies the name of the request parameter on where to find the artifact (i.e. `SAMLart`). | No
 | `serviceParameterName ` | specifies the name of the request parameter on where to find the service (i.e. `TARGET`) | No
+| `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
 
-
+<a name="rgjasigcasclientvalidationcas10ticketvalidationfilter"></a>
 ####org.jasig.cas.client.validation.Cas10TicketValidationFilter
 Validates tickets using the CAS 1.0 Protocol.
 
@@ -181,8 +244,11 @@ Validates tickets using the CAS 1.0 Protocol.
 | `redirectAfterValidation ` | Whether to redirect to the same URL after ticket validation, but without the ticket in the parameter. Defaults to `true`. | No
 | `useSession ` | Whether to store the Assertion in session or not. If sessions are not used, tickets will be required for each request. Defaults to `true`. | No
 | `exceptionOnValidationFailure ` | Whether to throw an exception or not on ticket validation failure. Defaults to `true`. | No
+| `sslConfigFile` | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.
+| `encoding` | Specifies the encoding charset the client should use | No
+| `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
-
+<a name="orgjasigcasclientvalidationsaml11ticketvalidationfilter"></a>
 #### org.jasig.cas.client.validation.Saml11TicketValidationFilter
 Validates tickets using the SAML 1.1 protocol.
 
@@ -210,8 +276,11 @@ Validates tickets using the SAML 1.1 protocol.
 | `useSession ` | Whether to store the Assertion in session or not. If sessions are not used, tickets will be required for each request. Defaults to `true`. | No
 | `exceptionOnValidationFailure ` | whether to throw an exception or not on ticket validation failure. Defaults to `true` | No
 | `tolerance ` | The tolerance for drifting clocks when validating SAML tickets. Note that 10 seconds should be more than enough for most environments that have NTP time synchronization. Defaults to `1000 msec` | No
+| `sslConfigFile` | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.
+| `encoding` | Specifies the encoding charset the client should use | No
+| `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
-
+<a name="orgjasigcasclientvalidationcas20proxyreceivingticketvalidationfilter"></a>
 #### org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 2.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, a `Cas20ProxyTicketValidator` will be constructed. Otherwise a general `Cas20ServiceTicketValidator` will be constructed that does not accept proxy tickets. 
 
@@ -245,7 +314,17 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 | `allowedProxyChains ` | Specifies the proxy chain. Each acceptable proxy chain should include a space-separated list of URLs. Each acceptable proxy chain should appear on its own line. | No
 | `proxyCallbackUrl` | The callback URL to provide the CAS server to accept Proxy Granting Tickets. | No
 | `proxyGrantingTicketStorageClass ` | Specify an implementation of the ProxyGrantingTicketStorage class that has a no-arg constructor. | No
+| `sslConfigFile` | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.
+| `encoding` | Specifies the encoding charset the client should use | No
+| `secretKey` | The secret key used by the `proxyGrantingTicketStorageClass` if it supports encryption. | No
+| `cipherAlgorithm` | The algorithm used by the `proxyGrantingTicketStorageClass` if it supports encryption. Defaults to `DESede` | No
+| `millisBetweenCleanUps` | Startup delay for the cleanup task to remove expired tickets from the storage. Defaults to `60000 msec` | No
+| `ticketValidatorClass` | Ticket validator class to use/create | No
+| `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
+<a name="orgjasigcasclientvalidationcas30proxyreceivingticketvalidationfilter"></a>
+#### org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
+Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
 
 ##### Proxy Authentication vs. Distributed Caching
 The client has support for clustering and distributing the TGT state among application nodes that are behind a load balancer. In order to do so, the parameter needs to be defined as such for the filter.
@@ -298,6 +377,7 @@ Configure the client:
 
 When loading from the `web.xml`, the Client relies on a series of default values, one of which being that the list of memcached servers must be defined in `/cas/casclient_memcached_hosts.txt` on the classpath). The file is a simple list of `<hostname>:<ports>` on separate lines. **BE SURE NOT TO HAVE EXTRA LINE BREAKS**.
 
+<a name="orgjasigcasclientutilhttpservletrequestwrapperfilter"></a>
 #### org.jasig.cas.client.util.HttpServletRequestWrapperFilter
 Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` return the CAS related entries.
 
@@ -308,6 +388,12 @@ Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` ret
 </filter>
 ```
 
+| Property | Description | Required
+|----------|-------|-----------
+| `roleAttribute` | Used to determine the principal role. | No
+| `ignoreCase` | Whether role checking should ignore case. Defaults to `false` | No
+
+<a name="orgjasigcasclientutilassertionthreadlocalfilter"></a>
 #### org.jasig.cas.client.util.AssertionThreadLocalFilter
 Places the `Assertion` in a `ThreadLocal` for portions of the application that need access to it. This is useful when the Web application that this filter "fronts" needs to get the Principal name, but it has no access to the `HttpServletRequest`, hence making `getRemoteUser()` call impossible.
 
@@ -318,6 +404,7 @@ Places the `Assertion` in a `ThreadLocal` for portions of the application that n
 </filter>
 ```
 
+<a name="client-configuration-using-spring"></a>
 ### Client Configuration Using Spring
 
 Configuration via Spring IoC will depend heavily on `DelegatingFilterProxy` class. For each filter that will be configured for CAS via Spring, a corresponding `DelegatingFilterProxy` is needed in the web.xml.
@@ -339,6 +426,7 @@ As the `SingleSignOutFilter`, `HttpServletRequestWrapperFilter` and `AssertionTh
 </filter-mapping>
 ```
 
+<a name="bean-configuration"></a>
 #### Bean Configuration
 
 ##### AuthenticationFilter
@@ -455,6 +543,7 @@ Configuration to accept Proxy Ticket from a chain (and Proxy Granting Tickets):
 The specific filters can be configured in the following ways. Please see the JavaDocs included in the distribution for specific required and optional properties:
 
 
+<a name="client-configuration-using-jndi"></a>
 ### Client Configuration Using JNDI
 
 Configuring the CAS client via JNDI is essentially the same as configuring the client via the `web.xml`, except the properties will reside in JNDI and not in the `web.xml`.
@@ -464,6 +553,7 @@ We use the following conventions:
 1. JNDI will first look in `java:comp/env/cas/{SHORT FILTER NAME}/{PROPERTY NAME}` (i.e. `java:comp/env/cas/AuthenticationFilter/serverName`)
 2. JNDI will as a last resort look in `java:comp/env/cas/{PROPERTY NAME}` (i.e. `java:comp/env/cas/serverName`)
 
+<a name="example"></a>
 #### Example
 This is an update to the `META-INF/context.xml` that is included in Tomcat's Manager application:
 
@@ -482,11 +572,26 @@ type="java.lang.String" value="https://www.apereo.org/cas"/>
 </Context>
 ```
 
+<a name="configuring-single-sign-out"></a>
 ### Configuring Single Sign Out
 The Single Sign Out support in CAS consists of configuring one `SingleSignOutFilter` and one `ContextListener`. Please note that if you have configured the CAS Client for Java as Web filters, this filter must come before the other filters as described.
 
 The `SingleSignOutFilter` can affect character encoding. This becomes most obvious when used in conjunction with applications such as Atlassian Confluence. Its recommended you explicitly configure either the [VT Character Encoding Filter](http://code.google.com/p/vt-middleware/wiki/vtservletfilters#CharacterEncodingFilter) or the [Spring Character Encoding Filter](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/filter/CharacterEncodingFilter.html) with explicit encodings.
 
+<a name="configuration"></a>
+#### Configuration
+
+| Property | Description | Required
+|----------|-------|-----------
+| `artifactParameterName` | The ticket artifact parameter name. Defaults to `ticket`| No
+| `logoutParameterName` | Defaults to `logoutRequest` | No
+| `frontLogoutParameterName` | Defaults to `SAMLRequest` | No
+| `relayStateParameterName` | Defaults to `RelayState` | No
+| `eagerlyCreateSessions` | Defaults to `true` | No
+| `artifactParameterOverPost` | Defaults to  `false` | No
+| `casServerUrlPrefix` | URL to root of CAS Web application context. | Yes
+
+<a name="cas-protocol"></a>
 #### CAS Protocol
 
 ```xml
@@ -505,6 +610,7 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 </listener>
 ```
 
+<a name="saml-protocol"></a>
 #### SAML Protocol
 
 ```xml
@@ -527,6 +633,9 @@ filter>
 </listener>
 ```
 
+
+
+<a name="recommend-logout-procedure"></a>
 #### Recommend Logout Procedure
 The client has no code to help you handle log out. The client merely places objects in session. Therefore, we recommend you do a `session.invalidate()` call when you log a user out. However, that's entirely your application's responsibility. We recommend that text similar to the following appear when the application's session is ended.
 
@@ -535,11 +644,13 @@ You have been logged out of [APPLICATION NAME GOES HERE].
 To log out of all applications, click here. (provide link to CAS server's logout)
 ```
 
+<a name="jaas"></a>
 ## JAAS
 The client supports the Java Authentication and Authorization Service (JAAS) framework, which provides authnz facilities to CAS-enabled JEE applications.
 
 A general JAAS authentication module, `CasLoginModule`, is available with the specific purpose of providing authentication and authorization services to CAS-enabled JEE applications. The design of the module is simple: given a service URL and a service ticket in a `NameCallback` and `PasswordCallback`, respectively, the module contacts the CAS server and attempts to validate the ticket. In keeping with CAS integration for Java applications, a JEE container-specific servlet filter is needed to protect JEE Web applications. The JAAS support should be extensible to any JEE container.
 
+<a name="configure-casloginmodule"></a>
 ### Configure CasLoginModule
 It is expected that for JEE applications both authentication and authorization services will be required for CAS integration. The following JAAS module configuration file excerpt demonstrates how to leverage SAML 1.1 attribute release in CAS to provide authorization data in addition to authentication:
 
@@ -573,13 +684,24 @@ cas {
 | `cacheTimeout` | Assertion cache timeout in minutes. | No
 | `tolerance` | The tolerance for drifting clocks when validating SAML tickets. | No
 
+<a name="programmatic-jaas-login-using-the-servlet-3"></a>
+### Programmatic JAAS login using the Servlet 3
+A `org.jasig.cas.client.jaas.Servlet3AuthenticationFilter` servlet filter that performs a programmatic JAAS login using the Servlet 3.0 `HttpServletRequest#login()` facility. This component should be compatible with any servlet container that supports the Servlet 3.0/JEE6 specification.
+ 
+The filter executes when it receives a CAS ticket and expects the
+`CasLoginModule` JAAS module to perform the CAS ticket validation in order to produce an `AssertionPrincipal` from which the CAS assertion is obtained and inserted into the session to enable SSO.
 
+If a `service` init-param is specified for this filter, it supersedes
+the service defined for the `CasLoginModule`.
+ 
+<a name="jboss-integration"></a>
 ## JBoss Integration
 
 In keeping with CAS integration for Java applications, a JEE container-specific servlet filter is needed to protect JEE Web applications. The JBoss `WebAuthenticationFilter` component provided a convenient integration piece between a servlet filter and the JAAS framework, so a complete integration solution is available only for JBoss AS versions that provide the `WebAuthenticationFilter` class. The JAAS support should be extensible to any JEE container with additional development.
 
 For JBoss it is vitally important to use the correct values for `principalGroupName` and `roleGroupName`. Additionally, the `cacheAssertions` and `cacheTimeout` are required since JBoss by default attempts to reauthenticate the JAAS principal with a fairly aggressive default timeout. Since CAS tickets are single-use authentication tokens by default, assertion caching is required to support periodic reauthentication.
 
+<a name="configure-servlet-filters"></a>
 ### Configure Servlet Filters
 
 Integration with the servlet pipeline is required for a number of purposes:
@@ -644,6 +766,7 @@ If you have any trouble, you can enable the log of cas in `jboss-logging.xml` by
 </logger>
 ``` 
 
+<a name="tomcat-67-integration"></a>
 ## Tomcat 6/7 Integration
 The client supports container-based CAS authentication and authorization support for the Tomcat servlet container. 
 
@@ -651,9 +774,11 @@ Suppose a single Tomcat container hosts multiple Web applications with similar a
 
 CAS authentication support for Tomcat is based on the Tomcat-specific Realm component. The Realm component has a fairly broad surface area and RealmBase is provided as a convenient superclass for custom implementations; the CAS realm implementations derive from `RealmBase`. Unfortunately RealmBase and related components have proven to change over both major and minor number releases, which requires version-specific CAS components for integration. We have provided two packages with similar components with the hope of supporting all 6.x and 7.x versions. **No support for 5.x is provided.**
 
+<a name="component-overview"></a>
 ### Component Overview
 In the following discussion of components, only the Tomcat 6.x components are mentioned. The Tomcat 7.0.x components have exactly the same name, but **are in the tomcat.v7 package**, e.g. `org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator`.
 
+<a name="authenticators"></a>
 #### Authenticators
 Authenticators are responsible for performing CAS authentication using a particular protocol. All protocols supported by the Jasig Java CAS client are supported: CAS 1.0, CAS 2.0, and SAML 1.1. The following components provide protocol-specific support:
 
@@ -664,6 +789,7 @@ org.jasig.cas.client.tomcat.v6.Cas20ProxyCasAuthenticator
 org.jasig.cas.client.tomcat.v6.Saml11Authenticator
 ```
 
+<a name="realms"></a>
 #### Realms
 In terms of CAS configuration, Tomcat realms serve as containers for users and role definitions. The roles defined in a Tomcat realm may be referenced in the web.xml servlet descriptor to define authorization constraints on Web applications hosted by the container. Two sources of user/role data are supported:
 
@@ -676,6 +802,7 @@ org.jasig.cas.client.tomcat.v6.AssertionCasRealm
 
 `AssertionCasRealm` is designed to be used in conjunction with the SAML 1.1. protocol to take advantage of CAS attribute release to provide for dynamic user/role data driven by the CAS server. With this component the deployer may define a role attribute, e.g. memberOf, which could be backed by LDAP group membership information. In that case the user would be added to all roles defined in the SAML attribute assertion for values of the the `memberOf` attribute.
 
+<a name="valves"></a>
 #### Valves
 A number of Tomcat valves are provided to handle functionality outside Realms and Authenticators.
 
@@ -693,9 +820,11 @@ The `org.jasig.cas.client.tomcat.v6.SingleSignOutValve` allows the container to 
 ##### ProxyCallbackValve
 The `org.jasig.cas.client.tomcat.v6.ProxyCallbackValve` provides a handler for watching request URIs for requests that contain a proxy callback request in support of the CAS 2.0 protocol proxy feature.
 
+<a name="container-setup"></a>
 ### Container Setup
 The version-specific CAS libraries must be placed on the container classpath, `$CATALINA_HOME/lib`.
 
+<a name="context-configuration"></a>
 ### Context Configuration
 The Realm, Authenticator, and Valve components are wired together inside a Tomcat Context configuration element. The location and scope of the Context determines the scope of the applied configuration. To apply a CAS configuration to every Web application hosted in the container, configure the default Context at `$CATALINA_HOME/conf/context.xml`. Note that individual Web applications/servlets can override the default context; see the Context Container reference for more information. 
 
@@ -783,11 +912,14 @@ The following example shows how to configure a Context for dynamic role data pro
 </Context>
 ```
 
+<a name="atlassian-integration"></a>
 ## Atlassian Integration
 The clien includes Atlassian Confluence and JIRA support. Support is enabled by a custom CAS authenticator that extends the default authenticators.
 
+<a name="configuration-1"></a>
 ### Configuration
 
+<a name="jira_home-location"></a>
 #### $JIRA_HOME Location
  
 - WAR/EAR Installation: <extracted archive directory>/webapp
@@ -796,15 +928,18 @@ The clien includes Atlassian Confluence and JIRA support. Support is enabled by 
 - Standalone: <extracted archive directory>/atlassian-jira
 `/opt/atlassian/jira/atlassian-jira-enterprise-x.y.z-standalone/atlassian-jira`
 
+<a name="confluence_install-description"></a>
 #### $CONFLUENCE_INSTALL Description
 
 - <extracted archive directory>/confluence
 `/opt/atlassian/confluence/confluence-x.y.z/confluence`
 
+<a name="changes-to-webxml"></a>
 #### Changes to web.xml
 Add the CAS filters to the end of the filter list. See `web.xml` configuration of the client.
 
 
+<a name="modify-the-seraph-configxml"></a>
 #### Modify the seraph-config.xml
 To rely on the Single Sign Out functionality to sign off of Jira, comment out the normal logout URL and replace it with the CAS logout URL. Also, change the login links to point to the CAS login service.
 
@@ -845,6 +980,7 @@ To rely on the Single Sign Out functionality to sign off of Jira, comment out th
 </init-param>
 ```
 
+<a name="cas-authenticator"></a>
 #### CAS Authenticator
 Comment out the `DefaultAuthenticator` like so in `[$JIRA_HOME|$CONFLUENCE_INSTALL]/WEB-INF/classes/seraph-config.xml`:
 
@@ -872,6 +1008,7 @@ For Confluence, add in the Client Confluence Authenticator:
 <!-- CAS:END -->
 ```
 
+<a name="confluence-cas-logout"></a>
 #### Confluence CAS Logout
 
 As of this writing, Atlassian doesn't support a config option yet (like Jira). To rely on the Single Sign Out functionality to sign off of Confluence we need to modify the logout link.
@@ -892,12 +1029,15 @@ As of this writing, Atlassian doesn't support a config option yet (like Jira). T
 <!-- CAS:END -->
 ```
 
+<a name="copy-jars"></a>
 #### Copy Jars
 Copy cas-client-core-x.y.x.jar and cas-client-integration-atlassian-x.y.x.jar to `$JIRA_HOME/WEB-INF/lib`
 
+<a name="spring-security-integration"></a>
 ## Spring Security Integration
 This configuration tested against the sample application that is included with Spring Security. As of this writing, replacing the `applicationContext-security.xml` in the sample application with the one below would enable this alternative configuration. We can not guarantee this version will work without modification in future versions of Spring Security.
 
+<a name="changes-to-webxml-1"></a>
 ### Changes to web.xml
 
 ```xml
@@ -960,6 +1100,7 @@ This configuration tested against the sample application that is included with S
 
 The important additions to the `web.xml` include the addition of the 403 error page. 403 is what the CAS Validation Filter will throw if it has a problem with the ticket. Also, if you want Single Log Out, you should enable the `SingleSignOutHttpSessionListener`.
 
+<a name="changes-to-applicationcontext-securityxml"></a>
 ### Changes to applicationContext-security.xml
 
 ```xml
@@ -1068,10 +1209,11 @@ The important additions to the `web.xml` include the addition of the 403 error p
 ...
 ```
 
-1. You should replace the userService with something that checks your user storage.
+1. You should replace the `userService` with something that checks your user storage.
 2. Replace the `serverName` and `casServerLoginUrl` with your values (or better yet, externalize them).
 3. Replace the URLs with the URL configuration for your application.
 
+<a name="build"></a>
 ## Build
 
 ```bash
