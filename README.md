@@ -90,7 +90,7 @@ All client artifacts are published to Maven central. Depending on functionality,
 ```
 
 <a name="configurtion"></a>
-## Configurtion
+## Configuration
 
 ### Strategies
 The client provide multiple strategies/options for the deployer to provide options and settings. The following strategies are supported:
