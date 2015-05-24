@@ -93,7 +93,7 @@ All client artifacts are published to Maven central. Depending on functionality,
 ## Configuration
 
 ### Strategies
-The client provide multiple strategies/options for the deployer to provide options and settings. The following strategies are supported:
+The client provides multiple strategies for the deployer to provide client settings. The following strategies are supported:
 
 - JNDI (`JNDI`)
 - Properties File (`PROPERTY_FILE`). The configuration is provided via an external properties file. The path may be specified in the web context as such:
@@ -124,7 +124,7 @@ If no `configurationStrategy` is defined, `DEFAULT` is used which is a combinati
 <a name="client-configuration-using-webxml"></a>
 ### Client Configuration Using `web.xml`
 
-The client can be configured via `web.xml` via a series of `context-param`s and filter `init-param`s. Each filter for the client has a required (and optional) set of properties. The filters are designed to look for these properties in the following way:
+The client can be configured in `web.xml` via a series of `context-param`s and filter `init-param`s. Each filter for the client has a required (and optional) set of properties. The filters are designed to look for these properties in the following way:
 
 - Check the filter's local `init-param`s for a parameter matching the required property name.
 - Check the `context-param`s for a parameter matching the required property name.
