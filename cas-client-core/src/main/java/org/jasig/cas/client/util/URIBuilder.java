@@ -75,7 +75,7 @@ public final class URIBuilder {
      * Construct an instance from the string which must be a valid URI.
      *
      * @param string a valid URI in string form
-     * @throws URISyntaxException if the input is not a valid URI
+     * @throws RuntimeException if the input is not a valid URI
      */
     public URIBuilder(final String string) {
         super();
@@ -99,7 +99,7 @@ public final class URIBuilder {
 
     /**
      * Construct an instance from the provided URI.
-     * @param uri
+     * @param uri  the uri to digest
      */
     public URIBuilder(final URI uri) {
         super();
@@ -354,7 +354,7 @@ public final class URIBuilder {
      * </p>
      */
     public URIBuilder addParameters(final List <BasicNameValuePair> nvps) {
-        if (this.queryParams == null) {
+        if (this.queryParams == null || this.queryParams.isEmpty()) {
             this.queryParams = new ArrayList<BasicNameValuePair>();
         }
         this.queryParams.addAll(nvps);
