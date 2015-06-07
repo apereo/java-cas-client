@@ -6,6 +6,19 @@ This is the official home of the Java Apereo CAS client. The client consists of 
 
 All client artifacts are published to Maven central. Depending on functionality, applications will need include one or more of the listed dependencies in their configuration.
 
+<a name="build"></a>
+## Build [![Build Status](https://travis-ci.org/Jasig/java-cas-client.png?branch=master)](https://travis-ci.org/Jasig/java-cas-client)
+
+```bash
+git clone git@github.com:Jasig/java-cas-client.git
+cd java-cas-client
+mvn clean package
+```
+
+Please note that to be deployed in Maven Central, we mark a number of JARs as provided (related to JBoss and Memcache
+Clients).  In order to build the clients, you must enable the commented out repositories in the appropriate `pom.xml`
+files in the modules (`cas-client-integration-jboss` and `cas-client-support-distributed-memcached`) or follow the instructions on how to install the file manually.
+
 <a name="components"></a>
 ## Components
 
@@ -1186,16 +1199,3 @@ The important additions to the `web.xml` include the addition of the 403 error p
 1. You should replace the `userService` with something that checks your user storage.
 2. Replace the `serverName` and `casServerLoginUrl` with your values (or better yet, externalize them).
 3. Replace the URLs with the URL configuration for your application.
-
-<a name="build"></a>
-## Build
-
-```bash
-git clone git@github.com:Jasig/java-cas-client.git
-cd java-cas-client
-mvn clean package
-```
-
-Please note that to be deployed in Maven Central, we mark a number of JARs as provided (related to JBoss and Memcache
-Clients).  In order to build the clients, you must enable the commented out repositories in the appropriate `pom.xml`
-files in the modules (`cas-client-integration-jboss` and `cas-client-support-distributed-memcached`) or follow the instructions on how to install the file manually.
