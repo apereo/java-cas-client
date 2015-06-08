@@ -18,6 +18,7 @@
  */
 package org.jasig.cas.client.validation;
 
+import java.util.Arrays;
 import java.util.List;
 import org.jasig.cas.client.util.XmlUtils;
 
@@ -53,8 +54,22 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
             throws TicketValidationException {
         final List<String> proxies = XmlUtils.getTextForElements(response, "proxy");
 
+        if (proxies == null) {
+            throw new InvalidProxyChainTicketValidationException(
+                    "Invalid proxy chain: No proxy could be retrieved from response. "
+                    + "This indicates a problem with CAS validation. Review logs/configuration to find the root cause."
+            );
+        }
         // this means there was nothing in the proxy chain, which is okay
-        if ((this.allowEmptyProxyChain && proxies.isEmpty()) || this.acceptAnyProxy) {
+        if ((this.allowEmptyProxyChain && proxies.isEmpty())) {
+            logger.debug("Found an empty proxy chain, permitted by client configuration");
+            return;
+        }
+
+        if (this.acceptAnyProxy) {
+            logger.debug("Client configuration accepts any proxy. "
+                    + "It is generally dangerous to use a non-proxied CAS filter "
+                    + "specially for protecting resources that require proxy access.");
             return;
         }
 
@@ -62,6 +77,10 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         if (this.allowedProxyChains.contains(proxiedList)) {
             return;
         }
+
+        logger.warn("Proxies received from the CAS validation response are {}. "
+                + "However, none are allowed by allowed proxy chain of the client which is {}",
+                Arrays.toString(proxiedList), this.allowedProxyChains);
 
         throw new InvalidProxyChainTicketValidationException("Invalid proxy chain: " + proxies.toString());
     }

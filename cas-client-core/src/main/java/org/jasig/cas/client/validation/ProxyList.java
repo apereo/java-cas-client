@@ -43,7 +43,7 @@ public final class ProxyList {
         this(new ArrayList<String[]>());
     }
 
-    public boolean contains(String[] proxiedList) {
+    public boolean contains(final String[] proxiedList) {
         for (final String[] list : this.proxyChains) {
             if (Arrays.equals(proxiedList, list)) {
                 return true;
