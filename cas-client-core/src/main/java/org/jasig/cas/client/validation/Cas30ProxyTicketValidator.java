@@ -26,7 +26,7 @@ package org.jasig.cas.client.validation;
  */
 public class Cas30ProxyTicketValidator extends Cas20ProxyTicketValidator {
 
-    public Cas30ProxyTicketValidator(String casServerUrlPrefix) {
+    public Cas30ProxyTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
     }
     
