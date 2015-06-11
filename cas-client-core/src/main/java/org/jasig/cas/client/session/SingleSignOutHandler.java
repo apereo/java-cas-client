@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.util.CommonUtils;
@@ -301,8 +300,7 @@ public final class SingleSignOutHandler {
             final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(token);
 
             if (session != null) {
-                String sessionID = session.getId();
-
+                final String sessionID = session.getId();
                 logger.debug("Invalidating session [{}] for token [{}]", sessionID, token);
 
                 try {
@@ -325,7 +323,7 @@ public final class SingleSignOutHandler {
     private String computeRedirectionToServer(final HttpServletRequest request) {
         final String relayStateValue = CommonUtils.safeGetParameter(request, this.relayStateParameterName);
         // if we have a state value -> redirect to the CAS server to continue the logout process
-        if (StringUtils.isNotBlank(relayStateValue)) {
+        if (CommonUtils.isNotBlank(relayStateValue)) {
             final StringBuilder buffer = new StringBuilder();
             buffer.append(casServerUrlPrefix);
             if (!this.casServerUrlPrefix.endsWith("/")) {
