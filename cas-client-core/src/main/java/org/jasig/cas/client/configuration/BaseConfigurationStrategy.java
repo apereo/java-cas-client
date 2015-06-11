@@ -18,8 +18,6 @@
  */
 package org.jasig.cas.client.configuration;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 import org.slf4j.Logger;
@@ -38,7 +36,7 @@ public abstract class BaseConfigurationStrategy implements ConfigurationStrategy
     public final boolean getBoolean(final ConfigurationKey<Boolean> configurationKey) {
         return getValue(configurationKey, new Parser<Boolean>() {
             public Boolean parse(final String value) {
-                return BooleanUtils.toBoolean(value);
+                return CommonUtils.toBoolean(value);
             }
         });
     }
@@ -46,7 +44,7 @@ public abstract class BaseConfigurationStrategy implements ConfigurationStrategy
     public final long getLong(final ConfigurationKey<Long> configurationKey) {
         return getValue(configurationKey, new Parser<Long>() {
             public Long parse(final String value) {
-                return NumberUtils.toLong(value, configurationKey.getDefaultValue());
+                return CommonUtils.toLong(value, configurationKey.getDefaultValue());
             }
         });
     }
@@ -54,7 +52,7 @@ public abstract class BaseConfigurationStrategy implements ConfigurationStrategy
     public final int getInt(final ConfigurationKey<Integer> configurationKey) {
         return getValue(configurationKey, new Parser<Integer>() {
             public Integer parse(final String value) {
-                return NumberUtils.toInt(value, configurationKey.getDefaultValue());
+                return CommonUtils.toInt(value, configurationKey.getDefaultValue());
             }
         });
     }
