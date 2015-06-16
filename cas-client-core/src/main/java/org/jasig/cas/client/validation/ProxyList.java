@@ -64,7 +64,7 @@ public final class ProxyList {
         this(new ArrayList<String[]>());
     }
 
-    public boolean contains(String[] proxiedList) {
+    public boolean contains(final String[] proxiedList) {
         StringBuilder loggingOutput;
 
         for (final List<UrlPatternMatcherStrategy> proxyChain : this.proxyChains) {

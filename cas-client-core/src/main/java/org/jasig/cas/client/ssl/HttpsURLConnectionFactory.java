@@ -18,8 +18,7 @@
  */
 package org.jasig.cas.client.ssl;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.security.KeyStore;
@@ -40,6 +39,8 @@ import org.slf4j.LoggerFactory;
  * @see #setSSLConfiguration(Properties)
  */
 public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpsURLConnectionFactory.class);
 
@@ -146,4 +147,45 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
         return null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final HttpsURLConnectionFactory that = (HttpsURLConnectionFactory) o;
+
+        if (!hostnameVerifier.equals(that.hostnameVerifier)) return false;
+        if (!sslConfiguration.equals(that.sslConfiguration)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = hostnameVerifier.hashCode();
+        result = 31 * result + sslConfiguration.hashCode();
+        return result;
+    }
+
+    private void writeObject(final ObjectOutputStream out) throws IOException {
+        if (this.hostnameVerifier == HttpsURLConnection.getDefaultHostnameVerifier()) {
+            out.writeObject(null);
+        } else {
+            out.writeObject(this.hostnameVerifier);
+        }
+
+        out.writeObject(this.sslConfiguration);
+
+    }
+
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        final Object internalHostNameVerifier = in.readObject();
+        if (internalHostNameVerifier == null) {
+            this.hostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
+        } else {
+            this.hostnameVerifier = (HostnameVerifier) internalHostNameVerifier;
+        }
+
+        this.sslConfiguration = (Properties) in.readObject();
+    }
 }

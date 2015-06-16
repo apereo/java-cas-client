@@ -16,6 +16,7 @@ specific language governing permissions and limitations
 under the License.
 
 This project includes:
+  "Java Concurrency in Practice" book annotations under Creative Commons Attribution License
   AOP alliance under Public Domain
   Apache Log4j under The Apache Software License, Version 2.0
   Apache Santuario under The Apache Software License, Version 2.0
@@ -30,7 +31,6 @@ This project includes:
   Java Servlet API under CDDL + GPLv2 with classpath exception
   JavaBeans Activation Framework (JAF) under Common Development and Distribution License (CDDL) v1.0
   JavaMail API under Common Development and Distribution License (CDDL) v1.0
-  jcip-annotations under Creative Commons Attribution License
   JCL 1.1.1 implemented over SLF4J under MIT License
   Joda time under Apache 2
   JUL to SLF4J bridge under MIT License

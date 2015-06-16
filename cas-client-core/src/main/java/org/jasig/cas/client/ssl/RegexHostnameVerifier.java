@@ -19,6 +19,7 @@
 
 package org.jasig.cas.client.ssl;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
@@ -32,7 +33,9 @@ import javax.net.ssl.SSLSession;
  * @since 3.1.10
  *
  */
-public final class RegexHostnameVerifier implements HostnameVerifier {
+public final class RegexHostnameVerifier implements HostnameVerifier, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Allowed hostname pattern */
     private Pattern pattern;

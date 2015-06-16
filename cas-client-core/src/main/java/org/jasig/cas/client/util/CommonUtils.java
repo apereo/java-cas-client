@@ -22,13 +22,12 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
@@ -55,14 +54,10 @@ public final class CommonUtils {
      */
     private static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
 
+    private static final HttpURLConnectionFactory DEFAULT_URL_CONNECTION_FACTORY = new HttpsURLConnectionFactory();
+
     private CommonUtils() {
         // nothing to do
-    }
-
-    public static String formatForUtcTime(final Date date) {
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return dateFormat.format(date);
     }
 
     /**
@@ -96,11 +91,25 @@ public final class CommonUtils {
      * Assert that the statement is true, otherwise throw an exception with the
      * provided message.
      *
-     * @param cond    the codition to assert is true.
+     * @param cond    the condition to assert is true.
      * @param message the message to display if the condition is not true.
      */
     public static void assertTrue(final boolean cond, final String message) {
         if (!cond) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+
+    /**
+     * Assert that the statement is true, otherwise throw an exception with the
+     * provided message.
+     *
+     * @param cond    the condition to assert is false.
+     * @param message the message to display if the condition is not false.
+     */
+    public static void assertFalse(final boolean cond, final String message) {
+        if (cond) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -346,6 +355,28 @@ public final class CommonUtils {
 
     public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
         return safeGetParameter(request, parameter, Arrays.asList("logoutRequest"));
+    }
+
+
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the url to contact.
+     * @param encoding the encoding to use.
+     * @return the response.
+     */
+    @Deprecated
+    public static String getResponseFromServer(final String constructedUrl, final String encoding) {
+        try {
+            return getResponseFromServer(new URL(constructedUrl), DEFAULT_URL_CONNECTION_FACTORY, encoding);
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Deprecated
+    public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
+        return getResponseFromServer(constructedUrl, DEFAULT_URL_CONNECTION_FACTORY, encoding);
     }
 
     /**
