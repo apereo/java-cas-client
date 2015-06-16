@@ -24,22 +24,22 @@ import java.util.Enumeration;
 import java.util.List;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via
  * init filter name/param values.
- * <p>
+ * <p/>
  * If there is an exact match the filter uses that value.  If there's a non-exact match (i.e. inheritance), then the filter
  * uses the last value that matched.
- * <p>
+ * <p/>
  * If there is no match it will redirect to a default error page.  The default exception is configured via the "defaultErrorRedirectPage" property.
- *  
+ *
  * @author Scott Battaglia
  * @version $Revision$ $Date$
  * @since 3.1.4
- *
  */
 public final class ErrorRedirectFilter implements Filter {
 
@@ -58,8 +58,8 @@ public final class ErrorRedirectFilter implements Filter {
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
         try {
             filterChain.doFilter(request, response);
-        } catch (final ServletException e) {
-            final Throwable t = e.getCause();
+        } catch (final Exception e) {
+            final Throwable t = extractErrorToCompare(e);
             ErrorHolder currentMatch = null;
             for (final ErrorHolder errorHolder : this.errors) {
                 if (errorHolder.exactMatch(t)) {
@@ -76,6 +76,22 @@ public final class ErrorRedirectFilter implements Filter {
                 httpResponse.sendRedirect(defaultErrorRedirectPage);
             }
         }
+    }
+
+    /**
+     * Determine which error to use for comparison.  If there is an {@link Throwable#getCause()} then that will be used. Otherwise, the original throwable is used.
+     *
+     * @param throwable the throwable to look for a root cause.
+     * @return the throwable to use for comparison.  MUST NOT BE NULL.
+     */
+    private Throwable extractErrorToCompare(final Throwable throwable) {
+        final Throwable cause = throwable.getCause();
+
+        if (cause != null) {
+            return cause;
+        }
+
+        return throwable;
     }
 
     public void init(final FilterConfig filterConfig) throws ServletException {

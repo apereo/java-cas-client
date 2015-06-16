@@ -90,13 +90,6 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      */
     protected abstract String getUrlSuffix();
 
-    /**
-     * Disable XML Schema validation.  Note, setting this to true may not be reversable. Defaults to false. Setting it to false
-     * after setting it to true may not have any affect.
-     *
-     * @param disabled whether to disable or not.
-     */
-    protected abstract void setDisableXmlSchemaValidation(boolean disabled);
 
     /**
      * Constructs the URL to send the validation request to.
@@ -110,7 +103,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
         logger.debug("Placing URL parameters in map.");
         urlParameters.put("ticket", ticket);
-        urlParameters.put("service", encodeUrl(serviceUrl));
+        urlParameters.put("service", serviceUrl);
 
         if (this.renew) {
             urlParameters.put("renew", "true");
@@ -144,7 +137,8 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
                 buffer.append(i++ == 0 ? "?" : "&");
                 buffer.append(key);
                 buffer.append("=");
-                buffer.append(value);
+                final String encodedValue = encodeUrl(value);
+                buffer.append(encodedValue);
             }
         }
 

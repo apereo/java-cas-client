@@ -28,7 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
@@ -44,11 +46,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class SingleSignOutHandler {
 
-    public final static String DEFAULT_ARTIFACT_PARAMETER_NAME = "ticket";
-    public final static String DEFAULT_LOGOUT_PARAMETER_NAME = "logoutRequest";
-    public final static String DEFAULT_FRONT_LOGOUT_PARAMETER_NAME = "SAMLRequest";
-    public final static String DEFAULT_RELAY_STATE_PARAMETER_NAME = "RelayState";
-
     private final static int DECOMPRESSION_FACTOR = 10;
 
     /** Logger instance */
@@ -58,25 +55,27 @@ public final class SingleSignOutHandler {
     private SessionMappingStorage sessionMappingStorage = new HashMapBackedSessionMappingStorage();
 
     /** The name of the artifact parameter.  This is used to capture the session identifier. */
-    private String artifactParameterName = DEFAULT_ARTIFACT_PARAMETER_NAME;
+    private String artifactParameterName = Protocol.CAS2.getArtifactParameterName();
 
     /** Parameter name that stores logout request for back channel SLO */
-    private String logoutParameterName = DEFAULT_LOGOUT_PARAMETER_NAME;
+    private String logoutParameterName = ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue();
 
     /** Parameter name that stores logout request for front channel SLO */
-    private String frontLogoutParameterName = DEFAULT_FRONT_LOGOUT_PARAMETER_NAME;
+    private String frontLogoutParameterName = ConfigurationKeys.FRONT_LOGOUT_PARAMETER_NAME.getDefaultValue();
 
     /** Parameter name that stores the state of the CAS server webflow for the callback */
-    private String relayStateParameterName = DEFAULT_RELAY_STATE_PARAMETER_NAME;
+    private String relayStateParameterName = ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue();
     
     /** The prefix url of the CAS server */
-    private String casServerUrlPrefix;
+    private String casServerUrlPrefix = "";
 
     private boolean artifactParameterOverPost = false;
 
     private boolean eagerlyCreateSessions = true;
 
     private List<String> safeParameters;
+
+    private LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
 
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         this.sessionMappingStorage = storage;
@@ -132,18 +131,24 @@ public final class SingleSignOutHandler {
     /**
      * Initializes the component for use.
      */
-    public void init() {
-        CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.logoutParameterName, "logoutParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.frontLogoutParameterName, "frontLogoutParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannot be null.");
-        CommonUtils.assertNotNull(this.relayStateParameterName, "relayStateParameterName cannot be null.");
-        CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
+    public synchronized void init() {
+        if (this.safeParameters == null) {
+            CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
+            CommonUtils.assertNotNull(this.logoutParameterName, "logoutParameterName cannot be null.");
+            CommonUtils.assertNotNull(this.frontLogoutParameterName, "frontLogoutParameterName cannot be null.");
+            CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannot be null.");
+            CommonUtils.assertNotNull(this.relayStateParameterName, "relayStateParameterName cannot be null.");
+            CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
 
-        if (this.artifactParameterOverPost) {
-            this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
-        } else {
-            this.safeParameters = Arrays.asList(this.logoutParameterName);
+            if (CommonUtils.isBlank(this.casServerUrlPrefix)) {
+                logger.warn("Front Channel single sign out redirects are disabled when the 'casServerUrlPrefix' value is not set.");
+            }
+
+            if (this.artifactParameterOverPost) {
+                this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
+            } else {
+                this.safeParameters = Arrays.asList(this.logoutParameterName);
+            }
         }
     }
 
@@ -174,14 +179,15 @@ public final class SingleSignOutHandler {
     }
 
     /**
-     * Determines whether the given request is a CAS front channel logout request.
+     * Determines whether the given request is a CAS front channel logout request.  Front Channel log out requests are only supported
+     * when the 'casServerUrlPrefix' value is set.
      *
      * @param request HTTP request.
      *
      * @return True if request is logout request, false otherwise.
      */
     private boolean isFrontChannelLogoutRequest(final HttpServletRequest request) {
-        return "GET".equals(request.getMethod())
+        return "GET".equals(request.getMethod()) && CommonUtils.isNotBlank(this.casServerUrlPrefix)
                 && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.frontLogoutParameterName));
     }
 
@@ -304,11 +310,7 @@ public final class SingleSignOutHandler {
                 } catch (final IllegalStateException e) {
                     logger.debug("Error invalidating session.", e);
                 }
-                try {
-                    request.logout();
-                } catch (final ServletException e) {
-                    logger.debug("Error performing request.logout.");
-                }
+                this.logoutStrategy.logout(request);
             }
         }
     }
@@ -342,5 +344,40 @@ public final class SingleSignOutHandler {
 
     private boolean isMultipartRequest(final HttpServletRequest request) {
         return request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart");
+    }
+
+    private static boolean isServlet30() {
+        try {
+            return HttpServletRequest.class.getMethod("logout") != null;
+        } catch (final NoSuchMethodException e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Abstracts the ways we can force logout with the Servlet spec.
+     */
+    private interface LogoutStrategy {
+
+        void logout(HttpServletRequest request);
+    }
+
+    private class Servlet25LogoutStrategy implements LogoutStrategy {
+
+        public void logout(final HttpServletRequest request) {
+            // nothing additional to do here
+        }
+    }
+
+    private class Servlet30LogoutStrategy implements LogoutStrategy {
+
+        public void logout(final HttpServletRequest request) {
+            try {
+                request.logout();
+            } catch (final ServletException e) {
+                logger.debug("Error performing request.logout.");
+            }
+        }
     }
 }

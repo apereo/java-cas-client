@@ -20,6 +20,7 @@ package org.jasig.cas.client.ssl;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
+import java.io.Serializable;
 
 /**
  * Verifies a SSL peer host name based on an explicit whitelist of allowed hosts.
@@ -29,7 +30,9 @@ import javax.net.ssl.SSLSession;
  * @since 3.1.10
  *
  */
-public final class WhitelistHostnameVerifier implements HostnameVerifier {
+public final class WhitelistHostnameVerifier implements HostnameVerifier, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** Allowed hosts */
     private String[] allowedHosts;
