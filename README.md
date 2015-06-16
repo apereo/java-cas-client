@@ -630,7 +630,7 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 #### SAML Protocol
 
 ```xml
-filter>
+<filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
    <init-param>
