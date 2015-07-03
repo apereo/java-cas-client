@@ -164,6 +164,10 @@ The `AuthenticationFilter` is what detects whether a user needs to be authentica
     <param-value>http://www.acme-client.com</param-value>
   </init-param>
 </filter>
+<filter-mapping>
+    <filter-name>CAS Authentication Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
 ```
 
 | Property | Description | Required
@@ -197,7 +201,11 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
     <param-name>serverName</param-name>
     <param-value>http://www.the-client.com</param-value>
   </init-param>
- </filter>
+</filter>
+<filter-mapping>
+    <filter-name>CAS Authentication Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
 ```
 
 | Property | Description | Required
@@ -224,6 +232,10 @@ Validates tickets using the CAS 1.0 Protocol.
     <param-value>https://somewhere.cas.edu:8443/cas</param-value>
   </init-param>
 </filter>
+<filter-mapping>
+    <filter-name>CAS Validation Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
 ```
 
 | Property | Description | Required
@@ -254,7 +266,11 @@ Validates tickets using the SAML 1.1 protocol.
     <param-name>serverName</param-name>
     <param-value>http://www.acme-client.com</param-value>
   </init-param>
- </filter>
+</filter>
+<filter-mapping>
+    <filter-name>CAS Validation Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
 ```
 
 | Property | Description | Required
@@ -289,6 +305,10 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
     <param-value>http://www.acme-client.com</param-value>
   </init-param>
 </filter>
+<filter-mapping>
+    <filter-name>CAS Validation Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
 ```
 
 | Property | Description | Required
@@ -375,6 +395,10 @@ Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` ret
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
+<filter-mapping>
+  <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
 ```
 
 | Property | Description | Required
@@ -391,6 +415,10 @@ Places the `Assertion` in a `ThreadLocal` for portions of the application that n
   <filter-name>CAS Assertion Thread Local Filter</filter-name>
   <filter-class>org.jasig.cas.client.util.AssertionThreadLocalFilter</filter-class>
 </filter>
+<filter-mapping>
+  <filter-name>CAS Assertion Thread Local Filter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
 ```
 
 <a name="client-configuration-using-spring"></a>
@@ -602,7 +630,7 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 #### SAML Protocol
 
 ```xml
-filter>
+<filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
    <init-param>
@@ -715,6 +743,8 @@ The `WebAuthenticationFilter` performs these operations for the JBoss AS contain
 	  <param-value>https://cas.example.com/cas/login</param-value>
 	</init-param>
 </filter>
+...
+<!-- one filter-mapping for each filter as seen in the examples above -->
 ...
 ```
 
