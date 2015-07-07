@@ -106,6 +106,37 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
     }
 
     @Test
+    public void testRegexProxyChainWithValidProxy() throws TicketValidationException, UnsupportedEncodingException {
+        final List<String[]> list = new ArrayList<String[]>();
+        list.add(new String[] { "proxy1", "proxy2", "^proxy3/[a-z]*/" });
+        this.ticketValidator.setAllowedProxyChains(new ProxyList(list));
+        
+        final String USERNAME = "username";
+        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3/abc/</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
+        server.content = RESPONSE.getBytes(server.encoding);
+        
+        final Assertion assertion = this.ticketValidator.validate("test", "test");
+        assertEquals(USERNAME, assertion.getPrincipal().getName());
+    }
+    
+    @Test
+    public void testRegexProxyChainWithInvalidProxy() throws TicketValidationException, UnsupportedEncodingException {
+        final List<String[]> list = new ArrayList<String[]>();
+        list.add(new String[] { "proxy1", "proxy2", "^proxy3/[a-z]*/" });
+        this.ticketValidator.setAllowedProxyChains(new ProxyList(list));
+        
+        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3/ABC/</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
+        server.content = RESPONSE.getBytes(server.encoding);
+        
+        try {
+            this.ticketValidator.validate("test", "test");
+            fail("Invalid proxy chain");
+        } catch (InvalidProxyChainTicketValidationException e) {
+            // expected
+        }
+    }
+    
+    @Test
     public void testConstructionFromSpringBean() throws TicketValidationException, UnsupportedEncodingException {
         final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "classpath:cas20ProxyTicketValidator.xml");
