@@ -22,3 +22,4 @@ before_install:
 - java -version
 script: mvn install
 language: java
+sudo: false
