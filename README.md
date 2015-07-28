@@ -321,7 +321,7 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 | `exceptionOnValidationFailure ` | whether to throw an exception or not on ticket validation failure. Defaults to `true` | No
 | `proxyReceptorUrl ` | The URL to watch for `PGTIOU/PGT` responses from the CAS server. Should be defined from the root of the context. For example, if your application is deployed in `/cas-client-app` and you want the proxy receptor URL to be `/cas-client-app/my/receptor` you need to configure proxyReceptorUrl to be `/my/receptor`. | No
 | `acceptAnyProxy ` | Specifies whether any proxy is OK. Defaults to `false`. | No
-| `allowedProxyChains ` | Specifies the proxy chain. Each acceptable proxy chain should include a space-separated list of URLs. Each acceptable proxy chain should appear on its own line. | No
+| `allowedProxyChains ` | Specifies the proxy chain. Each acceptable proxy chain should include a space-separated list of URLs (for exact match) or regular expressions of URLs (starting by the `^` character). Each acceptable proxy chain should appear on its own line. | No
 | `proxyCallbackUrl` | The callback URL to provide the CAS server to accept Proxy Granting Tickets. | No
 | `proxyGrantingTicketStorageClass ` | Specify an implementation of the ProxyGrantingTicketStorage class that has a no-arg constructor. | No
 | `sslConfigFile` | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.
