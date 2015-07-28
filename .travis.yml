@@ -20,6 +20,21 @@
 before_install:
 - mvn -v
 - java -version
-script: mvn install
+
 language: java
+
 sudo: false
+
+script: "mvn install --settings travis/settings.xml"
+
+jdk:
+  - oraclejdk7
+
+env:
+  global:
+  - secure: "JM/FMiec3GYShrMlJQSW2QG208+V0GCAj2bsP5eF8q4yzgp6o4rT+r57KDIDD6MapRN+G1Pnl3WPcS0aQYnwOhPg4tA2De1bFUPaJltP47eHFfblpjZeHMxcauCQ6BwFFr8yuC0ORsYCW3TOK00Mxq4CRlTlg5iclzHyS/pnkLI="
+  - secure: "eXfgf3v8Kw/L22DO39Y61os13bfNpop8Xpkmz+HZ1djQWavOkRn58gSg8EVjBYRPOrTuEbhEWb+s3qpx8j3qRdi6roMs9MTr5gEPTAyjTtJ/Zv1qhJ6OlEl2w5c2fRMsk5cB//mtxtZ+qMaz6sdZI2csbQ2xlhjz4AbGQL5i1lY="
+
+after_success:
+- chmod -R 777 ./travis/deploy-to-sonatype.sh
+- ./travis/deploy-to-sonatype.sh
