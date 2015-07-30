@@ -23,6 +23,8 @@ before_install:
 
 language: java
 
+sudo: false
+
 script: "mvn install --settings travis/settings.xml"
 
 jdk:
