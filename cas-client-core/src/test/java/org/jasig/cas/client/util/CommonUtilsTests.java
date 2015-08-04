@@ -152,6 +152,20 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
 
+    public void testConstructServiceUrlWithParamsCasAndServerNameWithSchema() {
+        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.setScheme("https");
+        request.setSecure(true);
+        request.setQueryString("service=this&ticket=that&custom=custom");
+
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.myserver.com",
+                Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName() , false);
+
+        assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
+    }
+
 
     public void testConstructServiceUrlWithParamsSaml() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
