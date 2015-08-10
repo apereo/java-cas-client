@@ -126,7 +126,7 @@ public final class URIBuilder {
         } catch (final UnsupportedEncodingException e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return Collections.emptyList();
+        return new ArrayList<BasicNameValuePair>();
     }
 
     /**
