@@ -238,8 +238,9 @@ public final class URIBuilder {
         return this.encode ? CommonUtils.urlEncode(fragment) : fragment;
     }
 
-    public void setEncode(boolean encode) {
+    public URIBuilder setEncode(boolean encode) {
         this.encode = encode;
+        return this;
     }
 
     /**
@@ -469,6 +470,18 @@ public final class URIBuilder {
         return this;
     }
 
+    public URIBuilder setEncodedFragment(final String fragment) {
+        this.fragment = null;
+        this.encodedFragment = fragment;
+        return this;
+    }
+
+    public URIBuilder setEncodedQuery(final String query) {
+        this.query = null;
+        this.encodedFragment = query;
+        return this;
+    }
+
     public boolean isAbsolute() {
         return this.scheme != null;
     }
@@ -529,6 +542,54 @@ public final class URIBuilder {
             s = s.substring(n - 1);
         }
         return s;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final URIBuilder that = (URIBuilder) o;
+
+        if (port != that.port) return false;
+        if (encode != that.encode) return false;
+        if (scheme != null ? !scheme.equals(that.scheme) : that.scheme != null) return false;
+        if (encodedSchemeSpecificPart != null ? !encodedSchemeSpecificPart.equals(that.encodedSchemeSpecificPart) : that.encodedSchemeSpecificPart != null)
+            return false;
+        if (encodedAuthority != null ? !encodedAuthority.equals(that.encodedAuthority) : that.encodedAuthority != null)
+            return false;
+        if (userInfo != null ? !userInfo.equals(that.userInfo) : that.userInfo != null) return false;
+        if (encodedUserInfo != null ? !encodedUserInfo.equals(that.encodedUserInfo) : that.encodedUserInfo != null)
+            return false;
+        if (host != null ? !host.equals(that.host) : that.host != null) return false;
+        if (path != null ? !path.equals(that.path) : that.path != null) return false;
+        if (encodedPath != null ? !encodedPath.equals(that.encodedPath) : that.encodedPath != null) return false;
+        if (encodedQuery != null ? !encodedQuery.equals(that.encodedQuery) : that.encodedQuery != null) return false;
+        if (queryParams != null ? !queryParams.equals(that.queryParams) : that.queryParams != null) return false;
+        if (query != null ? !query.equals(that.query) : that.query != null) return false;
+        if (fragment != null ? !fragment.equals(that.fragment) : that.fragment != null) return false;
+        return !(encodedFragment != null ? !encodedFragment.equals(that.encodedFragment) : that.encodedFragment != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = scheme != null ? scheme.hashCode() : 0;
+        result = 31 * result + (encodedSchemeSpecificPart != null ? encodedSchemeSpecificPart.hashCode() : 0);
+        result = 31 * result + (encodedAuthority != null ? encodedAuthority.hashCode() : 0);
+        result = 31 * result + (userInfo != null ? userInfo.hashCode() : 0);
+        result = 31 * result + (encodedUserInfo != null ? encodedUserInfo.hashCode() : 0);
+        result = 31 * result + (host != null ? host.hashCode() : 0);
+        result = 31 * result + port;
+        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (encodedPath != null ? encodedPath.hashCode() : 0);
+        result = 31 * result + (encodedQuery != null ? encodedQuery.hashCode() : 0);
+        result = 31 * result + (queryParams != null ? queryParams.hashCode() : 0);
+        result = 31 * result + (query != null ? query.hashCode() : 0);
+        result = 31 * result + (encode ? 1 : 0);
+        result = 31 * result + (fragment != null ? fragment.hashCode() : 0);
+        result = 31 * result + (encodedFragment != null ? encodedFragment.hashCode() : 0);
+        return result;
     }
 
     public static class BasicNameValuePair implements Cloneable, Serializable {
