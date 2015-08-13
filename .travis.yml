@@ -20,8 +20,8 @@
 before_install:
 - mvn -v
 - java -version
+
 language: java
-sudo: false
 
 script: "mvn install --settings travis/settings.xml"
 
