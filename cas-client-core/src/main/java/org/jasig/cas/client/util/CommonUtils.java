@@ -59,10 +59,21 @@ public final class CommonUtils {
 
     private static final HttpURLConnectionFactory DEFAULT_URL_CONNECTION_FACTORY = new HttpsURLConnectionFactory();
 
+    private static final String SERVICE_PARAMETER_NAMES;
+
     private CommonUtils() {
         // nothing to do
     }
 
+    static {
+        final Set<String> serviceParameterSet = new HashSet<String>(4);
+        for (final Protocol protocol : Protocol.values()) {
+            serviceParameterSet.add(protocol.getServiceParameterName());
+        }
+        SERVICE_PARAMETER_NAMES = serviceParameterSet.toString()
+                .replaceAll("\\[|\\]", "")
+                .replaceAll("\\s", "");
+    }
     /**
      * Check whether the object is null or not. If it is, throw an exception and
      * display the message.
@@ -281,15 +292,7 @@ public final class CommonUtils {
     public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response,
                                              final String service, final String serverNames,
                                              final String artifactParameterName, final boolean encode) {
-        final Set<String> serviceParameterSet = new HashSet<String>(4);
-        for (final Protocol protocol : Protocol.values()) {
-            serviceParameterSet.add(protocol.getServiceParameterName());
-        }
-        final String serviceParameterNames = serviceParameterSet.toString()
-                .replaceAll("\\[|\\]", "")
-                .replaceAll("\\s", "");
-
-        return constructServiceUrl(request, response, service, serverNames, serviceParameterNames
+        return constructServiceUrl(request, response, service, serverNames, SERVICE_PARAMETER_NAMES
                 , artifactParameterName, encode);
     }
 
