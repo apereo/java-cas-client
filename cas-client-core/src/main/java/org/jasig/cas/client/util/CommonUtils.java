@@ -26,6 +26,8 @@ import java.net.URLEncoder;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
@@ -262,12 +264,44 @@ public final class CommonUtils {
     /**
      * Constructs a service url from the HttpServletRequest or from the given
      * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
+     * serviceName. Compiles a list of all service parameters for supported protocols
+     * and removes them all from the query string.
+     *
+     * @param request the HttpServletRequest
+     * @param response the HttpServletResponse
+     * @param service the configured service url (this will be used if not null)
+     * @param serverNames the server name to  use to construct the service url if the service param is empty.  Note, prior to CAS Client 3.3, this was a single value.
+     *           As of 3.3, it can be a space-separated value.  We keep it as a single value, but will convert it to an array internally to get the matching value. This keeps backward compatability with anything using this public
+     *           method.
+     * @param artifactParameterName the artifact parameter name to remove (i.e. ticket)
+     * @param encode whether to encode the url or not (i.e. Jsession).
+     * @return the service url to use.
+     */
+    @Deprecated
+    public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response,
+                                             final String service, final String serverNames,
+                                             final String artifactParameterName, final boolean encode) {
+        final Set<String> serviceParameterSet = new HashSet<String>(4);
+        for (final Protocol protocol : Protocol.values()) {
+            serviceParameterSet.add(protocol.getServiceParameterName());
+        }
+        final String serviceParameterNames = serviceParameterSet.toString()
+                .replaceAll("\\[|\\]", "")
+                .replaceAll("\\s", "");
+
+        return constructServiceUrl(request, response, service, serverNames, serviceParameterNames
+                , artifactParameterName, encode);
+    }
+
+    /**
+     * Constructs a service url from the HttpServletRequest or from the given
+     * serviceUrl. Prefers the serviceUrl provided if both a serviceUrl and a
      * serviceName.
      *
      * @param request the HttpServletRequest
      * @param response the HttpServletResponse
      * @param service the configured service url (this will be used if not null)
-     * @param serverNames the server name to  use to constuct the service url if the service param is empty.  Note, prior to CAS Client 3.3, this was a single value.
+     * @param serverNames the server name to  use to construct the service url if the service param is empty.  Note, prior to CAS Client 3.3, this was a single value.
      *           As of 3.3, it can be a space-separated value.  We keep it as a single value, but will convert it to an array internally to get the matching value. This keeps backward compatability with anything using this public
      *           method.
      * @param serviceParameterName the service parameter name to remove (i.e. service)
@@ -305,9 +339,12 @@ public final class CommonUtils {
 
         builder.setEncodedPath(request.getRequestURI());
 
-        for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
-            if (!pair.getName().equals(artifactParameterName) && !pair.getName().equals(serviceParameterName)) {
-                builder.addParameter(pair.getName(), pair.getValue());
+        final List<String> serviceParameterNames = Arrays.asList(serviceParameterName.split(","));
+        if (!serviceParameterNames.isEmpty() && !originalRequestUrl.getQueryParams().isEmpty()) {
+            for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
+                if (!pair.getName().equals(artifactParameterName) && !serviceParameterNames.contains(pair.getName())) {
+                    builder.addParameter(pair.getName(), pair.getValue());
+                }
             }
         }
 

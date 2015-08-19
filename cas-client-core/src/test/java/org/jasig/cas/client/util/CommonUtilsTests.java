@@ -195,6 +195,20 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
 
+    public void testConstructServiceUrlWithNoServiceParametersPassed() {
+        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.setScheme("https");
+        request.setSecure(true);
+        request.setQueryString("TARGET=Test1&service=Test2&custom=custom");
+
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+                Protocol.SAML11.getArtifactParameterName() , true);
+
+        assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
+    }
+
     public void testConstructServiceUrlWithEncodedParams2Saml() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
