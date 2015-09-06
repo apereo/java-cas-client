@@ -68,6 +68,7 @@ public interface ConfigurationKeys {
     ConfigurationKey<Boolean> EXCEPTION_ON_VALIDATION_FAILURE = new ConfigurationKey<Boolean>("exceptionOnValidationFailure", Boolean.TRUE);
     ConfigurationKey<Boolean> REDIRECT_AFTER_VALIDATION = new ConfigurationKey<Boolean>("redirectAfterValidation", Boolean.TRUE);
     ConfigurationKey<Boolean> USE_SESSION = new ConfigurationKey<Boolean>("useSession", Boolean.TRUE);
+    ConfigurationKey<Boolean> CHANGE_SESSION_ID_ON_AUTHENTICATION= new ConfigurationKey<Boolean>("changeSessionIdOnAuthentication", Boolean.FALSE);
     ConfigurationKey<String> SECRET_KEY = new ConfigurationKey<String>("secretKey", null);
     ConfigurationKey<String> CIPHER_ALGORITHM = new ConfigurationKey<String>("cipherAlgorithm", "DESede");
     ConfigurationKey<String> PROXY_RECEPTOR_URL = new ConfigurationKey<String>("proxyReceptorUrl", null);
