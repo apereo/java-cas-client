@@ -198,7 +198,6 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             conn = this.getURLConnectionFactory().buildHttpURLConnection(validationUrl.openConnection());
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "text/xml");
-            conn.setRequestProperty("Content-Length", Integer.toString(request.length()));
             conn.setRequestProperty("SOAPAction", "http://www.oasis-open.org/committees/security");
             conn.setUseCaches(false);
             conn.setDoInput(true);
@@ -208,8 +207,6 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             final Charset charset = CommonUtils.isNotBlank(getEncoding()) ?
                     Charset.forName(getEncoding()) : IOUtils.UTF8;
             conn.getOutputStream().write(request.getBytes(charset));
-            conn.getOutputStream().flush();
-
             return IOUtils.readString(conn.getInputStream(), charset);
         } catch (final IOException e) {
             throw new RuntimeException("IO error sending HTTP request to /samlValidate", e);
