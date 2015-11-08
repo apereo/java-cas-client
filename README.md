@@ -421,12 +421,42 @@ Places the `Assertion` in a `ThreadLocal` for portions of the application that n
 </filter-mapping>
 ```
 
+<a name="orgjasigcasclientutilerrorredirectfilter"></a>
+#### org.jasig.cas.client.util.ErrorRedirectFilter
+Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via init filter name/param values.
+
+| Property | Description | Required
+|----------|-------|-----------
+| `defaultErrorRedirectPage` | Default url to redirect to, in case no erorr matches are found. | Yes
+| `java.lang.Exception` | Fully qualified exception name. Its value must be redirection url | No
+
+
+```xml
+<filter>
+  <filter-name>CAS Error Redirect Filter</filter-name>
+  <filter-class>org.jasig.cas.client.util.ErrorRedirectFilter</filter-class>
+  <init-param>
+    <param-name>java.lang.Exception</param-name>
+    <param-value>/error.jsp</param-value>
+  </init-param>
+  <init-param>
+    <param-name>defaultErrorRedirectPage</param-name>
+    <param-value>/defaulterror.jsp</param-value>
+  </init-param>
+</filter>
+<filter-mapping>
+  <filter-name>CAS Error Redirect Filter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+
 <a name="client-configuration-using-spring"></a>
 ### Client Configuration Using Spring
 
 Configuration via Spring IoC will depend heavily on `DelegatingFilterProxy` class. For each filter that will be configured for CAS via Spring, a corresponding `DelegatingFilterProxy` is needed in the web.xml.
 
-As the `SingleSignOutFilter`, `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have no configuration options, we recommend you just configure them in the `web.xml`
+As the `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have no configuration options, we recommend you just configure them in the `web.xml`
 
 ```xml
 <filter>
@@ -614,6 +644,10 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+  <init-param>
+      <param-name>casServerUrlPrefix</param-name>
+      <param-value>https://cas.example.com/cas</param-value>
+   </init-param>
 </filter>
 ...
 <filter-mapping>
@@ -636,6 +670,10 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
    <init-param>
       <param-name>artifactParameterName</param-name>
       <param-value>SAMLart</param-value>
+   </init-param>
+   <init-param>
+      <param-name>casServerUrlPrefix</param-name>
+      <param-value>https://cas.example.com/cas</param-value>
    </init-param>
 </filter>
 ...
@@ -1079,6 +1117,10 @@ This configuration tested against the sample application that is included with S
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+   <init-param>
+      <param-name>casServerUrlPrefix</param-name>
+      <param-value>https://cas.example.com/cas</param-value>
+   </init-param>
 </filter>
 
 <filter>
