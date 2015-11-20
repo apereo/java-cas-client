@@ -19,6 +19,7 @@
 package org.jasig.cas.client.session;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.Inflater;
 
@@ -26,8 +27,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.util.CommonUtils;
@@ -146,7 +147,7 @@ public final class SingleSignOutHandler {
             if (this.artifactParameterOverPost) {
                 this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
             } else {
-                this.safeParameters = Arrays.asList(this.logoutParameterName);
+                this.safeParameters = Collections.singletonList(this.logoutParameterName);
             }
         }
     }
@@ -256,7 +257,7 @@ public final class SingleSignOutHandler {
      * @return the uncompressed logout message.
      */
     private String uncompressLogoutMessage(final String originalMessage) {
-        final byte[] binaryMessage = Base64.decodeBase64(originalMessage);
+        final byte[] binaryMessage = DatatypeConverter.parseBase64Binary(originalMessage);
 
         Inflater decompresser = null;
         try {
