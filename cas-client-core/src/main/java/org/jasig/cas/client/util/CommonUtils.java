@@ -319,7 +319,9 @@ public final class CommonUtils {
             return encode ? response.encodeURL(service) : service;
         }
 
-        final String serverName = findMatchingServerName(request, serverNames);
+        //final String serverName = findMatchingServerName(request, serverNames);
+        //TODO: to a check with the server template based on the *.wavity.com.
+        final String serverName = request.getServerName();
         final URIBuilder originalRequestUrl = new URIBuilder(request.getRequestURL().toString(), encode);
         originalRequestUrl.setParameters(request.getQueryString());
 
