@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -60,7 +61,8 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
     private final Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
     /** Map of tickets to sessions. */
-    private final ConcurrentMap<String, HttpSession> sessionMap = new ConcurrentHashMap<String, HttpSession>();
+    private final ConcurrentMap<String, WeakReference<HttpSession>> sessionMap =
+            new ConcurrentHashMap<String, WeakReference<HttpSession>>();
 
     /** CAS ticket validator component. */
     private TicketValidator ticketValidator;
@@ -203,14 +205,17 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
     }
 
     protected void clearCachedAuthentication(final String ticket) {
-        sessionMap.remove(ticket);
+        final WeakReference<HttpSession> sessionRef = sessionMap.remove(ticket);
+        if (sessionRef != null && sessionRef.get() != null) {
+            sessionRef.get().removeAttribute(CACHED_AUTHN_ATTRIBUTE);
+        }
     }
 
     private void cacheAuthentication(final HttpServletRequest request, final CasAuthentication authentication) {
         final HttpSession session = request.getSession(false);
         if (session != null) {
             session.setAttribute(CACHED_AUTHN_ATTRIBUTE, authentication);
-            sessionMap.put(authentication.getTicket(), session);
+            sessionMap.put(authentication.getTicket(), new WeakReference<HttpSession>(session));
         }
     }
 
