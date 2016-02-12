@@ -155,15 +155,12 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         CasAuthentication authentication = fetchCachedAuthentication(request);
-        if (!mandatory) {
-            if (authentication != null) {
-                return authentication;
-            }
-            return Authentication.UNAUTHENTICATED;
+        if (authentication != null) {
+            return authentication;
         }
 
         final String ticket = extractTicket(request);
-        if (ticket != null) {
+        if (ticket != null && mandatory) {
             try {
                 logger.debug("Attempting to validate {}", ticket);
                 final Assertion assertion = ticketValidator.validate(ticket, serviceUrl(request, response));
@@ -176,9 +173,11 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
         }
         if (authentication != null) {
             return authentication;
+        } else if (mandatory) {
+            redirectToCas(request, response);
+            return Authentication.SEND_CONTINUE;
         }
-        redirectToCas(request, response);
-        return Authentication.SEND_CONTINUE;
+        return Authentication.UNAUTHENTICATED;
     }
 
     @Override
@@ -208,7 +207,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
     }
 
     private void cacheAuthentication(final HttpServletRequest request, final CasAuthentication authentication) {
-        final HttpSession session = request.getSession(false);
+        final HttpSession session = request.getSession(true);
         if (session != null) {
             session.setAttribute(CACHED_AUTHN_ATTRIBUTE, authentication);
             sessionMap.put(authentication.getTicket(), new WeakReference<HttpSession>(session));
