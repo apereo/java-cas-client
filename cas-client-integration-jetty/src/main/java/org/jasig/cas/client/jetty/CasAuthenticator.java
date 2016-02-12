@@ -162,22 +162,18 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
             return Authentication.UNAUTHENTICATED;
         }
 
-        String ticket;
-        for (final Protocol protocol : Protocol.values()) {
-            ticket = request.getParameter(protocol.getArtifactParameterName());
-            if (ticket != null) {
-                try {
-                    logger.debug("Attempting to validate {}", ticket);
-                    final Assertion assertion = ticketValidator.validate(ticket, serviceUrl(request, response));
-                    logger.debug("Successfully authenticated {}", assertion.getPrincipal());
-                    authentication = new CasAuthentication(this, ticket, assertion);
-                    cacheAuthentication(request, authentication);
-                } catch (Exception e) {
-                    throw new ServerAuthException("CAS ticket validation failed", e);
-                }
+        final String ticket = extractTicket(request);
+        if (ticket != null) {
+            try {
+                logger.debug("Attempting to validate {}", ticket);
+                final Assertion assertion = ticketValidator.validate(ticket, serviceUrl(request, response));
+                logger.debug("Successfully authenticated {}", assertion.getPrincipal());
+                authentication = new CasAuthentication(this, ticket, assertion);
+                cacheAuthentication(request, authentication);
+            } catch (Exception e) {
+                throw new ServerAuthException("CAS ticket validation failed", e);
             }
         }
-
         if (authentication != null) {
             return authentication;
         }
@@ -251,4 +247,14 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
         }
     }
 
+    private String extractTicket(final HttpServletRequest request) {
+        String ticket;
+        for (final Protocol protocol : Protocol.values()) {
+            ticket = request.getParameter(protocol.getArtifactParameterName());
+            if (ticket != null) {
+                return ticket;
+            }
+        }
+        return null;
+    }
 }
