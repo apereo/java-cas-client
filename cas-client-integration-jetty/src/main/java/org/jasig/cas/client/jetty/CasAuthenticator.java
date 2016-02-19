@@ -164,7 +164,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
             try {
                 logger.debug("Attempting to validate {}", ticket);
                 final Assertion assertion = ticketValidator.validate(ticket, serviceUrl(request, response));
-                logger.debug("Successfully authenticated {}", assertion.getPrincipal());
+                logger.info("Successfully authenticated {}", assertion.getPrincipal());
                 authentication = new CasAuthentication(this, ticket, assertion);
                 cacheAuthentication(request, authentication);
             } catch (Exception e) {
