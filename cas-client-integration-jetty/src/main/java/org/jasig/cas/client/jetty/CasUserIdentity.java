@@ -2,6 +2,7 @@ package org.jasig.cas.client.jetty;
 
 import org.eclipse.jetty.server.UserIdentity;
 import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
 
 import javax.security.auth.Subject;
@@ -29,7 +30,7 @@ public class CasUserIdentity implements UserIdentity {
      * @param roleAttribute Principal attribute containing role data.
      */
     public CasUserIdentity(final Assertion assertion, final String roleAttribute) {
-        assert assertion != null : "Assertion cannot be null";
+        CommonUtils.assertNotNull(assertion, "Assertion cannot be null");
         this.principal = assertion.getPrincipal();
         this.roleAttribute = roleAttribute;
     }
