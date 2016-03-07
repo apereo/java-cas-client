@@ -159,7 +159,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
             return authentication;
         }
 
-        final String ticket = extractTicket(request);
+        final String ticket = request.getParameter(protocol.getArtifactParameterName());
         if (ticket != null && mandatory) {
             try {
                 logger.debug("Attempting to validate {}", ticket);
@@ -244,16 +244,5 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
             logger.debug("Redirect to CAS failed with error: {}", e);
             throw new ServerAuthException("Redirect to CAS failed", e);
         }
-    }
-
-    private String extractTicket(final HttpServletRequest request) {
-        String ticket;
-        for (final Protocol protocol : Protocol.values()) {
-            ticket = request.getParameter(protocol.getArtifactParameterName());
-            if (ticket != null) {
-                return ticket;
-            }
-        }
-        return null;
     }
 }
