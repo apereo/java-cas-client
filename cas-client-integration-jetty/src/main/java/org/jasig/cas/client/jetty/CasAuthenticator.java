@@ -67,7 +67,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
     /** CAS ticket validator component. */
     private TicketValidator ticketValidator;
 
-    /** Space-delimited ist of server names. */
+    /** Space-delimited list of server names. */
     private String serverNames;
 
     /** CAS principal attribute containing role data. */
