@@ -1,6 +1,7 @@
 package org.jasig.cas.client.jetty;
 
 import org.eclipse.jetty.security.UserAuthentication;
+import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
 
 /**
@@ -26,8 +27,8 @@ public class CasAuthentication extends UserAuthentication {
      */
     public CasAuthentication(final CasAuthenticator authenticator, final String ticket, final Assertion assertion) {
         super(authenticator.getAuthMethod(), new CasUserIdentity(assertion, authenticator.getRoleAttribute()));
-        assert ticket != null : "Ticket cannot be null";
-        assert authenticator != null : "CasAuthenticator cannot be null";
+        CommonUtils.assertNotNull(ticket, "Ticket cannot be null");
+        CommonUtils.assertNotNull(authenticator, "CasAuthenticator cannot be null");
         this.authenticator = authenticator;
         this.ticket = ticket;
     }

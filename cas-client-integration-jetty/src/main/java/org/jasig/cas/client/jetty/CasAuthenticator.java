@@ -89,7 +89,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
      * @param ticketValidator Ticket validator, MUST NOT be null.
      */
     public void setTicketValidator(final TicketValidator ticketValidator) {
-        assert ticketValidator != null : "TicketValidator cannot be null";
+        CommonUtils.assertNotNull(ticketValidator, "TicketValidator cannot be null");
         if (ticketValidator instanceof AbstractUrlBasedTicketValidator) {
             if (ticketValidator instanceof AbstractCasProtocolUrlBasedTicketValidator) {
                 protocol = Protocol.CAS2;
