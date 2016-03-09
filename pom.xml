@@ -252,6 +252,8 @@
         <module>cas-client-integration-tomcat-common</module>
         <module>cas-client-integration-tomcat-v6</module>
         <module>cas-client-integration-tomcat-v7</module>
+        <module>cas-client-integration-tomcat-v8</module>
+        <module>cas-client-integration-jetty</module>
     </modules>
 
     <properties>
