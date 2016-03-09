@@ -32,18 +32,17 @@ import javax.servlet.FilterConfig;
  */
 public final class LegacyConfigurationStrategyImpl extends BaseConfigurationStrategy {
 
-    private final WebXmlConfigurationStrategyImpl webXmlConfigurationStrategy = new WebXmlConfigurationStrategyImpl();
+	private final PropertiesConfigurationStrategyImpl propertiesConfigurationStrategy = new PropertiesConfigurationStrategyImpl();
 
     private final JndiConfigurationStrategyImpl jndiConfigurationStrategy = new JndiConfigurationStrategyImpl();
 
     public void init(FilterConfig filterConfig, Class<? extends Filter> filterClazz) {
-        this.webXmlConfigurationStrategy.init(filterConfig, filterClazz);
+    	this.propertiesConfigurationStrategy.init(filterConfig, filterClazz);
         this.jndiConfigurationStrategy.init(filterConfig, filterClazz);
     }
 
     protected String get(final ConfigurationKey key) {
-        final String value1 = this.webXmlConfigurationStrategy.get(key);
-
+    	final String value1 = this.propertiesConfigurationStrategy.get(key);
         if (CommonUtils.isNotBlank(value1)) {
             return value1;
         }
