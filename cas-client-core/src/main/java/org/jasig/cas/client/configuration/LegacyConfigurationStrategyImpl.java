@@ -43,10 +43,11 @@ public final class LegacyConfigurationStrategyImpl extends BaseConfigurationStra
 
     protected String get(final ConfigurationKey key) {
     	final String value1 = this.propertiesConfigurationStrategy.get(key);
+    	// Added the below for debugging purpose
+    	logger.info("*** A filter parameter {}: {} ***", key.getName(), value1);
         if (CommonUtils.isNotBlank(value1)) {
             return value1;
         }
-
         return this.jndiConfigurationStrategy.get(key);
     }
 }
