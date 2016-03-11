@@ -1,0 +1,5 @@
+
+description = 'Jasig CAS Client for Java - Common Tomcat Integration Support'
+dependencies {
+  compile project(':cas-client-core')
+}
