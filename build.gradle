@@ -1,0 +1,74 @@
+
+buildscript {
+	repositories {
+		jcenter()
+		maven {
+            url "${artifactory_contextUrl}/wavity"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+	}
+	dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.1.0')
+        classpath(group: 'wavity-gradle-plugins', name: 'plugins', version: pluginsVersion)
+    }
+}
+
+allprojects  {
+	apply plugin: 'maven'
+	apply plugin: 'com.wavity.version'
+
+	group = 'wavity-cas-client'
+	// specify this artifact version using the plugin 'com.wavity.version'
+	versions {
+		major = version_major
+		minor = version_minor
+		release = version_release
+	}
+	version = project.versions.getWavityVersion()
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+
+	repositories {
+		maven {
+			url "${artifactory_contextUrl}/wavity"
+			credentials {
+				username = "${artifactory_user}"
+				password = "${artifactory_password}"
+			}
+		}
+		//mavenLocal()
+		mavenCentral()
+		jcenter()
+		maven {
+			url 'https://maven.java.net/content/repositories/releases'
+		}
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+		maven { url "http://repo.maven.apache.org/maven2" }
+		maven { url "https://maven.atlassian.com/repository/public" }
+		maven { url "https://repository.jboss.org/nexus/content/groups/public//" }
+	}
+	
+	dependencies {
+		// logging
+		compile (group: 'org.slf4j', name: 'slf4j-api', version: project.versions.slf4jVersion)
+		compile (group: 'ch.qos.logback', name: 'logback-classic', version: project.versions.logbackVersion)
+		compile (group: 'ch.qos.logback', name: 'logback-core', version: project.versions.logbackVersion)
+	
+		// javaee
+		compile (group: 'javax', name: 'javaee-api', version: project.versions.javaeeVersion)
+		compile (group: 'javax', name: 'javaee-web-api', version: project.versions.javaeeVersion)
+		compile (group: 'javax', name: 'javaee-endorsed-api', version: project.versions.javaeeVersion)
+	
+		// unit test
+		testCompile (group: 'junit', name: 'junit', version: project.versions.junitVersion)
+	}
+}
+
+// EOF
+

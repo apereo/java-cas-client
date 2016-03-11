@@ -1,0 +1,26 @@
+
+description = 'Jasig CAS Client for Java - Core'
+dependencies {
+    runtime group: 'xml-security', name: 'xmlsec', version:'1.3.0'
+    testCompile group: 'org.springframework', name: 'spring-test', version:'3.1.3.RELEASE'
+    testCompile(group: 'org.springframework', name: 'spring-core', version:'3.1.3.RELEASE') {
+exclude(module: 'commons-logging')
+    }
+    testCompile group: 'org.springframework', name: 'spring-context', version:'3.1.3.RELEASE'
+    testCompile(group: 'log4j', name: 'log4j', version:'1.2.15') {
+exclude(module: 'jmxri')
+exclude(module: 'jmxtools')
+exclude(module: 'jms')
+    }
+    compile(group: 'org.springframework', name: 'spring-beans', version:'3.1.3.RELEASE') {
+       /* This dependency was originally in the Maven provided scope, but the project was not of type war.
+       This behavior is not yet supported by Gradle, so this dependency has been converted to a compile dependency.
+       Please review and delete this closure when resolved. */
+    }
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

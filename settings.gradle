@@ -1,0 +1,24 @@
+rootProject.name = 'cas-client'
+include ':cas-client-core'
+include ':cas-client-integration-atlassian'
+include ':cas-client-integration-jboss'
+include ':cas-client-support-distributed-ehcache'
+include ':cas-client-support-distributed-memcached'
+include ':cas-client-support-saml'
+include ':cas-client-integration-tomcat-common'
+include ':cas-client-integration-tomcat-v6'
+include ':cas-client-integration-tomcat-v7'
+include ':cas-client-integration-tomcat-v8'
+include ':cas-client-integration-jetty'
+
+project(':cas-client-core').projectDir = "$rootDir/cas-client-core" as File
+project(':cas-client-integration-atlassian').projectDir = "$rootDir/cas-client-integration-atlassian" as File
+project(':cas-client-integration-jboss').projectDir = "$rootDir/cas-client-integration-jboss" as File
+project(':cas-client-support-distributed-ehcache').projectDir = "$rootDir/cas-client-support-distributed-ehcache" as File
+project(':cas-client-support-distributed-memcached').projectDir = "$rootDir/cas-client-support-distributed-memcached" as File
+project(':cas-client-support-saml').projectDir = "$rootDir/cas-client-support-saml" as File
+project(':cas-client-integration-tomcat-common').projectDir = "$rootDir/cas-client-integration-tomcat-common" as File
+project(':cas-client-integration-tomcat-v6').projectDir = "$rootDir/cas-client-integration-tomcat-v6" as File
+project(':cas-client-integration-tomcat-v7').projectDir = "$rootDir/cas-client-integration-tomcat-v7" as File
+project(':cas-client-integration-tomcat-v8').projectDir = "$rootDir/cas-client-integration-tomcat-v8" as File
+project(':cas-client-integration-jetty').projectDir = "$rootDir/cas-client-integration-jetty" as File
