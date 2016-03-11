@@ -1,43 +1,74 @@
-allprojects  {
-  apply plugin: 'maven'
 
-  group = 'org.jasig.cas.client'
-version = '3.4.2-SNAPSHOT'
-}
-
-subprojects {
-  apply plugin: 'java'
-  sourceCompatibility = 1.6
-  targetCompatibility = 1.6
-
-  task packageSources(type: Jar) {
-classifier = 'sources'
-from sourceSets.main.allSource
-
-}
-artifacts.archives packageSources
-  repositories {
-    mavenLocal()
-    
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    maven { url "http://repo.maven.apache.org/maven2" }
-    maven { url "https://maven.atlassian.com/repository/public" }
-    maven { url "https://repository.jboss.org/nexus/content/groups/public//" }
-  }
-
-  configurations.all {
-}
-  dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.1'
-    testCompile group: 'junit', name: 'junit', version:'4.8.2'
-    testCompile group: 'org.slf4j', name: 'jcl-over-slf4j', version:'1.7.1'
-    testCompile group: 'org.slf4j', name: 'slf4j-simple', version:'1.7.1'
-    compile(group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1') {
-       /* This dependency was originally in the Maven provided scope, but the project was not of type war.
-       This behavior is not yet supported by Gradle, so this dependency has been converted to a compile dependency.
-       Please review and delete this closure when resolved. */
+buildscript {
+	repositories {
+		jcenter()
+		maven {
+            url "${artifactory_contextUrl}/wavity"
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+	}
+	dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.1.0')
+        classpath(group: 'wavity-gradle-plugins', name: 'plugins', version: pluginsVersion)
     }
 }
 
-  
+allprojects  {
+	apply plugin: 'maven'
+	apply plugin: 'com.wavity.version'
+
+	group = 'wavity-cas-client'
+	// specify this artifact version using the plugin 'com.wavity.version'
+	versions {
+		major = version_major
+		minor = version_minor
+		release = version_release
+	}
+	version = project.versions.getWavityVersion()
 }
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+
+	repositories {
+		maven {
+			url "${artifactory_contextUrl}/wavity"
+			credentials {
+				username = "${artifactory_user}"
+				password = "${artifactory_password}"
+			}
+		}
+		//mavenLocal()
+		mavenCentral()
+		jcenter()
+		maven {
+			url 'https://maven.java.net/content/repositories/releases'
+		}
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+		maven { url "http://repo.maven.apache.org/maven2" }
+		maven { url "https://maven.atlassian.com/repository/public" }
+		maven { url "https://repository.jboss.org/nexus/content/groups/public//" }
+	}
+	
+	dependencies {
+		// logging
+		compile (group: 'org.slf4j', name: 'slf4j-api', version: project.versions.slf4jVersion)
+		compile (group: 'ch.qos.logback', name: 'logback-classic', version: project.versions.logbackVersion)
+		compile (group: 'ch.qos.logback', name: 'logback-core', version: project.versions.logbackVersion)
+	
+		// javaee
+		compile (group: 'javax', name: 'javaee-api', version: project.versions.javaeeVersion)
+		compile (group: 'javax', name: 'javaee-web-api', version: project.versions.javaeeVersion)
+		compile (group: 'javax', name: 'javaee-endorsed-api', version: project.versions.javaeeVersion)
+	
+		// unit test
+		testCompile (group: 'junit', name: 'junit', version: project.versions.junitVersion)
+	}
+}
+
+// EOF
+
