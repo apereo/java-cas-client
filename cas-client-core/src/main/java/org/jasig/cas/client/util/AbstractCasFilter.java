@@ -113,16 +113,20 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      * @param serverName the serverName. If this method is called, this should not be null.  This AND service should not be both configured.
      */
     public final void setServerName(final String serverName) {
-        if (serverName != null && serverName.endsWith("/")) {
-            this.serverName = serverName.substring(0, serverName.length() - 1);
-            logger.info("Eliminated extra slash from serverName [{}].  It is now [{}]", serverName, this.serverName);
-        } else {
-            this.serverName = serverName;
+        if (serverName != null) {
+            if (serverName.endsWith("/")) {
+                this.serverName = serverName.substring(0, serverName.length() - 1);
+                logger.info("Eliminated extra slash from serverName [{}].  It is now [{}]", serverName, this.serverName);
+            }
+            else {
+                this.serverName = serverName;
+            }
         }
     }
 
     public final void setService(final String service) {
-        this.service = service;
+        if (service != null)
+            this.service = service;
     }
 
     public final void setEncodeServiceUrl(final boolean encodeServiceUrl) {
