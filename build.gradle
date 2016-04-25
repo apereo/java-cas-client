@@ -58,8 +58,8 @@ subprojects {
 	dependencies {
 		// logging
 		compile (group: 'org.slf4j', name: 'slf4j-api', version: project.versions.slf4jVersion)
-		compile (group: 'ch.qos.logback', name: 'logback-classic', version: project.versions.logbackVersion)
-		compile (group: 'ch.qos.logback', name: 'logback-core', version: project.versions.logbackVersion)
+		testCompile (group: 'ch.qos.logback', name: 'logback-classic', version: project.versions.logbackVersion)
+		testCompile (group: 'ch.qos.logback', name: 'logback-core', version: project.versions.logbackVersion)
 	
 		// javaee
 		compile (group: 'javax', name: 'javaee-api', version: project.versions.javaeeVersion)
