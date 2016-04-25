@@ -18,6 +18,7 @@ buildscript {
 
 allprojects  {
 	apply plugin: 'maven'
+	apply plugin: 'eclipse'
 	apply plugin: 'com.wavity.version'
 
 	group = 'wavity-cas-client'
