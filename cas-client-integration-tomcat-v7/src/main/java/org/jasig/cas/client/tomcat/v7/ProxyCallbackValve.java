@@ -24,6 +24,8 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
@@ -81,7 +83,8 @@ public final class ProxyCallbackValve extends ValveBase {
     public void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (this.proxyCallbackUrl.equals(request.getRequestURI())) {
             logger.debug("Processing proxy callback request.");
-            CommonUtils.readAndRespondToProxyReceptorRequest(request, response, PROXY_GRANTING_TICKET_STORAGE);
+            CommonUtils.readAndRespondToProxyReceptorRequest(new DelegatingHttpRequest(request),
+                    new DelegatingHttpResponse(response), PROXY_GRANTING_TICKET_STORAGE);
             return;
         }
 

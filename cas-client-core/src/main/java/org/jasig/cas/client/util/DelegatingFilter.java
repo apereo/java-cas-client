@@ -18,12 +18,14 @@
  */
 package org.jasig.cas.client.util;
 
-import java.io.IOException;
-import java.util.Map;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * A Delegating Filter looks up a parameter in the request object and matches
@@ -85,7 +87,8 @@ public final class DelegatingFilter implements Filter {
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
 
-        final String parameter = CommonUtils.safeGetParameter((HttpServletRequest) request, this.requestParameterName);
+        final String parameter = CommonUtils.safeGetParameter(new DelegatingHttpRequest((HttpServletRequest) request),
+                this.requestParameterName);
 
         if (CommonUtils.isNotEmpty(parameter)) {
             for (final String key : this.delegators.keySet()) {

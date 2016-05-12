@@ -18,16 +18,22 @@
  */
 package org.jasig.cas.client.util;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.http.HttpRequest;
+import org.jasig.cas.client.http.HttpResponse;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
@@ -201,8 +207,8 @@ public final class CommonUtils {
         }
     }
 
-    public static void readAndRespondToProxyReceptorRequest(final HttpServletRequest request,
-            final HttpServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage)
+    public static void readAndRespondToProxyReceptorRequest(final HttpRequest request,
+            final HttpResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage)
             throws IOException {
         final String proxyGrantingTicketIou = request.getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
 
@@ -225,7 +231,7 @@ public final class CommonUtils {
         response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
     }
 
-    protected static String findMatchingServerName(final HttpServletRequest request, final String serverName) {
+    protected static String findMatchingServerName(final HttpRequest request, final String serverName) {
         final String[] serverNames = serverName.split(" ");
 
         if (serverNames == null || serverNames.length == 0 || serverNames.length == 1) {
@@ -267,7 +273,7 @@ public final class CommonUtils {
         return schemeIndex != portIndex;
     }
 
-    private static boolean requestIsOnStandardPort(final HttpServletRequest request) {
+    private static boolean requestIsOnStandardPort(final HttpRequest request) {
         final int serverPort = request.getServerPort();
         return serverPort == 80 || serverPort == 443;
     }
@@ -289,7 +295,7 @@ public final class CommonUtils {
      * @return the service url to use.
      */
     @Deprecated
-    public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response,
+    public static String constructServiceUrl(final HttpRequest request, final HttpResponse response,
                                              final String service, final String serverNames,
                                              final String artifactParameterName, final boolean encode) {
         return constructServiceUrl(request, response, service, serverNames, SERVICE_PARAMETER_NAMES
@@ -312,7 +318,7 @@ public final class CommonUtils {
      * @param encode whether to encode the url or not (i.e. Jsession).
      * @return the service url to use.
      */
-    public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response,
+    public static String constructServiceUrl(final HttpRequest request, final HttpResponse response,
             final String service, final String serverNames, final String serviceParameterName,
             final String artifactParameterName, final boolean encode) {
         if (CommonUtils.isNotBlank(service)) {
@@ -373,7 +379,7 @@ public final class CommonUtils {
      * @param parameter the parameter to look for.
      * @return the value of the parameter.
      */
-    public static String safeGetParameter(final HttpServletRequest request, final String parameter,
+    public static String safeGetParameter(final HttpRequest request, final String parameter,
             final List<String> parameters) {
         if ("POST".equals(request.getMethod()) && parameters.contains(parameter)) {
             LOGGER.debug("safeGetParameter called on a POST HttpServletRequest for Restricted Parameters.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
@@ -383,7 +389,7 @@ public final class CommonUtils {
                 .getParameter(parameter);
     }
 
-    public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
+    public static String safeGetParameter(final HttpRequest request, final String parameter) {
         return safeGetParameter(request, parameter, Arrays.asList("logoutRequest"));
     }
 
@@ -465,7 +471,7 @@ public final class CommonUtils {
      * @param response the HttpServletResponse.  CANNOT be NULL.
      * @param url the url to redirect to.
      */
-    public static void sendRedirect(final HttpServletResponse response, final String url) {
+    public static void sendRedirect(final HttpResponse response, final String url) {
         try {
             response.sendRedirect(url);
         } catch (final Exception e) {

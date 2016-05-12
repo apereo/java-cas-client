@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.configuration.ConfigurationKeys;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 import org.jasig.cas.client.util.AbstractConfigurationFilter;
 
 /**
@@ -93,7 +95,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
             HANDLER.init();
         }
 
-        if (HANDLER.process(request, response)) {
+        if (HANDLER.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response))) {
             filterChain.doFilter(servletRequest, servletResponse);
         }
     }

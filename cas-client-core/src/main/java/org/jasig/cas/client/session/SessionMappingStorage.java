@@ -20,6 +20,8 @@ package org.jasig.cas.client.session;
 
 import javax.servlet.http.HttpSession;
 
+import org.jasig.cas.client.http.ClientSession;
+
 /**
  * Stores the mapping between sessions and keys to be retrieved later.
  * 
@@ -34,9 +36,9 @@ public interface SessionMappingStorage {
      * Remove the HttpSession based on the mappingId.
      * 
      * @param mappingId the id the session is keyed under.
-     * @return the HttpSession if it exists.
+     * @return the client session if it exists.
      */
-    HttpSession removeSessionByMappingId(String mappingId);
+    ClientSession removeSessionByMappingId(String mappingId);
 
     /**
      * Remove a session by its Id.
@@ -47,8 +49,8 @@ public interface SessionMappingStorage {
     /**
      * Add a session by its mapping Id.
      * @param mappingId the id to map the session to.
-     * @param session the HttpSession.
+     * @param session the client session.
      */
-    void addSessionById(String mappingId, HttpSession session);
+    void addSessionById(String mappingId, ClientSession session);
 
 }

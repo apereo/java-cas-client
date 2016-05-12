@@ -26,6 +26,8 @@ import org.apache.catalina.SessionEvent;
 import org.apache.catalina.SessionListener;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 import org.jasig.cas.client.session.SessionMappingStorage;
 import org.jasig.cas.client.session.SingleSignOutHandler;
 
@@ -77,7 +79,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
 
     /** {@inheritDoc} */
     public void invoke(final Request request, final Response response) throws IOException, ServletException {
-        if (this.handler.process(request, response)) {
+        if (this.handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response))) {
             getNext().invoke(request, response);
         }
     }

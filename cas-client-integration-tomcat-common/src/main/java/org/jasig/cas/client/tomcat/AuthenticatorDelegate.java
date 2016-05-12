@@ -23,6 +23,9 @@ import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
@@ -85,13 +88,14 @@ public final class AuthenticatorDelegate {
         if (assertion == null) {
             logger.debug("CAS assertion not found in session -- authentication required.");
             final String token = request.getParameter(this.artifactParameterName);
-            final String service = CommonUtils.constructServiceUrl(request, response, this.serviceUrl, this.serverName,
+            final String service = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                    new DelegatingHttpResponse(response), this.serviceUrl, this.serverName,
                     this.serviceParameterName, this.artifactParameterName, true);
             if (CommonUtils.isBlank(token)) {
                 final String redirectUrl = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
                         this.serviceParameterName, service, false, false);
                 logger.debug("Redirecting to {}", redirectUrl);
-                CommonUtils.sendRedirect(response, redirectUrl);
+                CommonUtils.sendRedirect(new DelegatingHttpResponse(response), redirectUrl);
                 return null;
             }
             try {

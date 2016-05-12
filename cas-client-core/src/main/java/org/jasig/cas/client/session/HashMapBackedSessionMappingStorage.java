@@ -21,6 +21,8 @@ package org.jasig.cas.client.session;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
+
+import org.jasig.cas.client.http.ClientSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +39,7 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
     /**
      * Maps the ID from the CAS server to the Session.
      */
-    private final Map<String, HttpSession> MANAGED_SESSIONS = new HashMap<String, HttpSession>();
+    private final Map<String, ClientSession> MANAGED_SESSIONS = new HashMap<String, ClientSession>();
 
     /**
      * Maps the Session ID to the key from the CAS Server.
@@ -46,7 +48,7 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public synchronized void addSessionById(String mappingId, HttpSession session) {
+    public synchronized void addSessionById(String mappingId, ClientSession session) {
         ID_TO_SESSION_KEY_MAPPING.put(session.getId(), mappingId);
         MANAGED_SESSIONS.put(mappingId, session);
 
@@ -68,8 +70,8 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
         ID_TO_SESSION_KEY_MAPPING.remove(sessionId);
     }
 
-    public synchronized HttpSession removeSessionByMappingId(String mappingId) {
-        final HttpSession session = MANAGED_SESSIONS.get(mappingId);
+    public synchronized ClientSession removeSessionByMappingId(String mappingId) {
+        final ClientSession session = MANAGED_SESSIONS.get(mappingId);
 
         if (session != null) {
             removeBySessionById(session.getId());
