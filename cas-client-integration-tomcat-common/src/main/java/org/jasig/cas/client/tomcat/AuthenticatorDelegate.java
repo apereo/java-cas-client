@@ -21,6 +21,12 @@ package org.jasig.cas.client.tomcat;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,8 +60,12 @@ public final class AuthenticatorDelegate {
     private String serviceUrl;
     
     private String serverName;
-    
+
+    private Map<String, String> serverNameRules = new LinkedHashMap<String, String>();
+
     private String casServerLoginUrl;
+    
+    private Map<String, String> casServerLoginUrlRules = new LinkedHashMap<String, String>();
 
     private String artifactParameterName;
     
@@ -88,9 +98,13 @@ public final class AuthenticatorDelegate {
         if (assertion == null) {
             log.debug("CAS assertion not found in session -- authentication required.");
             final String token = request.getParameter(this.artifactParameterName);
-            final String service = CommonUtils.constructServiceUrl(request, response, this.serviceUrl, this.serverName, this.artifactParameterName, true);
+            final String requestURL = request.getRequestURL().toString();
+            final String serverName = resolveValue(requestURL, this.serverName, this.serverNameRules);
+            final String service = CommonUtils.constructServiceUrl(request, response, this.serviceUrl, serverName, this.artifactParameterName, true);
             if (CommonUtils.isBlank(token)) {
-                final String redirectUrl = CommonUtils.constructRedirectUrl(this.casServerLoginUrl, this.serviceParameterName, service, false, false);
+                final String casServerLoginUrl = resolveValue(requestURL, this.casServerLoginUrl, this.casServerLoginUrlRules);
+                final String redirectUrl = CommonUtils.constructRedirectUrl(casServerLoginUrl, this.serviceParameterName, service, false, false);
+                log.debug("Requested " + requestURL);
                 log.debug("Redirecting to " + redirectUrl);
                 CommonUtils.sendRedirect(response, redirectUrl);
                 return null;
@@ -114,6 +128,18 @@ public final class AuthenticatorDelegate {
             setUnauthorized(response, null);
         }
         return p;
+    }
+
+    private static String resolveValue(String requestURL, String defaultValue, Map<String, String> rules) {
+        String parameter = defaultValue;
+        for (Entry<String, String> entry : rules.entrySet()) {
+            Matcher matcher = Pattern.compile(entry.getKey()).matcher(requestURL);
+            if (matcher.matches()) {
+                parameter = matcher.replaceFirst(entry.getValue());
+                break;
+            }
+        }
+        return parameter;
     }
 
     /**
@@ -141,7 +167,17 @@ public final class AuthenticatorDelegate {
      * @param serverName the serverName to set
      */
     public void setServerName(final String serverName) {
-        this.serverName = serverName;
+        this.serverName = serverName.trim();
+        if (this.serverName.contains(" ")) {
+            String[] rules = this.serverName.split("\\|\\|");
+            for (String rule : rules) {
+                String[] mapping = rule.trim().split("\\s+");
+                if (mapping.length != 2) {
+                    throw new RuntimeException("\"" + rule + "\": serverName mapping format not adequate (<regexp> <serverName>)");
+                }
+                this.serverNameRules.put(mapping[0].trim(), mapping[1].trim());
+            }
+        }
     }
 
     /**
@@ -155,7 +191,17 @@ public final class AuthenticatorDelegate {
      * @param casServerLoginUrl the casServerLoginUrl to set
      */
     public void setCasServerLoginUrl(final String casServerLoginUrl) {
-        this.casServerLoginUrl = casServerLoginUrl;
+        this.casServerLoginUrl = casServerLoginUrl.trim();
+        if (this.casServerLoginUrl.contains(" ")) {
+            String[] rules = this.casServerLoginUrl.split("\\|\\|");
+            for (String rule : rules) {
+                String[] mapping = rule.trim().split("\\s+");
+                if (mapping.length != 2) {
+                    throw new RuntimeException("\"" + rule + "\": casServerLoginUrl mapping format not adequate (<regexp> <casServerLoginUrl>)");
+                }
+                this.casServerLoginUrlRules.put(mapping[0].trim(), mapping[1].trim());
+            }
+        }
     }
 
     /**
