@@ -154,8 +154,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
             // Authentication sets the response headers for status and redirect if needed
 	        principal = this.delegate.authenticate(request.getRequest(), response);
             if (principal != null) {
-                request.setAuthType(getAuthenticationMethod());
-                request.setUserPrincipal(principal);
+                register(request, response, principal, getAuthenticationMethod(), null, null);
                 result = true;
             }
         } else {
