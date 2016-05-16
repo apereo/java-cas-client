@@ -36,7 +36,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-saml</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -46,7 +46,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-distributed-ehcache</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -56,7 +56,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-distributed-memcached</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -66,7 +66,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-atlassian</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -76,7 +76,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-jboss</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -86,7 +86,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v6</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -96,7 +96,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v7</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -106,7 +106,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v8</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
