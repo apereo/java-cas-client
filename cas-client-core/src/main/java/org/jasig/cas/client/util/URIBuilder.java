@@ -18,6 +18,7 @@
  */
 package org.jasig.cas.client.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +117,16 @@ public final class URIBuilder {
                 final String[] parametersArray = queryValue.split("&");
 
                 for (final String parameter : parametersArray) {
-                    final String[] parameterCombo = parameter.split("=");
+                    final String[] parameterCombo;
+                    if ( StringUtils.countMatches( parameter, "=" ) > 1 ) {
+                        int index = parameter.indexOf( '=' );
+                        parameterCombo = new String[2];
+                        parameterCombo[0] = parameter.substring( 0, index );
+                        parameterCombo[1] = parameter.substring( index + 1 );
+                    }
+                    else {
+                        parameterCombo = parameter.split("=");
+                    }
                     if (parameterCombo.length == 2) {
                         list.add(new BasicNameValuePair(parameterCombo[0], parameterCombo[1]));
                     }
