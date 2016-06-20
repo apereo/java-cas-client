@@ -18,10 +18,6 @@
  */
 package org.jasig.cas.client.util;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -29,10 +25,12 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class borrowed from apache http-client to build uris.
@@ -118,7 +116,7 @@ public final class URIBuilder {
 
                 for (final String parameter : parametersArray) {
                     final String[] parameterCombo;
-                    if ( StringUtils.countMatches( parameter, "=" ) > 1 ) {
+                    if ( CommonUtils.countMatches( parameter, '=' ) > 1 ) {
                         int index = parameter.indexOf( '=' );
                         parameterCombo = new String[2];
                         parameterCombo[0] = parameter.substring( 0, index );
