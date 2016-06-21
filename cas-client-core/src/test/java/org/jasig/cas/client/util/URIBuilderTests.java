@@ -43,7 +43,6 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -112,6 +111,16 @@ public class URIBuilderTests {
                 .setPath("/shindig")
                 .setCustomQuery("hello=world");
         assertEquals("http://apache.org/shindig?hello=world", builder.toString());
+    }
+
+    @Test
+    public void nullParameterUsed() {
+        URIBuilder builder = new URIBuilder()
+                .setScheme("http")
+                .setHost("apache.org")
+                .setPath("/shindig")
+                .setCustomQuery("hello");
+        assertEquals("http://apache.org/shindig?hello", builder.toString());
     }
 
     @Test
@@ -287,11 +296,16 @@ public class URIBuilderTests {
         assertEquals("/shindig", builder.getPath());
 
         List<URIBuilder.BasicNameValuePair> list = builder.getQueryParams();
-        for (URIBuilder.BasicNameValuePair pair : list) {
-            assertEquals(pair.getName(), "foo");
-            assertTrue(pair.getValue().equals("three") || pair.getValue().equals("bar"));
-        }
-        assertEquals(list.size(), 2);
+
+        assertEquals(list.get(0).getName(), "foo");
+        assertEquals(list.get(1).getName(), "baz");
+        assertEquals(list.get(2).getName(), "foo");
+
+        assertEquals(list.get(0).getValue(), "bar");
+        assertNull(list.get(1).getValue());
+        assertEquals(list.get(2).getValue(), "three");
+
+        assertEquals(list.size(), 3);
         assertEquals("blah", builder.getFragment());
     }
 

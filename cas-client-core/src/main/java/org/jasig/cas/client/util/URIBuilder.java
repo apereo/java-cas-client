@@ -28,7 +28,6 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -117,8 +116,9 @@ public final class URIBuilder {
 
                 for (final String parameter : parametersArray) {
                     final String[] parameterCombo = parameter.split("=");
-                    if (parameterCombo.length == 2) {
-                        list.add(new BasicNameValuePair(parameterCombo[0], parameterCombo[1]));
+                    if (parameterCombo.length >= 1) {
+                        list.add(new BasicNameValuePair(parameterCombo[0],
+                                parameterCombo.length >= 2 ? parameterCombo[1] : null));
                     }
                 }
                 return list;
@@ -220,13 +220,14 @@ public final class URIBuilder {
         final StringBuilder result = new StringBuilder();
         for (final BasicNameValuePair parameter : params) {
             final String encodedName = this.encode ? CommonUtils.urlEncode(parameter.getName()) : parameter.getName();
-            final String encodedValue = this.encode ? CommonUtils.urlEncode(parameter.getValue()) : parameter.getValue();
 
             if (result.length() > 0) {
                 result.append("&");
             }
             result.append(encodedName);
-            if (encodedValue != null) {
+            if (parameter.getValue() != null) {
+                final String encodedValue = this.encode ? CommonUtils.urlEncode(parameter.getValue()) : parameter.getValue();
+
                 result.append("=");
                 result.append(encodedValue);
             }

@@ -18,16 +18,16 @@
  */
 package org.jasig.cas.client.util;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import junit.framework.TestCase;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Tests for the CommonUtils.
@@ -287,6 +287,18 @@ public final class CommonUtilsTests extends TestCase {
     public void testConstructURlWithMultipleHostsAndPorts() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.addHeader("Host", "www.myserver.com");
+        request.setScheme("https");
+        request.setSecure(true);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+                "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "service", "ticket", false);
+        assertEquals(CONST_MY_URL, constructedUrl);
+    }
+
+    public void testConstructURLWithParamButNoValue() {
+        final String CONST_MY_URL = "https://www.myserver.com/hello?foo=bar&baz";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello?foo=bar&baz");
         request.addHeader("Host", "www.myserver.com");
         request.setScheme("https");
         request.setSecure(true);
