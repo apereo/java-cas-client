@@ -19,8 +19,11 @@
 package org.jasig.cas.client.validation;
 
 import static org.junit.Assert.*;
+
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
@@ -39,6 +42,8 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
 
     private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8088);
 
+    private static final Logger LOG = Logger.getLogger( Cas20ServiceTicketValidatorTests.class );
+    
     private Cas20ServiceTicketValidator ticketValidator;
 
     private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
@@ -54,12 +59,16 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
 
     @Before
     public void setUp() throws Exception {
+        LOG.info( "Enter in setUp" );
         this.proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
         this.ticketValidator = new Cas20ServiceTicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8088");
         this.ticketValidator.setProxyCallbackUrl("test");
         this.ticketValidator.setProxyGrantingTicketStorage(getProxyGrantingTicketStorage());
         this.ticketValidator.setProxyRetriever(getProxyRetriever());
         this.ticketValidator.setRenew(true);
+        LOG.info( "setUp --> sleep" );
+        Thread.sleep( 2000 );
+        LOG.info( "Out of setUp" );
     }
 
     private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
@@ -80,6 +89,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
 
     @Test
     public void testNoResponse() throws UnsupportedEncodingException {
+        LOG.info( "Enter in testNoResponse" );
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-1856339-aA5Yuvrxzpv8Tau1cYQ7 not recognized</cas:authenticationFailure></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
         try {
@@ -88,10 +98,12 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         } catch (final TicketValidationException e) {
             // expected
         }
+        LOG.info( "Out of testNoResponse" );
     }
 
     @Test
     public void testYesResponseButNoPgt() throws TicketValidationException, UnsupportedEncodingException {
+        LOG.info( "Enter in testYesResponseButNoPgt" );
         final String USERNAME = "username";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
                 + USERNAME + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
@@ -99,11 +111,12 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
 
         final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
-
+        LOG.info( "Out of testYesResponseButNoPgt" );
     }
 
     @Test
     public void testYesResponseWithPgt() throws TicketValidationException, UnsupportedEncodingException {
+        LOG.info( "Enter in testYesResponseWithPgt" );
         final String USERNAME = "username";
         final String PGTIOU = "testPgtIou";
         final String PGT = "test";
@@ -119,10 +132,12 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
         //        assertEquals(PGT, assertion.getProxyGrantingTicketId());
+        LOG.info( "Out of testYesResponseWithPgt" );
     }
 
     @Test
     public void testGetAttributes() throws TicketValidationException, UnsupportedEncodingException {
+        LOG.info( "Enter in testGetAttributes" );
         final String USERNAME = "username";
         final String PGTIOU = "testPgtIou";
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
@@ -144,10 +159,12 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
             fail("'multivaluedAttribute' attribute expected as List<Object> object.");
         }
         //assertEquals(PGT, assertion.getProxyGrantingTicketId());
+        LOG.info( "Out of testGetAttributes" );
     }
 
     @Test
     public void testInvalidResponse() throws Exception {
+        LOG.info( "Enter in testInvalidResponse" );
         final String RESPONSE = "<root />";
         server.content = RESPONSE.getBytes(server.encoding);
         try {
@@ -156,5 +173,6 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         } catch (final TicketValidationException e) {
             // expected
         }
+        LOG.info( "Out of testInvalidResponse" );
     }
 }

@@ -18,11 +18,18 @@
  */
 package org.jasig.cas.client;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Scott Battaglia
@@ -33,6 +40,8 @@ public final class PublicTestHttpServer extends Thread {
 
     private static PublicTestHttpServer httpServer;
 
+    private static final Logger LOG = Logger.getLogger( PublicTestHttpServer.class );
+    
     public byte[] content;
 
     private final byte[] header;
@@ -76,11 +85,11 @@ public final class PublicTestHttpServer extends Thread {
     }
 
     public void shutdown() {
-        System.out.println("Shutting down connection on port " + server.getLocalPort());
+        LOG.info("Shutting down connection on port " + server.getLocalPort());
         try {
             this.server.close();
         } catch (final Exception e) {
-            System.err.println(e);
+            LOG.error("Error on shutdown", e);
         }
 
         httpServer = null;
@@ -90,7 +99,7 @@ public final class PublicTestHttpServer extends Thread {
 
         try {
             this.server = new ServerSocket(this.port);
-            System.out.println("Accepting connections on port " + server.getLocalPort());
+            LOG.info("Accepting connections on port " + server.getLocalPort());
             while (true) {
 
                 Socket connection = null;
@@ -127,7 +136,7 @@ public final class PublicTestHttpServer extends Thread {
             } // end while
         } // end try
         catch (final IOException e) {
-            System.err.println("Could not start server. Port Occupied");
+            LOG.error("Could not start server. Port Occupied.", e);
         }
 
     } // end run
