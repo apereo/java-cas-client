@@ -20,7 +20,6 @@ package org.jasig.cas.client.validation;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,12 +44,10 @@ import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * The filter that handles all the work of validating ticket requests.
@@ -252,96 +249,114 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                 return;
             }
         }
-
-        final String authHeader = request.getHeader("Authorization");
-        if (!CommonUtils.isBlank(authHeader)
-                && authHeader.toLowerCase().startsWith("Bearer".toLowerCase() + ' ')) {
-        	final String accessToken = authHeader.substring("Bearer".length() + 1);
-            logger.debug("{}: {}", "access token", accessToken);
-            
-            try {
-                logger.debug("Retrieving response from server.");
-                
-                final String validationUrl = "http://accounts.wavity.com/auth/oauth2.0/profile?access_token=" + accessToken;
-                final String serverResponse = CommonUtils.getResponseFromServer(new URL(validationUrl), new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
-                if (serverResponse == null) {
-                    throw new TicketValidationException("The CAS server returned no response.");
-                }
-
-                logger.debug("Server response: {}", serverResponse);
-                
-                JsonParser parser = new JsonParser();
-                JsonObject responseFromServer = (JsonObject)parser.parse(serverResponse);
-                Iterator<Entry<String, JsonElement>> itr = responseFromServer.entrySet().iterator();
-                
-                //checking if there is an error
-                while(itr.hasNext()) {
-                	Entry<String, JsonElement> entry = itr.next();
-                	if(entry.getKey().equalsIgnoreCase("error")) {
-                		throw new TicketValidationException(entry.getValue().getAsString());
-                	}
-                }
-                
-                //getting an assertion
-                final Assertion assertion;
-                itr = responseFromServer.entrySet().iterator();
-                String principal = null;
-                final Map<String, Object> attributes = new HashMap<String, Object>();
-                while(itr.hasNext()) {
-                	Entry<String, JsonElement> entry = itr.next();
-                	if(entry.getKey().equalsIgnoreCase("id")) {
-                		principal = entry.getValue().getAsString();
-                	}
-                	else if(entry.getKey().equalsIgnoreCase("attributes")) {
-                		final JsonArray attributesArray = entry.getValue().getAsJsonArray();
-                		final Iterator<JsonElement> attrItr = attributesArray.iterator();
-                		while(attrItr.hasNext()) {
-                			JsonObject jo = (JsonObject) attrItr.next();
-                			final Iterator<Entry<String, JsonElement>> joItr = jo.entrySet().iterator();
-                			while(joItr.hasNext()) {
-                				Entry<String, JsonElement> entry2 = joItr.next();
-                				attributes.put(entry2.getKey(), entry2.getValue().getAsString());
-                			}
-                		}
-                	}
-                }
-                
-                if(principal == null || CommonUtils.isBlank(principal)) {
-                	throw new TicketValidationException("No principal was found in the response from the CAS server.");
-                }
-                assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
-                request.setAttribute(CONST_CAS_ASSERTION, assertion);
-
-                if (this.useSession) {
-                    request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
-                }
-            	
-                if (this.redirectAfterValidation) {
-                    logger.debug("Redirecting after successful ticket validation.");
-                    response.sendRedirect(constructServiceUrl(request, response));
-                    return;
-                }
-            } catch (final MalformedURLException e) {
-            	logger.debug(e.getMessage(), e);
-            	return;
-            } catch (final TicketValidationException e) {
-                logger.debug(e.getMessage(), e);
-
-                onFailedValidation(request, response);
-
-                if (this.exceptionOnValidationFailure) {
-                    throw new ServletException(e);
-                }
-
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-
-                return;
-            }
-            
+        
+        // Check if there is an access token in the request header.
+        if (!(checkAccessToken(request, response))) {
+        	return;
         }
 
         filterChain.doFilter(request, response);
     
+    }
+    
+    /**
+     * Check if there is an access token in the request header, and if is do the same as the ticket does.
+     * 
+     * @param request the object of HttpServletRequest.
+     * @param response the object of HttpServletResponse.
+     * @return whether it needs to go the the next filter or not.
+     * @throws IOException
+     * @throws ServletException
+     */
+    private final boolean checkAccessToken(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+		final String authHeader = request.getHeader("Authorization");
+		if (!CommonUtils.isBlank(authHeader) && authHeader.toLowerCase().startsWith("Bearer".toLowerCase() + ' ')) {
+			final String accessToken = authHeader.substring("Bearer".length() + 1);
+			logger.debug("{}: {}", "access token", accessToken);
+
+			try {
+				logger.debug("Retrieving response from server.");
+				String serverName = request.getServerName();
+				int pos = serverName.indexOf(".");
+				if (pos > 0 && pos < serverName.length() - 1) {
+					serverName = String.format("accounts.%s", serverName.substring(pos + 1));
+				}
+				final StringBuilder builder = new StringBuilder();
+				builder
+					.append(request.getScheme()).append("://")
+					.append(serverName)
+					.append(":").append(request.getServerPort())
+					.append("/auth/oauth2.0/profile?access_token=")
+					.append(accessToken);
+				final String serverResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
+				if (serverResponse == null) {
+					throw new TicketValidationException("The CAS server returned no response.");
+				}
+
+				logger.debug("Server response: {}", serverResponse);
+
+				final JsonParser parser = new JsonParser();
+				final JsonObject responseFromServer = (JsonObject) parser.parse(serverResponse);
+				Iterator<Entry<String, JsonElement>> itr = responseFromServer.entrySet().iterator();
+
+				// getting an assertion
+				final Assertion assertion;
+				itr = responseFromServer.entrySet().iterator();
+				String principal = null;
+				final Map<String, Object> attributes = new HashMap<String, Object>();
+				while (itr.hasNext()) {
+					Entry<String, JsonElement> entry = itr.next();
+					if (entry.getKey().equalsIgnoreCase("error")) {
+						throw new TicketValidationException(entry.getValue().getAsString());
+					}
+					if (entry.getKey().equalsIgnoreCase("id")) {
+						principal = entry.getValue().getAsString();
+					} else if (entry.getKey().equalsIgnoreCase("attributes")) {
+						final JsonArray attributesArray = entry.getValue().getAsJsonArray();
+						final Iterator<JsonElement> attrItr = attributesArray.iterator();
+						while (attrItr.hasNext()) {
+							JsonObject jo = (JsonObject) attrItr.next();
+							final Iterator<Entry<String, JsonElement>> joItr = jo.entrySet().iterator();
+							while (joItr.hasNext()) {
+								Entry<String, JsonElement> attr = joItr.next();
+								attributes.put(attr.getKey(), attr.getValue().getAsString());
+							}
+						}
+					}
+				}
+
+				if (principal == null || CommonUtils.isBlank(principal)) {
+					throw new TicketValidationException("No principal was found in the response from the CAS server.");
+				}
+				assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
+				request.setAttribute(CONST_CAS_ASSERTION, assertion);
+
+				if (this.useSession) {
+					request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
+				}
+
+				if (this.redirectAfterValidation) {
+					logger.debug("Redirecting after successful ticket validation.");
+					response.sendRedirect(constructServiceUrl(request, response));
+					return false;
+				}
+			} catch (final TicketValidationException e) {
+				logger.debug(e.getMessage(), e);
+
+				onFailedValidation(request, response);
+
+				if (this.exceptionOnValidationFailure) {
+					throw new ServletException(e);
+				}
+
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+
+				return false;
+			}
+
+		}
+		return true;
     }
 
     public final void setTicketValidator(final TicketValidator ticketValidator) {
