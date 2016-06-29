@@ -165,6 +165,15 @@ public class AuthenticationFilter extends AbstractCasFilter {
             return;
         }
 
+        final String authHeader = request.getHeader("Authorization");
+        if (!CommonUtils.isBlank(authHeader)
+                && authHeader.toLowerCase().startsWith("Bearer".toLowerCase() + ' ')) {
+        	final String accessToken = authHeader.substring("Bearer".length() + 1);
+            logger.debug("{}: {}", "access token", accessToken);
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         final String modifiedServiceUrl;
 
         logger.debug("no ticket and no assertion found");
