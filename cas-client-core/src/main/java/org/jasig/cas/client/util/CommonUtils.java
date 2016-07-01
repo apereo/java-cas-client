@@ -714,7 +714,7 @@ public final class CommonUtils {
     }
     
     /**
-     * Extracts the last part of the domain such as .net, .com, .info.
+     * Split the parts of the domain and returns the divided two parts.
      * 
      * @param urlValue the string of URL.
      * @return the string of the last part of domain.
