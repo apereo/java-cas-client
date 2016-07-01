@@ -19,10 +19,15 @@
 package org.jasig.cas.client.authentication;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -175,6 +180,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         }
         
         final String modifiedServiceUrl;
+        
 
         logger.debug("no ticket and no assertion found");
         if (this.gateway) {
@@ -183,10 +189,40 @@ public class AuthenticationFilter extends AbstractCasFilter {
         } else {
             modifiedServiceUrl = serviceUrl;
         }
-
+        
         logger.debug("Constructed service url: {}", modifiedServiceUrl);
+        
+        // To get the domain from the service URL.
+        URL url = new URL(modifiedServiceUrl);
+        final String newServiceUrlHost = url.getHost();
+        final String newServiceUrlDomain = newServiceUrlHost.substring(newServiceUrlHost.lastIndexOf(".") + 1);
+        
+        // Not to change the instance variable, and to get the domain of it.
+        url = new URL(this.casServerLoginUrl);
+        String casServerLoginUrlHost = url.getHost();
+        final String casServerLoginUrlDomain = casServerLoginUrlHost.substring(casServerLoginUrlHost.lastIndexOf(".") + 1);
+        
+        // To use the instance variable as is if domain is not different.
+        String modifiedCasServerLoginUrl = this.casServerLoginUrl;
+        
+        // If one domain is different from the other, replace it with the one in the service URL
+        // since if it's different logout doesn't work well.
+        if (!newServiceUrlDomain.equals(casServerLoginUrlDomain)) {
+        	url = new URL(modifiedCasServerLoginUrl);
+        	casServerLoginUrlHost = url.getHost();
+        	int lastIndex = casServerLoginUrlHost.lastIndexOf(".");
+        	casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlHost.substring(0, lastIndex), newServiceUrlDomain);
+        	final StringBuilder builder = new StringBuilder();
+        	builder
+	            .append(url.getProtocol())
+	            .append("://")
+	            .append(casServerLoginUrlHost)
+	            .append(":").append(url.getPort())
+	            .append(url.getPath());
+        	modifiedCasServerLoginUrl = builder.toString();
+        }
 
-        final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
+        final String urlToRedirectTo = CommonUtils.constructRedirectUrl(modifiedCasServerLoginUrl,
                 getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
