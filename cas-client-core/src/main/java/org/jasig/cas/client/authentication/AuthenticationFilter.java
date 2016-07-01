@@ -61,6 +61,16 @@ public class AuthenticationFilter extends AbstractCasFilter {
      * The URL to the CAS Server login.
      */
     private String casServerLoginUrl;
+    
+    /**
+     * The first part of CAS server login URL domain.
+     */
+    private String casServerLoginUrlDomainFirstPart;
+    
+    /**
+     * The last part of CAS Server login URL domain.
+     */
+    private String casServerLoginUrlDomainLastPart;
 
     /**
      * Whether to send the renew request or not.
@@ -80,6 +90,9 @@ public class AuthenticationFilter extends AbstractCasFilter {
     
     private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
             new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
+    
+    public static final String KEY_CAS_LOGIN_URL_FIRST = "first";
+    public static final String KEY_CAS_LOGIN_URL_LAST = "last";
     
     static {
         PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);
@@ -101,6 +114,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             setCasServerLoginUrl(getString(ConfigurationKeys.CAS_SERVER_LOGIN_URL));
             setRenew(getBoolean(ConfigurationKeys.RENEW));
             setGateway(getBoolean(ConfigurationKeys.GATEWAY));
+            setCasServerLoginUrlDomainParts(CommonUtils.getUrlDomainParts(this.casServerLoginUrl));
                        
             final String ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
             final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
@@ -181,7 +195,6 @@ public class AuthenticationFilter extends AbstractCasFilter {
         
         final String modifiedServiceUrl;
         
-
         logger.debug("no ticket and no assertion found");
         if (this.gateway) {
             logger.debug("setting gateway attribute in session");
@@ -197,21 +210,14 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String newServiceUrlHost = url.getHost();
         final String newServiceUrlDomain = newServiceUrlHost.substring(newServiceUrlHost.lastIndexOf(".") + 1);
         
-        // Not to change the instance variable, and to get the domain of it.
-        url = new URL(this.casServerLoginUrl);
-        String casServerLoginUrlHost = url.getHost();
-        final String casServerLoginUrlDomain = casServerLoginUrlHost.substring(casServerLoginUrlHost.lastIndexOf(".") + 1);
-        
         // To use the instance variable as is if domain is not different.
         String modifiedCasServerLoginUrl = this.casServerLoginUrl;
         
         // If one domain is different from the other, replace it with the one in the service URL
         // since if it's different logout doesn't work well.
-        if (!newServiceUrlDomain.equals(casServerLoginUrlDomain)) {
+        if (!newServiceUrlDomain.equals(casServerLoginUrlDomainLastPart)) {
         	url = new URL(modifiedCasServerLoginUrl);
-        	casServerLoginUrlHost = url.getHost();
-        	int lastIndex = casServerLoginUrlHost.lastIndexOf(".");
-        	casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlHost.substring(0, lastIndex), newServiceUrlDomain);
+        	String casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlDomainFirstPart, newServiceUrlDomain);
         	final StringBuilder builder = new StringBuilder();
         	builder
 	            .append(url.getProtocol())
@@ -240,8 +246,13 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void setCasServerLoginUrl(final String casServerLoginUrl) {
         this.casServerLoginUrl = casServerLoginUrl;
     }
+    
+    public void setCasServerLoginUrlDomainParts(Map<String, String> domainParts) {
+    	this.casServerLoginUrlDomainFirstPart = domainParts.get(KEY_CAS_LOGIN_URL_FIRST);
+		this.casServerLoginUrlDomainLastPart = domainParts.get(KEY_CAS_LOGIN_URL_LAST);
+	}
 
-    public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
+	public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
         this.gatewayStorage = gatewayStorage;
     }
         
