@@ -222,9 +222,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
         	builder
 	            .append(url.getProtocol())
 	            .append("://")
-	            .append(casServerLoginUrlHost)
-	            .append(":").append(url.getPort())
-	            .append(url.getPath());
+	            .append(casServerLoginUrlHost);
+        	if (url.getPort() != -1) {
+        		builder.append(":").append(url.getPort());
+        	}
+        	builder.append(url.getPath());
         	modifiedCasServerLoginUrl = builder.toString();
         }
 
