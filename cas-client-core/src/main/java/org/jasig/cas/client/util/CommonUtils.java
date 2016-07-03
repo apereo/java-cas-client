@@ -725,8 +725,8 @@ public final class CommonUtils {
 			String urlHost = url.getHost();
 			final int lastIndex = urlHost.lastIndexOf(".");
 			final Map<String, String> domainParts = new HashMap<String, String>();
-			domainParts.put(AuthenticationFilter.KEY_CAS_LOGIN_URL_FIRST, urlHost.substring(0, lastIndex));
-			domainParts.put(AuthenticationFilter.KEY_CAS_LOGIN_URL_LAST, urlHost.substring(lastIndex + 1));
+			domainParts.put(AuthenticationFilter.CAS_LOGIN_URL_FIRST_PART, urlHost.substring(0, lastIndex));
+			domainParts.put(AuthenticationFilter.CAS_LOGIN_URL_LAST_PART, urlHost.substring(lastIndex + 1));
 			return domainParts;
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);

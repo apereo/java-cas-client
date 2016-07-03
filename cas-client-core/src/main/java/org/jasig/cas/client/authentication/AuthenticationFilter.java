@@ -65,12 +65,12 @@ public class AuthenticationFilter extends AbstractCasFilter {
     /**
      * The first part of CAS server login URL domain.
      */
-    private String casServerLoginUrlDomainFirstPart;
+    private String casServerLoginUrlFirstPart;
     
     /**
      * The last part of CAS Server login URL domain.
      */
-    private String casServerLoginUrlDomainLastPart;
+    private String casServerLoginUrlLastPart;
 
     /**
      * Whether to send the renew request or not.
@@ -91,8 +91,15 @@ public class AuthenticationFilter extends AbstractCasFilter {
     private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
             new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
     
-    public static final String KEY_CAS_LOGIN_URL_FIRST = "first";
-    public static final String KEY_CAS_LOGIN_URL_LAST = "last";
+    /**
+     * The constant representing the first part of CAS login URL.
+     */
+    public static final String CAS_LOGIN_URL_FIRST_PART = "first_part";
+    
+    /**
+     * The constant representing the last part of CAS login URL.
+     */
+    public static final String CAS_LOGIN_URL_LAST_PART = "last_part";
     
     static {
         PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);
@@ -215,9 +222,9 @@ public class AuthenticationFilter extends AbstractCasFilter {
         
         // If one domain is different from the other, replace it with the one in the service URL
         // since if it's different logout doesn't work well.
-        if (!newServiceUrlDomain.equals(casServerLoginUrlDomainLastPart)) {
+        if (!newServiceUrlDomain.equals(casServerLoginUrlLastPart)) {
         	url = new URL(modifiedCasServerLoginUrl);
-        	String casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlDomainFirstPart, newServiceUrlDomain);
+        	String casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlFirstPart, newServiceUrlDomain);
         	final StringBuilder builder = new StringBuilder();
         	builder
 	            .append(url.getProtocol())
@@ -250,8 +257,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
     }
     
     public void setCasServerLoginUrlDomainParts(Map<String, String> domainParts) {
-    	this.casServerLoginUrlDomainFirstPart = domainParts.get(KEY_CAS_LOGIN_URL_FIRST);
-		this.casServerLoginUrlDomainLastPart = domainParts.get(KEY_CAS_LOGIN_URL_LAST);
+    	this.casServerLoginUrlFirstPart = domainParts.get(CAS_LOGIN_URL_FIRST_PART);
+		this.casServerLoginUrlLastPart = domainParts.get(CAS_LOGIN_URL_LAST_PART);
 	}
 
 	public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
