@@ -160,6 +160,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public void init() {
         super.init();
         CommonUtils.assertNotNull(this.casServerLoginUrl, "casServerLoginUrl cannot be null.");
+        CommonUtils.assertNotNull(this.casServerLoginUrlFirstPart, "casServerLoginUrlFirstPart cannot be null.");
+        CommonUtils.assertNotNull(this.casServerLoginUrlLastPart, "casServerLoginUrlLastPart cannot be null.");
     }
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
@@ -257,8 +259,16 @@ public class AuthenticationFilter extends AbstractCasFilter {
     }
     
     public void setCasServerLoginUrlDomainParts(Map<String, String> domainParts) {
-    	this.casServerLoginUrlFirstPart = domainParts.get(CAS_LOGIN_URL_FIRST_PART);
-		this.casServerLoginUrlLastPart = domainParts.get(CAS_LOGIN_URL_LAST_PART);
+    	setCasServerLoginUrlFirstPart(domainParts.get(CAS_LOGIN_URL_FIRST_PART));
+    	setCasServerLoginUrlLastPart(domainParts.get(CAS_LOGIN_URL_LAST_PART));
+	}
+    
+	public void setCasServerLoginUrlFirstPart(String casServerLoginUrlFirstPart) {
+		this.casServerLoginUrlFirstPart = casServerLoginUrlFirstPart;
+	}
+
+	public void setCasServerLoginUrlLastPart(String casServerLoginUrlLastPart) {
+		this.casServerLoginUrlLastPart = casServerLoginUrlLastPart;
 	}
 
 	public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
