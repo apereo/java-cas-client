@@ -224,7 +224,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         // since if it's different logout doesn't work well.
         if (!newServiceUrlDomain.equals(casServerLoginUrlLastPart)) {
         	url = new URL(modifiedCasServerLoginUrl);
-        	String casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlFirstPart, newServiceUrlDomain);
+        	final String casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlFirstPart, newServiceUrlDomain);
         	final StringBuilder builder = new StringBuilder();
         	builder
 	            .append(url.getProtocol())
