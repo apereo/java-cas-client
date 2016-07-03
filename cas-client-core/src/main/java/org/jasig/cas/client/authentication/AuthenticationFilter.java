@@ -258,16 +258,16 @@ public class AuthenticationFilter extends AbstractCasFilter {
         this.casServerLoginUrl = casServerLoginUrl;
     }
     
-    public void setCasServerLoginUrlDomainParts(Map<String, String> domainParts) {
+    public void setCasServerLoginUrlDomainParts(final Map<String, String> domainParts) {
     	setCasServerLoginUrlFirstPart(domainParts.get(CAS_LOGIN_URL_FIRST_PART));
     	setCasServerLoginUrlLastPart(domainParts.get(CAS_LOGIN_URL_LAST_PART));
 	}
     
-	public void setCasServerLoginUrlFirstPart(String casServerLoginUrlFirstPart) {
+	public void setCasServerLoginUrlFirstPart(final String casServerLoginUrlFirstPart) {
 		this.casServerLoginUrlFirstPart = casServerLoginUrlFirstPart;
 	}
 
-	public void setCasServerLoginUrlLastPart(String casServerLoginUrlLastPart) {
+	public void setCasServerLoginUrlLastPart(final String casServerLoginUrlLastPart) {
 		this.casServerLoginUrlLastPart = casServerLoginUrlLastPart;
 	}
 
