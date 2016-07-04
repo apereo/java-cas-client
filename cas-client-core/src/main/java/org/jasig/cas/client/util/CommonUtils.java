@@ -23,22 +23,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.Protocol;
-import org.jasig.cas.client.authentication.AuthenticationFilter;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
@@ -712,24 +708,4 @@ public final class CommonUtils {
             return defaultValue;
         }
     }
-    
-    /**
-     * Split the parts of the domain and returns the divided two parts.
-     * 
-     * @param urlValue the string of URL.
-     * @return the string of the last part of domain.
-     */
-    public static Map<String, String> getUrlDomainParts(String urlValue) {
-		try {
-			URL url = new URL(urlValue);
-			String urlHost = url.getHost();
-			final int lastIndex = urlHost.lastIndexOf(".");
-			final Map<String, String> domainParts = new HashMap<String, String>();
-			domainParts.put(AuthenticationFilter.CAS_LOGIN_URL_FIRST_PART, urlHost.substring(0, lastIndex));
-			domainParts.put(AuthenticationFilter.CAS_LOGIN_URL_LAST_PART, urlHost.substring(lastIndex + 1));
-			return domainParts;
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-	}
 }

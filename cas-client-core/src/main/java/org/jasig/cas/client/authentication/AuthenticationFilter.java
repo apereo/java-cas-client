@@ -19,6 +19,7 @@
 package org.jasig.cas.client.authentication;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -121,7 +122,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             setCasServerLoginUrl(getString(ConfigurationKeys.CAS_SERVER_LOGIN_URL));
             setRenew(getBoolean(ConfigurationKeys.RENEW));
             setGateway(getBoolean(ConfigurationKeys.GATEWAY));
-            setCasServerLoginUrlDomainParts(CommonUtils.getUrlDomainParts(this.casServerLoginUrl));
+            setCasServerLoginUrlDomainParts(getCasLoginUrlDomainParts(this.casServerLoginUrl));
                        
             final String ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
             final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
@@ -287,4 +288,24 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String requestUri = urlBuffer.toString();
         return this.ignoreUrlPatternMatcherStrategyClass.matches(requestUri);
     }
+    
+    /**
+     * Split the parts of the domain and returns the divided two parts.
+     * 
+     * @param urlValue the string of URL.
+     * @return the string of the last part of domain.
+     */
+    private Map<String, String> getCasLoginUrlDomainParts(String urlValue) {
+		try {
+			URL url = new URL(urlValue);
+			String urlHost = url.getHost();
+			final int lastIndex = urlHost.lastIndexOf(".");
+			final Map<String, String> domainParts = new HashMap<String, String>();
+			domainParts.put(AuthenticationFilter.CAS_LOGIN_URL_FIRST_PART, urlHost.substring(0, lastIndex));
+			domainParts.put(AuthenticationFilter.CAS_LOGIN_URL_LAST_PART, urlHost.substring(lastIndex + 1));
+			return domainParts;
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
