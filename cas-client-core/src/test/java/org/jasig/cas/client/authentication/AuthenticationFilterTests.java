@@ -177,8 +177,13 @@ public final class AuthenticationFilterTests {
 
         final MockHttpServletResponse response2 = new MockHttpServletResponse();
         this.filter.doFilter(request, response2, filterChain);
-        assertNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
+        assertNotNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNull(response2.getRedirectedUrl());
+		
+        final MockHttpServletResponse response3 = new MockHttpServletResponse();
+        this.filter.doFilter(request, response3, filterChain);
+        assertNotNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
+        assertNull(response3.getRedirectedUrl());
     }
 
     @Test
