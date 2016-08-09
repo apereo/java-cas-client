@@ -33,7 +33,6 @@ public final class DefaultGatewayResolverImpl implements GatewayResolver {
         }
 
         final boolean result = session.getAttribute(CONST_CAS_GATEWAY) != null;
-        session.removeAttribute(CONST_CAS_GATEWAY);
         return result;
     }
 
