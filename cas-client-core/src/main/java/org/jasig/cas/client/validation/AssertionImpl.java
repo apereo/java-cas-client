@@ -133,6 +133,7 @@ public final class AssertionImpl implements Assertion {
         }
 
         final Date now = new Date();
-        return this.validFromDate.before(now) && (this.validUntilDate == null || this.validUntilDate.after(now));
+        return (this.validFromDate.before(now) || this.validFromDate.equals(now)) 
+                && (this.validUntilDate == null || this.validUntilDate.after(now) || this.validUntilDate.equals(now));
     }
 }
