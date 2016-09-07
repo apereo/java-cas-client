@@ -94,7 +94,9 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
             return null;
         }
 
-        return XmlUtils.getTextForElement(response, "proxyTicket");
+        final String ticket = XmlUtils.getTextForElement(response, "proxyTicket");
+        logger.debug("Got proxy ticket {}", ticket);
+        return ticket;
     }
 
     private URL constructUrl(final String proxyGrantingTicketId, final String targetService) {
