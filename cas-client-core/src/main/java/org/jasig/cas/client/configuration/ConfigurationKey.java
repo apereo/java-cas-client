@@ -60,4 +60,9 @@ public final class ConfigurationKey<E> {
     public E getDefaultValue() {
         return this.defaultValue;
     }
+    
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
