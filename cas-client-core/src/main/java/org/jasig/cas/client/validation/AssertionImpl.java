@@ -101,26 +101,32 @@ public final class AssertionImpl implements Assertion {
         CommonUtils.assertNotNull(this.attributes, "attributes cannot be null.");
     }
 
+    @Override
     public Date getAuthenticationDate() {
         return this.authenticationDate;
     }
 
+    @Override
     public Date getValidFromDate() {
         return this.validFromDate;
     }
 
+    @Override
     public Date getValidUntilDate() {
         return this.validUntilDate;
     }
 
+    @Override
     public Map<String, Object> getAttributes() {
         return this.attributes;
     }
 
+    @Override
     public AttributePrincipal getPrincipal() {
         return this.principal;
     }
 
+    @Override
     public boolean isValid() {
         if (this.validFromDate == null) {
             return true;
