@@ -49,6 +49,11 @@ public final class AssertionImplTests extends TestCase {
         assertNull(assertion.getPrincipal().getProxyTicketFor("test"));
     }
 
+    public void testAssertionValidity() throws Exception {
+        final Assertion assertion = new AssertionImpl(CONST_PRINCIPAL, CONST_ATTRIBUTES);
+        assertTrue(assertion.isValid());
+    }
+    
     public void testCompleteConstructor() {
         final Assertion assertion = new AssertionImpl(CONST_PRINCIPAL, CONST_ATTRIBUTES);
 
