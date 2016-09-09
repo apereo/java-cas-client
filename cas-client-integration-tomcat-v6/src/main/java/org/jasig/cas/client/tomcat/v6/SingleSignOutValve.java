@@ -51,11 +51,7 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
     public void setLogoutParameterName(final String name) {
         this.handler.setLogoutParameterName(name);
     }
-
-    public void setFrontLogoutParameterName(final String name) {
-        this.handler.setFrontLogoutParameterName(name);
-    }
-
+    
     public void setRelayStateParameterName(final String name) {
         this.handler.setRelayStateParameterName(name);
     }
