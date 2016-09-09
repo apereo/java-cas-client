@@ -31,7 +31,6 @@ import org.springframework.mock.web.MockHttpSession;
 
 /**
  * @author Matt Brown <matt.brown@citrix.com>
- * @version $Revision$ $Date$
  * @since 3.2.1
  */
 public final class SingleSignOutHandlerTests {
@@ -39,9 +38,8 @@ public final class SingleSignOutHandlerTests {
     private final static String ANOTHER_PARAMETER = "anotherParameter";
     private final static String TICKET = "ST-xxxxxxxx";
     private final static String URL = "http://mycasserver";
-    private final static String LOGOUT_PARAMETER_NAME = "logoutRequest2";
-    private final static String FRONT_LOGOUT_PARAMETER_NAME = "SAMLRequest2";
-    private final static String RELAY_STATE_PARAMETER_NAME = "RelayState2";
+    private final static String LOGOUT_PARAMETER_NAME = "logoutRequest";
+    private final static String RELAY_STATE_PARAMETER_NAME = "RelayState";
     private final static String ARTIFACT_PARAMETER_NAME = "ticket2";
 
     private SingleSignOutHandler handler;
@@ -142,8 +140,8 @@ public final class SingleSignOutHandlerTests {
     @Test
     public void frontChannelLogoutFailsIfNoSessionIndex() {
         final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage("");
-        request.setParameter(FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
-        request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
@@ -154,8 +152,8 @@ public final class SingleSignOutHandlerTests {
     @Test
     public void frontChannelLogoutOK() {
         final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
-        request.setParameter(FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
-        request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
@@ -167,15 +165,13 @@ public final class SingleSignOutHandlerTests {
     @Test
     public void frontChannelLogoutRelayStateOK() {
         final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
-        request.setParameter(FRONT_LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setParameter(RELAY_STATE_PARAMETER_NAME, TICKET);
-        request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" + RELAY_STATE_PARAMETER_NAME + "=" + TICKET);
+        request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" + RELAY_STATE_PARAMETER_NAME + "=" + TICKET);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         assertFalse(handler.process(request, response));
         assertTrue(session.isInvalid());
-        assertEquals(URL + "/logout?_eventId=next&" + RELAY_STATE_PARAMETER_NAME + "=" + TICKET,
-                response.getRedirectedUrl());
     }
 }
