@@ -52,7 +52,6 @@ public final class SingleSignOutHandlerTests {
     public void setUp() throws Exception {
         handler = new SingleSignOutHandler();
         handler.setLogoutParameterName(LOGOUT_PARAMETER_NAME);
-        handler.setFrontLogoutParameterName(FRONT_LOGOUT_PARAMETER_NAME);
         handler.setRelayStateParameterName(RELAY_STATE_PARAMETER_NAME);
         handler.setArtifactParameterName(ARTIFACT_PARAMETER_NAME);
         handler.setCasServerUrlPrefix(URL);
