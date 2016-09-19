@@ -61,7 +61,7 @@ public final class ConfluenceCasAuthenticator extends ConfluenceAuthenticator {
 
             // user doesn't exist 
             if (p == null) {
-                LOGGER.error("Principal is null for " + assertion.getPrincipal().getName());
+                LOGGER.error("Principal is null for ", assertion.getPrincipal().getName());
             }
 
             LOGGER.debug("Logging in [{}] from CAS.", p.getName());
