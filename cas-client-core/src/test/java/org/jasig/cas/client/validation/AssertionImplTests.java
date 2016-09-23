@@ -18,6 +18,7 @@
  */
 package org.jasig.cas.client.validation;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import junit.framework.TestCase;
@@ -49,6 +50,11 @@ public final class AssertionImplTests extends TestCase {
         assertNull(assertion.getPrincipal().getProxyTicketFor("test"));
     }
 
+    public void testAssertionValidity() throws Exception {
+        final Assertion assertion = new AssertionImpl(CONST_PRINCIPAL, new Date(), new Date(), new Date(), CONST_ATTRIBUTES);
+        assertTrue(assertion.isValid());
+    }
+    
     public void testCompleteConstructor() {
         final Assertion assertion = new AssertionImpl(CONST_PRINCIPAL, CONST_ATTRIBUTES);
 
