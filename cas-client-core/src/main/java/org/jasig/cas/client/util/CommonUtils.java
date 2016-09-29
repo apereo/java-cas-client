@@ -413,6 +413,17 @@ public final class CommonUtils {
      * Contacts the remote URL and returns the response.
      *
      * @param constructedUrl the url to contact.
+     * @param encoding the encoding to use.
+     * @return the response.
+     */
+    public static String getResponseFromServer(final URL constructedUrl, final String encoding) {
+        return getResponseFromServer(constructedUrl, new HttpsURLConnectionFactory(), encoding);
+    }
+
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the url to contact.
      * @param factory connection factory to prepare the URL connection instance
      * @param encoding the encoding to use.
      * @return the response.
