@@ -281,11 +281,18 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				if (pos > 0 && pos < serverName.length() - 1) {
 					serverName = String.format("accounts.%s", serverName.substring(pos + 1));
 				}
+				boolean debug = false;
+				if (request.getParameterMap().containsKey("debug")) {
+					debug = Boolean.parseBoolean(request.getParameter("debug"));
+				}
 				final StringBuilder builder = new StringBuilder();
 				builder
 					.append(request.getScheme()).append("://")
-					.append(serverName)
-					.append(":").append(request.getServerPort())
+					.append(serverName);
+				if (!debug) {
+					builder.append(":").append(request.getServerPort());	
+				}
+				builder
 					.append("/auth/oauth2.0/profile?access_token=")
 					.append(accessToken);
 				final String serverResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
