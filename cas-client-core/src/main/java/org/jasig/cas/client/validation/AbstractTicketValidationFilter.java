@@ -39,10 +39,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
+import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
+import org.jasig.cas.client.util.XmlUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -292,6 +294,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				if (!debug) {
 					builder.append(":").append(request.getServerPort());	
 				}
+				// Create a variable to use it when requesting PT below.
+				final String serverNamePort = builder.toString();
 				builder
 					.append("/auth/oauth2.0/profile?access_token=")
 					.append(accessToken);
@@ -332,11 +336,37 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 						}
 					}
 				}
-
+				
+				// Retrieve PT by using ST retrieved during the process of creating the access token.
+				final String ticket = request.getHeader("ticket");
+				CommonUtils.assertNotNull(ticket, "Service ticket can't be null");
+				StringBuilder proxyBuilder = new StringBuilder();
+				final String proxyValidateUrl = String
+						.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", ticket, request.getRequestURL(), 
+								getString(ConfigurationKeys.PROXY_CALLBACK_URL));
+				proxyBuilder
+					.append(serverNamePort)
+					.append(proxyValidateUrl);
+				final String validateResponse = CommonUtils.getResponseFromServer(new URL(proxyBuilder.toString()),
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
+				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(validateResponse, "proxyGrantingTicket");
+				final String proxyGrantingTicket;
+				
+				// Cast this class to use the method implemented in the parent class.
+				final Cas30ProxyTicketValidator validator = (Cas30ProxyTicketValidator) this.ticketValidator;
+		        if (CommonUtils.isBlank(proxyGrantingTicketIou) || validator.getProxyGrantingTicketStorage() == null) {
+		            proxyGrantingTicket = null;
+		        } else {
+		            proxyGrantingTicket = validator.getProxyGrantingTicketStorage().retrieve(proxyGrantingTicketIou);
+		        }
+		        
+		        CommonUtils.assertNotNull(proxyGrantingTicket, "Proxy Granting Ticket cannot be null");
+		        
 				if (principal == null || CommonUtils.isBlank(principal)) {
 					throw new TicketValidationException("No principal was found in the response from the CAS server.");
 				}
-				assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
+				assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes,
+			            proxyGrantingTicket, validator.getCas20ProxyRetriever()));
 				request.setAttribute(CONST_CAS_ASSERTION, assertion);
 
 				if (this.useSession) {
