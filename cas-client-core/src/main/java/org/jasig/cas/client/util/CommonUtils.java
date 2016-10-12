@@ -18,12 +18,19 @@
  */
 package org.jasig.cas.client.util;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -319,7 +326,9 @@ public final class CommonUtils {
             return encode ? response.encodeURL(service) : service;
         }
 
-        final String serverName = findMatchingServerName(request, serverNames);
+        //final String serverName = findMatchingServerName(request, serverNames);
+        //TODO: to a check with the server template based on the *.wavity.com.
+        final String serverName = request.getServerName();
         final URIBuilder originalRequestUrl = new URIBuilder(request.getRequestURL().toString(), encode);
         originalRequestUrl.setParameters(request.getQueryString());
 

@@ -10,3 +10,8 @@ target
 .idea/
 .DS_Store
 .idea
+.gradle
+build
+*.jar
+*.war
+
