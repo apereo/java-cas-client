@@ -28,7 +28,10 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -428,11 +431,32 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
             final String encoding) {
-
-        HttpURLConnection conn = null;
+        return getResponseFromServer(constructedUrl, factory, encoding, null);
+    }
+    
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the URL to contact.
+     * @param factory connection factory to prepare the URL connection instance
+     * @param encoding the encoding to use.
+     * @param headers the map of headers.
+     * @return the response.
+     */
+    public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
+            final String encoding, final Map<String, String> headers) {
+    	HttpURLConnection conn = null;
         InputStreamReader in = null;
         try {
             conn = factory.buildHttpURLConnection(constructedUrl.openConnection());
+            
+            if (headers != null) {
+            	Iterator<Entry<String, String>> iter = headers.entrySet().iterator();
+            	while (iter.hasNext()) {
+            		Entry<String, String> entry = (Entry<String, String>) iter.next();
+            		conn.setRequestProperty(entry.getKey().toString(), entry.getValue().toString());
+            	}
+            }
 
             if (CommonUtils.isEmpty(encoding)) {
                 in = new InputStreamReader(conn.getInputStream());
