@@ -347,8 +347,13 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				proxyBuilder
 					.append(serverNamePort)
 					.append(proxyValidateUrl);
+				
+				// Create a map for header information and put an extra command to remove the service ticket after PT is created.
+				final Map<String, String> headers = new HashMap<String, String>();
+				headers.put("x-command", "rm-st");
+				
 				final String validateResponse = CommonUtils.getResponseFromServer(new URL(proxyBuilder.toString()),
-						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
 				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(validateResponse, "proxyGrantingTicket");
 				final String proxyGrantingTicket;
 				
