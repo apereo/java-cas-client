@@ -23,6 +23,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -477,16 +478,15 @@ public final class CommonUtils {
             }
             
             if (postParams != null) {
+            	conn.setDoOutput(true);
             	conn.setRequestMethod("POST");
             	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             	String joinedParams = postParams.entrySet().stream().map(entry ->
             			entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
-            	byte[] postData = joinedParams.getBytes(StandardCharsets.UTF_8);
+            	byte[] postData = joinedParams.getBytes("UTF-8");
             	int postDataLength = postData.length;
             	conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-            	try (DataOutputStream writer = new DataOutputStream(conn.getOutputStream())) {
-            		writer.write(postData);
-            	}
+            	conn.getOutputStream().write(postData);
             }
 
             if (CommonUtils.isEmpty(encoding)) {
