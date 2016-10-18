@@ -19,12 +19,14 @@
 package org.jasig.cas.client.util;
 
 import java.io.Closeable;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -445,6 +448,21 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
             final String encoding, final Map<String, String> headers) {
+    	return getResponseFromServer(constructedUrl, factory, encoding, headers, null);
+    }
+    
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the URL to contact.
+     * @param factory connection factory to prepare the URL connection instance
+     * @param encoding the encoding to use.
+     * @param headers the map of headers.
+     * @param postParams POST parameters.
+     * @return the response.
+     */
+    public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
+            final String encoding, final Map<String, String> headers, final Map<String, String> postParams) {
     	HttpURLConnection conn = null;
         InputStreamReader in = null;
         try {
@@ -455,6 +473,19 @@ public final class CommonUtils {
             	while (iter.hasNext()) {
             		Entry<String, String> entry = (Entry<String, String>) iter.next();
             		conn.setRequestProperty(entry.getKey().toString(), entry.getValue().toString());
+            	}
+            }
+            
+            if (postParams != null) {
+            	conn.setRequestMethod("POST");
+            	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            	String joinedParams = postParams.entrySet().stream().map(entry ->
+            			entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
+            	byte[] postData = joinedParams.getBytes(StandardCharsets.UTF_8);
+            	int postDataLength = postData.length;
+            	conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+            	try (DataOutputStream writer = new DataOutputStream(conn.getOutputStream())) {
+            		writer.write(postData);
             	}
             }
 

@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
-import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
@@ -287,7 +286,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				if (request.getParameterMap().containsKey("debug")) {
 					debug = Boolean.parseBoolean(request.getParameter("debug"));
 				}
-				final StringBuilder builder = new StringBuilder();
+				StringBuilder builder = new StringBuilder();
 				builder
 					.append(request.getScheme()).append("://")
 					.append(serverName);
@@ -299,7 +298,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				builder
 					.append("/auth/oauth2.0/profile?access_token=")
 					.append(accessToken);
-				final String serverResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+				String serverResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
 						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
 				if (serverResponse == null) {
 					throw new TicketValidationException("The CAS server returned no response.");
@@ -316,6 +315,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				itr = responseFromServer.entrySet().iterator();
 				String principal = null;
 				final Map<String, Object> attributes = new HashMap<String, Object>();
+				String tgtId = null;
 				while (itr.hasNext()) {
 					Entry<String, JsonElement> entry = itr.next();
 					if (entry.getKey().equalsIgnoreCase("error")) {
@@ -334,25 +334,36 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 								attributes.put(attr.getKey(), attr.getValue().getAsString());
 							}
 						}
+					} else if (entry.getKey().equalsIgnoreCase("tgtId")) {
+						tgtId = entry.getValue().getAsString();
 					}
 				}
 				
-				// Retrieve PT by using ST retrieved during the process of creating the access token.
-				final String ticket = request.getHeader("ticket");
-				CommonUtils.assertNotNull(ticket, "Service ticket can't be null");
-				StringBuilder proxyBuilder = new StringBuilder();
-				final String proxyValidateUrl = String
-						.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", ticket, request.getRequestURL(), 
-								getString(ConfigurationKeys.PROXY_CALLBACK_URL));
-				proxyBuilder
+				// Use ticket granting ticket to retrieve a service ticket.
+				CommonUtils.assertNotNull(tgtId, "Ticket granting ticket can't be null");
+				String requestUrl = String.format("/auth/v1/tickets/%s", tgtId);
+				builder = new StringBuilder();
+				builder
 					.append(serverNamePort)
-					.append(proxyValidateUrl);
+					.append(requestUrl);
+				final Map<String, String> postParams = new HashMap<String, String>();
+				postParams.put("service", request.getRequestURL().toString());
+				final String serviceTicket = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), null, postParams);
+				CommonUtils.assertNotNull(serviceTicket, "Service ticket can't be null");
+				builder = new StringBuilder();
+				requestUrl = String
+						.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", serviceTicket, request.getRequestURL(), 
+								getString(ConfigurationKeys.PROXY_CALLBACK_URL));
+				builder
+					.append(serverNamePort)
+					.append(requestUrl);
 				
 				// Create a map for header information and put an extra command to remove the service ticket after PT is created.
 				final Map<String, String> headers = new HashMap<String, String>();
 				headers.put("x-command", "rm-st");
 				
-				final String validateResponse = CommonUtils.getResponseFromServer(new URL(proxyBuilder.toString()),
+				final String validateResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
 						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
 				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(validateResponse, "proxyGrantingTicket");
 				final String proxyGrantingTicket;
