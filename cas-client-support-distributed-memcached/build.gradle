@@ -1,0 +1,6 @@
+
+description = 'Jasig CAS Client for Java - Distributed Proxy Storage Support Memcached'
+dependencies {
+  compile project(':cas-client-core')
+    compile group: 'net.spy', name: 'spymemcached', version:'2.9.1'
+}

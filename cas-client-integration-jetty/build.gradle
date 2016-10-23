@@ -1,0 +1,11 @@
+
+description = 'Jasig CAS Client for Java - Jetty Container Integration'
+dependencies {
+  compile project(':cas-client-core')
+    compile group: 'org.eclipse.jetty', name: 'jetty-security', version:'9.2.14.v20151106'
+  testCompile project(':cas-client-core')
+    testCompile group: 'org.eclipse.jetty', name: 'jetty-webapp', version:'9.2.14.v20151106'
+    testCompile group: 'org.eclipse.jetty', name: 'jetty-plus', version:'9.2.14.v20151106'
+    testCompile group: 'org.eclipse.jetty', name: 'jetty-annotations', version:'9.2.14.v20151106'
+    testCompile group: 'org.eclipse.jetty', name: 'apache-jsp', version:'9.2.14.v20151106'
+}
