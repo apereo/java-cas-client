@@ -223,6 +223,10 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     public void setProxyGrantingTicketStorage(final ProxyGrantingTicketStorage storage) {
         this.proxyGrantingTicketStorage = storage;
     }
+    
+    public ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
+    	return this.proxyGrantingTicketStorage;
+    }
 
     public void setTimer(final Timer timer) {
         this.timer = timer;
