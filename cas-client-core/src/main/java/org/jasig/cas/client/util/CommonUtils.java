@@ -18,12 +18,23 @@
  */
 package org.jasig.cas.client.util;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -319,7 +330,9 @@ public final class CommonUtils {
             return encode ? response.encodeURL(service) : service;
         }
 
-        final String serverName = findMatchingServerName(request, serverNames);
+        //final String serverName = findMatchingServerName(request, serverNames);
+        //TODO: to a check with the server template based on the *.wavity.com.
+        final String serverName = request.getServerName();
         final URIBuilder originalRequestUrl = new URIBuilder(request.getRequestURL().toString(), encode);
         originalRequestUrl.setParameters(request.getQueryString());
 
@@ -419,11 +432,59 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
             final String encoding) {
-
-        HttpURLConnection conn = null;
+        return getResponseFromServer(constructedUrl, factory, encoding, null);
+    }
+    
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the URL to contact.
+     * @param factory connection factory to prepare the URL connection instance
+     * @param encoding the encoding to use.
+     * @param headers the map of headers.
+     * @return the response.
+     */
+    public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
+            final String encoding, final Map<String, String> headers) {
+    	return getResponseFromServer(constructedUrl, factory, encoding, headers, null);
+    }
+    
+    /**
+     * Contacts the remote URL and returns the response.
+     *
+     * @param constructedUrl the URL to contact.
+     * @param factory connection factory to prepare the URL connection instance
+     * @param encoding the encoding to use.
+     * @param headers the map of headers.
+     * @param postParams POST parameters.
+     * @return the response.
+     */
+    public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
+            final String encoding, final Map<String, String> headers, final Map<String, String> postParams) {
+    	HttpURLConnection conn = null;
         InputStreamReader in = null;
         try {
             conn = factory.buildHttpURLConnection(constructedUrl.openConnection());
+            
+            if (headers != null) {
+            	Iterator<Entry<String, String>> iter = headers.entrySet().iterator();
+            	while (iter.hasNext()) {
+            		Entry<String, String> entry = (Entry<String, String>) iter.next();
+            		conn.setRequestProperty(entry.getKey().toString(), entry.getValue().toString());
+            	}
+            }
+            
+            if (postParams != null) {
+            	conn.setDoOutput(true);
+            	conn.setRequestMethod("POST");
+            	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            	String joinedParams = postParams.entrySet().stream().map(entry ->
+            			entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
+            	byte[] postData = joinedParams.getBytes("UTF-8");
+            	int postDataLength = postData.length;
+            	conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+            	conn.getOutputStream().write(postData);
+            }
 
             if (CommonUtils.isEmpty(encoding)) {
                 in = new InputStreamReader(conn.getInputStream());

@@ -44,7 +44,7 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
     /**
      * Default location of the configuration file.  Mostly for testing/demo.  You will most likely want to configure an alternative location.
      */
-    private static final String DEFAULT_CONFIGURATION_FILE_LOCATION = "/etc/java-cas-client.properties";
+    private static final String DEFAULT_CONFIGURATION_FILE_LOCATION = System.getProperty("cas.client.properties", "/etc/java-cas-client.properties");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfigurationStrategyImpl.class);
 
