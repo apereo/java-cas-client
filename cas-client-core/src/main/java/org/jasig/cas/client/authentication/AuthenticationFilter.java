@@ -242,6 +242,9 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(modifiedCasServerLoginUrl,
                 getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
+        
+        // Set header values for clients to handle AJAX response.
+        response.setHeader("Cas-Server-Login-Url", modifiedCasServerLoginUrl);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
         this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
