@@ -22,7 +22,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -35,6 +34,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -461,10 +461,10 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
             final String encoding, final Map<String, String> headers, final Map<String, String> postParams) {
-    	HttpURLConnection conn = null;
+    	HttpsURLConnection conn = null;
         InputStreamReader in = null;
         try {
-            conn = factory.buildHttpURLConnection(constructedUrl.openConnection());
+            conn = (HttpsURLConnection) factory.buildHttpURLConnection(constructedUrl.openConnection());
             
             if (headers != null) {
             	Iterator<Entry<String, String>> iter = headers.entrySet().iterator();
