@@ -20,6 +20,7 @@ package org.jasig.cas.client.validation;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,6 +50,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 
 /**
  * The filter that handles all the work of validating ticket requests.
@@ -307,7 +309,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				logger.debug("Server response: {}", serverResponse);
 
 				final JsonParser parser = new JsonParser();
-				final JsonObject responseFromServer = (JsonObject) parser.parse(serverResponse);
+				final JsonReader reader = new JsonReader(new StringReader(serverResponse.trim()));
+				reader.setLenient(true);
+				final JsonObject responseFromServer = (JsonObject) parser.parse(reader);
 				Iterator<Entry<String, JsonElement>> itr = responseFromServer.entrySet().iterator();
 
 				// getting an assertion
