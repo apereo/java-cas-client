@@ -523,9 +523,6 @@ public final class CommonUtils {
     
     private static String getResponse(HttpURLConnection conn, final String encoding, final Map<String, String> headers, final Map<String, String> postParams) {
     	assertNotNull(conn, "Connection is required");
-    	if (conn instanceof HttpsURLConnection) {
-    		conn = (HttpsURLConnection) conn;
-    	}
     	InputStreamReader in = null;
     	try {
     		if (headers != null) {
