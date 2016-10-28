@@ -312,7 +312,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 					throw new TicketValidationException("The CAS server returned no response.");
 				}
 
-				logger.debug("Server response: {}", serverResponse);
+				logger.info("Server response: {}", serverResponse);
 
 				final JsonParser parser = new JsonParser();
 				final JsonReader reader = new JsonReader(new StringReader(serverResponse.trim()));
@@ -360,6 +360,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				postParams.put("service", request.getRequestURL().toString());
 				final String serviceTicket = CommonUtils.getResponseFromServer(new URL(builder.toString()),
 						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), null, postParams);
+				
+				logger.info("Service Ticket: {}", serviceTicket);
+				
 				CommonUtils.assertNotNull(serviceTicket, "Service ticket can't be null");
 				builder = new StringBuilder();
 				requestUrl = String
@@ -381,6 +384,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 					pgtIouResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
 							new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
 				}
+				
+				logger.info("pgtIouResponse: {}", pgtIouResponse);
 				
 				CommonUtils.assertNotNull(pgtIouResponse, "Proxy Granting Ticket IOU can't be null");
 				
