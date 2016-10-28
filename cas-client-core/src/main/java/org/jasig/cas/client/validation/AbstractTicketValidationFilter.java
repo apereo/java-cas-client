@@ -300,8 +300,14 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				builder
 					.append("/auth/oauth2.0/profile?access_token=")
 					.append(accessToken);
-				String serverResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
-						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
+				final URL profileUrl = new URL(builder.toString());
+				String serverResponse = null;
+				if (profileUrl.getProtocol().equalsIgnoreCase("https")) {
+					serverResponse = CommonUtils.getResponseFromServerWithHttps(profileUrl, getString(ConfigurationKeys.ENCODING));
+				} else if (profileUrl.getProtocol().equalsIgnoreCase("http")) {
+					serverResponse = CommonUtils.getResponseFromServer(profileUrl,
+							new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
+				}
 				if (serverResponse == null) {
 					throw new TicketValidationException("The CAS server returned no response.");
 				}
@@ -367,9 +373,18 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				final Map<String, String> headers = new HashMap<String, String>();
 				headers.put("x-command", "rm-st");
 				
-				final String validateResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
-						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
-				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(validateResponse, "proxyGrantingTicket");
+				final URL pgtIouUrl = new URL(builder.toString());
+				String pgtIouResponse = null;
+				if (pgtIouUrl.getProtocol().equalsIgnoreCase("https")) {
+					pgtIouResponse = CommonUtils.getResponseFromServerWithHttps(pgtIouUrl, getString(ConfigurationKeys.ENCODING), headers);
+				} else if (pgtIouUrl.getProtocol().equalsIgnoreCase("http")) {
+					pgtIouResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+							new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
+				}
+				
+				CommonUtils.assertNotNull(pgtIouResponse, "Proxy Granting Ticket IOU can't be null");
+				
+				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(pgtIouResponse, "proxyGrantingTicket");
 				final String proxyGrantingTicket;
 				
 				// Cast this class to use the method implemented in the parent class.
