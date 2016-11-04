@@ -284,35 +284,26 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				if (pos > 0 && pos < serverName.length() - 1) {
 					serverName = String.format("accounts.%s", serverName.substring(pos + 1));
 				}
-				boolean debug = false;
-				if (request.getParameterMap().containsKey("debug")) {
-					debug = Boolean.parseBoolean(request.getParameter("debug"));
-				}
+				logger.debug("Server name {}", serverName);
 				StringBuilder builder = new StringBuilder();
+				logger.debug("Request scheme {}", request.getScheme());
+				// The request scheme should be HTTP since it's used internally.
 				builder
-					.append(request.getScheme()).append("://")
-					.append(serverName);
-				if (!debug) {
-					builder.append(":").append(request.getServerPort());	
-				}
+					.append("http://")
+					.append(serverName)
+					.append(":").append(request.getServerPort());
+				
 				// Create a variable to use it when requesting PT below.
-				final String serverNamePort = builder.toString();
+				final String serverNameWithPort = builder.toString();
+				logger.debug("Server name with port {}", serverNameWithPort);
 				builder
 					.append("/auth/oauth2.0/profile?access_token=")
 					.append(accessToken);
-				final URL profileUrl = new URL(builder.toString());
-				String serverResponse = null;
-				if (profileUrl.getProtocol().equalsIgnoreCase("https")) {
-					serverResponse = CommonUtils.getResponseFromServerWithHttps(profileUrl, getString(ConfigurationKeys.ENCODING));
-				} else if (profileUrl.getProtocol().equalsIgnoreCase("http")) {
-					serverResponse = CommonUtils.getResponseFromServer(profileUrl,
-							new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
-				}
-				if (serverResponse == null) {
-					throw new TicketValidationException("The CAS server returned no response.");
-				}
-
-				logger.info("Server response: {}", serverResponse);
+				logger.debug("CAS Profile URL {}", builder.toString());
+				String serverResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
+				
+				logger.debug("CAS Profile Server response: {}", serverResponse);
 
 				final JsonParser parser = new JsonParser();
 				final JsonReader reader = new JsonReader(new StringReader(serverResponse.trim()));
@@ -349,47 +340,40 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 					}
 				}
 				
+				logger.debug("Principal {}", principal);
+				
 				// Use ticket granting ticket to retrieve a service ticket.
 				CommonUtils.assertNotNull(tgtId, "Ticket granting ticket can't be null");
-				String requestUrl = String.format("/auth/v1/tickets/%s", tgtId);
+				logger.debug("TGT ID {}", tgtId);
+				String requestUri = String.format("/auth/v1/tickets/%s", tgtId);
 				builder = new StringBuilder();
 				builder
-					.append(serverNamePort)
-					.append(requestUrl);
+					.append(serverNameWithPort)
+					.append(requestUri);
 				final Map<String, String> postParams = new HashMap<String, String>();
 				postParams.put("service", request.getRequestURL().toString());
+				logger.debug("TGT request URL {}", requestUri);
 				final String serviceTicket = CommonUtils.getResponseFromServer(new URL(builder.toString()),
 						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), null, postParams);
-				
-				logger.info("Service Ticket: {}", serviceTicket);
-				
 				CommonUtils.assertNotNull(serviceTicket, "Service ticket can't be null");
+				logger.debug("Service ticket {}", serviceTicket);
 				builder = new StringBuilder();
-				requestUrl = String
+				requestUri = String
 						.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", serviceTicket, request.getRequestURL(), 
 								getString(ConfigurationKeys.PROXY_CALLBACK_URL));
 				builder
-					.append(serverNamePort)
-					.append(requestUrl);
+					.append(serverNameWithPort)
+					.append(requestUri);
 				
 				// Create a map for header information and put an extra command to remove the service ticket after PT is created.
 				final Map<String, String> headers = new HashMap<String, String>();
 				headers.put("x-command", "rm-st");
-				
-				final URL pgtIouUrl = new URL(builder.toString());
-				String pgtIouResponse = null;
-				if (pgtIouUrl.getProtocol().equalsIgnoreCase("https")) {
-					pgtIouResponse = CommonUtils.getResponseFromServerWithHttps(pgtIouUrl, getString(ConfigurationKeys.ENCODING), headers);
-				} else if (pgtIouUrl.getProtocol().equalsIgnoreCase("http")) {
-					pgtIouResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
-							new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
-				}
-				
-				logger.info("pgtIouResponse: {}", pgtIouResponse);
-				
-				CommonUtils.assertNotNull(pgtIouResponse, "Proxy Granting Ticket IOU can't be null");
-				
-				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(pgtIouResponse, "proxyGrantingTicket");
+				logger.debug("Proxy validate URL {}", builder.toString());
+				final String validateResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
+				logger.debug("Proxy validate response {}", validateResponse);
+				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(validateResponse, "proxyGrantingTicket");
+				logger.debug("Proxy Granting Ticket IOU {}", proxyGrantingTicketIou);
 				final String proxyGrantingTicket;
 				
 				// Cast this class to use the method implemented in the parent class.
@@ -401,6 +385,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 		        }
 		        
 		        CommonUtils.assertNotNull(proxyGrantingTicket, "Proxy Granting Ticket cannot be null");
+		        logger.debug("Proxy Granting Ticket {}", proxyGrantingTicket);
 		        
 				if (principal == null || CommonUtils.isBlank(principal)) {
 					throw new TicketValidationException("No principal was found in the response from the CAS server.");
