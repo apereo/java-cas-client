@@ -289,7 +289,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				logger.debug("Request scheme {}", request.getScheme());
 				// The request scheme should be HTTP since it's used internally.
 				builder
-					.append("http://")
+					.append(request.getScheme()).append("://")
 					.append(serverName)
 					.append(":").append(request.getServerPort());
 				
