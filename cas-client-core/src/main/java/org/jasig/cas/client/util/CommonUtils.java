@@ -35,7 +35,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -463,108 +462,52 @@ public final class CommonUtils {
     public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
             final String encoding, final Map<String, String> headers, final Map<String, String> postParams) {
     	HttpURLConnection conn = null;
+        InputStreamReader in = null;
         try {
             conn = factory.buildHttpURLConnection(constructedUrl.openConnection());
-            return getResponse(conn, encoding, headers, postParams);
+            
+            if (headers != null) {
+            	Iterator<Entry<String, String>> iter = headers.entrySet().iterator();
+            	while (iter.hasNext()) {
+            		Entry<String, String> entry = (Entry<String, String>) iter.next();
+            		conn.setRequestProperty(entry.getKey().toString(), entry.getValue().toString());
+            	}
+            }
+            
+            if (postParams != null) {
+            	conn.setDoOutput(true);
+            	conn.setRequestMethod("POST");
+            	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            	String joinedParams = postParams.entrySet().stream().map(entry ->
+            			entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
+            	byte[] postData = joinedParams.getBytes("UTF-8");
+            	int postDataLength = postData.length;
+            	conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+            	conn.getOutputStream().write(postData);
+            }
+
+            if (CommonUtils.isEmpty(encoding)) {
+                in = new InputStreamReader(conn.getInputStream());
+            } else {
+                in = new InputStreamReader(conn.getInputStream(), encoding);
+            }
+
+            final StringBuilder builder = new StringBuilder(255);
+            int byteRead;
+            while ((byteRead = in.read()) != -1) {
+                builder.append((char) byteRead);
+            }
+
+            return builder.toString();
         } catch (final Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
+            closeQuietly(in);
             if (conn != null) {
                 conn.disconnect();
             }
         }
-    }
-    
-    /**
-     * Contacts the remote URL with HTTPS and returns the response.
-     *
-     * @param constructedUrl the URL to contact.
-     * @param encoding the encoding to use.
-     * @return the response.
-     */
-    public static String getResponseFromServerWithHttps(final URL constructedUrl, final String encoding) {
-    	HttpsURLConnection conn = null;
-    	try {
-            conn = (HttpsURLConnection) constructedUrl.openConnection();
-            return getResponse(conn, encoding, null, null);
-        } catch (final Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-    }
-    
-    /**
-     * Contacts the remote URL with HTTPS and returns the response.
-     *
-     * @param constructedUrl the URL to contact.
-     * @param encoding the encoding to use.
-     * @param headers the map of headers.
-     * @return the response.
-     */
-    public static String getResponseFromServerWithHttps(final URL constructedUrl, final String encoding, final Map<String, String> headers) {
-    	HttpsURLConnection conn = null;
-    	try {
-            conn = (HttpsURLConnection) constructedUrl.openConnection();
-            return getResponse(conn, encoding, headers, null);
-        } catch (final Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-    }
-    
-    private static String getResponse(HttpURLConnection conn, final String encoding, final Map<String, String> headers, final Map<String, String> postParams) {
-    	assertNotNull(conn, "Connection is required");
-    	InputStreamReader in = null;
-    	try {
-    		if (headers != null) {
-    			Iterator<Entry<String, String>> iter = headers.entrySet().iterator();
-    			while (iter.hasNext()) {
-    				Entry<String, String> entry = (Entry<String, String>) iter.next();
-    				conn.setRequestProperty(entry.getKey().toString(), entry.getValue().toString());
-    			}
-    		}
-    		
-    		if (postParams != null) {
-    			conn.setDoOutput(true);
-    			conn.setRequestMethod("POST");
-    			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-    			String joinedParams = postParams.entrySet().stream().map(entry ->
-    			entry.getKey() + "=" + entry.getValue()).collect(Collectors.joining("&"));
-    			byte[] postData = joinedParams.getBytes("UTF-8");
-    			int postDataLength = postData.length;
-    			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-    			conn.getOutputStream().write(postData);
-    		}
-    		
-    		if (CommonUtils.isEmpty(encoding)) {
-    			in = new InputStreamReader(conn.getInputStream());
-    		} else {
-    			in = new InputStreamReader(conn.getInputStream(), encoding);
-    		}
-    		
-    		final StringBuilder builder = new StringBuilder(255);
-    		int byteRead;
-    		while ((byteRead = in.read()) != -1) {
-    			builder.append((char) byteRead);
-    		}
-    		
-    		return builder.toString();
-    		
-    	} catch (final Exception e) {
-    		LOGGER.error(e.getMessage(), e);
-    		throw new RuntimeException(e);
-    	} finally {
-    		closeQuietly(in);
-    	}
     }
 
     public static ProxyList createProxyList(final String proxies) {
