@@ -21,6 +21,7 @@ package org.jasig.cas.client.validation;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -271,13 +272,22 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * @param tenant the string of tenant ID
      * @return the string of end point.
      */
-    private String getPlanEndPoint(final String tenant) {
+    private String getPlanEndPointServerName(final String tenant) {
     	PlanProvider provider = PlanProvider.getInstance();
     	DeploymentPlan deploymentPlan = provider.getDeploymentPlan();
     	CommonUtils.assertNotNull(deploymentPlan, "Deployment plan can't be null");
     	final String endPoint = deploymentPlan.getServiceRestEndPoint(ServiceType.cas, tenant);
     	CommonUtils.assertNotNull(endPoint, "End point can't be null");
-    	return endPoint;
+    	try {
+			final URL url = new URL(endPoint);
+			final StringBuilder builder = new StringBuilder();
+			builder.append(url.getProtocol())
+				.append(url.getHost());
+			return builder.toString();
+		} catch (MalformedURLException e) {
+			logger.error(e.getMessage(), e);
+		}
+    	return null;
     }
     
     /**
@@ -301,9 +311,10 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				int pos = serverName.indexOf(".");
 				logger.debug("Tenant ID {}", serverName.substring(0, pos));
 				if (pos > 0 && pos < serverName.length() - 1) {
-					serverName = getPlanEndPoint(serverName.substring(0, pos));
+					serverName = getPlanEndPointServerName(serverName.substring(0, pos));
 				}
-				// The expected server name is as http://%s.wavity.local/auth.
+				CommonUtils.assertNotNull(serverName, "Server name can't be null");
+				// The expected server name is as http://%s.wavity.local.
 				logger.debug("Server name {}", serverName);
 				StringBuilder builder = new StringBuilder();
 				logger.debug("Request scheme {}", request.getScheme());
@@ -316,7 +327,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				final String serverNamePort = builder.toString();
 				logger.debug("Server name with port {}", serverNamePort);
 				builder
-					.append("/oauth2.0/profile?access_token=")
+					.append("/auth/oauth2.0/profile?access_token=")
 					.append(accessToken);
 				logger.debug("CAS Profile URL {}", builder.toString());
 				String serverResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
@@ -364,7 +375,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				// Use ticket granting ticket to retrieve a service ticket.
 				CommonUtils.assertNotNull(tgtId, "Ticket granting ticket can't be null");
 				logger.debug("TGT ID {}", tgtId);
-				String requestUri = String.format("/v1/tickets/%s", tgtId);
+				String requestUri = String.format("/auth/v1/tickets/%s", tgtId);
 				builder = new StringBuilder();
 				builder
 					.append(serverNamePort)
@@ -378,7 +389,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				logger.debug("Service ticket {}", serviceTicket);
 				builder = new StringBuilder();
 				requestUri = String
-						.format("/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", serviceTicket, request.getRequestURL(), 
+						.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", serviceTicket, request.getRequestURL(), 
 								getString(ConfigurationKeys.PROXY_CALLBACK_URL));
 				builder
 					.append(serverNamePort)
