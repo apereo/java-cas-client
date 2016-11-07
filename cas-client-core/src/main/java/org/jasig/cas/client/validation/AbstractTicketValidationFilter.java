@@ -282,6 +282,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 			final URL url = new URL(endPoint);
 			final StringBuilder builder = new StringBuilder();
 			builder.append(url.getProtocol())
+				.append("://")
 				.append(url.getHost());
 			return builder.toString();
 		} catch (MalformedURLException e) {
