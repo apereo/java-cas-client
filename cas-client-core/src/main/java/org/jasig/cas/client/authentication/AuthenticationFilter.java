@@ -203,7 +203,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             return;
         }
         
-        final String modifiedServiceUrl;
+        String modifiedServiceUrl;
         
         logger.debug("no ticket and no assertion found");
         if (this.gateway) {
@@ -228,18 +228,15 @@ public class AuthenticationFilter extends AbstractCasFilter {
         if (!newServiceUrlDomain.equalsIgnoreCase(casServerLoginUrlLastPart)) {
         	url = new URL(modifiedCasServerLoginUrl);
         	final String casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlFirstPart, newServiceUrlDomain);
-        	final StringBuilder builder = new StringBuilder();
-        	builder
-	            .append(url.getProtocol())
-	            .append("://")
-	            .append(casServerLoginUrlHost);
-        	if (url.getPort() != -1) {
-        		builder.append(":").append(url.getPort());
-        	}
-        	builder.append(url.getPath());
-        	modifiedCasServerLoginUrl = builder.toString();
+        	modifiedCasServerLoginUrl = CommonUtils.constructNewUrl(url.getProtocol(), casServerLoginUrlHost, url.getPort(), url.getPath());
         }
 
+        //Modify a service url protocol from http to https
+        url = new URL(modifiedServiceUrl);
+        if(url.getProtocol().equalsIgnoreCase("http")) {
+        	modifiedServiceUrl = CommonUtils.constructNewUrl("https", url.getHost(), url.getPort(), url.getFile());
+        }
+        
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(modifiedCasServerLoginUrl,
                 getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
         
