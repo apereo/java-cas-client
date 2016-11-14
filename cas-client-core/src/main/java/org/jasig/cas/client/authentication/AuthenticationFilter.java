@@ -203,7 +203,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             return;
         }
         
-        final String modifiedServiceUrl;
+        String modifiedServiceUrl;
         
         logger.debug("no ticket and no assertion found");
         if (this.gateway) {
@@ -240,6 +240,21 @@ public class AuthenticationFilter extends AbstractCasFilter {
         	modifiedCasServerLoginUrl = builder.toString();
         }
 
+        //Modify a service url protocol from http to https
+        url = new URL(modifiedServiceUrl);
+        if(url.getProtocol().equalsIgnoreCase("http")) {
+        	final StringBuilder urlBuilder = new StringBuilder();
+        	urlBuilder
+        		.append("https")
+        		.append("://")
+        		.append(url.getHost());
+        	if(url.getPort() != -1) {
+        		urlBuilder.append(":").append(url.getPort());
+        	}
+        	urlBuilder.append(url.getFile());
+        	modifiedServiceUrl = urlBuilder.toString();
+        }
+        
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(modifiedCasServerLoginUrl,
                 getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
         
