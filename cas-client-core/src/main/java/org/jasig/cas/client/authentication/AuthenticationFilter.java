@@ -228,31 +228,13 @@ public class AuthenticationFilter extends AbstractCasFilter {
         if (!newServiceUrlDomain.equalsIgnoreCase(casServerLoginUrlLastPart)) {
         	url = new URL(modifiedCasServerLoginUrl);
         	final String casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlFirstPart, newServiceUrlDomain);
-        	final StringBuilder builder = new StringBuilder();
-        	builder
-	            .append(url.getProtocol())
-	            .append("://")
-	            .append(casServerLoginUrlHost);
-        	if (url.getPort() != -1) {
-        		builder.append(":").append(url.getPort());
-        	}
-        	builder.append(url.getPath());
-        	modifiedCasServerLoginUrl = builder.toString();
+        	modifiedCasServerLoginUrl = CommonUtils.constructNewUrl(url.getProtocol(), casServerLoginUrlHost, url.getPort(), url.getPath());
         }
 
         //Modify a service url protocol from http to https
         url = new URL(modifiedServiceUrl);
         if(url.getProtocol().equalsIgnoreCase("http")) {
-        	final StringBuilder urlBuilder = new StringBuilder();
-        	urlBuilder
-        		.append("https")
-        		.append("://")
-        		.append(url.getHost());
-        	if(url.getPort() != -1) {
-        		urlBuilder.append(":").append(url.getPort());
-        	}
-        	urlBuilder.append(url.getFile());
-        	modifiedServiceUrl = urlBuilder.toString();
+        	modifiedServiceUrl = CommonUtils.constructNewUrl("https", url.getHost(), url.getPort(), url.getFile());
         }
         
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(modifiedCasServerLoginUrl,
