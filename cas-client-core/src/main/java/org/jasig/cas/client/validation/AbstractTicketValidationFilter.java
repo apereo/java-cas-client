@@ -21,6 +21,7 @@ package org.jasig.cas.client.validation;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,6 +52,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import com.wavity.plan.api.PlanProvider;
+import com.wavity.plan.api.deployment.DeploymentPlan;
+import com.wavity.plan.api.service.ServiceType;
 
 /**
  * The filter that handles all the work of validating ticket requests.
@@ -263,6 +267,31 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
     }
     
     /**
+     * Gets the REST end point from deployment plan.
+     * 
+     * @param tenant the string of tenant ID
+     * @return the string of end point.
+     */
+    private String getPlanEndPointServerName(final String tenant) {
+    	PlanProvider provider = PlanProvider.getInstance();
+    	DeploymentPlan deploymentPlan = provider.getDeploymentPlan();
+    	CommonUtils.assertNotNull(deploymentPlan, "Deployment plan can't be null");
+    	final String endPoint = deploymentPlan.getServiceRestEndPoint(ServiceType.cas, tenant);
+    	CommonUtils.assertNotNull(endPoint, "End point can't be null");
+    	try {
+			final URL url = new URL(endPoint);
+			final StringBuilder builder = new StringBuilder();
+			builder.append(url.getProtocol())
+				.append("://")
+				.append(url.getHost());
+			return builder.toString();
+		} catch (MalformedURLException e) {
+			logger.error(e.getMessage(), e);
+		}
+    	return null;
+    }
+    
+    /**
      * Check if there is an access token in the request header, and if is do the same as the ticket does.
      * 
      * @param request the object of HttpServletRequest.
@@ -281,21 +310,23 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				logger.debug("Retrieving response from server.");
 				String serverName = request.getServerName();
 				int pos = serverName.indexOf(".");
+				logger.debug("Tenant ID {}", serverName.substring(0, pos));
 				if (pos > 0 && pos < serverName.length() - 1) {
-					serverName = String.format("accounts.%s", serverName.substring(pos + 1));
+					serverName = getPlanEndPointServerName(serverName.substring(0, pos));
 				}
+				CommonUtils.assertNotNull(serverName, "Server name can't be null");
+				// The expected server name is as http://%s.wavity.local.
 				logger.debug("Server name {}", serverName);
 				StringBuilder builder = new StringBuilder();
 				logger.debug("Request scheme {}", request.getScheme());
 				// The request scheme should be HTTP since it's used internally.
 				builder
-					.append(request.getScheme()).append("://")
 					.append(serverName)
 					.append(":").append(request.getServerPort());
 				
 				// Create a variable to use it when requesting PT below.
-				final String serverNameWithPort = builder.toString();
-				logger.debug("Server name with port {}", serverNameWithPort);
+				final String serverNamePort = builder.toString();
+				logger.debug("Server name with port {}", serverNamePort);
 				builder
 					.append("/auth/oauth2.0/profile?access_token=")
 					.append(accessToken);
@@ -348,7 +379,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				String requestUri = String.format("/auth/v1/tickets/%s", tgtId);
 				builder = new StringBuilder();
 				builder
-					.append(serverNameWithPort)
+					.append(serverNamePort)
 					.append(requestUri);
 				final Map<String, String> postParams = new HashMap<String, String>();
 				postParams.put("service", request.getRequestURL().toString());
@@ -362,7 +393,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 						.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", serviceTicket, request.getRequestURL(), 
 								getString(ConfigurationKeys.PROXY_CALLBACK_URL));
 				builder
-					.append(serverNameWithPort)
+					.append(serverNamePort)
 					.append(requestUri);
 				
 				// Create a map for header information and put an extra command to remove the service ticket after PT is created.

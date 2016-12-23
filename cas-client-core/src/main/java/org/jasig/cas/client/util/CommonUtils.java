@@ -760,4 +760,26 @@ public final class CommonUtils {
             return defaultValue;
         }
     }
+    
+    /**
+     * Construct a new url.
+     *
+     * @param protocol the protocol of the url.
+     * @param host the host of the url.
+     * @param port the port of the url.
+     * @param uri the uri of the url.
+     * @return the new constructed url.
+     */
+    public static String constructNewUrl(final String protocol, final String host, final int port, final String uri) {
+    	final StringBuilder builder = new StringBuilder();
+    	builder
+    		.append(protocol)
+    		.append("://")
+    		.append(host);
+    	if(port != -1) {
+    		builder.append(":").append(port);
+    	}
+    	builder.append(uri);
+    	return builder.toString();
+    }
 }
