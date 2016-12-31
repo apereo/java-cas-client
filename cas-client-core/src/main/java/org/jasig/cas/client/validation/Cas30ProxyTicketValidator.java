@@ -18,6 +18,8 @@
  */
 package org.jasig.cas.client.validation;
 
+import org.jasig.cas.client.proxy.ProxyRetriever;
+
 /**
  * Service and proxy tickets validation service for the CAS protocol v3.
  *
@@ -33,5 +35,9 @@ public class Cas30ProxyTicketValidator extends Cas20ProxyTicketValidator {
     @Override
     protected String getUrlSuffix() {
         return "p3/proxyValidate";
+    }
+    
+    public ProxyRetriever getCas20ProxyRetriever() {
+    	return super.getProxyRetriever();
     }
 }

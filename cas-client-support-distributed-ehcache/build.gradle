@@ -1,0 +1,6 @@
+
+description = 'Jasig CAS Client for Java - Distributed Proxy Storage Support: EhCache'
+dependencies {
+  compile project(':cas-client-core')
+    compile group: 'net.sf.ehcache', name: 'ehcache-core', version:'2.2.0'
+}
