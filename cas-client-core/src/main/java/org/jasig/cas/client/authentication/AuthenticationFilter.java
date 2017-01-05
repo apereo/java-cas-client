@@ -212,4 +212,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String requestUri = urlBuffer.toString();
         return this.ignoreUrlPatternMatcherStrategyClass.matches(requestUri);
     }
+
+    public final void setIgnoreUrlPatternMatcherStrategyClass(
+            final UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass) {
+        this.ignoreUrlPatternMatcherStrategyClass = ignoreUrlPatternMatcherStrategyClass;
+    }
+
 }
