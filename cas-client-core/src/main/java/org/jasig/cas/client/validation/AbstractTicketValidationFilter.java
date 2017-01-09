@@ -242,11 +242,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
-            } catch (final TicketValidationException | IOException | RuntimeException e) {
+            } catch (final TicketValidationException e) {
                 //We don't want to fail on the server so move forward by reloading.
-                if ((e instanceof RuntimeException) && !(e.getCause() instanceof IOException)) {
-                    throw (RuntimeException) e;
-                }
                 logger.debug(e.getMessage(), e);
 
                 onFailedValidation(request, response);
