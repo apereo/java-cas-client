@@ -146,7 +146,7 @@ public final class CommonUtils {
      * @return true if its null or length of 0, false otherwise.
      */
     public static boolean isEmpty(final String string) {
-        return string == null || string.length() == 0;
+        return string == null || string.isEmpty();
     }
 
     /**
@@ -168,7 +168,7 @@ public final class CommonUtils {
      * @return true if its blank, false otherwise.
      */
     public static boolean isBlank(final String string) {
-        return isEmpty(string) || string.trim().length() == 0;
+        return isEmpty(string) || string.trim().isEmpty();
     }
 
     /**
@@ -204,7 +204,7 @@ public final class CommonUtils {
      * @param value the value to encode.
      * @return the encoded value.
      */
-    public static String urlEncode(String value) {
+    public static String urlEncode(final String value) {
         try {
             return URLEncoder.encode(value, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
@@ -239,7 +239,7 @@ public final class CommonUtils {
     protected static String findMatchingServerName(final HttpServletRequest request, final String serverName) {
         final String[] serverNames = serverName.split(" ");
 
-        if (serverNames == null || serverNames.length == 0 || serverNames.length == 1) {
+        if (serverNames.length == 0 || serverNames.length == 1) {
             return serverName;
         }
 
@@ -336,7 +336,7 @@ public final class CommonUtils {
         final URIBuilder originalRequestUrl = new URIBuilder(request.getRequestURL().toString(), encode);
         originalRequestUrl.setParameters(request.getQueryString());
 
-        URIBuilder builder = null;
+        final URIBuilder builder;
 
         boolean containsScheme = true;
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
