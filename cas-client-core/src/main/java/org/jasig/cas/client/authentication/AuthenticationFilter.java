@@ -308,4 +308,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
 			throw new RuntimeException(e);
 		}
 	}
+
+    public final void setIgnoreUrlPatternMatcherStrategyClass(
+            final UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass) {
+        this.ignoreUrlPatternMatcherStrategyClass = ignoreUrlPatternMatcherStrategyClass;
+    }
+
 }
