@@ -242,7 +242,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
-            } catch (final IOException | TicketValidationException e) {
+            } catch (final TicketValidationException e) {
                 //We don't want to fail on the server so move forward by reloading.
                 logger.debug(e.getMessage(), e);
 
