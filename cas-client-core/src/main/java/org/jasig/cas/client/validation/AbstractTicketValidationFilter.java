@@ -253,7 +253,6 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
                 //We don't want to fail on the server so move forward by reloading.
                 response.sendRedirect(constructServiceUrl(request, response));
-
                 //response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 
                 return;
