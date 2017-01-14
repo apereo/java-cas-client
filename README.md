@@ -10,7 +10,7 @@ All client artifacts are published to Maven central. Depending on functionality,
 ## Build [![Build Status](https://travis-ci.org/Jasig/java-cas-client.png?branch=master)](https://travis-ci.org/Jasig/java-cas-client)
 
 ```bash
-git clone git@github.com:Jasig/java-cas-client.git
+git clone git@github.com:apereo/java-cas-client.git
 cd java-cas-client
 mvn clean package
 ```
@@ -36,7 +36,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-saml</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -46,7 +46,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-distributed-ehcache</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -56,7 +56,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-distributed-memcached</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -66,7 +66,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-atlassian</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -76,7 +76,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-jboss</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -86,7 +86,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v6</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -96,7 +96,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v7</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -106,7 +106,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v8</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -974,6 +974,70 @@ The following example shows how to configure a Context for dynamic role data pro
     artifactParameterName="SAMLart"
     />
 </Context>
+```
+
+<a name="jetty-integration"></a>
+## Jetty Integration
+Since version 3.4.2, the Java CAS Client supports Jetty container integration via the following module:
+
+```xml
+<dependency>
+    <groupId>org.jasig.cas.client</groupId>
+    <artifactId>cas-client-integration-jetty</artifactId>
+    <version>${cas-client.version}</version>
+</dependency>
+```
+
+Both programmatic (embedded) and context configuration are supported.
+
+### Jetty Embedded Configuration
+```
+# CAS configuration parameters
+String hostName = "app.example.com";
+String casServerBaseUrl = "cas.example.com/cas";
+String casRoleAttribute = "memberOf";
+boolean casRenew = false;
+int casTolerance = 5000;
+
+# Jetty wiring
+WebAppContext context = new WebAppContext("/path/to/context", "contextPath");
+context.setTempDirectory("/tmp/jetty/work"));
+context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
+SessionCookieConfig config = context.getSessionHandler().getSessionManager().getSessionCookieConfig();
+config.setHttpOnly(true);
+config.setSecure(true);
+Saml11TicketValidator validator = new Saml11TicketValidator(casServerBaseUrl);
+validator.setRenew(casRenew);
+validator.setTolerance(casTolerance);
+CasAuthenticator authenticator = new CasAuthenticator();
+authenticator.setRoleAttribute(casRoleAttribute);
+authenticator.setServerNames(hostName);
+authenticator.setTicketValidator(validator);
+context.getSecurityHandler().setAuthenticator(authenticator);
+```
+
+### Jetty Context Configuration
+```xml
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <Set name="contextPath">/</Set>
+    <Set name="war"><SystemProperty name="jetty.base"/>/webapps/yourapp</Set>
+    <Get name="securityHandler">
+        <Set name="authenticator">
+            <New class="org.jasig.cas.client.jetty.CasAuthenticator">
+                <Set name="serverNames">app.example.com</Set>
+                <Set name="ticketValidator">
+                    <New class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+                        <Arg>https://cas.example.com/cas</Arg>
+                        <!--<Set name="renew">true</Set>-->
+                    </New>
+                </Set>
+            </New>
+        </Set>
+    </Get>
+</Configure>
 ```
 
 <a name="atlassian-integration"></a>

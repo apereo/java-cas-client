@@ -242,8 +242,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
-            } catch (final TicketValidationException e) {
-                //We don't want to fail on the server so move forward by reloading.
+            } catch (final TicketValidationException | IOException | RuntimeException e) {
                 logger.debug(e.getMessage(), e);
 
                 onFailedValidation(request, response);
@@ -252,7 +251,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     throw new ServletException(e);
                 }
 
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+                //We don't want to fail on the server so move forward by reloading.
+                response.sendRedirect(constructServiceUrl(request, response));
+                //response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 
                 return;
             }
