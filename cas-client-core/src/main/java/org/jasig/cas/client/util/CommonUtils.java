@@ -345,8 +345,20 @@ public final class CommonUtils {
         final List<String> serviceParameterNames = Arrays.asList(serviceParameterName.split(","));
         if (!serviceParameterNames.isEmpty() && !originalRequestUrl.getQueryParams().isEmpty()) {
             for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
-                if (!pair.getName().equals(artifactParameterName) && !serviceParameterNames.contains(pair.getName())) {
-                    builder.addParameter(pair.getName(), pair.getValue());
+                String name = pair.getName();
+                if (!name.equals(artifactParameterName) && !serviceParameterNames.contains(name)) {
+                    if (name.contains("&") || name.contains("=") ){
+                        URIBuilder encodedParamBuilder = new URIBuilder();
+                        encodedParamBuilder.setParameters(name);
+                        for (final URIBuilder.BasicNameValuePair pair2 :encodedParamBuilder.getQueryParams()){
+                            String name2 = pair2.getName();
+                            if (!name2.equals(artifactParameterName) && !serviceParameterNames.contains(name2)) {
+                                builder.addParameter(name2, pair2.getValue());
+                            }
+                        }
+                    } else {
+                        builder.addParameter(name, pair.getValue());
+                    }
                 }
             }
         }
