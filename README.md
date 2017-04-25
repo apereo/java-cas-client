@@ -229,7 +229,7 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 | `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
 
 <a name="rgjasigcasclientvalidationcas10ticketvalidationfilter"></a>
-####org.jasig.cas.client.validation.Cas10TicketValidationFilter
+#### org.jasig.cas.client.validation.Cas10TicketValidationFilter
 Validates tickets using the CAS 1.0 Protocol.
 
 ```xml
