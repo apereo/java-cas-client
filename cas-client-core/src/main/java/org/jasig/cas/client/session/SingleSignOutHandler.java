@@ -18,23 +18,21 @@
  */
 package org.jasig.cas.client.session;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.zip.Inflater;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.bind.DatatypeConverter;
-
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
+import org.jasig.cas.client.http.ClientSession;
+import org.jasig.cas.client.http.HttpRequest;
+import org.jasig.cas.client.http.HttpResponse;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.DatatypeConverter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.zip.Inflater;
 
 /**
  * Performs CAS single sign-out operations in an API-agnostic fashion.
@@ -74,8 +72,6 @@ public final class SingleSignOutHandler {
     private boolean eagerlyCreateSessions = true;
 
     private List<String> safeParameters;
-
-    private LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
 
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         this.sessionMappingStorage = storage;
@@ -159,7 +155,7 @@ public final class SingleSignOutHandler {
      *
      * @return True if request contains authentication token, false otherwise.
      */
-    private boolean isTokenRequest(final HttpServletRequest request) {
+    private boolean isTokenRequest(final HttpRequest request) {
         return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.artifactParameterName,
                 this.safeParameters));
     }
@@ -171,7 +167,7 @@ public final class SingleSignOutHandler {
      *
      * @return True if request is logout request, false otherwise.
      */
-    private boolean isBackChannelLogoutRequest(final HttpServletRequest request) {
+    private boolean isBackChannelLogoutRequest(final HttpRequest request) {
         return "POST".equals(request.getMethod())
                 && !isMultipartRequest(request)
                 && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
@@ -186,7 +182,7 @@ public final class SingleSignOutHandler {
      *
      * @return True if request is logout request, false otherwise.
      */
-    private boolean isFrontChannelLogoutRequest(final HttpServletRequest request) {
+    private boolean isFrontChannelLogoutRequest(final HttpRequest request) {
         return "GET".equals(request.getMethod()) && CommonUtils.isNotBlank(this.casServerUrlPrefix)
                 && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.frontLogoutParameterName));
     }
@@ -198,7 +194,7 @@ public final class SingleSignOutHandler {
      * @param response the HTTP response.
      * @return if the request should continue to be processed.
      */
-    public boolean process(final HttpServletRequest request, final HttpServletResponse response) {
+    public boolean process(final HttpRequest request, final HttpResponse response) {
         if (isTokenRequest(request)) {
             logger.trace("Received a token request");
             recordSession(request);
@@ -231,8 +227,9 @@ public final class SingleSignOutHandler {
      * 
      * @param request HTTP request containing an authentication token.
      */
-    private void recordSession(final HttpServletRequest request) {
-        final HttpSession session = request.getSession(this.eagerlyCreateSessions);
+    private void recordSession(final HttpRequest request) {
+        final ClientSession session = this.eagerlyCreateSessions ?
+            request.getOrCreateSession() : request.getSession();
 
         if (session == null) {
             logger.debug("No session currently exists (and none created).  Cannot record session information for single sign out.");
@@ -285,7 +282,7 @@ public final class SingleSignOutHandler {
      *
      * @param request HTTP request containing a CAS logout message.
      */
-    private void destroySession(final HttpServletRequest request) {
+    private void destroySession(final HttpRequest request) {
         final String logoutMessage;
         // front channel logout -> the message needs to be base64 decoded + decompressed
         if (isFrontChannelLogoutRequest(request)) {
@@ -298,7 +295,7 @@ public final class SingleSignOutHandler {
 
         final String token = XmlUtils.getTextForElement(logoutMessage, "SessionIndex");
         if (CommonUtils.isNotBlank(token)) {
-            final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(token);
+            final ClientSession session = this.sessionMappingStorage.removeSessionByMappingId(token);
 
             if (session != null) {
                 final String sessionID = session.getId();
@@ -306,10 +303,16 @@ public final class SingleSignOutHandler {
 
                 try {
                     session.invalidate();
-                } catch (final IllegalStateException e) {
+                } catch (final RuntimeException e) {
                     logger.debug("Error invalidating session.", e);
                 }
-                this.logoutStrategy.logout(request);
+
+                try {
+                    request.logout();
+                } catch (final RuntimeException e) {
+                    logger.debug("Error performing request.logout.", e);
+                }
+
             }
         }
     }
@@ -321,7 +324,7 @@ public final class SingleSignOutHandler {
      * @param request The HTTP request.
      * @return the redirection url to the CAS server.
      */
-    private String computeRedirectionToServer(final HttpServletRequest request) {
+    private String computeRedirectionToServer(final HttpRequest request) {
         final String relayStateValue = CommonUtils.safeGetParameter(request, this.relayStateParameterName);
         // if we have a state value -> redirect to the CAS server to continue the logout process
         if (CommonUtils.isNotBlank(relayStateValue)) {
@@ -341,42 +344,8 @@ public final class SingleSignOutHandler {
         return null;
     }
 
-    private boolean isMultipartRequest(final HttpServletRequest request) {
+    private boolean isMultipartRequest(final HttpRequest request) {
         return request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart");
     }
 
-    private static boolean isServlet30() {
-        try {
-            return HttpServletRequest.class.getMethod("logout") != null;
-        } catch (final NoSuchMethodException e) {
-            return false;
-        }
-    }
-
-
-    /**
-     * Abstracts the ways we can force logout with the Servlet spec.
-     */
-    private interface LogoutStrategy {
-
-        void logout(HttpServletRequest request);
-    }
-
-    private class Servlet25LogoutStrategy implements LogoutStrategy {
-
-        public void logout(final HttpServletRequest request) {
-            // nothing additional to do here
-        }
-    }
-
-    private class Servlet30LogoutStrategy implements LogoutStrategy {
-
-        public void logout(final HttpServletRequest request) {
-            try {
-                request.logout();
-            } catch (final ServletException e) {
-                logger.debug("Error performing request.logout.");
-            }
-        }
-    }
 }

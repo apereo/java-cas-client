@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
 import org.jasig.cas.client.jaas.AssertionPrincipal;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
@@ -61,7 +62,8 @@ public final class WebAuthenticationFilter extends AbstractCasFilter {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession();
-        final String ticket = CommonUtils.safeGetParameter(request, getProtocol().getArtifactParameterName());
+        final String ticket = CommonUtils.safeGetParameter(new DelegatingHttpRequest(request),
+                getProtocol().getArtifactParameterName());
 
         if (session != null && session.getAttribute(CONST_CAS_ASSERTION) == null && ticket != null) {
             try {

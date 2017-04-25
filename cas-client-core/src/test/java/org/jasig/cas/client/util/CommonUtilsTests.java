@@ -25,6 +25,8 @@ import java.util.Collection;
 import junit.framework.TestCase;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.PublicTestHttpServer;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -132,8 +134,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setScheme("https");
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                "service", "ticket", false);
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.myserver.com", "service", "ticket", false);
 
         assertEquals(CONST_MY_URL, constructedUrl);
     }
@@ -146,7 +148,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setQueryString("service=this&ticket=that&custom=custom");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.myserver.com",
                 Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName() , false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
@@ -160,7 +163,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setQueryString("service=this&ticket=that&custom=custom");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.myserver.com",
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "https://www.myserver.com",
                 Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName() , false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
@@ -175,7 +179,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setQueryString("TARGET=this&SAMLart=that&custom=custom");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.myserver.com",
                 Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
@@ -189,7 +194,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setQueryString("TARGET%3Dthis%26SAMLart%3Dthat%26custom%3Dcustom");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.myserver.com",
                 Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
@@ -203,7 +209,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setQueryString("TARGET=Test1&service=Test2&custom=custom");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.myserver.com",
                 Protocol.SAML11.getArtifactParameterName() , true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
@@ -217,7 +224,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setQueryString("TARGET%3Dthis%26SAMLart%3Dthat%26custom%3Dcustom%20value%20here%26another%3Dgood");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.myserver.com",
                 Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom+value+here&another=good", constructedUrl);
@@ -231,7 +239,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setQueryString("TARGET=this&SAMLart=that&custom=custom value here&another=good");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.myserver.com",
                 Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom value here&another=good", constructedUrl);
@@ -245,7 +254,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setQueryString("TARGET=this&SAMLart=that&custom=custom+value+here&another=good");
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.myserver.com",
                 Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom+value+here&another=good", constructedUrl);
@@ -259,7 +269,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setSecure(true);
         request.setServerPort(555);
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null,
                 serverNameList, "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
@@ -279,8 +290,9 @@ public final class CommonUtilsTests extends TestCase {
         request.setScheme("https");
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
-                "www.amazon.com www.bestbuy.com www.myserver.com", "service", "ticket", false);
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null, "www.amazon.com www.bestbuy.com www.myserver.com",
+                "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
@@ -291,7 +303,8 @@ public final class CommonUtilsTests extends TestCase {
         request.setScheme("https");
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+        final String constructedUrl = CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), null,
                 "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }

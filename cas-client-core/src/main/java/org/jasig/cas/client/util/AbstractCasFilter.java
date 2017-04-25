@@ -20,6 +20,8 @@ package org.jasig.cas.client.util;
 
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -101,7 +103,8 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     }
 
     protected final String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response) {
-        return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName,
+        return CommonUtils.constructServiceUrl(new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response), this.service, this.serverName,
                 this.protocol.getServiceParameterName(),
                 this.protocol.getArtifactParameterName(), this.encodeServiceUrl);
     }
@@ -140,6 +143,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      * @return the ticket if its found, null otherwise.
      */
     protected String retrieveTicketFromRequest(final HttpServletRequest request) {
-        return CommonUtils.safeGetParameter(request, this.protocol.getArtifactParameterName());
+        return CommonUtils.safeGetParameter(new DelegatingHttpRequest(request),
+                this.protocol.getArtifactParameterName());
     }
 }

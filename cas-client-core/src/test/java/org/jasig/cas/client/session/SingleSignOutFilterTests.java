@@ -27,6 +27,7 @@ import javax.servlet.ServletException;
 
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
+import org.jasig.cas.client.http.servlet.DelegatingClientSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockFilterChain;
@@ -70,7 +71,8 @@ public class SingleSignOutFilterTests {
         final MockHttpSession session = new MockHttpSession();
         request.setSession(session);
         filter.doFilter(request, response, filterChain);
-        assertEquals(session, SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));
+        assertEquals(session.getId(),
+            SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET).getId());
     }
 
     @Test
@@ -79,7 +81,8 @@ public class SingleSignOutFilterTests {
                 LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET));
         request.setMethod("POST");
         final MockHttpSession session = new MockHttpSession();
-        SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
+        SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET,
+                new DelegatingClientSession(session));
         filter.doFilter(request, response, filterChain);
         assertNull(SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));
     }
@@ -91,7 +94,8 @@ public class SingleSignOutFilterTests {
         request.setQueryString(ConfigurationKeys.FRONT_LOGOUT_PARAMETER_NAME.getDefaultValue() + "=" + logoutMessage);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
-        SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
+        SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET,
+                new DelegatingClientSession(session));
         filter.doFilter(request, response, filterChain);
         assertNull(SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));
         assertNull(response.getRedirectedUrl());
@@ -106,7 +110,8 @@ public class SingleSignOutFilterTests {
                 ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue() + "=" + RELAY_STATE);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
-        SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
+        SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET,
+                new DelegatingClientSession(session));
         filter.doFilter(request, response, filterChain);
         assertNull(SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));
         assertEquals(CAS_SERVER_URL_PREFIX + "/logout?_eventId=next&" +

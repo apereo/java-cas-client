@@ -21,6 +21,8 @@ package org.jasig.cas.client.tomcat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
@@ -61,7 +63,7 @@ public abstract class AbstractLogoutHandler implements LogoutHandler {
         final String redirectUrl = constructRedirectUrl(request);
         if (redirectUrl != null) {
             logger.debug("Redirecting to {}", redirectUrl);
-            CommonUtils.sendRedirect(response, redirectUrl);
+            CommonUtils.sendRedirect(new DelegatingHttpResponse(response), redirectUrl);
         }
     }
 

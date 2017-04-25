@@ -23,6 +23,8 @@ import org.eclipse.jetty.security.ServerAuthException;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.validation.AbstractCasProtocolUrlBasedTicketValidator;
@@ -224,8 +226,8 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
 
     private String serviceUrl(final HttpServletRequest request, final HttpServletResponse response) {
         return CommonUtils.constructServiceUrl(
-                request,
-                response,
+                new DelegatingHttpRequest(request),
+                new DelegatingHttpResponse(response),
                 null,
                 serverNames,
                 protocol.getServiceParameterName(),

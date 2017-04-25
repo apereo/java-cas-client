@@ -23,6 +23,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.jasig.cas.client.http.servlet.DelegatingClientSession;
+import org.jasig.cas.client.http.servlet.DelegatingHttpRequest;
+import org.jasig.cas.client.http.servlet.DelegatingHttpResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -67,7 +70,7 @@ public final class SingleSignOutHandlerTests {
         request.setSession(null);
         request.setParameter(ARTIFACT_PARAMETER_NAME, TICKET);
         request.setQueryString(ARTIFACT_PARAMETER_NAME + "=" + TICKET);
-        assertTrue(handler.process(request, response));
+        assertTrue(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         final SessionMappingStorage storage = handler.getSessionMappingStorage();
         assertNull(storage.removeSessionByMappingId(TICKET));
     }
@@ -78,7 +81,7 @@ public final class SingleSignOutHandlerTests {
         request.setSession(session);
         request.setParameter(ANOTHER_PARAMETER, TICKET);
         request.setQueryString(ANOTHER_PARAMETER + "=" + TICKET);
-        assertTrue(handler.process(request, response));
+        assertTrue(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         final SessionMappingStorage storage = handler.getSessionMappingStorage();
         assertNull(storage.removeSessionByMappingId(TICKET));
     }
@@ -89,9 +92,9 @@ public final class SingleSignOutHandlerTests {
         request.setSession(session);
         request.setParameter(ARTIFACT_PARAMETER_NAME, TICKET);
         request.setQueryString(ARTIFACT_PARAMETER_NAME + "=" + TICKET);
-        assertTrue(handler.process(request, response));
+        assertTrue(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         final SessionMappingStorage storage = handler.getSessionMappingStorage();
-        assertEquals(session, storage.removeSessionByMappingId(TICKET));
+        assertEquals(session.getId(), storage.removeSessionByMappingId(TICKET).getId());
     }
 
     @Test
@@ -101,8 +104,8 @@ public final class SingleSignOutHandlerTests {
         request.setMethod("POST");
         request.setContentType("multipart/form-data");
         final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        assertTrue(handler.process(request, response));
+        handler.getSessionMappingStorage().addSessionById(TICKET, new DelegatingClientSession(session));
+        assertTrue(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         assertFalse(session.isInvalid());
     }
 
@@ -112,8 +115,8 @@ public final class SingleSignOutHandlerTests {
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
         final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        assertFalse(handler.process(request, response));
+        handler.getSessionMappingStorage().addSessionById(TICKET, new DelegatingClientSession(session));
+        assertFalse(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         assertFalse(session.isInvalid());
     }
 
@@ -123,8 +126,8 @@ public final class SingleSignOutHandlerTests {
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
         final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        assertFalse(handler.process(request, response));
+        handler.getSessionMappingStorage().addSessionById(TICKET, new DelegatingClientSession(session));
+        assertFalse(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         assertTrue(session.isInvalid());
     }
 
@@ -135,8 +138,8 @@ public final class SingleSignOutHandlerTests {
         request.setMethod("GET");
         request.setQueryString(ANOTHER_PARAMETER + "=" + logoutMessage);
         final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        assertTrue(handler.process(request, response));
+        handler.getSessionMappingStorage().addSessionById(TICKET, new DelegatingClientSession(session));
+        assertTrue(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         assertFalse(session.isInvalid());
     }
 
@@ -147,8 +150,8 @@ public final class SingleSignOutHandlerTests {
         request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        assertFalse(handler.process(request, response));
+        handler.getSessionMappingStorage().addSessionById(TICKET, new DelegatingClientSession(session));
+        assertFalse(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         assertFalse(session.isInvalid());
     }
 
@@ -159,8 +162,8 @@ public final class SingleSignOutHandlerTests {
         request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        assertFalse(handler.process(request, response));
+        handler.getSessionMappingStorage().addSessionById(TICKET, new DelegatingClientSession(session));
+        assertFalse(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         assertTrue(session.isInvalid());
         assertNull(response.getRedirectedUrl());
     }
@@ -173,8 +176,8 @@ public final class SingleSignOutHandlerTests {
         request.setQueryString(FRONT_LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" + RELAY_STATE_PARAMETER_NAME + "=" + TICKET);
         request.setMethod("GET");
         final MockHttpSession session = new MockHttpSession();
-        handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        assertFalse(handler.process(request, response));
+        handler.getSessionMappingStorage().addSessionById(TICKET, new DelegatingClientSession(session));
+        assertFalse(handler.process(new DelegatingHttpRequest(request), new DelegatingHttpResponse(response)));
         assertTrue(session.isInvalid());
         assertEquals(URL + "/logout?_eventId=next&" + RELAY_STATE_PARAMETER_NAME + "=" + TICKET,
                 response.getRedirectedUrl());
