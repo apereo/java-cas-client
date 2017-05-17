@@ -16,7 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jasig.cas.client.validation;
+package org.jasig.cas.client.validation.json;
+
+import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
 
 /**
  * Creates either a Cas30JsonServiceTicketValidator to validate tickets.
@@ -28,6 +30,6 @@ public class Cas30JsonProxyReceivingTicketValidationFilter extends Cas30ProxyRec
     public Cas30JsonProxyReceivingTicketValidationFilter() {
         super();
         this.defaultServiceTicketValidatorClass = Cas30JsonServiceTicketValidator.class;
-        this.defaultProxyTicketValidatorClass = Cas30JsonServiceTicketValidator.class;
+        this.defaultProxyTicketValidatorClass = Cas30JsonProxyTicketValidator.class;
     }
 }
