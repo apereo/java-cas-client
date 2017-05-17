@@ -19,9 +19,7 @@ final class JsonValidationResponseParser {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.findAndRegisterModules();
     }
-
-
-
+    
     public TicketValidationJsonResponse parse(final String response) throws TicketValidationException {
         try {
             final TicketValidationJsonResponse json = this.objectMapper.readValue(response, TicketValidationJsonResponse.class);
