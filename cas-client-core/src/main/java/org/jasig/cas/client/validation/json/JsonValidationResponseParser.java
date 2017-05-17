@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.TicketValidationException;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * This is {@link JsonValidationResponseParser}.
  *

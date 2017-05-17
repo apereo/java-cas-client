@@ -32,4 +32,6 @@ public class Cas30JsonProxyReceivingTicketValidationFilter extends Cas30ProxyRec
         this.defaultServiceTicketValidatorClass = Cas30JsonServiceTicketValidator.class;
         this.defaultProxyTicketValidatorClass = Cas30JsonProxyTicketValidator.class;
     }
+
+
 }
