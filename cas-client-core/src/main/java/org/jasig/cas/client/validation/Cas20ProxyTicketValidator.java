@@ -50,6 +50,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         return "proxyValidate";
     }
 
+    @Override
     protected void customParseResponse(final String response, final Assertion assertion)
             throws TicketValidationException {
         final List<String> proxies = parseProxiesFromResponse(response);
