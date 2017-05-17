@@ -10,10 +10,11 @@
     <name>Jasig CAS Client for Java - Atlassian Integration</name>
 
     <dependencies>
+        
         <dependency>
             <artifactId>atlassian-seraph</artifactId>
             <groupId>com.atlassian.seraph</groupId>
-            <version>2.5.1</version>
+            <version>3.0.0</version>
             <scope>provided</scope>
             <type>jar</type>
             <exclusions>
@@ -50,6 +51,47 @@
             <artifactId>spring-context</artifactId>
         </dependency>
 
+        <dependency>
+            <artifactId>atlassian-user</artifactId>
+            <groupId>com.atlassian.user</groupId>
+            <version>1.26</version>
+            <scope>provided</scope>
+            <type>jar</type>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>opensymphony</groupId>
+                    <artifactId>oscore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>opensymphony</groupId>
+                    <artifactId>propertyset</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>ofbcore</groupId>
+                    <artifactId>ofbcore-jira-entity</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ofbcore</groupId>
+                    <artifactId>ofbcore-jira-share</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
         <dependency>
             <artifactId>atlassian-osuser</artifactId>
             <groupId>com.atlassian.osuser</groupId>
@@ -92,10 +134,9 @@
         </dependency>
 
         <dependency>
-            <!-- https://maven.atlassian.com/content/groups/m1/com.atlassian.confluence/jars/ -->
             <groupId>com.atlassian.confluence</groupId>
             <artifactId>confluence</artifactId>
-            <version>3.5</version>
+            <version>4.0</version>
             <scope>provided</scope>
             <exclusions>
             <exclusion>
@@ -652,50 +693,50 @@
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-core</artifactId>
-            <version>4.4</version>
+            <version>4.4.5</version>
             <scope>provided</scope>
             <type>jar</type>
             <exclusions>
-                    <exclusion>
-      <groupId>com.atlassian.jira</groupId>
-      <artifactId>jira-api</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>com.atlassian.multitenant</groupId>
-      <artifactId>multitenant-core</artifactId>
-    </exclusion>
-      <exclusion>
-        <groupId>com.atlassian.multitenant</groupId>
-        <artifactId>multitenant-utils</artifactId>
-      </exclusion>
-    <exclusion>
-      <groupId>com.atlassian.crowd</groupId>
-      <artifactId>atlassian-embedded-crowd-ofbiz</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>com.atlassian.crowd</groupId>
-      <artifactId>embedded-crowd-core</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>com.atlassian.crowd</groupId>
-      <artifactId>embedded-crowd-spi</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>com.atlassian.crowd</groupId>
-      <artifactId>crowd-api</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>com.atlassian.crowd</groupId>
-      <artifactId>crowd-core</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>com.atlassian.crowd</groupId>
-      <artifactId>crowd-integration-api</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>com.atlassian.crowd</groupId>
-      <artifactId>crowd-integration-client-rest</artifactId>
-    </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.multitenant</groupId>
+                    <artifactId>multitenant-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.multitenant</groupId>
+                    <artifactId>multitenant-utils</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.crowd</groupId>
+                    <artifactId>atlassian-embedded-crowd-ofbiz</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.crowd</groupId>
+                    <artifactId>embedded-crowd-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.crowd</groupId>
+                    <artifactId>embedded-crowd-spi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.crowd</groupId>
+                    <artifactId>crowd-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.crowd</groupId>
+                    <artifactId>crowd-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.crowd</groupId>
+                    <artifactId>crowd-integration-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.crowd</groupId>
+                    <artifactId>crowd-integration-client-rest</artifactId>
+                </exclusion>
     <exclusion>
       <groupId>com.atlassian.crowd</groupId>
       <artifactId>crowd-persistence</artifactId>
@@ -1371,7 +1412,7 @@
         <repository>
             <id>atlassian</id>
             <name>Atlassian Repository</name>
-            <url>https://maven.atlassian.com/repository/public</url>
+            <url>https://maven.atlassian.com/content/repositories/atlassian-public/</url>
         </repository>
     </repositories>
 </project>
