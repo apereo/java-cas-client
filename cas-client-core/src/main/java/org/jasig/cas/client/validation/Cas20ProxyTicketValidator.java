@@ -28,7 +28,7 @@ import org.jasig.cas.client.util.XmlUtils;
  * @author Scott Battaglia
  * @since 3.1
  */
-public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator implements ProxyTicketValidator {
+public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
 
     private boolean acceptAnyProxy;
 
