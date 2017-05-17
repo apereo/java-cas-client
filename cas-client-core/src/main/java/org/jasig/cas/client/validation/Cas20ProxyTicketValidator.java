@@ -28,7 +28,7 @@ import org.jasig.cas.client.util.XmlUtils;
  * @author Scott Battaglia
  * @since 3.1
  */
-public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
+public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator implements ProxyTicketValidator {
 
     private boolean acceptAnyProxy;
 
@@ -61,7 +61,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
             );
         }
         // this means there was nothing in the proxy chain, which is okay
-        if ((this.allowEmptyProxyChain && proxies.isEmpty())) {
+        if (this.allowEmptyProxyChain && proxies.isEmpty()) {
             logger.debug("Found an empty proxy chain, permitted by client configuration");
             return;
         }

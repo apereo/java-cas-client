@@ -77,7 +77,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         return "serviceValidate";
     }
 
-    protected final Assertion parseResponseFromServer(final String response) throws TicketValidationException {
+    protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         final String error = parseAuthenticationFailureFromResponse(response);
 
         if (CommonUtils.isNotBlank(error)) {

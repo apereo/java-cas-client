@@ -206,6 +206,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -261,5 +266,6 @@
         <ehcache.version>2.2.0</ehcache.version>
         <clover.version>3.0.2</clover.version>
         <slf4j.version>1.7.1</slf4j.version>
+        <jackson.version>2.8.8.1</jackson.version>
     </properties>
 </project>
