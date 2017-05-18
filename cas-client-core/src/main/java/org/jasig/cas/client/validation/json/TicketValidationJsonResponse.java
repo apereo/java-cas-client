@@ -17,28 +17,19 @@ import java.util.Map;
  * @author Misagh Moayyed
  */
 final class TicketValidationJsonResponse {
-    private CasServiceResponseAuthenticationFailure authenticationFailure;
-    private CasServiceResponseAuthenticationSuccess authenticationSuccess;
+    private CasServiceResponseAuthentication serviceResponse;
 
-    public CasServiceResponseAuthenticationFailure getAuthenticationFailure() {
-        return this.authenticationFailure;
+    public void setServiceResponse(final CasServiceResponseAuthentication serviceResponse) {
+        this.serviceResponse = serviceResponse;
     }
 
-    public void setAuthenticationFailure(final CasServiceResponseAuthenticationFailure authenticationFailure) {
-        this.authenticationFailure = authenticationFailure;
-    }
-
-    public CasServiceResponseAuthenticationSuccess getAuthenticationSuccess() {
-        return this.authenticationSuccess;
-    }
-
-    public void setAuthenticationSuccess(final CasServiceResponseAuthenticationSuccess authenticationSuccess) {
-        this.authenticationSuccess = authenticationSuccess;
+    public CasServiceResponseAuthentication getServiceResponse() {
+        return serviceResponse;
     }
 
     Assertion getAssertion(final ProxyGrantingTicketStorage proxyGrantingTicketStorage,
                            final ProxyRetriever proxyRetriever) {
-        final String proxyGrantingTicketIou = getAuthenticationSuccess().getProxyGrantingTicket();
+        final String proxyGrantingTicketIou = getServiceResponse().getAuthenticationSuccess().getProxyGrantingTicket();
         final String proxyGrantingTicket;
         if (CommonUtils.isBlank(proxyGrantingTicketIou) || proxyGrantingTicketStorage == null) {
             proxyGrantingTicket = null;
@@ -47,8 +38,8 @@ final class TicketValidationJsonResponse {
         }
 
         final Assertion assertion;
-        final Map<String, Object> attributes = getAuthenticationSuccess().getAttributes();
-        final String principal = getAuthenticationSuccess().getUser();
+        final Map<String, Object> attributes = getServiceResponse().getAuthenticationSuccess().getAttributes();
+        final String principal = getServiceResponse().getAuthenticationSuccess().getUser();
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
             final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes,
                     proxyGrantingTicket, proxyRetriever);
@@ -59,6 +50,26 @@ final class TicketValidationJsonResponse {
         return assertion;
     }
 
+    static class CasServiceResponseAuthentication {
+        private CasServiceResponseAuthenticationFailure authenticationFailure;
+        private CasServiceResponseAuthenticationSuccess authenticationSuccess;
+
+        public CasServiceResponseAuthenticationFailure getAuthenticationFailure() {
+            return this.authenticationFailure;
+        }
+
+        public void setAuthenticationFailure(final CasServiceResponseAuthenticationFailure authenticationFailure) {
+            this.authenticationFailure = authenticationFailure;
+        }
+
+        public CasServiceResponseAuthenticationSuccess getAuthenticationSuccess() {
+            return this.authenticationSuccess;
+        }
+
+        public void setAuthenticationSuccess(final CasServiceResponseAuthenticationSuccess authenticationSuccess) {
+            this.authenticationSuccess = authenticationSuccess;
+        }
+    }
 
     static class CasServiceResponseAuthenticationSuccess {
         private String user;

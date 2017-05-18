@@ -4,6 +4,7 @@ import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.Cas30ProxyTicketValidator;
 import org.jasig.cas.client.validation.TicketValidationException;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
 public class Cas30JsonProxyTicketValidator extends Cas30ProxyTicketValidator {
     public Cas30JsonProxyTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
-        getCustomParameters().put("format", "JSON");
+        setCustomParameters(Collections.singletonMap("format", "JSON"));
     }
 
     @Override
@@ -33,9 +34,9 @@ public class Cas30JsonProxyTicketValidator extends Cas30ProxyTicketValidator {
     protected List<String> parseProxiesFromResponse(final String response) {
         try {
             final TicketValidationJsonResponse json = new JsonValidationResponseParser().parse(response);
-            return json.getAuthenticationSuccess().getProxies();
+            return json.getServiceResponse().getAuthenticationSuccess().getProxies();
         } catch (final Exception e) {
-            logger.warn("Unable to locate proxies from the JSON response");
+            logger.warn("Unable to locate proxies from the JSON response", e);
             return super.parseProxiesFromResponse(response);
         }
     }

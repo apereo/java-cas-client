@@ -19,7 +19,7 @@ public class Cas30JsonServiceTicketValidator extends Cas30ServiceTicketValidator
 
     public Cas30JsonServiceTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
-        getCustomParameters().put("format", "JSON");
+        setCustomParameters(Collections.singletonMap("format", "JSON"));
     }
 
     @Override
@@ -28,7 +28,7 @@ public class Cas30JsonServiceTicketValidator extends Cas30ServiceTicketValidator
             final TicketValidationJsonResponse json = new JsonValidationResponseParser().parse(response);
             return json.getAssertion(getProxyGrantingTicketStorage(), getProxyRetriever());
         } catch (final Exception e) {
-            logger.warn("Unable parse the JSON response");
+            logger.warn("Unable parse the JSON response", e);
             return super.parseResponseFromServer(response);
         }
     }
