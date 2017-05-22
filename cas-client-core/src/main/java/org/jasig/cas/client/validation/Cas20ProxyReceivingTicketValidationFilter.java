@@ -54,7 +54,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             TOLERANCE.getName(), IGNORE_PATTERN.getName(), IGNORE_URL_PATTERN_TYPE.getName(), HOSTNAME_VERIFIER.getName(), HOSTNAME_VERIFIER_CONFIG.getName(),
             EXCEPTION_ON_VALIDATION_FAILURE.getName(), REDIRECT_AFTER_VALIDATION.getName(), USE_SESSION.getName(), SECRET_KEY.getName(), CIPHER_ALGORITHM.getName(), PROXY_RECEPTOR_URL.getName(),
             PROXY_GRANTING_TICKET_STORAGE_CLASS.getName(), MILLIS_BETWEEN_CLEAN_UPS.getName(), ACCEPT_ANY_PROXY.getName(), ALLOWED_PROXY_CHAINS.getName(), TICKET_VALIDATOR_CLASS.getName(),
-            PROXY_CALLBACK_URL.getName(), FRONT_LOGOUT_PARAMETER_NAME.getName(), RELAY_STATE_PARAMETER_NAME.getName()
+            PROXY_CALLBACK_URL.getName(), RELAY_STATE_PARAMETER_NAME.getName()
     };
 
     /**
