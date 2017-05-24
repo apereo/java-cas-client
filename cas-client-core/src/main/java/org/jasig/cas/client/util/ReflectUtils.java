@@ -22,6 +22,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -146,6 +147,37 @@ public final class ReflectUtils {
             throw new RuntimeException("Error setting property " + propertyName, e.getCause());
         } catch (final Exception e) {
             throw new RuntimeException("Error setting property " + propertyName, e);
+        }
+    }
+
+    /**
+     * Gets the value of the given declared field on the target object or any of its superclasses.
+     *
+     * @param fieldName Name of field to get.
+     * @param target Target object that possesses field.
+     *
+     * @return Field value.
+     */
+    public static Object getField(final String fieldName, final Object target) {
+        Class<?> clazz = target.getClass();
+        Field field = null;
+        do {
+            try {
+                field = clazz.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                clazz = clazz.getSuperclass();
+            }
+        } while (field == null && clazz != null);
+        if (field == null) {
+            throw new IllegalArgumentException(fieldName + " does not exist on " + target);
+        }
+        try {
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            return field.get(target);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error getting field " + fieldName, e);
         }
     }
 }

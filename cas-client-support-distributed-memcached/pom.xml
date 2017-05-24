@@ -7,7 +7,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jasig.cas.client</groupId>
     <packaging>jar</packaging>
     <artifactId>cas-client-support-distributed-memcached</artifactId>
     <name>Jasig CAS Client for Java - Distributed Proxy Storage Support:

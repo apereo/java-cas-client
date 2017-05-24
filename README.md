@@ -1,4 +1,4 @@
-# Java Apereo CAS Client [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jasig.cas.client/cas-client-core/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.jasig.cas/cas-server)
+# Java Apereo CAS Client [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jasig.cas.client/cas-client-core/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.jasig.cas.client/cas-client)
 
 <a name="intro"></a>
 ## Intro
@@ -10,7 +10,7 @@ All client artifacts are published to Maven central. Depending on functionality,
 ## Build [![Build Status](https://travis-ci.org/Jasig/java-cas-client.png?branch=master)](https://travis-ci.org/Jasig/java-cas-client)
 
 ```bash
-git clone git@github.com:Jasig/java-cas-client.git
+git clone git@github.com:apereo/java-cas-client.git
 cd java-cas-client
 mvn clean package
 ```
@@ -36,7 +36,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-saml</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -46,7 +46,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-distributed-ehcache</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -56,7 +56,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-distributed-memcached</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -66,7 +66,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-atlassian</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -76,7 +76,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-jboss</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -86,7 +86,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v6</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -96,12 +96,21 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v7</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
 ```
 
+- Tomcat 8 is provided by this dependency:
+
+```xml
+<dependency>
+   <groupId>org.jasig.cas.client</groupId>
+   <artifactId>cas-client-integration-tomcat-v8</artifactId>
+   <version>${java.cas.client.version}</version>
+</dependency>
+```
 <a name="configurtion"></a>
 ## Configuration
 
@@ -220,7 +229,7 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 | `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
 
 <a name="rgjasigcasclientvalidationcas10ticketvalidationfilter"></a>
-####org.jasig.cas.client.validation.Cas10TicketValidationFilter
+#### org.jasig.cas.client.validation.Cas10TicketValidationFilter
 Validates tickets using the CAS 1.0 Protocol.
 
 ```xml
@@ -421,12 +430,42 @@ Places the `Assertion` in a `ThreadLocal` for portions of the application that n
 </filter-mapping>
 ```
 
+<a name="orgjasigcasclientutilerrorredirectfilter"></a>
+#### org.jasig.cas.client.util.ErrorRedirectFilter
+Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via init filter name/param values.
+
+| Property | Description | Required
+|----------|-------|-----------
+| `defaultErrorRedirectPage` | Default url to redirect to, in case no erorr matches are found. | Yes
+| `java.lang.Exception` | Fully qualified exception name. Its value must be redirection url | No
+
+
+```xml
+<filter>
+  <filter-name>CAS Error Redirect Filter</filter-name>
+  <filter-class>org.jasig.cas.client.util.ErrorRedirectFilter</filter-class>
+  <init-param>
+    <param-name>java.lang.Exception</param-name>
+    <param-value>/error.jsp</param-value>
+  </init-param>
+  <init-param>
+    <param-name>defaultErrorRedirectPage</param-name>
+    <param-value>/defaulterror.jsp</param-value>
+  </init-param>
+</filter>
+<filter-mapping>
+  <filter-name>CAS Error Redirect Filter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+
 <a name="client-configuration-using-spring"></a>
 ### Client Configuration Using Spring
 
 Configuration via Spring IoC will depend heavily on `DelegatingFilterProxy` class. For each filter that will be configured for CAS via Spring, a corresponding `DelegatingFilterProxy` is needed in the web.xml.
 
-As the `SingleSignOutFilter`, `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have no configuration options, we recommend you just configure them in the `web.xml`
+As the `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have no configuration options, we recommend you just configure them in the `web.xml`
 
 ```xml
 <filter>
@@ -614,6 +653,10 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+   <init-param>
+      <param-name>casServerUrlPrefix</param-name>
+      <param-value>https://cas.example.com/cas</param-value>
+   </init-param>
 </filter>
 ...
 <filter-mapping>
@@ -636,6 +679,10 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
    <init-param>
       <param-name>artifactParameterName</param-name>
       <param-value>SAMLart</param-value>
+   </init-param>
+   <init-param>
+      <param-name>casServerUrlPrefix</param-name>
+      <param-value>https://cas.example.com/cas</param-value>
    </init-param>
 </filter>
 ...
@@ -783,27 +830,27 @@ If you have any trouble, you can enable the log of cas in `jboss-logging.xml` by
 </logger>
 ``` 
 
-<a name="tomcat-67-integration"></a>
-## Tomcat 6/7 Integration
+<a name="tomcat-678-integration"></a>
+## Tomcat 6/7/8 Integration
 The client supports container-based CAS authentication and authorization support for the Tomcat servlet container. 
 
 Suppose a single Tomcat container hosts multiple Web applications with similar authentication and authorization needs. Prior to Tomcat container support, each application would require a similar configuration of CAS servlet filters and authorization configuration in the `web.xml` servlet descriptor. Using the new container-based authentication/authorization feature, a single CAS configuration can be applied to the container and leveraged by all Web applications hosted by the container.
 
-CAS authentication support for Tomcat is based on the Tomcat-specific Realm component. The Realm component has a fairly broad surface area and RealmBase is provided as a convenient superclass for custom implementations; the CAS realm implementations derive from `RealmBase`. Unfortunately RealmBase and related components have proven to change over both major and minor number releases, which requires version-specific CAS components for integration. We have provided two packages with similar components with the hope of supporting all 6.x and 7.x versions. **No support for 5.x is provided.**
+CAS authentication support for Tomcat is based on the Tomcat-specific Realm component. The Realm component has a fairly broad surface area and RealmBase is provided as a convenient superclass for custom implementations; the CAS realm implementations derive from `RealmBase`. Unfortunately RealmBase and related components have proven to change over both major and minor number releases, which requires version-specific CAS components for integration. We have provided 3 packages with similar components with the hope of supporting all 6.x, 7.x and 8.x versions. **No support for 5.x is provided.**
 
 <a name="component-overview"></a>
 ### Component Overview
-In the following discussion of components, only the Tomcat 6.x components are mentioned. The Tomcat 7.0.x components have exactly the same name, but **are in the tomcat.v7 package**, e.g. `org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator`.
+In the following discussion of components, only the Tomcat 8.x components are mentioned. The Tomcat 7.0.x and 6.0.x components have exactly the same name, but **are in the tomcat.v7 and tomcat.v6 packages**, e.g. `org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator` or `org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator`.
 
 <a name="authenticators"></a>
 #### Authenticators
 Authenticators are responsible for performing CAS authentication using a particular protocol. All protocols supported by the Jasig Java CAS client are supported: CAS 1.0, CAS 2.0, and SAML 1.1. The following components provide protocol-specific support:
 
 ```
-org.jasig.cas.client.tomcat.v6.Cas10CasAuthenticator
-org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator
-org.jasig.cas.client.tomcat.v6.Cas20ProxyCasAuthenticator
-org.jasig.cas.client.tomcat.v6.Saml11Authenticator
+org.jasig.cas.client.tomcat.v8.Cas10CasAuthenticator
+org.jasig.cas.client.tomcat.v8.Cas20CasAuthenticator
+org.jasig.cas.client.tomcat.v8.Cas20ProxyCasAuthenticator
+org.jasig.cas.client.tomcat.v8.Saml11Authenticator
 ```
 
 <a name="realms"></a>
@@ -811,8 +858,8 @@ org.jasig.cas.client.tomcat.v6.Saml11Authenticator
 In terms of CAS configuration, Tomcat realms serve as containers for users and role definitions. The roles defined in a Tomcat realm may be referenced in the web.xml servlet descriptor to define authorization constraints on Web applications hosted by the container. Two sources of user/role data are supported:
 
 ```
-org.jasig.cas.client.tomcat.v6.PropertiesCasRealm
-org.jasig.cas.client.tomcat.v6.AssertionCasRealm
+org.jasig.cas.client.tomcat.v8.PropertiesCasRealm
+org.jasig.cas.client.tomcat.v8.AssertionCasRealm
 ```
 
 `PropertiesCasRealm` uses a Java properties file as a source of static user/role information. This component is conceptually similar to the `MemoryRealm` component that ships with Tomcat and defines user/role data via XML configuration. The PropertiesCasRealm is different in that it explicitly lacks support for passwords, which have no use with CAS.
@@ -827,15 +874,15 @@ A number of Tomcat valves are provided to handle functionality outside Realms an
 Logout valves provide a way of destroying the CAS authentication state bound to the container for a particular user/session; the destruction of authenticated state is synonymous with logout for the container and its hosted applications. (Note this does not destroy the CAS SSO session.) The implementations provide various strategies to map a URI onto the state-destroying logout function.
 
 ```
-org.jasig.cas.client.tomcat.v6.StaticUriLogoutValve
-org.jasig.cas.client.tomcat.v6.RegexUriLogoutValve
+org.jasig.cas.client.tomcat.v8.StaticUriLogoutValve
+org.jasig.cas.client.tomcat.v8.RegexUriLogoutValve
 ```
 
 ##### SingleSignOutValve
-The `org.jasig.cas.client.tomcat.v6.SingleSignOutValve` allows the container to participate in CAS single sign-out. In particular this valve handles the SAML LogoutRequest message sent from the CAS server that is delivered when the CAS SSO session ends.
+The `org.jasig.cas.client.tomcat.v8.SingleSignOutValve` allows the container to participate in CAS single sign-out. In particular this valve handles the SAML LogoutRequest message sent from the CAS server that is delivered when the CAS SSO session ends.
 
 ##### ProxyCallbackValve
-The `org.jasig.cas.client.tomcat.v6.ProxyCallbackValve` provides a handler for watching request URIs for requests that contain a proxy callback request in support of the CAS 2.0 protocol proxy feature.
+The `org.jasig.cas.client.tomcat.v8.ProxyCallbackValve` provides a handler for watching request URIs for requests that contain a proxy callback request in support of the CAS 2.0 protocol proxy feature.
 
 <a name="container-setup"></a>
 ### Container Setup
@@ -865,11 +912,11 @@ Alternatively, CAS configuration can be applied to individual Web applications t
     This example also configures the container for CAS single sign-out.
   -->
   <Realm
-    className="org.jasig.cas.client.tomcat.v6.PropertiesCasRealm"
+    className="org.jasig.cas.client.tomcat.v8.PropertiesCasRealm"
     propertiesFilePath="conf/manager-user-roles.properties"
     />
   <Valve
-    className="org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator"
+    className="org.jasig.cas.client.tomcat.v8.Cas20CasAuthenticator"
     encoding="UTF-8"
     casServerLoginUrl="https://server.example.com/cas/login"
     casServerUrlPrefix="https://server.example.com/cas/"
@@ -878,7 +925,7 @@ Alternatively, CAS configuration can be applied to individual Web applications t
  
   <!-- Single sign-out support -->
   <Valve
-    className="org.jasig.cas.client.tomcat.v6.SingleSignOutValve"
+    className="org.jasig.cas.client.tomcat.v8.SingleSignOutValve"
     artifactParameterName="SAMLart"
     />
  
@@ -888,11 +935,11 @@ Alternatively, CAS configuration can be applied to individual Web applications t
   -->
   <!--
   <Valve
-    className="org.jasig.cas.client.tomcat.v6.RegexUriLogoutValve"
+    className="org.jasig.cas.client.tomcat.v8.RegexUriLogoutValve"
     logoutUriRegex="/manager/logout.*"
     />
   <Valve
-    className="org.jasig.cas.client.tomcat.v6.StaticUriLogoutValve"
+    className="org.jasig.cas.client.tomcat.v8.StaticUriLogoutValve"
     logoutUri="/manager/logout.html"
     />
   -->
@@ -910,11 +957,11 @@ The following example shows how to configure a Context for dynamic role data pro
     The attribute used for role data is "memberOf".
   -->
   <Realm
-    className="org.jasig.cas.client.tomcat.v6.AssertionCasRealm"
+    className="org.jasig.cas.client.tomcat.v8.AssertionCasRealm"
     roleAttributeName="memberOf"
     />
   <Valve
-    className="org.jasig.cas.client.tomcat.v6.Saml11Authenticator"
+    className="org.jasig.cas.client.tomcat.v8.Saml11Authenticator"
     encoding="UTF-8"
     casServerLoginUrl="https://server.example.com/cas/login"
     casServerUrlPrefix="https://server.example.com/cas/"
@@ -923,10 +970,74 @@ The following example shows how to configure a Context for dynamic role data pro
  
   <!-- Single sign-out support -->
   <Valve
-    className="org.jasig.cas.client.tomcat.v6.SingleSignOutValve"
+    className="org.jasig.cas.client.tomcat.v8.SingleSignOutValve"
     artifactParameterName="SAMLart"
     />
 </Context>
+```
+
+<a name="jetty-integration"></a>
+## Jetty Integration
+Since version 3.4.2, the Java CAS Client supports Jetty container integration via the following module:
+
+```xml
+<dependency>
+    <groupId>org.jasig.cas.client</groupId>
+    <artifactId>cas-client-integration-jetty</artifactId>
+    <version>${cas-client.version}</version>
+</dependency>
+```
+
+Both programmatic (embedded) and context configuration are supported.
+
+### Jetty Embedded Configuration
+```
+# CAS configuration parameters
+String hostName = "app.example.com";
+String casServerBaseUrl = "cas.example.com/cas";
+String casRoleAttribute = "memberOf";
+boolean casRenew = false;
+int casTolerance = 5000;
+
+# Jetty wiring
+WebAppContext context = new WebAppContext("/path/to/context", "contextPath");
+context.setTempDirectory("/tmp/jetty/work"));
+context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
+SessionCookieConfig config = context.getSessionHandler().getSessionManager().getSessionCookieConfig();
+config.setHttpOnly(true);
+config.setSecure(true);
+Saml11TicketValidator validator = new Saml11TicketValidator(casServerBaseUrl);
+validator.setRenew(casRenew);
+validator.setTolerance(casTolerance);
+CasAuthenticator authenticator = new CasAuthenticator();
+authenticator.setRoleAttribute(casRoleAttribute);
+authenticator.setServerNames(hostName);
+authenticator.setTicketValidator(validator);
+context.getSecurityHandler().setAuthenticator(authenticator);
+```
+
+### Jetty Context Configuration
+```xml
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <Set name="contextPath">/</Set>
+    <Set name="war"><SystemProperty name="jetty.base"/>/webapps/yourapp</Set>
+    <Get name="securityHandler">
+        <Set name="authenticator">
+            <New class="org.jasig.cas.client.jetty.CasAuthenticator">
+                <Set name="serverNames">app.example.com</Set>
+                <Set name="ticketValidator">
+                    <New class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+                        <Arg>https://cas.example.com/cas</Arg>
+                        <!--<Set name="renew">true</Set>-->
+                    </New>
+                </Set>
+            </New>
+        </Set>
+    </Get>
+</Configure>
 ```
 
 <a name="atlassian-integration"></a>
@@ -1079,6 +1190,10 @@ This configuration tested against the sample application that is included with S
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+   <init-param>
+      <param-name>casServerUrlPrefix</param-name>
+      <param-value>https://cas.example.com/cas</param-value>
+   </init-param>
 </filter>
 
 <filter>

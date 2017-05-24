@@ -19,6 +19,7 @@
 package org.jasig.cas.client.session;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.Inflater;
 
@@ -26,8 +27,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.util.CommonUtils;
@@ -56,12 +57,9 @@ public final class SingleSignOutHandler {
     /** The name of the artifact parameter.  This is used to capture the session identifier. */
     private String artifactParameterName = Protocol.CAS2.getArtifactParameterName();
 
-    /** Parameter name that stores logout request for back channel SLO */
+    /** Parameter name that stores logout request for SLO */
     private String logoutParameterName = ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue();
-
-    /** Parameter name that stores logout request for front channel SLO */
-    private String frontLogoutParameterName = ConfigurationKeys.FRONT_LOGOUT_PARAMETER_NAME.getDefaultValue();
-
+    
     /** Parameter name that stores the state of the CAS server webflow for the callback */
     private String relayStateParameterName = ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue();
     
@@ -74,7 +72,7 @@ public final class SingleSignOutHandler {
 
     private List<String> safeParameters;
 
-    private LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
+    private final LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
 
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         this.sessionMappingStorage = storage;
@@ -96,7 +94,7 @@ public final class SingleSignOutHandler {
     }
 
     /**
-     * @param name Name of parameter containing CAS logout request message for back channel SLO.
+     * @param name Name of parameter containing CAS logout request message for SLO.
      */
     public void setLogoutParameterName(final String name) {
         this.logoutParameterName = name;
@@ -108,14 +106,7 @@ public final class SingleSignOutHandler {
     public void setCasServerUrlPrefix(final String casServerUrlPrefix) {
         this.casServerUrlPrefix = casServerUrlPrefix;
     }
-
-    /**
-     * @param name Name of parameter containing CAS logout request message for front channel SLO.
-     */
-    public void setFrontLogoutParameterName(final String name) {
-        this.frontLogoutParameterName = name;
-    }
-
+    
     /**
      * @param name Name of parameter containing the state of the CAS server webflow.
      */
@@ -134,7 +125,6 @@ public final class SingleSignOutHandler {
         if (this.safeParameters == null) {
             CommonUtils.assertNotNull(this.artifactParameterName, "artifactParameterName cannot be null.");
             CommonUtils.assertNotNull(this.logoutParameterName, "logoutParameterName cannot be null.");
-            CommonUtils.assertNotNull(this.frontLogoutParameterName, "frontLogoutParameterName cannot be null.");
             CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannot be null.");
             CommonUtils.assertNotNull(this.relayStateParameterName, "relayStateParameterName cannot be null.");
             CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
@@ -146,7 +136,7 @@ public final class SingleSignOutHandler {
             if (this.artifactParameterOverPost) {
                 this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
             } else {
-                this.safeParameters = Arrays.asList(this.logoutParameterName);
+                this.safeParameters = Collections.singletonList(this.logoutParameterName);
             }
         }
     }
@@ -164,32 +154,25 @@ public final class SingleSignOutHandler {
     }
 
     /**
-     * Determines whether the given request is a CAS back channel logout request.
+     * Determines whether the given request is a CAS  logout request.
      *
      * @param request HTTP request.
      *
      * @return True if request is logout request, false otherwise.
      */
-    private boolean isBackChannelLogoutRequest(final HttpServletRequest request) {
-        return "POST".equals(request.getMethod())
-                && !isMultipartRequest(request)
-                && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
-                        this.safeParameters));
+    private boolean isLogoutRequest(final HttpServletRequest request) {
+        if ("POST".equalsIgnoreCase(request.getMethod())) {
+            return !isMultipartRequest(request)
+                    && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
+                    this.safeParameters));
+        }
+        
+        if ("GET".equalsIgnoreCase(request.getMethod())) {
+            return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters));
+        }
+        return false;
     }
-
-    /**
-     * Determines whether the given request is a CAS front channel logout request.  Front Channel log out requests are only supported
-     * when the 'casServerUrlPrefix' value is set.
-     *
-     * @param request HTTP request.
-     *
-     * @return True if request is logout request, false otherwise.
-     */
-    private boolean isFrontChannelLogoutRequest(final HttpServletRequest request) {
-        return "GET".equals(request.getMethod()) && CommonUtils.isNotBlank(this.casServerUrlPrefix)
-                && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.frontLogoutParameterName));
-    }
-
+    
     /**
      * Process a request regarding the SLO process: record the session or destroy it.
      *
@@ -202,26 +185,15 @@ public final class SingleSignOutHandler {
             logger.trace("Received a token request");
             recordSession(request);
             return true;
-
-        } else if (isBackChannelLogoutRequest(request)) {
-            logger.trace("Received a back channel logout request");
+        } 
+        
+        if (isLogoutRequest(request)) {
+            logger.trace("Received a logout request");
             destroySession(request);
             return false;
-
-        } else if (isFrontChannelLogoutRequest(request)) {
-            logger.trace("Received a front channel logout request");
-            destroySession(request);
-            // redirection url to the CAS server
-            final String redirectionUrl = computeRedirectionToServer(request);
-            if (redirectionUrl != null) {
-                CommonUtils.sendRedirect(response, redirectionUrl);
-            }
-            return false;
-
-        } else {
-            logger.trace("Ignoring URI for logout: {}", request.getRequestURI());
-            return true;
-        }
+        } 
+        logger.trace("Ignoring URI for logout: {}", request.getRequestURI());
+        return true;
     }
 
     /**
@@ -244,7 +216,7 @@ public final class SingleSignOutHandler {
         try {
             this.sessionMappingStorage.removeBySessionById(session.getId());
         } catch (final Exception e) {
-            // ignore if the session is already marked as invalid.  Nothing we can do!
+            // ignore if the session is already marked as invalid. Nothing we can do!
         }
         sessionMappingStorage.addSessionById(token, session);
     }
@@ -256,7 +228,7 @@ public final class SingleSignOutHandler {
      * @return the uncompressed logout message.
      */
     private String uncompressLogoutMessage(final String originalMessage) {
-        final byte[] binaryMessage = Base64.decodeBase64(originalMessage);
+        final byte[] binaryMessage = DatatypeConverter.parseBase64Binary(originalMessage);
 
         Inflater decompresser = null;
         try {
@@ -285,16 +257,17 @@ public final class SingleSignOutHandler {
      * @param request HTTP request containing a CAS logout message.
      */
     private void destroySession(final HttpServletRequest request) {
-        final String logoutMessage;
-        // front channel logout -> the message needs to be base64 decoded + decompressed
-        if (isFrontChannelLogoutRequest(request)) {
-            logoutMessage = uncompressLogoutMessage(CommonUtils.safeGetParameter(request,
-                    this.frontLogoutParameterName));
-        } else {
-            logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
+        String logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
+        if (CommonUtils.isBlank(logoutMessage)) {
+            logger.error("Could not locate logout message of the request from {}", this.logoutParameterName);
+            return;
         }
+        
+        if (!logoutMessage.contains("SessionIndex")) {
+            logoutMessage = uncompressLogoutMessage(logoutMessage);
+        }
+        
         logger.trace("Logout request:\n{}", logoutMessage);
-
         final String token = XmlUtils.getTextForElement(logoutMessage, "SessionIndex");
         if (CommonUtils.isNotBlank(token)) {
             final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(token);
@@ -311,33 +284,6 @@ public final class SingleSignOutHandler {
                 this.logoutStrategy.logout(request);
             }
         }
-    }
-
-    /**
-     * Compute the redirection url to the CAS server when it's a front channel SLO
-     * (depending on the relay state parameter).
-     *
-     * @param request The HTTP request.
-     * @return the redirection url to the CAS server.
-     */
-    private String computeRedirectionToServer(final HttpServletRequest request) {
-        final String relayStateValue = CommonUtils.safeGetParameter(request, this.relayStateParameterName);
-        // if we have a state value -> redirect to the CAS server to continue the logout process
-        if (CommonUtils.isNotBlank(relayStateValue)) {
-            final StringBuilder buffer = new StringBuilder();
-            buffer.append(casServerUrlPrefix);
-            if (!this.casServerUrlPrefix.endsWith("/")) {
-                buffer.append("/");
-            }
-            buffer.append("logout?_eventId=next&");
-            buffer.append(this.relayStateParameterName);
-            buffer.append("=");
-            buffer.append(CommonUtils.urlEncode(relayStateValue));
-            final String redirectUrl = buffer.toString();
-            logger.debug("Redirection url to the CAS server: {}", redirectUrl);
-            return redirectUrl;
-        }
-        return null;
     }
 
     private boolean isMultipartRequest(final HttpServletRequest request) {
