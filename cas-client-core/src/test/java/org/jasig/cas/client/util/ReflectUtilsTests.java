@@ -54,6 +54,18 @@ public class ReflectUtilsTests extends TestCase {
         assertTrue(bean.isFlag());
     }
 
+    public void testGetField() {
+        final TestBean bean = new TestBean();
+        bean.setName("bob");
+        assertEquals(bean.getName(), ReflectUtils.getField("name", bean));
+    }
+
+    public void testGetFieldSuperclass() {
+        final TestSubBean bean = new TestSubBean();
+        bean.setName("bob");
+        assertEquals(bean.getName(), ReflectUtils.getField("name", bean));
+    }
+
     static class TestBean {
         private int count;
         private boolean flag;
@@ -101,5 +113,17 @@ public class ReflectUtilsTests extends TestCase {
             this.flag = flag;
         }
 
+    }
+
+    static class TestSubBean extends TestBean {
+        private String state;
+
+        public String getState() {
+            return state;
+        }
+
+        public void setState(String state) {
+            this.state = state;
+        }
     }
 }

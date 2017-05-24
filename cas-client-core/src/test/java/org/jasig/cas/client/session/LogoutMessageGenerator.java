@@ -18,11 +18,10 @@
  */
 package org.jasig.cas.client.session;
 
+import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.zip.Deflater;
-
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * Logout message generator to perform tests on Single Sign Out feature.
@@ -51,6 +50,6 @@ public final class LogoutMessageGenerator {
         final int resultSize = deflater.deflate(buffer);
         final byte[] output = new byte[resultSize];
         System.arraycopy(buffer, 0, output, 0, resultSize);
-        return Base64.encodeBase64String(output);
+        return DatatypeConverter.printBase64Binary(output);
     }
 }

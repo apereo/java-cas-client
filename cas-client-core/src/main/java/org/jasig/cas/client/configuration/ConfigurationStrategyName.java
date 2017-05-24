@@ -62,7 +62,7 @@ public enum ConfigurationStrategyName {
         try {
             final Class<?> clazz = Class.forName(value);
 
-            if (clazz.isAssignableFrom(ConfigurationStrategy.class)) {
+            if (ConfigurationStrategy.class.isAssignableFrom(clazz)) {
                 return (Class<? extends ConfigurationStrategy>) clazz;
             }
         }   catch (final ClassNotFoundException e) {

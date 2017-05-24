@@ -39,6 +39,7 @@ This project includes:
   Jasig CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
   Jasig CAS Client for Java - Tomcat 6.x Integration under Apache License Version 2.0
   Jasig CAS Client for Java - Tomcat 7.x Integration under Apache License Version 2.0
+  Jasig CAS Client for Java - Tomcat 8.x Integration under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
   JavaBeans Activation Framework (JAF) under Common Development and Distribution License (CDDL) v1.0
   JavaMail API under Common Development and Distribution License (CDDL) v1.0

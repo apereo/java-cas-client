@@ -20,6 +20,9 @@ package org.jasig.cas.client.configuration;
 
 import org.junit.Test;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterConfig;
+
 import static org.junit.Assert.*;
 
 public final class ConfigurationStrategyNameTests {
@@ -32,5 +35,23 @@ public final class ConfigurationStrategyNameTests {
         assertEquals(SystemPropertiesConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy(ConfigurationStrategyName.SYSTEM_PROPERTIES.name()));
         assertEquals(LegacyConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy(ConfigurationStrategyName.DEFAULT.name()));
         assertEquals(LegacyConfigurationStrategyImpl.class, ConfigurationStrategyName.resolveToConfigurationStrategy("bleh!"));
+    }
+
+
+    @Test
+    public void resolveToClass() {
+        assertEquals(TestClass.class, ConfigurationStrategyName.resolveToConfigurationStrategy(TestClass.class.getName()));
+    }
+
+    private class TestClass extends BaseConfigurationStrategy {
+
+        @Override
+        protected String get(ConfigurationKey configurationKey) {
+            return null;
+        }
+
+        public void init(FilterConfig filterConfig, Class<? extends Filter> filterClazz) {
+
+        }
     }
 }

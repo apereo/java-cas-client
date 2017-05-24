@@ -7,7 +7,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jasig.cas.client</groupId>
     <artifactId>cas-client-integration-tomcat-v7</artifactId>
     <packaging>jar</packaging>
     <name>Jasig CAS Client for Java - Tomcat 7.x Integration</name>
