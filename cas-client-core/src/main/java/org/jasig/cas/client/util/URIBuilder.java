@@ -374,7 +374,7 @@ public final class URIBuilder {
      * </p>
      */
     public URIBuilder setParameters(final BasicNameValuePair... nvps) {
-        if (this.queryParams == null) {
+        if (this.queryParams == null || this.queryParams.isEmpty()) {
             this.queryParams = new ArrayList<BasicNameValuePair>();
         } else {
             this.queryParams.clear();
@@ -397,7 +397,7 @@ public final class URIBuilder {
      * </p>
      */
     public URIBuilder addParameter(final String param, final String value) {
-        if (this.queryParams == null) {
+        if (this.queryParams == null || this.queryParams.isEmpty()) {
             this.queryParams = new ArrayList<BasicNameValuePair>();
         }
         this.queryParams.add(new BasicNameValuePair(param, value));
@@ -416,7 +416,7 @@ public final class URIBuilder {
      * </p>
      */
     public URIBuilder setParameter(final String param, final String value) {
-        if (this.queryParams == null) {
+        if (this.queryParams == null || this.queryParams.isEmpty()) {
             this.queryParams = new ArrayList<BasicNameValuePair>();
         }
         if (!this.queryParams.isEmpty()) {
