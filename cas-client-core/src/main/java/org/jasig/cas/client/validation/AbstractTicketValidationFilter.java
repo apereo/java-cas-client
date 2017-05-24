@@ -20,17 +20,41 @@ package org.jasig.cas.client.validation;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+
 import javax.net.ssl.HostnameVerifier;
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.Protocol;
+import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
+import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
+import org.jasig.cas.client.util.XmlUtils;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.wavity.plan.api.PlanProvider;
+import com.wavity.plan.api.deployment.DeploymentPlan;
+import com.wavity.plan.api.service.ServiceType;
 
 /**
  * The filter that handles all the work of validating ticket requests.
@@ -218,7 +242,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     response.sendRedirect(constructServiceUrl(request, response));
                     return;
                 }
-            } catch (final TicketValidationException e) {
+            } catch (final TicketValidationException | IOException | RuntimeException e) {
                 logger.debug(e.getMessage(), e);
 
                 onFailedValidation(request, response);
@@ -227,14 +251,207 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                     throw new ServletException(e);
                 }
 
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+                //We don't want to fail on the server so move forward by reloading.
+                response.sendRedirect(constructServiceUrl(request, response));
+                //response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 
                 return;
             }
         }
+        
+        // Check if there is an access token in the request header.
+        if (!(checkAccessToken(request, response))) {
+        	return;
+        }
 
         filterChain.doFilter(request, response);
+    
+    }
+    
+    /**
+     * Gets the REST end point from deployment plan.
+     * 
+     * @param tenant the string of tenant ID
+     * @return the string of end point.
+     */
+    private String getPlanEndPointServerName(final String tenant) {
+    	PlanProvider provider = PlanProvider.getInstance();
+    	DeploymentPlan deploymentPlan = provider.getDeploymentPlan();
+    	CommonUtils.assertNotNull(deploymentPlan, "Deployment plan can't be null");
+    	final String endPoint = deploymentPlan.getServiceRestEndPoint(ServiceType.cas, tenant);
+    	CommonUtils.assertNotNull(endPoint, "End point can't be null");
+    	try {
+			final URL url = new URL(endPoint);
+			final StringBuilder builder = new StringBuilder();
+			builder.append(url.getProtocol())
+				.append("://")
+				.append(url.getHost());
+			return builder.toString();
+		} catch (MalformedURLException e) {
+			logger.error(e.getMessage(), e);
+		}
+    	return null;
+    }
+    
+    /**
+     * Check if there is an access token in the request header, and if is do the same as the ticket does.
+     * 
+     * @param request the object of HttpServletRequest.
+     * @param response the object of HttpServletResponse.
+     * @return whether it needs to go the the next filter or not.
+     * @throws IOException
+     * @throws ServletException
+     */
+    private final boolean checkAccessToken(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+		final String authHeader = request.getHeader("Authorization");
+		if (!CommonUtils.isBlank(authHeader) && authHeader.toLowerCase().startsWith("Bearer".toLowerCase() + ' ')) {
+			final String accessToken = authHeader.substring("Bearer".length() + 1);
+			logger.debug("{}: {}", "access token", accessToken);
 
+			try {
+				logger.debug("Retrieving response from server.");
+				String serverName = request.getServerName();
+				int pos = serverName.indexOf(".");
+				logger.debug("Tenant ID {}", serverName.substring(0, pos));
+				if (pos > 0 && pos < serverName.length() - 1) {
+					serverName = getPlanEndPointServerName(serverName.substring(0, pos));
+				}
+				CommonUtils.assertNotNull(serverName, "Server name can't be null");
+				// The expected server name is as http://%s.wavity.local.
+				logger.debug("Server name {}", serverName);
+				StringBuilder builder = new StringBuilder();
+				logger.debug("Request scheme {}", request.getScheme());
+				// The request scheme should be HTTP since it's used internally.
+				builder
+					.append(serverName)
+					.append(":").append(request.getServerPort());
+				
+				// Create a variable to use it when requesting PT below.
+				final String serverNamePort = builder.toString();
+				logger.debug("Server name with port {}", serverNamePort);
+				builder
+					.append("/auth/oauth2.0/profile?access_token=")
+					.append(accessToken);
+				logger.debug("CAS Profile URL {}", builder.toString());
+				String serverResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING));
+				
+				logger.debug("CAS Profile Server response: {}", serverResponse);
+
+				final JsonParser parser = new JsonParser();
+				final JsonReader reader = new JsonReader(new StringReader(serverResponse.trim()));
+				reader.setLenient(true);
+				final JsonObject responseFromServer = (JsonObject) parser.parse(reader);
+				Iterator<Entry<String, JsonElement>> itr = responseFromServer.entrySet().iterator();
+
+				// getting an assertion
+				final Assertion assertion;
+				itr = responseFromServer.entrySet().iterator();
+				String principal = null;
+				final Map<String, Object> attributes = new HashMap<String, Object>();
+				String tgtId = null;
+				while (itr.hasNext()) {
+					Entry<String, JsonElement> entry = itr.next();
+					if (entry.getKey().equalsIgnoreCase("error")) {
+						throw new TicketValidationException(entry.getValue().getAsString());
+					}
+					if (entry.getKey().equalsIgnoreCase("id")) {
+						principal = entry.getValue().getAsString();
+					} else if (entry.getKey().equalsIgnoreCase("attributes")) {
+						final JsonArray attributesArray = entry.getValue().getAsJsonArray();
+						final Iterator<JsonElement> attrItr = attributesArray.iterator();
+						while (attrItr.hasNext()) {
+							JsonObject jo = (JsonObject) attrItr.next();
+							final Iterator<Entry<String, JsonElement>> joItr = jo.entrySet().iterator();
+							while (joItr.hasNext()) {
+								Entry<String, JsonElement> attr = joItr.next();
+								attributes.put(attr.getKey(), attr.getValue().getAsString());
+							}
+						}
+					} else if (entry.getKey().equalsIgnoreCase("tgtId")) {
+						tgtId = entry.getValue().getAsString();
+					}
+				}
+				
+				logger.debug("Principal {}", principal);
+				
+				// Use ticket granting ticket to retrieve a service ticket.
+				CommonUtils.assertNotNull(tgtId, "Ticket granting ticket can't be null");
+				logger.debug("TGT ID {}", tgtId);
+				String requestUri = String.format("/auth/v1/tickets/%s", tgtId);
+				builder = new StringBuilder();
+				builder
+					.append(serverNamePort)
+					.append(requestUri);
+				final Map<String, String> postParams = new HashMap<String, String>();
+				postParams.put("service", request.getRequestURL().toString());
+				logger.debug("TGT request URL {}", requestUri);
+				final String serviceTicket = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), null, postParams);
+				CommonUtils.assertNotNull(serviceTicket, "Service ticket can't be null");
+				logger.debug("Service ticket {}", serviceTicket);
+				builder = new StringBuilder();
+				requestUri = String
+						.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", serviceTicket, request.getRequestURL(), 
+								getString(ConfigurationKeys.PROXY_CALLBACK_URL));
+				builder
+					.append(serverNamePort)
+					.append(requestUri);
+				
+				// Create a map for header information and put an extra command to remove the service ticket after PT is created.
+				final Map<String, String> headers = new HashMap<String, String>();
+				headers.put("x-command", "rm-st");
+				logger.debug("Proxy validate URL {}", builder.toString());
+				final String validateResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
+				logger.debug("Proxy validate response {}", validateResponse);
+				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(validateResponse, "proxyGrantingTicket");
+				logger.debug("Proxy Granting Ticket IOU {}", proxyGrantingTicketIou);
+				final String proxyGrantingTicket;
+				
+				// Cast this class to use the method implemented in the parent class.
+				final Cas30ProxyTicketValidator validator = (Cas30ProxyTicketValidator) this.ticketValidator;
+		        if (CommonUtils.isBlank(proxyGrantingTicketIou) || validator.getProxyGrantingTicketStorage() == null) {
+		            proxyGrantingTicket = null;
+		        } else {
+		            proxyGrantingTicket = validator.getProxyGrantingTicketStorage().retrieve(proxyGrantingTicketIou);
+		        }
+		        
+		        CommonUtils.assertNotNull(proxyGrantingTicket, "Proxy Granting Ticket cannot be null");
+		        logger.debug("Proxy Granting Ticket {}", proxyGrantingTicket);
+		        
+				if (principal == null || CommonUtils.isBlank(principal)) {
+					throw new TicketValidationException("No principal was found in the response from the CAS server.");
+				}
+				assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes,
+			            proxyGrantingTicket, validator.getCas20ProxyRetriever()));
+				request.setAttribute(CONST_CAS_ASSERTION, assertion);
+
+				if (this.useSession) {
+					request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
+				}
+
+				if (this.redirectAfterValidation) {
+					logger.debug("Redirecting after successful ticket validation.");
+					response.sendRedirect(constructServiceUrl(request, response));
+					return false;
+				}
+			} catch (final TicketValidationException e) {
+				logger.debug(e.getMessage(), e);
+
+				onFailedValidation(request, response);
+
+				if (this.exceptionOnValidationFailure) {
+					throw new ServletException(e);
+				}
+
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+
+				return false;
+			}
+
+		}
+		return true;
     }
 
     public final void setTicketValidator(final TicketValidator ticketValidator) {

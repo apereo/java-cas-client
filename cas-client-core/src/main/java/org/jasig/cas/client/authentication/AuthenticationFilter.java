@@ -19,10 +19,16 @@
 package org.jasig.cas.client.authentication;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -56,6 +62,16 @@ public class AuthenticationFilter extends AbstractCasFilter {
      * The URL to the CAS Server login.
      */
     private String casServerLoginUrl;
+    
+    /**
+     * The first part of CAS server login URL domain.
+     */
+    private String casServerLoginUrlFirstPart;
+    
+    /**
+     * The last part of CAS Server login URL domain.
+     */
+    private String casServerLoginUrlLastPart;
 
     /**
      * Whether to send the renew request or not.
@@ -75,6 +91,16 @@ public class AuthenticationFilter extends AbstractCasFilter {
     
     private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
             new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
+    
+    /**
+     * The constant representing the first part of CAS login URL.
+     */
+    public static final String CAS_LOGIN_URL_FIRST_PART = "first_part";
+    
+    /**
+     * The constant representing the last part of CAS login URL.
+     */
+    public static final String CAS_LOGIN_URL_LAST_PART = "last_part";
     
     static {
         PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);
@@ -96,6 +122,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             setCasServerLoginUrl(getString(ConfigurationKeys.CAS_SERVER_LOGIN_URL));
             setRenew(getBoolean(ConfigurationKeys.RENEW));
             setGateway(getBoolean(ConfigurationKeys.GATEWAY));
+            setCasServerLoginUrlDomainParts(getCasLoginUrlDomainParts(this.casServerLoginUrl));
                        
             final String ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
             final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
@@ -134,6 +161,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public void init() {
         super.init();
         CommonUtils.assertNotNull(this.casServerLoginUrl, "casServerLoginUrl cannot be null.");
+        CommonUtils.assertNotNull(this.casServerLoginUrlFirstPart, "casServerLoginUrlFirstPart cannot be null.");
+        CommonUtils.assertNotNull(this.casServerLoginUrlLastPart, "casServerLoginUrlLastPart cannot be null.");
     }
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
@@ -165,8 +194,17 @@ public class AuthenticationFilter extends AbstractCasFilter {
             return;
         }
 
-        final String modifiedServiceUrl;
-
+        final String authHeader = request.getHeader("Authorization");
+        if (!CommonUtils.isBlank(authHeader)
+                && authHeader.toLowerCase().startsWith("Bearer".toLowerCase() + ' ')) {
+        	final String accessToken = authHeader.substring("Bearer".length() + 1);
+            logger.debug("{}: {}", "access token", accessToken);
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        String modifiedServiceUrl;
+        
         logger.debug("no ticket and no assertion found");
         if (this.gateway) {
             logger.debug("setting gateway attribute in session");
@@ -174,11 +212,36 @@ public class AuthenticationFilter extends AbstractCasFilter {
         } else {
             modifiedServiceUrl = serviceUrl;
         }
-
+        
         logger.debug("Constructed service url: {}", modifiedServiceUrl);
+        
+        // To get the domain from the service URL.
+        URL url = new URL(modifiedServiceUrl);
+        final String newServiceUrlHost = url.getHost();
+        final String newServiceUrlDomain = newServiceUrlHost.substring(newServiceUrlHost.lastIndexOf(".") + 1);
+        
+        // To use the instance variable as is if domain is not different.
+        String modifiedCasServerLoginUrl = this.casServerLoginUrl;
+        
+        // If one domain is different from the other, replace it with the one in the service URL
+        // since if it's different logout doesn't work well.
+        if (!newServiceUrlDomain.equalsIgnoreCase(casServerLoginUrlLastPart)) {
+        	url = new URL(modifiedCasServerLoginUrl);
+        	final String casServerLoginUrlHost = String.format("%s.%s", casServerLoginUrlFirstPart, newServiceUrlDomain);
+        	modifiedCasServerLoginUrl = CommonUtils.constructNewUrl(url.getProtocol(), casServerLoginUrlHost, url.getPort(), url.getPath());
+        }
 
-        final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
+        //Modify a service url protocol from http to https
+        url = new URL(modifiedServiceUrl);
+        if(url.getProtocol().equalsIgnoreCase("http")) {
+        	modifiedServiceUrl = CommonUtils.constructNewUrl("https", url.getHost(), url.getPort(), url.getFile());
+        }
+        
+        final String urlToRedirectTo = CommonUtils.constructRedirectUrl(modifiedCasServerLoginUrl,
                 getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
+        
+        // Set header values for clients to handle AJAX response.
+        response.addHeader("Cas-Server-Login-Url", modifiedCasServerLoginUrl);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
         this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
@@ -195,8 +258,21 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void setCasServerLoginUrl(final String casServerLoginUrl) {
         this.casServerLoginUrl = casServerLoginUrl;
     }
+    
+    public void setCasServerLoginUrlDomainParts(final Map<String, String> domainParts) {
+    	setCasServerLoginUrlFirstPart(domainParts.get(CAS_LOGIN_URL_FIRST_PART));
+    	setCasServerLoginUrlLastPart(domainParts.get(CAS_LOGIN_URL_LAST_PART));
+	}
+    
+	public void setCasServerLoginUrlFirstPart(final String casServerLoginUrlFirstPart) {
+		this.casServerLoginUrlFirstPart = casServerLoginUrlFirstPart;
+	}
 
-    public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
+	public void setCasServerLoginUrlLastPart(final String casServerLoginUrlLastPart) {
+		this.casServerLoginUrlLastPart = casServerLoginUrlLastPart;
+	}
+
+	public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
         this.gatewayStorage = gatewayStorage;
     }
         
@@ -212,6 +288,26 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final String requestUri = urlBuffer.toString();
         return this.ignoreUrlPatternMatcherStrategyClass.matches(requestUri);
     }
+    
+    /**
+     * Split the parts of the domain and returns the divided two parts.
+     * 
+     * @param urlValue the string of URL.
+     * @return the string of the last part of domain.
+     */
+    private Map<String, String> getCasLoginUrlDomainParts(String urlValue) {
+		try {
+			URL url = new URL(urlValue);
+			String urlHost = url.getHost();
+			final int lastIndex = urlHost.lastIndexOf(".");
+			final Map<String, String> domainParts = new HashMap<String, String>();
+			domainParts.put(AuthenticationFilter.CAS_LOGIN_URL_FIRST_PART, urlHost.substring(0, lastIndex));
+			domainParts.put(AuthenticationFilter.CAS_LOGIN_URL_LAST_PART, urlHost.substring(lastIndex + 1));
+			return domainParts;
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
     public final void setIgnoreUrlPatternMatcherStrategyClass(
             final UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass) {
