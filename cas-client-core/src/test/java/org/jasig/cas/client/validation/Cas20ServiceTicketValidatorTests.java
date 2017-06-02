@@ -19,8 +19,11 @@
 package org.jasig.cas.client.validation;
 
 import static org.junit.Assert.*;
+
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
@@ -60,6 +63,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         this.ticketValidator.setProxyGrantingTicketStorage(getProxyGrantingTicketStorage());
         this.ticketValidator.setProxyRetriever(getProxyRetriever());
         this.ticketValidator.setRenew(true);
+        Thread.sleep( 2000 );
     }
 
     private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
@@ -99,7 +103,6 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
 
         final Assertion assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
-
     }
 
     @Test

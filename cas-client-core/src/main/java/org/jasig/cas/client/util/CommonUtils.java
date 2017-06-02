@@ -18,12 +18,19 @@
  */
 package org.jasig.cas.client.util;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -698,5 +705,25 @@ public final class CommonUtils {
         } catch (final NumberFormatException nfe) {
             return defaultValue;
         }
+    }
+    
+    /**
+     * Counts how many times the character appears in the String. A null or empty String input returns 0.
+     *
+     * @param str  the String to check, may be null
+     * @param character  the character to count
+     * @return the number of occurrences, 0 if either String is null
+     */
+    public static int countMatches(final String str, char character) {
+        if (isEmpty(str)) {
+            return 0;
+        }
+        int count = 0;
+        for (int index = 0; index < str.length(); index++ ) {
+            if (character == str.charAt( index )) {
+                count++;
+            }
+        }
+        return count;
     }
 }
