@@ -52,6 +52,7 @@ public final class Jira44CasAuthenticator extends JiraSeraphAuthenticator {
         Principal existingUser = getUserFromSession(request);
         if (existingUser != null) {
             LOGGER.debug("Session found; user already logged in.");
+            return existingUser;
         }
 
         final HttpSession session = request.getSession();
