@@ -1,5 +1,7 @@
 package org.jasig.cas.client.validation.json;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
@@ -17,9 +19,11 @@ import java.util.Map;
  * @author Misagh Moayyed
  */
 final class TicketValidationJsonResponse {
-    private CasServiceResponseAuthentication serviceResponse;
+    private final CasServiceResponseAuthentication serviceResponse;
 
-    public void setServiceResponse(final CasServiceResponseAuthentication serviceResponse) {
+    @JsonCreator
+    public TicketValidationJsonResponse(@JsonProperty("serviceResponse")
+                                        final CasServiceResponseAuthentication serviceResponse) {
         this.serviceResponse = serviceResponse;
     }
 
@@ -51,23 +55,24 @@ final class TicketValidationJsonResponse {
     }
 
     static class CasServiceResponseAuthentication {
-        private CasServiceResponseAuthenticationFailure authenticationFailure;
-        private CasServiceResponseAuthenticationSuccess authenticationSuccess;
+        private final CasServiceResponseAuthenticationFailure authenticationFailure;
+        private final CasServiceResponseAuthenticationSuccess authenticationSuccess;
+
+        @JsonCreator
+        public CasServiceResponseAuthentication(@JsonProperty("authenticationFailure")
+                                                final CasServiceResponseAuthenticationFailure authenticationFailure,
+                                                @JsonProperty("authenticationSuccess")
+                                                final CasServiceResponseAuthenticationSuccess authenticationSuccess) {
+            this.authenticationFailure = authenticationFailure;
+            this.authenticationSuccess = authenticationSuccess;
+        }
 
         public CasServiceResponseAuthenticationFailure getAuthenticationFailure() {
             return this.authenticationFailure;
         }
 
-        public void setAuthenticationFailure(final CasServiceResponseAuthenticationFailure authenticationFailure) {
-            this.authenticationFailure = authenticationFailure;
-        }
-
         public CasServiceResponseAuthenticationSuccess getAuthenticationSuccess() {
             return this.authenticationSuccess;
-        }
-
-        public void setAuthenticationSuccess(final CasServiceResponseAuthenticationSuccess authenticationSuccess) {
-            this.authenticationSuccess = authenticationSuccess;
         }
     }
 

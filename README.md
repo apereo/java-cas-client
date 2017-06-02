@@ -348,7 +348,8 @@ accept proxy tickets. Supports all configurations that are available for `Cas20P
 
 #### org.jasig.cas.client.validation.json.Cas30JsonProxyReceivingTicketValidationFilter
 Indentical to `Cas30ProxyReceivingTicketValidationFilter`, yet the filter is able to accept validation responses from CAS
-that are formatted as JSON per guidelines laid out by the CAS protocol. See the [protocol documentation](https://apereo.github.io/cas/)
+that are formatted as JSON per guidelines laid out by the CAS protocol. 
+See the [protocol documentation](https://apereo.github.io/cas/5.1.x/protocol/CAS-Protocol-Specification.html)
 for more info.
 
 ##### Proxy Authentication vs. Distributed Caching
