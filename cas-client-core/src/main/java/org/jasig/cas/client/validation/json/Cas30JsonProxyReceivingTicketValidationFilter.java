@@ -16,22 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jasig.cas.client.validation;
+package org.jasig.cas.client.validation.json;
+
+import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
 
 /**
- * Service tickets validation service for the CAS protocol v3.
+ * Creates either a Cas30JsonServiceTicketValidator to validate tickets.
  *
- * @author Jerome Leleu
- * @since 3.4.0
+ * @author Misagh Moayyed
  */
-public class Cas30ServiceTicketValidator extends Cas20ServiceTicketValidator {
+public class Cas30JsonProxyReceivingTicketValidationFilter extends Cas30ProxyReceivingTicketValidationFilter {
 
-    public Cas30ServiceTicketValidator(final String casServerUrlPrefix) {
-        super(casServerUrlPrefix);
-    }
-
-    @Override
-    protected String getUrlSuffix() {
-        return "p3/serviceValidate";
+    public Cas30JsonProxyReceivingTicketValidationFilter() {
+        super();
+        this.defaultServiceTicketValidatorClass = Cas30JsonServiceTicketValidator.class;
+        this.defaultProxyTicketValidatorClass = Cas30JsonProxyTicketValidator.class;
     }
 }

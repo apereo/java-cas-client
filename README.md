@@ -342,7 +342,15 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
 #### org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
-Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
+Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, 
+a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not 
+accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
+
+#### org.jasig.cas.client.validation.json.Cas30JsonProxyReceivingTicketValidationFilter
+Indentical to `Cas30ProxyReceivingTicketValidationFilter`, yet the filter is able to accept validation responses from CAS
+that are formatted as JSON per guidelines laid out by the CAS protocol. 
+See the [protocol documentation](https://apereo.github.io/cas/5.1.x/protocol/CAS-Protocol-Specification.html)
+for more info.
 
 ##### Proxy Authentication vs. Distributed Caching
 The client has support for clustering and distributing the TGT state among application nodes that are behind a load balancer. In order to do so, the parameter needs to be defined as such for the filter.

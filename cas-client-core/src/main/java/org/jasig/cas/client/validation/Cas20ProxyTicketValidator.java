@@ -50,9 +50,10 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         return "proxyValidate";
     }
 
+    @Override
     protected void customParseResponse(final String response, final Assertion assertion)
             throws TicketValidationException {
-        final List<String> proxies = XmlUtils.getTextForElements(response, "proxy");
+        final List<String> proxies = parseProxiesFromResponse(response);
 
         if (proxies == null) {
             throw new InvalidProxyChainTicketValidationException(
@@ -61,7 +62,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
             );
         }
         // this means there was nothing in the proxy chain, which is okay
-        if ((this.allowEmptyProxyChain && proxies.isEmpty())) {
+        if (this.allowEmptyProxyChain && proxies.isEmpty()) {
             logger.debug("Found an empty proxy chain, permitted by client configuration");
             return;
         }
@@ -83,6 +84,10 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
                 Arrays.toString(proxiedList), this.allowedProxyChains);
 
         throw new InvalidProxyChainTicketValidationException("Invalid proxy chain: " + proxies.toString());
+    }
+
+    protected List<String> parseProxiesFromResponse(final String response) {
+        return XmlUtils.getTextForElements(response, "proxy");
     }
 
     public final void setAcceptAnyProxy(final boolean acceptAnyProxy) {
