@@ -77,15 +77,15 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         return "serviceValidate";
     }
 
-    protected final Assertion parseResponseFromServer(final String response) throws TicketValidationException {
-        final String error = XmlUtils.getTextForElement(response, "authenticationFailure");
+    protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
+        final String error = parseAuthenticationFailureFromResponse(response);
 
         if (CommonUtils.isNotBlank(error)) {
             throw new TicketValidationException(error);
         }
 
-        final String principal = XmlUtils.getTextForElement(response, "user");
-        final String proxyGrantingTicketIou = XmlUtils.getTextForElement(response, "proxyGrantingTicket");
+        final String principal = parsePrincipalFromResponse(response);
+        final String proxyGrantingTicketIou = parseProxyGrantingTicketFromResponse(response);
 
         final String proxyGrantingTicket;
         if (CommonUtils.isBlank(proxyGrantingTicketIou) || this.proxyGrantingTicketStorage == null) {
@@ -111,6 +111,18 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         customParseResponse(response, assertion);
 
         return assertion;
+    }
+
+    protected String parseProxyGrantingTicketFromResponse(final String response) {
+        return XmlUtils.getTextForElement(response, "proxyGrantingTicket");
+    }
+
+    protected String parsePrincipalFromResponse(final String response) {
+        return XmlUtils.getTextForElement(response, "user");
+    }
+
+    protected String parseAuthenticationFailureFromResponse(final String response) {
+        return XmlUtils.getTextForElement(response, "authenticationFailure");
     }
 
     /**
