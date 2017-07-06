@@ -26,9 +26,9 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-	<groupId>org.jasig.cas.client</groupId>
-	<artifactId>cas-client-core</artifactId>
-	<version>${java.cas.client.version}</version>
+    <groupId>org.jasig.cas.client</groupId>
+    <artifactId>cas-client-core</artifactId>
+    <version>${java.cas.client.version}</version>
 </dependency>
 ```
 
@@ -102,7 +102,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 </dependency>
 ```
 
-- Tomcat 8 is provided by this dependency:
+- Tomcat 8.0.x is provided by this dependency:
 
 ```xml
 <dependency>
@@ -111,6 +111,17 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
    <version>${java.cas.client.version}</version>
 </dependency>
 ```
+
+- Tomcat 8.5.x is provided by this dependency:
+
+```xml
+<dependency>
+   <groupId>org.jasig.cas.client</groupId>
+   <artifactId>cas-client-integration-tomcat-v85</artifactId>
+   <version>${java.cas.client.version}</version>
+</dependency>
+```
+
 <a name="configurtion"></a>
 ## Configuration
 
@@ -786,17 +797,17 @@ The `WebAuthenticationFilter` performs these operations for the JBoss AS contain
 ```xml
 ...
 <filter>
-	<filter-name>CASWebAuthenticationFilter</filter-name>
-	<filter-class>org.jasig.cas.client.jboss.authentication.WebAuthenticationFilter</filter-class>
+    <filter-name>CASWebAuthenticationFilter</filter-name>
+    <filter-class>org.jasig.cas.client.jboss.authentication.WebAuthenticationFilter</filter-class>
 </filter>
 
 <filter>
-	<filter-name>CASAuthenticationFilter</filter-name>
-	<filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
-	<init-param>
-	  <param-name>casServerLoginUrl</param-name>
-	  <param-value>https://cas.example.com/cas/login</param-value>
-	</init-param>
+    <filter-name>CASAuthenticationFilter</filter-name>
+    <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
+    <init-param>
+      <param-name>casServerLoginUrl</param-name>
+      <param-value>https://cas.example.com/cas/login</param-value>
+    </init-param>
 </filter>
 ...
 <!-- one filter-mapping for each filter as seen in the examples above -->
@@ -848,7 +859,12 @@ CAS authentication support for Tomcat is based on the Tomcat-specific Realm comp
 
 <a name="component-overview"></a>
 ### Component Overview
-In the following discussion of components, only the Tomcat 8.x components are mentioned. The Tomcat 7.0.x and 6.0.x components have exactly the same name, but **are in the tomcat.v7 and tomcat.v6 packages**, e.g. `org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator` or `org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator`.
+In the following discussion of components, only the Tomcat 8.x components are mentioned. Tomcat 8.0.x components are housed inside
+`org.jasig.cas.client.tomcat.v8` while Tomcat 8.5.x components are inside `org.jasig.cas.client.tomcat.v85`. You should be able to use
+the same exact configuration between the two modules provided package names are adjusted for each release. 
+
+The Tomcat 7.0.x and 6.0.x components have exactly the same name, but **are in the tomcat.v7 and tomcat.v6 packages**, e.g. 
+`org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator` or `org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator`.
 
 <a name="authenticators"></a>
 #### Authenticators
