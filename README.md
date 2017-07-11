@@ -7,7 +7,7 @@ This is the official home of the Java Apereo CAS client. The client consists of 
 All client artifacts are published to Maven central. Depending on functionality, applications will need include one or more of the listed dependencies in their configuration.
 
 <a name="build"></a>
-## Build [![Build Status](https://travis-ci.org/Jasig/java-cas-client.png?branch=master)](https://travis-ci.org/Jasig/java-cas-client)
+## Build [![Build Status](https://travis-ci.org/apereo/java-cas-client.png?branch=master)](https://travis-ci.org/apereo/java-cas-client)
 
 ```bash
 git clone git@github.com:apereo/java-cas-client.git
