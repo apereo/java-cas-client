@@ -296,6 +296,18 @@ public class URIBuilderTests {
     }
 
     @Test
+    public void parseParamsWithEncodedEqualSign() {
+
+        URIBuilder builder = new URIBuilder()
+                .digestURI(URI.create("http://apache.org/?test=foo%3dbar"));
+        List<URIBuilder.BasicNameValuePair> params = builder.getQueryParams();
+
+        assertEquals(params.size(), 1);
+        assertEquals(params.get(0).getName(), "test");
+        assertEquals(params.get(0).getValue(), "foo=bar");
+    }
+
+    @Test
     public void constructFromUriAndBack() {
         URI uri = URI.create("http://apache.org/foo/bar?foo=bar&a=b&c=d&y=z&foo=zoo#foo");
         URIBuilder builder = new URIBuilder(uri);
