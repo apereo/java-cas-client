@@ -289,10 +289,22 @@ public class URIBuilderTests {
         List<URIBuilder.BasicNameValuePair> list = builder.getQueryParams();
         for (URIBuilder.BasicNameValuePair pair : list) {
             assertEquals(pair.getName(), "foo");
-            assertTrue(pair.getValue().equals("three") || pair.getValue().equals("bar"));
+            assertTrue(pair.getValue().equals("three") || pair.getValue().equals("bar&baz"));
         }
         assertEquals(list.size(), 2);
         assertEquals("blah", builder.getFragment());
+    }
+
+    @Test
+    public void parseParamsWithEncodedEqualSignOrAndSign() {
+
+        URIBuilder builder = new URIBuilder()
+                .digestURI(URI.create("http://apache.org/?foo=bar%3dbaz&foo=bar%26baz"));
+        List<URIBuilder.BasicNameValuePair> params = builder.getQueryParams();
+
+        assertEquals(params.size(), 2);
+        assertEquals(params.get(0).getValue(), "bar=baz");
+        assertEquals(params.get(1).getValue(), "bar&baz");
     }
 
     @Test
