@@ -280,7 +280,7 @@ public class URIBuilderTests {
     @Test
     public void parse() {
         URIBuilder builder = new URIBuilder()
-                .digestURI(URI.create("http://apache.org/shindig?foo=bar%26baz&foo=three#blah"));
+                .digestURI(URI.create("http://apache.org/shindig?foo=bar%26baz&foo=three%3Dbaz#blah"));
 
         assertEquals("http", builder.getScheme());
         assertEquals("apache.org", builder.getHost());
@@ -288,8 +288,8 @@ public class URIBuilderTests {
 
         List<URIBuilder.BasicNameValuePair> list = builder.getQueryParams();
         for (URIBuilder.BasicNameValuePair pair : list) {
-            assertEquals(pair.getName(), "foo");
-            assertTrue(pair.getValue().equals("three") || pair.getValue().equals("bar"));
+            assertEquals("foo", pair.getName());
+            assertTrue(pair.getValue().equals("three=baz") || pair.getValue().equals("bar&baz"));
         }
         assertEquals(list.size(), 2);
         assertEquals("blah", builder.getFragment());
