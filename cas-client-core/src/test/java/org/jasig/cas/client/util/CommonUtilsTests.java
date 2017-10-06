@@ -181,20 +181,6 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
 
-    public void testConstructServiceUrlWithEncodedParamsSaml() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
-        request.setScheme("https");
-        request.setSecure(true);
-        request.setQueryString("TARGET%3Dthis%26SAMLart%3Dthat%26custom%3Dcustom");
-
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , false);
-
-        assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
-    }
-
     public void testConstructServiceUrlWithNoServiceParametersPassed() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
@@ -207,20 +193,6 @@ public final class CommonUtilsTests extends TestCase {
                 Protocol.SAML11.getArtifactParameterName() , true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
-    }
-
-    public void testConstructServiceUrlWithEncodedParams2Saml() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
-        request.setScheme("https");
-        request.setSecure(true);
-        request.setQueryString("TARGET%3Dthis%26SAMLart%3Dthat%26custom%3Dcustom%20value%20here%26another%3Dgood");
-
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , true);
-
-        assertEquals("https://www.myserver.com/hello/hithere/?custom=custom+value+here&another=good", constructedUrl);
     }
 
     public void testConstructServiceUrlWithoutEncodedParamsSamlAndNoEncoding() {
