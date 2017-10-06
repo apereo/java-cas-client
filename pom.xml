@@ -250,7 +250,7 @@
 
     <modules>
         <module>cas-client-core</module>
-        <module>cas-client-integration-atlassian</module>
+        <!--<module>cas-client-integration-atlassian</module>-->
         <module>cas-client-integration-jboss</module>
         <module>cas-client-support-distributed-ehcache</module>
         <module>cas-client-support-distributed-memcached</module>
