@@ -20,8 +20,10 @@ package org.jasig.cas.client.tomcat;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.util.CommonUtils;
 
@@ -46,11 +48,23 @@ public class AssertionCasRealmDelegate implements CasRealm {
     /** Name of the role attribute in the principal's attributes */
     private String roleAttributeName = DEFAULT_ROLE_NAME;
 
+    /** Roles to add to ever authenticated user */
+    private List<String> commonRoles = new ArrayList<String>();
+
     /**
      * @param name Name of the attribute in the principal that contains role data.
      */
     public void setRoleAttributeName(final String name) {
         this.roleAttributeName = name;
+    }
+
+    /**
+     * @param names Comma delimited list of role names to add to all authenticated users.
+     */
+    public void setCommonRoles(final String names) {
+        this.commonRoles.clear();
+        final List<String> list = Arrays.asList(names.split(","));
+        this.commonRoles.addAll(list);
     }
 
     /** {@inheritDoc} */
@@ -89,16 +103,21 @@ public class AssertionCasRealmDelegate implements CasRealm {
             return Collections.emptyList();
         }
 
+        final List<String> roles = new ArrayList<String>();
+        roles.addAll(this.commonRoles);
+
         final Object attributes = ((AttributePrincipal) p).getAttributes().get(this.roleAttributeName);
 
         if (attributes == null) {
-            return Collections.emptyList();
+            return roles;
         }
 
         if (attributes instanceof Collection<?>) {
-            return (Collection<String>) attributes;
+            roles.addAll((Collection<String>)attributes);
+            return roles;
         }
 
-        return Arrays.asList(attributes.toString());
+        roles.add(attributes.toString());
+        return roles;
     }
 }
