@@ -44,13 +44,31 @@ import org.slf4j.LoggerFactory;
  * {@link CasRealm} implementation with users and roles stored in relational
  * tables accessible through a javax.sql.DataSource. This implementation of
  * Realm has the advantage that users and roles can be dynamically defined at
- * runtime updating the database tables.
- * 
+ * runtime updating the database tables.<br/>
  * <br/>
- * The tables must have the minimal characteristics listed below. Chances are
- * that the DB might already have similar tables: just make sure it has the
- * required columns. The names of the tables and columns are configurable via
- * the attributes of the {@code<Realm>} tag.
+ * There are situations where users have different privileges in separate webapps
+ * and their roles need to be assigned without having to redeploy the war files
+ * that contain user properties configuration files.<br/>
+ * <br/>
+ * For example, user "Tom" might have the following privileges:<br/>
+ * - "user"   in webapp "payroll"<br/>
+ * - "master" in webapp "sales"<br/>
+ * and user "Jimmy" might have had some privilege in different webapps, but 
+ * he resigned so his account must be disabled, since it's desirable to keep record
+ * that he worked for the company.<br/>
+ * <br/>
+ * If the above webapps have its data stored in different database schema,
+ * each one of them might have users and roles information stored in
+ * dedicated tables.<br/>  
+ * <br/>
+ * In this scenario, the authentication mechanism should be able to access such
+ * information in order to properly determine if users are granted access to
+ * the webapps and what roles they have.<br/>
+ * <br/>
+ * For these reasons, tables should have some minimal characteristics, that are
+ * listed below. Chances are that the DB might already have similar tables. For
+ * this class to work correctly they must have few required columns. The names of
+ * the tables and columns are configurable via the attributes of the {@code<Realm>} tag.
  * 
  * <pre>
  * {@code
@@ -129,7 +147,7 @@ public class SQLDataSourceCasRealmDelegate implements CasRealm
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
-     * Qualified name of the jndi resource pointing to the java.sql.DataSource
+     * Qualified name of the jndi resource pointing to the javax.sql.DataSource
      * containing users and roles. It must be in the form
      * "java:comp/env/jdbc/dataSourceName".
      */
