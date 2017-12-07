@@ -49,7 +49,7 @@ final class TicketValidationJsonResponse {
                     proxyGrantingTicket, proxyRetriever);
             assertion = new AssertionImpl(attributePrincipal);
         } else {
-            assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
+            assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes), attributes);
         }
         return assertion;
     }
