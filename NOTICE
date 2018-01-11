@@ -15,7 +15,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 
-This project includes:
+This CAS Java Client project includes:
   AOP alliance under Public Domain
   Apache Log4j under The Apache Software License, Version 2.0
   Apache XML Security under The Apache Software License, Version 2.0
@@ -58,4 +58,3 @@ This project includes:
   spring-test under The Apache Software License, Version 2.0
   Spymemcached under The Apache Software License, Version 2.0
   tomcat-catalina under Apache License, Version 2.0
-
