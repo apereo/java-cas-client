@@ -19,6 +19,7 @@
 package org.jasig.cas.client.integration.atlassian;
 
 import com.atlassian.jira.security.login.JiraSeraphAuthenticator;
+import com.atlassian.seraph.auth.AuthenticationContextAwareAuthenticator;
 import com.atlassian.seraph.auth.AuthenticatorException;
 import com.atlassian.seraph.auth.LoginReason;
 import java.security.Principal;
@@ -40,6 +41,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision$ $Date$
  * @since 3.3.0
  */
+@AuthenticationContextAwareAuthenticator
 public final class Jira44CasAuthenticator extends JiraSeraphAuthenticator {
 
     /** Jira43CasAuthenticator.java */
@@ -52,6 +54,7 @@ public final class Jira44CasAuthenticator extends JiraSeraphAuthenticator {
         Principal existingUser = getUserFromSession(request);
         if (existingUser != null) {
             LOGGER.debug("Session found; user already logged in.");
+            return existingUser;
         }
 
         final HttpSession session = request.getSession();

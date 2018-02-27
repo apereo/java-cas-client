@@ -111,14 +111,14 @@ public final class URIBuilder {
             final Charset utf8 = Charset.forName("UTF-8");
             if (query != null && !query.isEmpty()) {
                 final List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
-                final String queryValue = URLDecoder.decode(query, utf8.name());
-                final String[] parametersArray = queryValue.split("&");
+                final String[] parametersArray = query.split("&");
 
                 for (final String parameter : parametersArray) {
                     final String[] parameterCombo = parameter.split("=");
                     if (parameterCombo.length >= 1) {
-                        list.add(new BasicNameValuePair(parameterCombo[0],
-                                parameterCombo.length >= 2 ? parameterCombo[1] : null));
+                        final String key = URLDecoder.decode(parameterCombo[0], utf8.name());
+                        final String val = parameterCombo.length == 2 ? URLDecoder.decode(parameterCombo[1], utf8.name()) : "";
+                        list.add(new BasicNameValuePair(key, val));
                     }
                 }
                 return list;

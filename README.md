@@ -7,7 +7,7 @@ This is the official home of the Java Apereo CAS client. The client consists of 
 All client artifacts are published to Maven central. Depending on functionality, applications will need include one or more of the listed dependencies in their configuration.
 
 <a name="build"></a>
-## Build [![Build Status](https://travis-ci.org/Jasig/java-cas-client.png?branch=master)](https://travis-ci.org/Jasig/java-cas-client)
+## Build [![Build Status](https://travis-ci.org/apereo/java-cas-client.png?branch=master)](https://travis-ci.org/apereo/java-cas-client)
 
 ```bash
 git clone git@github.com:apereo/java-cas-client.git
@@ -26,9 +26,9 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-	<groupId>org.jasig.cas.client</groupId>
-	<artifactId>cas-client-core</artifactId>
-	<version>${java.cas.client.version}</version>
+    <groupId>org.jasig.cas.client</groupId>
+    <artifactId>cas-client-core</artifactId>
+    <version>${java.cas.client.version}</version>
 </dependency>
 ```
 
@@ -102,7 +102,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 </dependency>
 ```
 
-- Tomcat 8 is provided by this dependency:
+- Tomcat 8.0.x is provided by this dependency:
 
 ```xml
 <dependency>
@@ -111,6 +111,17 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
    <version>${java.cas.client.version}</version>
 </dependency>
 ```
+
+- Tomcat 8.5.x is provided by this dependency:
+
+```xml
+<dependency>
+   <groupId>org.jasig.cas.client</groupId>
+   <artifactId>cas-client-integration-tomcat-v85</artifactId>
+   <version>${java.cas.client.version}</version>
+</dependency>
+```
+
 <a name="configurtion"></a>
 ## Configuration
 
@@ -229,7 +240,7 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 | `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
 
 <a name="rgjasigcasclientvalidationcas10ticketvalidationfilter"></a>
-####org.jasig.cas.client.validation.Cas10TicketValidationFilter
+#### org.jasig.cas.client.validation.Cas10TicketValidationFilter
 Validates tickets using the CAS 1.0 Protocol.
 
 ```xml
@@ -342,7 +353,15 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
 #### org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
-Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
+Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, 
+a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not 
+accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
+
+#### org.jasig.cas.client.validation.json.Cas30JsonProxyReceivingTicketValidationFilter
+Indentical to `Cas30ProxyReceivingTicketValidationFilter`, yet the filter is able to accept validation responses from CAS
+that are formatted as JSON per guidelines laid out by the CAS protocol. 
+See the [protocol documentation](https://apereo.github.io/cas/5.1.x/protocol/CAS-Protocol-Specification.html)
+for more info.
 
 ##### Proxy Authentication vs. Distributed Caching
 The client has support for clustering and distributing the TGT state among application nodes that are behind a load balancer. In order to do so, the parameter needs to be defined as such for the filter.
@@ -778,17 +797,17 @@ The `WebAuthenticationFilter` performs these operations for the JBoss AS contain
 ```xml
 ...
 <filter>
-	<filter-name>CASWebAuthenticationFilter</filter-name>
-	<filter-class>org.jasig.cas.client.jboss.authentication.WebAuthenticationFilter</filter-class>
+    <filter-name>CASWebAuthenticationFilter</filter-name>
+    <filter-class>org.jasig.cas.client.jboss.authentication.WebAuthenticationFilter</filter-class>
 </filter>
 
 <filter>
-	<filter-name>CASAuthenticationFilter</filter-name>
-	<filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
-	<init-param>
-	  <param-name>casServerLoginUrl</param-name>
-	  <param-value>https://cas.example.com/cas/login</param-value>
-	</init-param>
+    <filter-name>CASAuthenticationFilter</filter-name>
+    <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
+    <init-param>
+      <param-name>casServerLoginUrl</param-name>
+      <param-value>https://cas.example.com/cas/login</param-value>
+    </init-param>
 </filter>
 ...
 <!-- one filter-mapping for each filter as seen in the examples above -->
@@ -840,7 +859,12 @@ CAS authentication support for Tomcat is based on the Tomcat-specific Realm comp
 
 <a name="component-overview"></a>
 ### Component Overview
-In the following discussion of components, only the Tomcat 8.x components are mentioned. The Tomcat 7.0.x and 6.0.x components have exactly the same name, but **are in the tomcat.v7 and tomcat.v6 packages**, e.g. `org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator` or `org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator`.
+In the following discussion of components, only the Tomcat 8.x components are mentioned. Tomcat 8.0.x components are housed inside
+`org.jasig.cas.client.tomcat.v8` while Tomcat 8.5.x components are inside `org.jasig.cas.client.tomcat.v85`. You should be able to use
+the same exact configuration between the two modules provided package names are adjusted for each release. 
+
+The Tomcat 7.0.x and 6.0.x components have exactly the same name, but **are in the tomcat.v7 and tomcat.v6 packages**, e.g. 
+`org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator` or `org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator`.
 
 <a name="authenticators"></a>
 #### Authenticators

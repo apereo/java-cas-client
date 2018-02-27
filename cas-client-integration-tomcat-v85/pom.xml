@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cas-client</artifactId>
+        <groupId>org.jasig.cas.client</groupId>
+        <version>3.5.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>cas-client-integration-tomcat-v85</artifactId>
+    <packaging>jar</packaging>
+    <name>Jasig CAS Client for Java - Tomcat 8.5.x Integration</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-integration-tomcat-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-support-saml</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>8.5.16</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>8.5.16</version>
+            <type>jar</type>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                  <groupId>org.apache.tomcat</groupId>
+                  <artifactId>tomcat-servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                  <groupId>org.apache.tomcat</groupId>
+                  <artifactId>tomcat-juli</artifactId>
+                </exclusion>
+                <exclusion>
+                  <groupId>org.apache.tomcat</groupId>
+                  <artifactId>tomcat-annotations-api</artifactId>
+                </exclusion>
+                <exclusion>
+                  <groupId>org.apache.tomcat</groupId>
+                  <artifactId>tomcat-api</artifactId>
+                </exclusion>
+                <exclusion>
+                  <groupId>org.apache.tomcat</groupId>
+                  <artifactId>tomcat-util</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+</project>

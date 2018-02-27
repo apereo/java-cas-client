@@ -289,7 +289,7 @@ public class URIBuilderTests {
     @Test
     public void parse() {
         URIBuilder builder = new URIBuilder()
-                .digestURI(URI.create("http://apache.org/shindig?foo=bar%26baz&foo=three#blah"));
+                .digestURI(URI.create("http://apache.org/shindig?foo=bar%26baz&zoo&foo=three%3Dbaz#blah"));
 
         assertEquals("http", builder.getScheme());
         assertEquals("apache.org", builder.getHost());
@@ -297,15 +297,17 @@ public class URIBuilderTests {
 
         List<URIBuilder.BasicNameValuePair> list = builder.getQueryParams();
 
-        assertEquals(list.get(0).getName(), "foo");
-        assertEquals(list.get(1).getName(), "baz");
-        assertEquals(list.get(2).getName(), "foo");
-
-        assertEquals(list.get(0).getValue(), "bar");
-        assertNull(list.get(1).getValue());
-        assertEquals(list.get(2).getValue(), "three");
-
+        for (URIBuilder.BasicNameValuePair pair : list) {
+            if(pair.getName().equals("foo")) {
+                assertTrue(pair.getValue().equals("three=baz") || pair.getValue().equals("bar&baz"));
+            } else if(pair.getName().equals("zoo")) {
+                assertEquals("", pair.getValue());
+            } else {
+                fail("Unexpected parameter name " + pair.getName());
+            }
+        }
         assertEquals(list.size(), 3);
+
         assertEquals("blah", builder.getFragment());
     }
 

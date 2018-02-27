@@ -3,11 +3,10 @@
     <parent>
         <artifactId>cas-client</artifactId>
         <groupId>org.jasig.cas.client</groupId>
-        <version>3.4.2-SNAPSHOT</version>
+        <version>3.5.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jasig.cas.client</groupId>
     <artifactId>cas-client-integration-jetty</artifactId>
     <packaging>jar</packaging>
     <name>Jasig CAS Client for Java - Jetty Container Integration</name>

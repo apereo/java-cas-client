@@ -18,6 +18,16 @@
  */
 package org.jasig.cas.client.util;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.*;
+
+import javax.net.ssl.SSLException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
@@ -137,7 +147,7 @@ public final class CommonUtils {
      * @return true if its null or length of 0, false otherwise.
      */
     public static boolean isEmpty(final String string) {
-        return string == null || string.length() == 0;
+        return string == null || string.isEmpty();
     }
 
     /**
@@ -159,7 +169,7 @@ public final class CommonUtils {
      * @return true if its blank, false otherwise.
      */
     public static boolean isBlank(final String string) {
-        return isEmpty(string) || string.trim().length() == 0;
+        return isEmpty(string) || string.trim().isEmpty();
     }
 
     /**
@@ -195,7 +205,7 @@ public final class CommonUtils {
      * @param value the value to encode.
      * @return the encoded value.
      */
-    public static String urlEncode(String value) {
+    public static String urlEncode(final String value) {
         try {
             return URLEncoder.encode(value, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
@@ -230,7 +240,7 @@ public final class CommonUtils {
     protected static String findMatchingServerName(final HttpServletRequest request, final String serverName) {
         final String[] serverNames = serverName.split(" ");
 
-        if (serverNames == null || serverNames.length == 0 || serverNames.length == 1) {
+        if (serverNames.length == 0 || serverNames.length == 1) {
             return serverName;
         }
 
@@ -325,7 +335,7 @@ public final class CommonUtils {
         final URIBuilder originalRequestUrl = new URIBuilder(request.getRequestURL().toString(), encode);
         originalRequestUrl.setParameters(request.getQueryString());
 
-        URIBuilder builder = null;
+        final URIBuilder builder;
 
         boolean containsScheme = true;
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
@@ -347,8 +357,20 @@ public final class CommonUtils {
         final List<String> serviceParameterNames = Arrays.asList(serviceParameterName.split(","));
         if (!serviceParameterNames.isEmpty() && !originalRequestUrl.getQueryParams().isEmpty()) {
             for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
-                if (!pair.getName().equals(artifactParameterName) && !serviceParameterNames.contains(pair.getName())) {
-                    builder.addParameter(pair.getName(), pair.getValue());
+                String name = pair.getName();
+                if (!name.equals(artifactParameterName) && !serviceParameterNames.contains(name)) {
+                    if (name.contains("&") || name.contains("=") ){
+                        URIBuilder encodedParamBuilder = new URIBuilder();
+                        encodedParamBuilder.setParameters(name);
+                        for (final URIBuilder.BasicNameValuePair pair2 :encodedParamBuilder.getQueryParams()){
+                            String name2 = pair2.getName();
+                            if (!name2.equals(artifactParameterName) && !serviceParameterNames.contains(name2)) {
+                                builder.addParameter(name2, pair2.getValue());
+                            }
+                        }
+                    } else {
+                        builder.addParameter(name, pair.getValue());
+                    }
                 }
             }
         }
@@ -401,9 +423,9 @@ public final class CommonUtils {
     public static String getResponseFromServer(final String constructedUrl, final String encoding) {
         try {
             return getResponseFromServer(new URL(constructedUrl), DEFAULT_URL_CONNECTION_FACTORY, encoding);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
+        } catch (final IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }  
     }
 
     @Deprecated
@@ -421,7 +443,7 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
             final String encoding) {
-
+        
         HttpURLConnection conn = null;
         InputStreamReader in = null;
         try {
@@ -440,8 +462,14 @@ public final class CommonUtils {
             }
 
             return builder.toString();
-        } catch (final Exception e) {
-            LOGGER.error(e.getMessage(), e);
+        } catch (final RuntimeException e) {
+            throw e;
+        } catch (final SSLException e) {
+            LOGGER.error("SSL error getting response from host: {} : Error Message: {}", constructedUrl.getHost(), e.getMessage(), e);
+            throw new RuntimeException(e);
+        } catch (final IOException e) {
+            LOGGER.error("Error getting response from host: [{}] with path: [{}] and protocol: [{}] Error Message: {}",
+                    constructedUrl.getHost(), constructedUrl.getPath(), constructedUrl.getProtocol(), e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
             closeQuietly(in);
@@ -470,7 +498,7 @@ public final class CommonUtils {
     public static void sendRedirect(final HttpServletResponse response, final String url) {
         try {
             response.sendRedirect(url);
-        } catch (final Exception e) {
+        } catch (final IOException e) {
             LOGGER.warn(e.getMessage(), e);
         }
 
@@ -701,4 +729,5 @@ public final class CommonUtils {
             return defaultValue;
         }
     }
+
 }

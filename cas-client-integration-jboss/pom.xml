@@ -1,11 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.jasig.cas.client</groupId>
-        <version>3.4.2-SNAPSHOT</version>
+        <version>3.5.1-SNAPSHOT</version>
         <artifactId>cas-client</artifactId>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jasig.cas.client</groupId>
     <artifactId>cas-client-integration-jboss</artifactId>
     <packaging>jar</packaging>
     <name>Jasig CAS Client for Java - JBoss Integration</name>
