@@ -18,16 +18,17 @@
  */
 package org.jasig.cas.client.util;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import junit.framework.TestCase;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
+import org.junit.Ignore;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Tests for the CommonUtils.
@@ -133,7 +134,7 @@ public final class CommonUtilsTests extends TestCase {
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                "service", "ticket", false);
+            "service", "ticket", false);
 
         assertEquals(CONST_MY_URL, constructedUrl);
     }
@@ -147,7 +148,7 @@ public final class CommonUtilsTests extends TestCase {
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName() , false);
+            Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
@@ -161,7 +162,7 @@ public final class CommonUtilsTests extends TestCase {
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.myserver.com",
-                Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName() , false);
+            Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
@@ -176,7 +177,7 @@ public final class CommonUtilsTests extends TestCase {
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , false);
+            Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
@@ -190,7 +191,7 @@ public final class CommonUtilsTests extends TestCase {
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , false);
+            Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
@@ -204,13 +205,12 @@ public final class CommonUtilsTests extends TestCase {
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.SAML11.getArtifactParameterName() , true);
+            Protocol.SAML11.getArtifactParameterName(), true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
 
     public void testConstructServiceUrlWithEncodedParams2Saml() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
@@ -218,13 +218,12 @@ public final class CommonUtilsTests extends TestCase {
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , true);
+            Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom+value+here&another=good", constructedUrl);
     }
 
     public void testConstructServiceUrlWithoutEncodedParamsSamlAndNoEncoding() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
@@ -232,7 +231,7 @@ public final class CommonUtilsTests extends TestCase {
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , false);
+            Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom value here&another=good", constructedUrl);
     }
@@ -246,7 +245,7 @@ public final class CommonUtilsTests extends TestCase {
 
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
-                Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName() , true);
+            Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom+value+here&another=good", constructedUrl);
     }
@@ -260,7 +259,7 @@ public final class CommonUtilsTests extends TestCase {
         request.setServerPort(555);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
-                serverNameList, "service", "ticket", false);
+            serverNameList, "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
@@ -280,7 +279,7 @@ public final class CommonUtilsTests extends TestCase {
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
-                "www.amazon.com www.bestbuy.com www.myserver.com", "service", "ticket", false);
+            "www.amazon.com www.bestbuy.com www.myserver.com", "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
@@ -292,7 +291,7 @@ public final class CommonUtilsTests extends TestCase {
         request.setSecure(true);
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
-                "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "service", "ticket", false);
+            "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
@@ -303,8 +302,23 @@ public final class CommonUtilsTests extends TestCase {
         final String responsedContent = CommonUtils.getResponseFromServer(new URL("http://localhost:8090"), new HttpsURLConnectionFactory(), null);
         assertEquals(RESPONSE, responsedContent);
     }
-    
+
     public void testUrlEncode() {
-        assertEquals("this+is+a+very+special+parameter+with+%3D%25%2F", CommonUtils.urlEncode("this is a very special parameter with =%/"));
+        assertEquals("this+is+a+very+special+parameter+with+%3D%25%2F",
+            CommonUtils.urlEncode("this is a very special parameter with =%/"));
+    }
+
+    public void testUrlEncodeWithQueryParameters() {
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/idp/authN/ExtCas");
+        request.setQueryString("conversation=e1s1&ticket=ST-1234-123456789-a&entityId=https://test.edu/sp?alias=1234-1234-1234-1234&something=else");
+        request.addHeader("Host", "www.myserver.com");
+        request.setScheme("https");
+        request.setSecure(true);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+            "https://my.server.com",
+            "service", "ticket", false);
+        assertEquals("https://my.server.com/idp/authN/ExtCas?conversation=e1s1&entityId=https://test.edu/sp?alias=1234-1234-1234-1234&something=else",
+            constructedUrl);
     }
 }
