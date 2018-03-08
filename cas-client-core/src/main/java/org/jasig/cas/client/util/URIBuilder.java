@@ -28,13 +28,13 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * A utility class borrowed from apache http-client to build uris.
+ *
  * @author Misagh Moayyed
  * @since 3.4
  */
@@ -99,14 +99,15 @@ public final class URIBuilder {
 
     /**
      * Construct an instance from the provided URI.
-     * @param uri  the uri to digest
+     *
+     * @param uri the uri to digest
      */
     public URIBuilder(final URI uri) {
         super();
         digestURI(uri);
     }
 
-    private List <BasicNameValuePair> parseQuery(final String query) {
+    private List<BasicNameValuePair> parseQuery(final String query) {
 
         try {
             final Charset utf8 = Charset.forName("UTF-8");
@@ -115,11 +116,23 @@ public final class URIBuilder {
                 final String[] parametersArray = query.split("&");
 
                 for (final String parameter : parametersArray) {
-                    final String[] parameterCombo = parameter.split("=");
-                    if (parameterCombo.length >= 1) {
-                        final String key = URLDecoder.decode(parameterCombo[0], utf8.name());
-                        final String val = parameterCombo.length == 2 ? URLDecoder.decode(parameterCombo[1], utf8.name()) : "";
-                        list.add(new BasicNameValuePair(key, val));
+                    final int firstIndex = parameter.indexOf("=");
+                    if (firstIndex != -1) {
+                        final String paramName = parameter.substring(0, firstIndex);
+                        final String decodedParamName = URLDecoder.decode(paramName, utf8.name());
+
+                        final String paramVal = parameter.substring(firstIndex + 1);
+                        final String decodedParamVal = URLDecoder.decode(paramVal, utf8.name());
+
+                        list.add(new BasicNameValuePair(decodedParamName, decodedParamVal));
+                    } else {
+                        // Either we do not have a query parameter, or it might be encoded; take it verbaitm
+                        final String[] parameterCombo = parameter.split("=");
+                        if (parameterCombo.length >= 1) {
+                            final String key = URLDecoder.decode(parameterCombo[0], utf8.name());
+                            final String val = parameterCombo.length == 2 ? URLDecoder.decode(parameterCombo[1], utf8.name()) : "";
+                            list.add(new BasicNameValuePair(key, val));
+                        }
                     }
                 }
                 return list;
@@ -327,7 +340,7 @@ public final class URIBuilder {
      * will remove custom query if present.
      * </p>
      */
-    public URIBuilder setParameters(final List <BasicNameValuePair> nvps) {
+    public URIBuilder setParameters(final List<BasicNameValuePair> nvps) {
         this.queryParams = new ArrayList<BasicNameValuePair>();
         this.queryParams.addAll(nvps);
         this.encodedQuery = null;
@@ -346,7 +359,6 @@ public final class URIBuilder {
     }
 
 
-
     /**
      * Adds URI query parameters. The parameter name / values are expected to be unescaped
      * and may contain non ASCII characters.
@@ -355,7 +367,7 @@ public final class URIBuilder {
      * will remove custom query if present.
      * </p>
      */
-    public URIBuilder addParameters(final List <BasicNameValuePair> nvps) {
+    public URIBuilder addParameters(final List<BasicNameValuePair> nvps) {
         if (this.queryParams == null || this.queryParams.isEmpty()) {
             this.queryParams = new ArrayList<BasicNameValuePair>();
         }
@@ -380,7 +392,7 @@ public final class URIBuilder {
         } else {
             this.queryParams.clear();
         }
-        for (final BasicNameValuePair nvp: nvps) {
+        for (final BasicNameValuePair nvp : nvps) {
             this.queryParams.add(nvp);
         }
         this.encodedQuery = null;
@@ -602,7 +614,7 @@ public final class URIBuilder {
         /**
          * Default Constructor taking a name and a value. The value may be null.
          *
-         * @param name The name.
+         * @param name  The name.
          * @param value The value.
          */
         public BasicNameValuePair(final String name, final String value) {
@@ -647,7 +659,7 @@ public final class URIBuilder {
             if (object instanceof BasicNameValuePair) {
                 final BasicNameValuePair that = (BasicNameValuePair) object;
                 return this.name.equals(that.name)
-                        && this.value.equals(that.value);
+                    && this.value.equals(that.value);
             }
             return false;
         }
