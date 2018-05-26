@@ -18,11 +18,11 @@
     under the License.
 
 -->
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns="urn:oasis:names:tc:SAML:1.0:protocol">
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Header/>
     <soap:Body>
-        <Request MajorVersion="1" MinorVersion="1" RequestID="%s" IssueInstant="%s">
-            <AssertionArtifact>%s</AssertionArtifact>
-        </Request>
+        <samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol" MajorVersion="1" MinorVersion="1" RequestID="%s" IssueInstant="%s">
+            <samlp:AssertionArtifact>%s</samlp:AssertionArtifact>
+        </samlp:Request>
     </soap:Body>
 </soap:Envelope>
