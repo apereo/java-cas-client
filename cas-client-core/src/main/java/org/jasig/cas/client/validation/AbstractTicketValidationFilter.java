@@ -20,11 +20,14 @@ package org.jasig.cas.client.validation;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Properties;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
@@ -70,6 +73,12 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * attribute {@link AbstractCasFilter#CONST_CAS_ASSERTION}.
      */
     private boolean useSession = true;
+
+    /**
+     * Specify whether the session ID must be changed after successful ticket validation
+     * to prevent session fixation attacks
+     */
+    private boolean changeSessionIdOnAuthentication = false;
 
     protected AbstractTicketValidationFilter(final Protocol protocol) {
         super(protocol);
@@ -131,6 +140,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         setExceptionOnValidationFailure(getBoolean(ConfigurationKeys.EXCEPTION_ON_VALIDATION_FAILURE));
         setRedirectAfterValidation(getBoolean(ConfigurationKeys.REDIRECT_AFTER_VALIDATION));
         setUseSession(getBoolean(ConfigurationKeys.USE_SESSION));
+        setChangeSessionIdOnAuthentication(getBoolean(ConfigurationKeys.CHANGE_SESSION_ID_ON_AUTHENTICATION));
 
         if (!this.useSession && this.redirectAfterValidation) {
             logger.warn("redirectAfterValidation parameter may not be true when useSession parameter is false. Resetting it to false in order to prevent infinite redirects.");
@@ -175,7 +185,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         // nothing to do here.
     }
 
-    /**
+	/**
      * Template method that gets executed if validation fails.  This method is called right after the exception is caught from the ticket validator
      * but before any of the processing of the exception occurs.
      *
@@ -184,6 +194,26 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      */
     protected void onFailedValidation(final HttpServletRequest request, final HttpServletResponse response) {
         // nothing to do here.
+    }
+
+    private void regenerateSession(HttpServletRequest request) {
+        HttpSession oldSession = request.getSession();
+        Enumeration<String> attrNames = oldSession.getAttributeNames();
+        Properties props = new Properties();
+
+        if (attrNames != null) {
+            while (attrNames.hasMoreElements()) {
+                String key = (String) attrNames.nextElement();
+                props.put(key, oldSession.getAttribute(key));
+            }
+
+            oldSession.invalidate();
+            HttpSession newSession = request.getSession(true);
+
+            for (Object key:props.keySet()) {
+                newSession.setAttribute((String)key, props.get(key));
+            }
+        }
     }
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
@@ -209,6 +239,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
                 request.setAttribute(CONST_CAS_ASSERTION, assertion);
 
                 if (this.useSession) {
+                	if (this.changeSessionIdOnAuthentication) {
+                		regenerateSession(request);
+                	}
                     request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
                 }
                 onSuccessfulValidation(request, response, assertion);
@@ -251,5 +284,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 
     public final void setUseSession(final boolean useSession) {
         this.useSession = useSession;
+    }
+
+    public final void setChangeSessionIdOnAuthentication(final boolean changeSessionIdOnAuthentication) {
+        this.changeSessionIdOnAuthentication = changeSessionIdOnAuthentication;
     }
 }
