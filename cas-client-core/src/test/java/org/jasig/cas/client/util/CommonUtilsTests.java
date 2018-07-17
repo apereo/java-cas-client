@@ -39,7 +39,7 @@ import java.util.Collection;
  */
 public final class CommonUtilsTests extends TestCase {
 
-    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8090);
+    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8092);
 
     public void testRedirectUrlWithParam() {
         final String loginUrl = "http://localhost:8080/login?myName=foo";
@@ -299,7 +299,7 @@ public final class CommonUtilsTests extends TestCase {
         final String RESPONSE = "test1\r\ntest2";
         server.content = RESPONSE.getBytes(server.encoding);
 
-        final String responsedContent = CommonUtils.getResponseFromServer(new URL("http://localhost:8090"), new HttpsURLConnectionFactory(), null);
+        final String responsedContent = CommonUtils.getResponseFromServer(new URL("http://localhost:8092"), new HttpsURLConnectionFactory(), null);
         assertEquals(RESPONSE, responsedContent);
     }
 
