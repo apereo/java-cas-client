@@ -295,6 +295,18 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
+    public void testConstructURLWithParamButNoValue() {
+        final String CONST_MY_URL = "https://www.myserver.com/hello?foo=bar&baz";
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello?foo=bar&baz");
+        request.addHeader("Host", "www.myserver.com");
+        request.setScheme("https");
+        request.setSecure(true);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+                "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "service", "ticket", false);
+        assertEquals(CONST_MY_URL, constructedUrl);
+    }
+
     public void testGetResponseFromServer() throws Exception {
         final String RESPONSE = "test1\r\ntest2";
         server.content = RESPONSE.getBytes(server.encoding);

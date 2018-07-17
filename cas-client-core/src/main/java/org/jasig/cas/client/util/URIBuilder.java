@@ -234,13 +234,14 @@ public final class URIBuilder {
         final StringBuilder result = new StringBuilder();
         for (final BasicNameValuePair parameter : params) {
             final String encodedName = this.encode ? CommonUtils.urlEncode(parameter.getName()) : parameter.getName();
-            final String encodedValue = this.encode ? CommonUtils.urlEncode(parameter.getValue()) : parameter.getValue();
 
             if (result.length() > 0) {
                 result.append("&");
             }
             result.append(encodedName);
-            if (encodedValue != null) {
+            if (parameter.getValue() != null) {
+                final String encodedValue = this.encode ? CommonUtils.urlEncode(parameter.getValue()) : parameter.getValue();
+
                 result.append("=");
                 result.append(encodedValue);
             }

@@ -37,6 +37,17 @@ import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.*;
+
 /**
  * Common utilities so that we don't need to include Commons Lang.
  *
@@ -410,7 +421,7 @@ public final class CommonUtils {
      */
     @Deprecated
     public static String getResponseFromServer(final String constructedUrl, final String encoding) {
-    	try {
+        try {
             return getResponseFromServer(new URL(constructedUrl), DEFAULT_URL_CONNECTION_FACTORY, encoding);
         } catch (final IOException e) {
             throw new RuntimeException(e.getMessage(), e);
@@ -432,7 +443,7 @@ public final class CommonUtils {
      */
     public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
             final String encoding) {
-    	
+        
         HttpURLConnection conn = null;
         InputStreamReader in = null;
         try {
@@ -452,13 +463,13 @@ public final class CommonUtils {
 
             return builder.toString();
         } catch (final RuntimeException e) {
-        	throw e;
+            throw e;
         } catch (final SSLException e) {
             LOGGER.error("SSL error getting response from host: {} : Error Message: {}", constructedUrl.getHost(), e.getMessage(), e);
             throw new RuntimeException(e);
         } catch (final IOException e) {
             LOGGER.error("Error getting response from host: [{}] with path: [{}] and protocol: [{}] Error Message: {}",
-            		constructedUrl.getHost(), constructedUrl.getPath(), constructedUrl.getProtocol(), e.getMessage(), e);
+                    constructedUrl.getHost(), constructedUrl.getPath(), constructedUrl.getProtocol(), e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
             closeQuietly(in);

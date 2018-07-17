@@ -43,7 +43,6 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -112,6 +111,16 @@ public class URIBuilderTests {
                 .setPath("/shindig")
                 .setCustomQuery("hello=world");
         assertEquals("http://apache.org/shindig?hello=world", builder.toString());
+    }
+
+    @Test
+    public void nullParameterUsed() {
+        URIBuilder builder = new URIBuilder()
+                .setScheme("http")
+                .setHost("apache.org")
+                .setPath("/shindig")
+                .setCustomQuery("hello");
+        assertEquals("http://apache.org/shindig?hello", builder.toString());
     }
 
     @Test
@@ -280,18 +289,25 @@ public class URIBuilderTests {
     @Test
     public void parse() {
         URIBuilder builder = new URIBuilder()
-                .digestURI(URI.create("http://apache.org/shindig?foo=bar%26baz&foo=three%3Dbaz#blah"));
+                .digestURI(URI.create("http://apache.org/shindig?foo=bar%26baz&zoo&foo=three%3Dbaz#blah"));
 
         assertEquals("http", builder.getScheme());
         assertEquals("apache.org", builder.getHost());
         assertEquals("/shindig", builder.getPath());
 
         List<URIBuilder.BasicNameValuePair> list = builder.getQueryParams();
+
         for (URIBuilder.BasicNameValuePair pair : list) {
-            assertEquals("foo", pair.getName());
-            assertTrue(pair.getValue().equals("three=baz") || pair.getValue().equals("bar&baz"));
+            if(pair.getName().equals("foo")) {
+                assertTrue(pair.getValue().equals("three=baz") || pair.getValue().equals("bar&baz"));
+            } else if(pair.getName().equals("zoo")) {
+                assertEquals("", pair.getValue());
+            } else {
+                fail("Unexpected parameter name " + pair.getName());
+            }
         }
-        assertEquals(list.size(), 2);
+        assertEquals(list.size(), 3);
+
         assertEquals("blah", builder.getFragment());
     }
 
