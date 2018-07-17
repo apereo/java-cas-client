@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTests {
 
-    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8090);
+    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8091);
 
     private Cas10TicketValidator ticketValidator;
 
@@ -48,7 +48,7 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
 
     @Before
     public void setUp() throws Exception {
-        this.ticketValidator = new Cas10TicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8090");
+        this.ticketValidator = new Cas10TicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8091");
     }
 
     @Test
