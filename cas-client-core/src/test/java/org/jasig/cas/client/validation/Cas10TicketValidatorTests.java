@@ -21,6 +21,7 @@ package org.jasig.cas.client.validation;
 import static org.junit.Assert.*;
 import java.io.UnsupportedEncodingException;
 import org.jasig.cas.client.PublicTestHttpServer;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +34,8 @@ import org.junit.Test;
  */
 public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTests {
 
-    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8091);
+    private static final int PORT = 8989;
+    private static final PublicTestHttpServer server = PublicTestHttpServer.instance(PORT);
 
     private Cas10TicketValidator ticketValidator;
 
@@ -41,14 +43,14 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
         super();
     }
 
-    /*@AfterClass
-    public static void classCleanUp() {
-        server.shutdown();
-    } */
+//    @AfterClass
+//    public static void classCleanUp() {
+//        server.shutdown();
+//    }
 
     @Before
     public void setUp() throws Exception {
-        this.ticketValidator = new Cas10TicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8091");
+        this.ticketValidator = new Cas10TicketValidator(CONST_CAS_SERVER_URL_PREFIX + PORT);
     }
 
     @Test
