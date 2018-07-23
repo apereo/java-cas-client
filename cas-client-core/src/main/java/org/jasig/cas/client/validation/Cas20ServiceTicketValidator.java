@@ -105,7 +105,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
                     proxyGrantingTicket, this.proxyRetriever);
             assertion = new AssertionImpl(attributePrincipal);
         } else {
-            assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
+            assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes), attributes);
         }
 
         customParseResponse(response, assertion);
