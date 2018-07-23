@@ -64,6 +64,10 @@ public class SingleSignOutValve extends ValveBase implements SessionListener {
         this.handler.setCasServerUrlPrefix(casServerUrlPrefix);
     }
 
+    public void setLogoutPath(String logoutPath) {
+        this.handler.setLogoutPath(logoutPath);
+    }
+
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         this.handler.setSessionMappingStorage(storage);
     }
