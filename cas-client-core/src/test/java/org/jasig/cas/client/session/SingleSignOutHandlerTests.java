@@ -122,7 +122,7 @@ public final class SingleSignOutHandlerTests {
     }
 
     @Test
-    public void backChannelLogoutDoesDoesNotRunIfLogoutPathDoesNotMatch() {
+    public void backChannelLogoutDoesNotRunIfPathIsNotEligibleForLogout() {
         handler.setLogoutPath("/logout");
         request.setServletPath("/not-a-logout");
         final MockHttpSession session = doBackChannelLogout();
@@ -131,7 +131,7 @@ public final class SingleSignOutHandlerTests {
     }
 
     @Test
-    public void backChannelLogoutRunsWhenLogoutPathDoesMatch() {
+    public void backChannelLogoutRunsIfPathEqualsLogoutPath() {
         handler.setLogoutPath("/logout");
         request.setServletPath("/logout");
         final MockHttpSession session = doBackChannelLogout();
