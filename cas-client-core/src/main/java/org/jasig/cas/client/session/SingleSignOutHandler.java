@@ -173,7 +173,7 @@ public final class SingleSignOutHandler {
     private boolean isLogoutRequest(final HttpServletRequest request) {
         if ("POST".equalsIgnoreCase(request.getMethod())) {
             return !isMultipartRequest(request)
-                    && pathMatches(request)
+                    && pathEligibleForLogout(request)
                     && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
                     this.safeParameters));
         }
@@ -184,7 +184,7 @@ public final class SingleSignOutHandler {
         return false;
     }
 
-    private boolean pathMatches(HttpServletRequest request) {
+    private boolean pathEligibleForLogout(HttpServletRequest request) {
         return logoutPath == null || logoutPath.equals(getPath(request));
     }
 
