@@ -23,6 +23,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Scott Battaglia
@@ -43,6 +45,8 @@ public final class PublicTestHttpServer extends Thread {
 
     private ServerSocket server;
 
+    private final CountDownLatch ready = new CountDownLatch(1);
+
     private static Map<Integer, PublicTestHttpServer> serverMap = new HashMap<Integer, PublicTestHttpServer>();
 
     private PublicTestHttpServer(String data, String encoding, String MIMEType, int port)
@@ -61,17 +65,28 @@ public final class PublicTestHttpServer extends Thread {
 
     public static synchronized PublicTestHttpServer instance(final int port) {
         if (serverMap.containsKey(port)) {
-            return serverMap.get(port);
+            PublicTestHttpServer server = serverMap.get(port);
+            server.waitUntilReady();
+            return server;
         }
 
         try {
             final PublicTestHttpServer server = new PublicTestHttpServer("test", "ASCII", "text/plain", port);
             server.start();
             serverMap.put(port, server);
-            Thread.yield();
+            server.waitUntilReady();
             return server;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void waitUntilReady() {
+        try {
+            ready.await(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("interrupted", e);
         }
     }
 
@@ -91,6 +106,7 @@ public final class PublicTestHttpServer extends Thread {
         try {
             this.server = new ServerSocket(this.port);
             System.out.println("Accepting connections on port " + server.getLocalPort());
+            notifyReady();
             while (true) {
 
                 Socket connection = null;
@@ -131,4 +147,8 @@ public final class PublicTestHttpServer extends Thread {
         }
 
     } // end run
+
+    private void notifyReady() {
+        ready.countDown();
+    }
 }
