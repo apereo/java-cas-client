@@ -719,4 +719,15 @@ public final class CommonUtils {
         }
     }
 
+    /**
+     * Returns the string as-is, unless it's <code>null</code>;
+     * in this case an empty string is returned.
+     *
+     * @param string a possibly <code>null</code> string
+     * @return a non-<code>null</code> string
+     */
+    public static String nullToEmpty(String string) {
+        return string == null ? "" : string;
+    }
+
 }

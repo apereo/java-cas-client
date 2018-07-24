@@ -189,11 +189,7 @@ public final class SingleSignOutHandler {
     }
 
     private String getPath(HttpServletRequest request) {
-        return request.getServletPath() + nullToEmpty(request.getPathInfo());
-    }
-
-    private String nullToEmpty(String string) {
-        return string == null ? "" : string;
+        return request.getServletPath() + CommonUtils.nullToEmpty(request.getPathInfo());
     }
 
     /**
