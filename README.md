@@ -176,8 +176,8 @@ The `AuthenticationFilter` is what detects whether a user needs to be authentica
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
   <init-param>
-    <param-name>casServerLoginUrl</param-name>
-    <param-value>https://battags.ad.ess.rutgers.edu:8443/cas/login</param-value>
+    <param-name>casServerUrlPrefix</param-name>
+    <param-value>https://battags.ad.ess.rutgers.edu:8443/cas</param-value>
   </init-param>
   <init-param>
     <param-name>serverName</param-name>
@@ -192,7 +192,8 @@ The `AuthenticationFilter` is what detects whether a user needs to be authentica
 
 | Property | Description | Required
 |----------|-------|-----------
-| `casServerLoginUrl` | Defines the location of the CAS server login URL, i.e. `https://localhost:8443/cas/login` | Yes
+| `casServerUrlPrefix` | The start of the CAS server URL, i.e. `https://localhost:8443/cas` | Yes (unless `casServerLoginUrl` is set)
+| `casServerLoginUrl` | Defines the location of the CAS server login URL, i.e. `https://localhost:8443/cas/login`. This overrides `casServerUrlPrefix`, if set. | Yes (unless `casServerUrlPrefix` is set)
 | `serverName` | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. https://localhost:8443 (you must include the protocol, but port is optional if it's a standard port). | Yes
 | `service` | The service URL to send to the CAS server, i.e. `https://localhost:8443/yourwebapp/index.html` | No
 | `renew` | specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting. | No
@@ -230,7 +231,8 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 
 | Property | Description | Required
 |----------|-------|-----------
-| `casServerLoginUrl` | Defines the location of the CAS server login URL, i.e. `https://localhost:8443/cas/login` | Yes
+| `casServerUrlPrefix` | The start of the CAS server URL, i.e. `https://localhost:8443/cas` | Yes (unless `casServerLoginUrl` is set)
+| `casServerLoginUrl` | Defines the location of the CAS server login URL, i.e. `https://localhost:8443/cas/login`. This overrides `casServerUrlPrefix`, if set. | Yes (unless `casServerUrlPrefix` is set)
 | `serverName` | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. https://localhost:8443 (you must include the protocol, but port is optional if it's a standard port). | Yes
 | `service` | The service URL to send to the CAS server, i.e. `https://localhost:8443/yourwebapp/index.html` | No
 | `renew` | specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting. | No
