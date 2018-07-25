@@ -116,13 +116,36 @@ public final class SingleSignOutHandlerTests {
 
     @Test
     public void backChannelLogoutOK() {
+        final MockHttpSession session = doBackChannelLogout();
+        assertFalse(handler.process(request, response));
+        assertTrue(session.isInvalid());
+    }
+
+    @Test
+    public void backChannelLogoutDoesNotRunIfPathIsNotEligibleForLogout() {
+        handler.setLogoutCallbackPath("/logout");
+        request.setServletPath("/not-a-logout");
+        final MockHttpSession session = doBackChannelLogout();
+        assertTrue(handler.process(request, response));
+        assertFalse(session.isInvalid());
+    }
+
+    @Test
+    public void backChannelLogoutRunsIfPathEqualsLogoutPath() {
+        handler.setLogoutCallbackPath("/logout");
+        request.setServletPath("/logout");
+        final MockHttpSession session = doBackChannelLogout();
+        assertFalse(handler.process(request, response));
+        assertTrue(session.isInvalid());
+    }
+
+    private MockHttpSession doBackChannelLogout() {
         final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
         final MockHttpSession session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
-        assertFalse(handler.process(request, response));
-        assertTrue(session.isInvalid());
+        return session;
     }
 
     @Test
