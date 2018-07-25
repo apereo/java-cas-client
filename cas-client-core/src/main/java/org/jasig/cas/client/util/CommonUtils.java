@@ -719,4 +719,13 @@ public final class CommonUtils {
         }
     }
 
+    /**
+     * Adds a trailing slash to the given uri, if it doesn't already have one.
+     *
+     * @param uri a string that may or may not end with a slash
+     * @return the same string, except with a slash suffix (if necessary).
+     */
+    public static String addTrailingSlash(String uri) {
+        return uri.endsWith("/") ? uri : uri + "/";
+    }
 }
