@@ -66,6 +66,9 @@ public final class SingleSignOutHandler {
     /** The prefix url of the CAS server */
     private String casServerUrlPrefix = "";
 
+    /** The logout callback path configured at the CAS server, if there is one */
+    private String logoutCallbackPath;
+
     private boolean artifactParameterOverPost = false;
 
     private boolean eagerlyCreateSessions = true;
@@ -106,7 +109,14 @@ public final class SingleSignOutHandler {
     public void setCasServerUrlPrefix(final String casServerUrlPrefix) {
         this.casServerUrlPrefix = casServerUrlPrefix;
     }
-    
+
+    /**
+     * @param logoutCallbackPath The logout callback path configured at the CAS server.
+     */
+    public void setLogoutCallbackPath(String logoutCallbackPath) {
+        this.logoutCallbackPath = logoutCallbackPath;
+    }
+
     /**
      * @param name Name of parameter containing the state of the CAS server webflow.
      */
@@ -163,6 +173,7 @@ public final class SingleSignOutHandler {
     private boolean isLogoutRequest(final HttpServletRequest request) {
         if ("POST".equalsIgnoreCase(request.getMethod())) {
             return !isMultipartRequest(request)
+                    && pathEligibleForLogout(request)
                     && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
                     this.safeParameters));
         }
@@ -172,7 +183,15 @@ public final class SingleSignOutHandler {
         }
         return false;
     }
-    
+
+    private boolean pathEligibleForLogout(HttpServletRequest request) {
+        return logoutCallbackPath == null || logoutCallbackPath.equals(getPath(request));
+    }
+
+    private String getPath(HttpServletRequest request) {
+        return request.getServletPath() + CommonUtils.nullToEmpty(request.getPathInfo());
+    }
+
     /**
      * Process a request regarding the SLO process: record the session or destroy it.
      *

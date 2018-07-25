@@ -60,6 +60,10 @@ public class SingleSignOutValve extends AbstractLifecycleValve implements Sessio
         this.handler.setCasServerUrlPrefix(casServerUrlPrefix);
     }
 
+    public void setLogoutCallbackPath(String logoutCallbackPath) {
+        this.handler.setLogoutCallbackPath(logoutCallbackPath);
+    }
+
     public void setSessionMappingStorage(final SessionMappingStorage storage) {
         this.handler.setSessionMappingStorage(storage);
     }
