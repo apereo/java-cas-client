@@ -47,7 +47,8 @@ public final class AuthenticationFilterTests {
 
     private static final String CAS_SERVICE_URL = "https://localhost:8443/service";
 
-    private static final String CAS_LOGIN_URL = "https://localhost:8443/cas/login";
+    private static final String CAS_PREFIX = "https://localhost:8443/cas";
+    private static final String CAS_LOGIN_URL = CAS_PREFIX + "/login";
 
     private AuthenticationFilter filter;
 
@@ -66,7 +67,25 @@ public final class AuthenticationFilterTests {
     }
 
     @Test
-    public void testRedirect() throws Exception {
+    public void testRedirectWithLoginUrlConfig() throws Exception {
+        doRedirectTest();
+    }
+
+    @Test
+    public void testRedirectWithCasServerPrefixConfig() throws Exception {
+        replaceFilterWithPrefixConfiguredFilter();
+        doRedirectTest();
+    }
+
+    private void replaceFilterWithPrefixConfiguredFilter() throws ServletException {
+        this.filter = new AuthenticationFilter();
+        final MockFilterConfig config = new MockFilterConfig();
+        config.addInitParameter("casServerUrlPrefix", CAS_PREFIX);
+        config.addInitParameter("service", CAS_SERVICE_URL);
+        this.filter.init(config);
+    }
+
+    private void doRedirectTest() throws IOException, ServletException {
         final MockHttpSession session = new MockHttpSession();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();

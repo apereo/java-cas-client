@@ -71,8 +71,8 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      * @param casServerUrlPrefix the location of the CAS server.
      */
     protected AbstractUrlBasedTicketValidator(final String casServerUrlPrefix) {
-        this.casServerUrlPrefix = casServerUrlPrefix;
-        CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
+        CommonUtils.assertNotNull(casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
+        this.casServerUrlPrefix = CommonUtils.addTrailingSlash(casServerUrlPrefix);
     }
 
     /**
@@ -124,9 +124,6 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
         int i = 0;
 
         buffer.append(this.casServerUrlPrefix);
-        if (!this.casServerUrlPrefix.endsWith("/")) {
-            buffer.append("/");
-        }
         buffer.append(suffix);
 
         for (Map.Entry<String, String> entry : urlParameters.entrySet()) {
