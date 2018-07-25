@@ -78,5 +78,5 @@ public interface ConfigurationKeys {
     ConfigurationKey<Class<? extends Cas20ServiceTicketValidator>> TICKET_VALIDATOR_CLASS = new ConfigurationKey<Class<? extends Cas20ServiceTicketValidator>>("ticketValidatorClass", null);
     ConfigurationKey<String> PROXY_CALLBACK_URL = new ConfigurationKey<String>("proxyCallbackUrl", null);
     ConfigurationKey<String> RELAY_STATE_PARAMETER_NAME = new ConfigurationKey<String>("relayStateParameterName", "RelayState");
-    ConfigurationKey<String> LOGOUT_PATH = new ConfigurationKey<String>("logoutPath", null);
+    ConfigurationKey<String> LOGOUT_CALLBACK_PATH = new ConfigurationKey<String>("logoutCallbackPath", null);
 }

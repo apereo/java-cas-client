@@ -66,8 +66,8 @@ public final class SingleSignOutHandler {
     /** The prefix url of the CAS server */
     private String casServerUrlPrefix = "";
 
-    /** The logout path configured at the CAS server, if there is one */
-    private String logoutPath;
+    /** The logout callback path configured at the CAS server, if there is one */
+    private String logoutCallbackPath;
 
     private boolean artifactParameterOverPost = false;
 
@@ -111,10 +111,10 @@ public final class SingleSignOutHandler {
     }
 
     /**
-     * @param logoutPath The logout path configured at the CAS server.
+     * @param logoutCallbackPath The logout callback path configured at the CAS server.
      */
-    public void setLogoutPath(String logoutPath) {
-        this.logoutPath = logoutPath;
+    public void setLogoutCallbackPath(String logoutCallbackPath) {
+        this.logoutCallbackPath = logoutCallbackPath;
     }
 
     /**
@@ -185,7 +185,7 @@ public final class SingleSignOutHandler {
     }
 
     private boolean pathEligibleForLogout(HttpServletRequest request) {
-        return logoutPath == null || logoutPath.equals(getPath(request));
+        return logoutCallbackPath == null || logoutCallbackPath.equals(getPath(request));
     }
 
     private String getPath(HttpServletRequest request) {
