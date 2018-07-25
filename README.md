@@ -665,7 +665,7 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 | `relayStateParameterName` | Defaults to `RelayState` | No
 | `eagerlyCreateSessions` | Defaults to `true` | No
 | `artifactParameterOverPost` | Defaults to  `false` | No
-| `logoutPath` | The path which is expected to receive logout callback requests from the CAS server. This is necessary if your app needs access to the raw input stream when handling form posts. If not configured, the default behavior will check every form post for a logout parameter. | No
+| `logoutCallbackPath` | The path which is expected to receive logout callback requests from the CAS server. This is necessary if your app needs access to the raw input stream when handling form posts. If not configured, the default behavior will check every form post for a logout parameter. | No
 | `casServerUrlPrefix` | URL to root of CAS Web application context. | Yes
 
 <a name="cas-protocol"></a>
