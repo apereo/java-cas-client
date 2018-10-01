@@ -139,6 +139,28 @@ public final class CommonUtilsTests extends TestCase {
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
+    public void testConstructServiceUrlWithServerNameContainingPath() {
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.setScheme("https");
+        request.setSecure(true);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.my.server.com/app",
+            Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName(), false);
+
+        assertEquals("https://www.my.server.com/app/hello/hithere/", constructedUrl);
+    }
+
+    public void testConstructServiceUrlWithServerNameContainingPathAndSchema() {
+        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        request.setScheme("https");
+        request.setSecure(true);
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.my.server.com/app",
+            Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName(), false);
+
+        assertEquals("https://www.my.server.com/app/hello/hithere/", constructedUrl);
+    }
+
     public void testConstructServiceUrlWithParamsCas() {
         final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
