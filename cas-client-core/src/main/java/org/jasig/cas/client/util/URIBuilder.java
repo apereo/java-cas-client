@@ -523,6 +523,10 @@ public final class URIBuilder {
         return this.path;
     }
 
+    public String getEncodedPath() {
+        return this.encodedPath;
+    }
+
     public List<BasicNameValuePair> getQueryParams() {
         if (this.queryParams != null) {
             return new ArrayList<BasicNameValuePair>(this.queryParams);

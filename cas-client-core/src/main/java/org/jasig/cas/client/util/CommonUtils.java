@@ -257,17 +257,7 @@ public final class CommonUtils {
 
         return serverNames[0];
     }
-
-    private static boolean serverNameContainsPort(final boolean containsScheme, final String serverName) {
-        if (!containsScheme && serverName.contains(":")) {
-            return true;
-        }
-
-        final int schemeIndex = serverName.indexOf(":");
-        final int portIndex = serverName.lastIndexOf(":");
-        return schemeIndex != portIndex;
-    }
-
+    
     private static boolean requestIsOnStandardPort(final HttpServletRequest request) {
         final int serverPort = request.getServerPort();
         return serverPort == 80 || serverPort == 443;
@@ -325,23 +315,18 @@ public final class CommonUtils {
         originalRequestUrl.setParameters(request.getQueryString());
 
         final URIBuilder builder;
-
-        boolean containsScheme = true;
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
-            builder = new URIBuilder(encode);
-            builder.setScheme(request.isSecure() ? "https" : "http");
-            builder.setHost(serverName);
-            containsScheme = false;
-        }  else {
+            String scheme = request.isSecure() ? "https://" : "http://";
+            builder = new URIBuilder(scheme + serverName, encode);
+        } else {
             builder = new URIBuilder(serverName, encode);
         }
 
-
-        if (!serverNameContainsPort(containsScheme, serverName) && !requestIsOnStandardPort(request)) {
+        if (builder.getPort() == -1 && !requestIsOnStandardPort(request)) {
             builder.setPort(request.getServerPort());
         }
 
-        builder.setEncodedPath(request.getRequestURI());
+        builder.setEncodedPath(builder.getEncodedPath() + request.getRequestURI());
 
         final List<String> serviceParameterNames = Arrays.asList(serviceParameterName.split(","));
         if (!serviceParameterNames.isEmpty() && !originalRequestUrl.getQueryParams().isEmpty()) {
