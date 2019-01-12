@@ -457,7 +457,7 @@ Filters that redirects to the supplied url based on an exception.  Exceptions an
 
 | Property | Description | Required
 |----------|-------|-----------
-| `defaultErrorRedirectPage` | Default url to redirect to, in case no erorr matches are found. | Yes
+| `defaultErrorRedirectPage` | Default url to redirect to, in case no error matches are found. | Yes
 | `java.lang.Exception` | Fully qualified exception name. Its value must be redirection url | No
 
 
@@ -731,7 +731,7 @@ To log out of all applications, click here. (provide link to CAS server's logout
 
 <a name="jaas"></a>
 ## JAAS
-The client supports the Java Authentication and Authorization Service (JAAS) framework, which provides authnz facilities to CAS-enabled JEE applications.
+The client supports the Java Authentication and Authorization Service (JAAS) framework, which provides authn facilities to CAS-enabled JEE applications.
 
 A general JAAS authentication module, `CasLoginModule`, is available with the specific purpose of providing authentication and authorization services to CAS-enabled JEE applications. The design of the module is simple: given a service URL and a service ticket in a `NameCallback` and `PasswordCallback`, respectively, the module contacts the CAS server and attempts to validate the ticket. In keeping with CAS integration for Java applications, a JEE container-specific servlet filter is needed to protect JEE Web applications. The JAAS support should be extensible to any JEE container.
 
@@ -1069,7 +1069,7 @@ context.getSecurityHandler().setAuthenticator(authenticator);
 
 <a name="atlassian-integration"></a>
 ## Atlassian Integration
-The client includes Atlassian Confluence and JIRA support. Support is enabled by a custom CAS authenticator that extends the default authenticators.
+The clien includes Atlassian Confluence and JIRA support. Support is enabled by a custom CAS authenticator that extends the default authenticators.
 
 <a name="configuration"></a>
 ### Configuration
