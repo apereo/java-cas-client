@@ -122,7 +122,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 </dependency>
 ```
 
-<a name="configurtion"></a>
+<a name="configuration"></a>
 ## Configuration
 
 ### Strategies
@@ -1069,7 +1069,7 @@ context.getSecurityHandler().setAuthenticator(authenticator);
 
 <a name="atlassian-integration"></a>
 ## Atlassian Integration
-The clien includes Atlassian Confluence and JIRA support. Support is enabled by a custom CAS authenticator that extends the default authenticators.
+The client includes Atlassian Confluence and JIRA support. Support is enabled by a custom CAS authenticator that extends the default authenticators.
 
 <a name="configuration"></a>
 ### Configuration
