@@ -20,6 +20,7 @@ package org.jasig.cas.client.validation;
 
 import org.jasig.cas.client.util.XmlUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -58,12 +59,13 @@ public class Cas30ServiceTicketValidator extends Cas20ServiceTicketValidator {
         NodeList attributeList = document.getElementsByTagName("cas:attribute");
 
         for (int i = 0; i < attributeList.getLength(); i++) {
-            final Node attribute = attributeList.item(i);
-            if (attribute.getAttributes().getLength() > 0) {
-                attributes.put(attribute.getAttributes().getNamedItem("name").getNodeValue(),
-                               attribute.getAttributes().getNamedItem("value").getNodeValue());
+            final Node casAttributeNode = attributeList.item(i);
+            final NamedNodeMap casAttributes = casAttributeNode.getAttributes();
+            if (casAttributes.getLength() > 0) {
+                attributes.put(casAttributes.getNamedItem("name").getNodeValue(),
+                               casAttributes.getNamedItem("value").getNodeValue());
             } else {
-                attributes.put(attribute.getLocalName(), attribute.getNodeValue());
+                attributes.put(casAttributeNode.getLocalName(), casAttributeNode.getNodeValue());
             }
         }
 
