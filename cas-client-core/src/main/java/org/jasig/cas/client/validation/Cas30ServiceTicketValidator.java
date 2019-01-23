@@ -18,6 +18,14 @@
  */
 package org.jasig.cas.client.validation;
 
+import org.jasig.cas.client.util.XmlUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Service tickets validation service for the CAS protocol v3.
  *
@@ -33,5 +41,32 @@ public class Cas30ServiceTicketValidator extends Cas20ServiceTicketValidator {
     @Override
     protected String getUrlSuffix() {
         return "p3/serviceValidate";
+    }
+
+    /**
+     * Custom attribute extractor that will account for inlined CAS attributes.  Useful when CAS is acting as
+     * as SAML 2 IdP and returns SAML attributes with names that contains namespaces.
+     *
+     * @param xml the XML to parse.
+     * @return - Map of attributes
+     */
+    @Override
+    protected Map<String, Object> extractCustomAttributes(String xml) {
+        final Document document = XmlUtils.newDocument(xml);
+        final HashMap<String, Object> attributes = new HashMap<String, Object>();
+
+        NodeList attributeList = document.getElementsByTagName("cas:attribute");
+
+        for (int i = 0; i < attributeList.getLength(); i++) {
+            final Node attribute = attributeList.item(i);
+            if (attribute.getAttributes().getLength() > 0) {
+                attributes.put(attribute.getAttributes().getNamedItem("name").getNodeValue(),
+                               attribute.getAttributes().getNamedItem("value").getNodeValue());
+            } else {
+                attributes.put(attribute.getLocalName(), attribute.getNodeValue());
+            }
+        }
+
+        return attributes;
     }
 }
