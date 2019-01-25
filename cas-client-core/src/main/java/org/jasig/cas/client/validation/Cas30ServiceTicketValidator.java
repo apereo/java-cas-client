@@ -24,7 +24,10 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,21 +57,35 @@ public class Cas30ServiceTicketValidator extends Cas20ServiceTicketValidator {
     @Override
     protected Map<String, Object> extractCustomAttributes(String xml) {
         final Document document = XmlUtils.newDocument(xml);
-        final HashMap<String, Object> attributes = new HashMap<String, Object>();
 
-        NodeList attributeList = document.getElementsByTagName("cas:attribute");
+        // Check if attributes are inlined.  If not return default super method results
+        final NodeList attributeList = document.getElementsByTagName("cas:attribute");
+        if (attributeList.getLength() == 0) {
+            return super.extractCustomAttributes(xml);
+        }
+
+        final HashMap<String, Object> attributes = new HashMap<String, Object>();
 
         for (int i = 0; i < attributeList.getLength(); i++) {
             final Node casAttributeNode = attributeList.item(i);
-            final NamedNodeMap casAttributes = casAttributeNode.getAttributes();
-            if (casAttributes.getLength() > 0) {
-                attributes.put(casAttributes.getNamedItem("name").getNodeValue(),
-                               casAttributes.getNamedItem("value").getNodeValue());
+            final NamedNodeMap nodeAttributes = casAttributeNode.getAttributes();
+            final String name = nodeAttributes.getNamedItem("name").getNodeValue();
+            final String value = nodeAttributes.getNamedItem("value").getTextContent();
+            final Object mapValue = attributes.get(name);
+            if (mapValue != null) {
+                if (mapValue instanceof List) {
+                    ((List) mapValue).add(value);
+                } else {
+                    final LinkedList<Object> list = new LinkedList<Object>();
+                    list.add(mapValue);
+                    list.add(value);
+                    attributes.put(name, list);
+                }
             } else {
-                attributes.put(casAttributeNode.getLocalName(), casAttributeNode.getNodeValue());
+                attributes.put(name, value);
             }
         }
-
         return attributes;
     }
+
 }
