@@ -22,7 +22,6 @@ package org.jasig.cas.client.validation;
  * Base class for all TicketValidator tests to inherit from.
  *
  * @author Scott Battaglia
- * @version $Revision: 11731 $ $Date: 2007-09-27 11:27:21 -0400 (Wed, 27 Sep 2007) $
  * @since 3.0
  */
 public abstract class AbstractTicketValidatorTests {

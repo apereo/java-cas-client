@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Scott Battaglia
  * @author Brad Cupit (brad [at] lsu {dot} edu)
- * @version $Revision: 11729 $ $Date: 2007-09-26 14:22:30 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
 public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicketStorage {
@@ -57,7 +56,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * 
      * @see ProxyGrantingTicketStorageImpl#DEFAULT_TIMEOUT
      */
-    private long timeout;
+    private final long timeout;
 
     /**
      * Constructor set the timeout to the default value.

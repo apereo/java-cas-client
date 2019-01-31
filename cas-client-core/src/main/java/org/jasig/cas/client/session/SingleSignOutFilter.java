@@ -39,7 +39,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
 
     private static final SingleSignOutHandler HANDLER = new SingleSignOutHandler();
 
-    private AtomicBoolean handlerInitialized = new AtomicBoolean(false);
+    private final AtomicBoolean handlerInitialized = new AtomicBoolean(false);
 
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);

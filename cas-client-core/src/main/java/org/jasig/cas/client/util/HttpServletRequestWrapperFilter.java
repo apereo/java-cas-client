@@ -44,7 +44,6 @@ import org.jasig.cas.client.validation.Assertion;
  *
  * @author Scott Battaglia
  * @author Marvin S. Addison
- * @version $Revision: 11729 $ $Date: 2007-09-26 14:22:30 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
 public final class HttpServletRequestWrapperFilter extends AbstractConfigurationFilter {

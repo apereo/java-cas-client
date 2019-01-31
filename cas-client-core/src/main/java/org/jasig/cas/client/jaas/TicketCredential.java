@@ -34,7 +34,7 @@ public final class TicketCredential implements Principal {
     private static final int HASHCODE_SEED = 17;
 
     /** Ticket ID string */
-    private String ticket;
+    private final String ticket;
 
     /**
      * Creates a new instance that wraps the given ticket.

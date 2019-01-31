@@ -32,7 +32,7 @@ import org.jasig.cas.client.tomcat.RegexUriLogoutHandler;
  */
 public final class RegexUriLogoutValve extends AbstractLogoutValve {
 
-    private RegexUriLogoutHandler logoutHandler = new RegexUriLogoutHandler();
+    private final RegexUriLogoutHandler logoutHandler = new RegexUriLogoutHandler();
 
     public void setRedirectUrl(final String redirectUrl) {
         this.logoutHandler.setRedirectUrl(redirectUrl);

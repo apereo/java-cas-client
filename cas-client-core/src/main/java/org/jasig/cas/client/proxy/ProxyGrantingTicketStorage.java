@@ -23,7 +23,6 @@ package org.jasig.cas.client.proxy;
  * them to a specific ProxyGrantingTicketIou.
  *
  * @author Scott Battaglia
- * @version $Revision: 11729 $ $Date: 2007-09-26 14:22:30 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
 public interface ProxyGrantingTicketStorage {

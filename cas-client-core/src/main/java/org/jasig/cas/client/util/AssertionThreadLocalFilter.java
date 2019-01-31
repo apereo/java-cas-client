@@ -28,7 +28,6 @@ import org.jasig.cas.client.validation.Assertion;
  * Places the assertion in a ThreadLocal such that other resources can access it that do not have access to the web tier session.
  *
  * @author Scott Battaglia
- * @version $Revision: 11728 $ $Date: 2007-09-26 14:20:43 -0400 (Tue, 26 Sep 2007) $
  * @since 3.0
  */
 public final class AssertionThreadLocalFilter implements Filter {

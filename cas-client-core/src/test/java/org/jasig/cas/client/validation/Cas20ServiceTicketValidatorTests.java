@@ -32,7 +32,6 @@ import org.junit.Test;
  * Test cases for the {@link Cas20ServiceTicketValidator}.
  *
  * @author Scott Battaglia
- * @version $Revision: 11737 $ $Date: 2007-10-03 09:14:02 -0400 (Tue, 03 Oct 2007) $
  * @since 3.0
  */
 public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValidatorTests {

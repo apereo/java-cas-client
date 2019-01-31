@@ -32,7 +32,7 @@ import org.jasig.cas.client.tomcat.StaticUriLogoutHandler;
  */
 public final class StaticUriLogoutValve extends AbstractLogoutValve {
 
-    private StaticUriLogoutHandler logoutHandler = new StaticUriLogoutHandler();
+    private final StaticUriLogoutHandler logoutHandler = new StaticUriLogoutHandler();
 
     public void setRedirectUrl(final String redirectUrl) {
         this.logoutHandler.setRedirectUrl(redirectUrl);

@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  * the associated filter is executed. Otherwise, the normal chain is executed.
  *
  * @author Scott Battaglia
- * @version $Revision: 11729 $ $Date: 2006-09-26 14:22:30 -0400 (Tue, 26 Sep 2006) $
  * @since 3.0
  */
 public final class DelegatingFilter implements Filter {

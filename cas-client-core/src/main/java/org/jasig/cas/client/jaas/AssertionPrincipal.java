@@ -36,7 +36,7 @@ public class AssertionPrincipal extends SimplePrincipal implements Serializable 
     private static final long serialVersionUID = 2288520214366461693L;
 
     /** CAS assertion describing authenticated state */
-    private Assertion assertion;
+    private final Assertion assertion;
 
     /**
      * Creates a new principal containing the CAS assertion.
