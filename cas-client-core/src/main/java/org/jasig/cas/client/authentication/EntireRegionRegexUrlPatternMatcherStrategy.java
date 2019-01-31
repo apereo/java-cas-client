@@ -24,29 +24,25 @@ import java.util.regex.Pattern;
 /**
  * A pattern matcher that looks inside the url to find the pattern, that
  * is assumed to have been specified via regular expressions syntax.
- * The match behavior is based on {@link Matcher#find()}:
- * Attempts to find the next subsequence of the input sequence that matches
- * the pattern. This method starts at the beginning of this matcher's region, or, if
- * a previous invocation of the method was successful and the matcher has
- * not since been reset, at the first character not matched by the previous
- * match.
+ * The match behavior is based on {@link Matcher#matches()}:
+ * Attempts to match the entire region against the pattern.
  *
  * @author Misagh Moayyed
- * @since 3.3.1
+ * @since 3.5
  */
-public final class RegexUrlPatternMatcherStrategy implements UrlPatternMatcherStrategy {
+public final class EntireRegionRegexUrlPatternMatcherStrategy implements UrlPatternMatcherStrategy {
 
     private Pattern pattern;
 
-    public RegexUrlPatternMatcherStrategy() {
+    public EntireRegionRegexUrlPatternMatcherStrategy() {
     }
 
-    public RegexUrlPatternMatcherStrategy(final String pattern) {
+    public EntireRegionRegexUrlPatternMatcherStrategy(final String pattern) {
         this.setPattern(pattern);
     }
 
     public boolean matches(final String url) {
-        return this.pattern.matcher(url).find();
+        return this.pattern.matcher(url).matches();
     }
 
     public void setPattern(final String pattern) {

@@ -202,9 +202,21 @@ The `AuthenticationFilter` is what detects whether a user needs to be authentica
 | `serviceParameterName ` | specifies the name of the request parameter on where to find the service (i.e. `service`) | No
 | `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
 | `ignorePattern` | Defines the url pattern to ignore, when intercepting authentication requests. | No
-| `ignoreUrlPatternType` | Defines the type of the pattern specified. Defaults to `REGEX`. Other types are `CONTAINS`, `EXACT`. | No
+| `ignoreUrlPatternType` | Defines the type of the pattern specified. Defaults to `REGEX`. Other types are `CONTAINS`, `EXACT`, `FULL_REGEX`. Can also accept a fully-qualified class name that implements `UrlPatternMatcherStrategy`. | No
 | `gatewayStorageClass` | The storage class used to record gateway requests | No
 | `authenticationRedirectStrategyClass` | The class name of the component to decide how to handle authn redirects to CAS | No
+
+##### Ignore Patterns
+
+The following types are supported:
+
+| Type | Description 
+|----------|-------
+| `REGEX` | Matches the URL the `ignorePattern` using `Matcher#find()`. It matches the next occurrence within the substring that matches the regex.
+| `CONTAINS` | Uses the `String#contains()` operation to determine if the url contains the specified pattern. Behavior is case-sensitive.
+| `EXACT` | Uses the `String#equals()` operation to determine if the url exactly equals the specified pattern. Behavior is case-sensitive.
+| `FULL_REGEX` | Matches the URL the `ignorePattern` using `Matcher#matches()`. It matches the expression against the entire string as it implicitly add a `^` at the start and `$` at the end of the pattern, so it will not match substring or part of the string. `^` and `$` are meta characters that represents start of the string and end of the string respectively.
+
 
 <a name="orgjasigcasclientauthenticationsaml11authenticationfilter"></a>
 #### org.jasig.cas.client.authentication.Saml11AuthenticationFilter

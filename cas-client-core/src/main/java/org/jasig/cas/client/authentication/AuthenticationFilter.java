@@ -18,21 +18,24 @@
  */
 package org.jasig.cas.client.authentication;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.validation.Assertion;
+
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -70,15 +73,16 @@ public class AuthenticationFilter extends AbstractCasFilter {
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
     private AuthenticationRedirectStrategy authenticationRedirectStrategy = new DefaultAuthenticationRedirectStrategy();
-    
+
     private UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass = null;
-    
+
     private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
-            new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
-    
+        new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
+
     static {
         PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);
         PATTERN_MATCHER_TYPES.put("REGEX", RegexUrlPatternMatcherStrategy.class);
+        PATTERN_MATCHER_TYPES.put("FULL_REGEX", EntireRegionRegexUrlPatternMatcherStrategy.class);
         PATTERN_MATCHER_TYPES.put("EXACT", ExactUrlPatternMatcherStrategy.class);
     }
 
@@ -89,7 +93,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     protected AuthenticationFilter(final Protocol protocol) {
         super(protocol);
     }
-    
+
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
@@ -103,10 +107,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
             setRenew(getBoolean(ConfigurationKeys.RENEW));
             setGateway(getBoolean(ConfigurationKeys.GATEWAY));
-                       
+
             final String ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
             final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
-            
+
             if (ignorePattern != null) {
                 final Class<? extends UrlPatternMatcherStrategy> ignoreUrlMatcherClass = PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
                 if (ignoreUrlMatcherClass != null) {
@@ -123,13 +127,13 @@ public class AuthenticationFilter extends AbstractCasFilter {
                     this.ignoreUrlPatternMatcherStrategyClass.setPattern(ignorePattern);
                 }
             }
-            
+
             final Class<? extends GatewayResolver> gatewayStorageClass = getClass(ConfigurationKeys.GATEWAY_STORAGE_CLASS);
 
             if (gatewayStorageClass != null) {
                 setGatewayStorage(ReflectUtils.newInstance(gatewayStorageClass));
             }
-            
+
             final Class<? extends AuthenticationRedirectStrategy> authenticationRedirectStrategyClass = getClass(ConfigurationKeys.AUTHENTICATION_REDIRECT_STRATEGY_CLASS);
 
             if (authenticationRedirectStrategyClass != null) {
@@ -150,17 +154,17 @@ public class AuthenticationFilter extends AbstractCasFilter {
     }
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-            final FilterChain filterChain) throws IOException, ServletException {
-        
+                               final FilterChain filterChain) throws IOException, ServletException {
+
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        
+
         if (isRequestUrlExcluded(request)) {
             logger.debug("Request is ignored.");
             filterChain.doFilter(request, response);
             return;
         }
-        
+
         final HttpSession session = request.getSession(false);
         final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
 
@@ -191,7 +195,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         logger.debug("Constructed service url: {}", modifiedServiceUrl);
 
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
-                getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
+            getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
         this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
@@ -216,12 +220,12 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
         this.gatewayStorage = gatewayStorage;
     }
-        
+
     private boolean isRequestUrlExcluded(final HttpServletRequest request) {
         if (this.ignoreUrlPatternMatcherStrategyClass == null) {
             return false;
         }
-        
+
         final StringBuffer urlBuffer = request.getRequestURL();
         if (request.getQueryString() != null) {
             urlBuffer.append("?").append(request.getQueryString());
@@ -231,7 +235,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     }
 
     public final void setIgnoreUrlPatternMatcherStrategyClass(
-            final UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass) {
+        final UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass) {
         this.ignoreUrlPatternMatcherStrategyClass = ignoreUrlPatternMatcherStrategyClass;
     }
 
