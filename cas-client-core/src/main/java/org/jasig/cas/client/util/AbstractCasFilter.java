@@ -45,7 +45,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     /** Represents the constant for where the assertion will be located in memory. */
     public static final String CONST_CAS_ASSERTION = "_const_cas_assertion_";
 
-    private Protocol protocol;
+    private final Protocol protocol;
 
     /** Sets where response.encodeUrl should be called on service urls when constructed. */
     private boolean encodeServiceUrl = true;

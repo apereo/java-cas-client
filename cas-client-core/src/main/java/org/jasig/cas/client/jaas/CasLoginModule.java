@@ -162,7 +162,7 @@ public class CasLoginModule implements LoginModule {
     protected String[] defaultRoles;
 
     /** Names of attributes in the CAS assertion that should be used for role data */
-    protected Set<String> roleAttributeNames = new HashSet<String>();
+    protected final Set<String> roleAttributeNames = new HashSet<String>();
 
     /** Name of JAAS Group containing caller principal */
     protected String principalGroupName = DEFAULT_PRINCIPAL_GROUP_NAME;
@@ -292,10 +292,10 @@ public class CasLoginModule implements LoginModule {
             try {
                 this.callbackHandler.handle(new Callback[] { ticketCallback, serviceCallback });
             } catch (final IOException e) {
-                logger.info("Login failed due to IO exception in callback handler: {}", e);
+                logger.info("Login failed due to IO exception in callback handler", e);
                 throw (LoginException) new LoginException("IO exception in callback handler: " + e).initCause(e);
             } catch (final UnsupportedCallbackException e) {
-                logger.info("Login failed due to unsupported callback: {}", e);
+                logger.info("Login failed due to unsupported callback", e);
                 throw (LoginException) new LoginException(
                         "Callback handler does not support PasswordCallback and TextInputCallback.").initCause(e);
             }
@@ -325,7 +325,7 @@ public class CasLoginModule implements LoginModule {
                         this.assertion = this.ticketValidator.validate(this.ticket.getName(), service);
 
                     } catch (final Exception e) {
-                        logger.info("Login failed due to CAS ticket validation failure: {}", e);
+                        logger.info("Login failed due to CAS ticket validation failure", e);
                         throw (LoginException) new LoginException("CAS ticket validation failed: " + e).initCause(e);
                     }
                 }

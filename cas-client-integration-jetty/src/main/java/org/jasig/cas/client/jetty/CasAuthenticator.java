@@ -241,7 +241,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
             logger.debug("Redirecting to {}", redirectUrl);
             response.sendRedirect(redirectUrl);
         } catch (IOException e) {
-            logger.debug("Redirect to CAS failed with error: {}", e);
+            logger.debug("Redirect to CAS failed with error", e);
             throw new ServerAuthException("Redirect to CAS failed", e);
         }
     }

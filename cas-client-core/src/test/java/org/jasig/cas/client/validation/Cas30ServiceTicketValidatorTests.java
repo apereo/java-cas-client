@@ -34,7 +34,6 @@ import static org.junit.Assert.*;
  * Test cases for the {@link Cas20ServiceTicketValidator}.
  *
  * @author Scott Battaglia
- * @version $Revision: 11737 $ $Date: 2007-10-03 09:14:02 -0400 (Tue, 03 Oct 2007) $
  * @since 3.0
  */
 public final class Cas30ServiceTicketValidatorTests extends AbstractTicketValidatorTests {
@@ -48,11 +47,6 @@ public final class Cas30ServiceTicketValidatorTests extends AbstractTicketValida
     public Cas30ServiceTicketValidatorTests() {
         super();
     }
-
-    /*@AfterClass
-    public static void classCleanUp() {
-        server.shutdown();
-    } */
 
     @Before
     public void setUp() throws Exception {

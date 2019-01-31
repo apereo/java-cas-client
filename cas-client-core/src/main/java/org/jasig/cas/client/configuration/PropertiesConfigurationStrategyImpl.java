@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -50,7 +49,7 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
 
     private String simpleFilterName;
 
-    private Properties properties = new Properties();
+    private final Properties properties = new Properties();
 
     @Override
     protected String get(final ConfigurationKey configurationKey) {

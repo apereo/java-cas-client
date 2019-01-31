@@ -19,12 +19,8 @@
 package org.jasig.cas.client.tomcat.v85;
 
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.connector.Request;
 import org.jasig.cas.client.validation.Saml11TicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * CAS authenticator that uses the SAML 1.1 protocol.

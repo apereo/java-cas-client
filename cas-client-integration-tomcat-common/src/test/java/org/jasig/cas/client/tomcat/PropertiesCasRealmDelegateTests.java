@@ -32,7 +32,7 @@ import org.jasig.cas.client.authentication.AttributePrincipalImpl;
  *
  */
 public class PropertiesCasRealmDelegateTests extends TestCase {
-    private PropertiesCasRealmDelegate realm = new PropertiesCasRealmDelegate();
+    private final PropertiesCasRealmDelegate realm = new PropertiesCasRealmDelegate();
 
     /** {@inheritDoc} */
     protected void setUp() throws Exception {

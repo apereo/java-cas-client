@@ -35,7 +35,7 @@ public final class WhitelistHostnameVerifier implements HostnameVerifier, Serial
     private static final long serialVersionUID = 1L;
 
     /** Allowed hosts */
-    private String[] allowedHosts;
+    private final String[] allowedHosts;
 
     /**
      * Creates a new instance using the given array of allowed hosts.

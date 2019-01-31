@@ -17,10 +17,10 @@ import java.util.Collection;
 public class CasUserIdentity implements UserIdentity {
 
     /** CAS principal. */
-    private AttributePrincipal principal;
+    private final AttributePrincipal principal;
 
     /** Assertion attribute containing role data. */
-    private String roleAttribute;
+    private final String roleAttribute;
 
 
     /**

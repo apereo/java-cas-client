@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.ssl.HttpsURLConnectionFactory;
-import org.junit.Ignore;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -34,7 +33,6 @@ import java.util.Collection;
  * Tests for the CommonUtils.
  *
  * @author Scott Battaglia
- * @version $Revision: 11731 $ $Date: 2007-09-27 11:27:21 -0400 (Wed, 27 Sep 2007) $
  * @since 3.0
  */
 public final class CommonUtilsTests extends TestCase {

@@ -38,7 +38,7 @@ public final class RegexHostnameVerifier implements HostnameVerifier, Serializab
     private static final long serialVersionUID = 1L;
 
     /** Allowed hostname pattern */
-    private Pattern pattern;
+    private final Pattern pattern;
 
     /**
      * Creates a new instance using the given regular expression.

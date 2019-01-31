@@ -21,7 +21,6 @@ package org.jasig.cas.client.validation;
 import static org.junit.Assert.*;
 import java.io.UnsupportedEncodingException;
 import org.jasig.cas.client.PublicTestHttpServer;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +28,6 @@ import org.junit.Test;
  * Test cases for the {@link Cas10TicketValidator}.
  *
  * @author Scott Battaglia
- * @version $Revision: 11731 $ $Date: 2007-09-27 11:27:21 -0400 (Wed, 27 Sep 2007) $
  * @since 3.0
  */
 public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTests {

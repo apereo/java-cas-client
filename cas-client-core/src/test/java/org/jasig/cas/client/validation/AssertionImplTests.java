@@ -29,7 +29,6 @@ import org.jasig.cas.client.authentication.AttributePrincipalImpl;
  * Test cases for the {@link AssertionImpl}.
  *
  * @author Scott Battaglia
- * @version $Revision: 11737 $ $Date: 2007-10-03 09:14:02 -0400 (Tue, 03 Oct 2007) $
  * @since 3.0
  */
 public final class AssertionImplTests extends TestCase {

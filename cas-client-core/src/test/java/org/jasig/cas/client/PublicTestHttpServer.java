@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Scott Battaglia
- * @version $Revision: 11721 $ $Date: 2007-08-09 15:17:44 -0400 (Wed, 09 Aug 2007) $
  * @since 3.0
  */
 public final class PublicTestHttpServer extends Thread {
@@ -47,7 +46,7 @@ public final class PublicTestHttpServer extends Thread {
 
     private final CountDownLatch ready = new CountDownLatch(1);
 
-    private static Map<Integer, PublicTestHttpServer> serverMap = new HashMap<Integer, PublicTestHttpServer>();
+    private static final Map<Integer, PublicTestHttpServer> serverMap = new HashMap<Integer, PublicTestHttpServer>();
 
     private PublicTestHttpServer(String data, String encoding, String MIMEType, int port)
             throws UnsupportedEncodingException {

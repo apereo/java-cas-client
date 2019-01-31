@@ -30,7 +30,7 @@ public class ProxyGrantingTicketStorageImplTest {
 
     private static final int TIME_OUT = 250;
 
-    private ProxyGrantingTicketStorage storage = new ProxyGrantingTicketStorageImpl(TIME_OUT);
+    private final ProxyGrantingTicketStorage storage = new ProxyGrantingTicketStorageImpl(TIME_OUT);
 
     @Test
     public void cleanUp() throws Exception {

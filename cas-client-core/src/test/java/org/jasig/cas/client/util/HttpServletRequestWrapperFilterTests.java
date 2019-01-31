@@ -40,7 +40,6 @@ import org.springframework.mock.web.MockHttpSession;
  * Tests for the HttpServletRequestWrapperFilter.
  *
  * @author Scott Battaglia
- * @version $Revision: 11742 $ $Date: 2007-10-05 14:03:58 -0400 (Thu, 05 Oct 2007) $
  * @since 3.0
  */
 
