@@ -265,6 +265,10 @@ Validates tickets using the CAS 1.0 Protocol.
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://somewhere.cas.edu:8443/cas</param-value>
   </init-param>
+  <init-param>
+    <param-name>serverName</param-name>
+    <param-value>http://www.the-client.com</param-value>
+  </init-param>    
 </filter>
 <filter-mapping>
     <filter-name>CAS Validation Filter</filter-name>
