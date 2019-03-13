@@ -49,6 +49,7 @@ public interface ConfigurationKeys {
     ConfigurationKey<Boolean> IGNORE_CASE = new ConfigurationKey<Boolean>("ignoreCase", Boolean.FALSE);
     ConfigurationKey<String> CAS_SERVER_LOGIN_URL = new ConfigurationKey<String>("casServerLoginUrl", null);
     ConfigurationKey<Boolean> GATEWAY = new ConfigurationKey<Boolean>("gateway", Boolean.FALSE);
+    ConfigurationKey<String> METHOD = new ConfigurationKey<String>("method", null);
     ConfigurationKey<Class<? extends AuthenticationRedirectStrategy>> AUTHENTICATION_REDIRECT_STRATEGY_CLASS = new ConfigurationKey<Class<? extends AuthenticationRedirectStrategy>>("authenticationRedirectStrategyClass", null);
     ConfigurationKey<Class<? extends GatewayResolver>> GATEWAY_STORAGE_CLASS = new ConfigurationKey<Class<? extends GatewayResolver>>("gatewayStorageClass", DefaultGatewayResolverImpl.class);
     ConfigurationKey<String> CAS_SERVER_URL_PREFIX = new ConfigurationKey<String>("casServerUrlPrefix", null);

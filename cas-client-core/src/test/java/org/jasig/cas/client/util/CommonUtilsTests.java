@@ -41,7 +41,9 @@ public final class CommonUtilsTests extends TestCase {
 
     public void testRedirectUrlWithParam() {
         final String loginUrl = "http://localhost:8080/login?myName=foo";
-        final String fullyConstructedUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", false, false);
+        final String fullyConstructedUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", false, false, null);
+
+        assertEquals("http://localhost:8080/login?myName=foo&foo=foo", fullyConstructedUrl);
 
         int count = 0;
         final char[] chars = fullyConstructedUrl.toCharArray();
@@ -53,6 +55,13 @@ public final class CommonUtilsTests extends TestCase {
         }
 
         assertEquals(1, count);
+    }
+
+    public void testRedirectUrlWithMethod() {
+        final String loginUrl = "http://localhost:8080/login";
+        final String redirectUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", true, true, "post");
+
+        assertEquals("http://localhost:8080/login?foo=foo&renew=true&gateway=true&method=post", redirectUrl);
     }
 
     public void testAssertNotNull() {
