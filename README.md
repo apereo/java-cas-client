@@ -205,6 +205,7 @@ The `AuthenticationFilter` is what detects whether a user needs to be authentica
 | `ignoreUrlPatternType` | Defines the type of the pattern specified. Defaults to `REGEX`. Other types are `CONTAINS`, `EXACT`, `FULL_REGEX`. Can also accept a fully-qualified class name that implements `UrlPatternMatcherStrategy`. | No
 | `gatewayStorageClass` | The storage class used to record gateway requests | No
 | `authenticationRedirectStrategyClass` | The class name of the component to decide how to handle authn redirects to CAS | No
+| `method` | The method used by the CAS server to send the user back to the application. Defaults to `null` | No
 
 ##### Ignore Patterns
 
@@ -252,6 +253,7 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 | `artifactParameterName ` | specifies the name of the request parameter on where to find the artifact (i.e. `SAMLart`). | No
 | `serviceParameterName ` | specifies the name of the request parameter on where to find the service (i.e. `TARGET`) | No
 | `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
+| `method` | The method used by the CAS server to send the user back to the application. Defaults to `null` | No
 
 <a name="rgjasigcasclientvalidationcas10ticketvalidationfilter"></a>
 #### org.jasig.cas.client.validation.Cas10TicketValidationFilter

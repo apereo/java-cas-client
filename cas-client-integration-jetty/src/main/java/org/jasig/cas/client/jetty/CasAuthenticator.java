@@ -237,7 +237,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
             final HttpServletRequest request, final HttpServletResponse response) throws ServerAuthException {
         try {
             final String redirectUrl = CommonUtils.constructRedirectUrl(
-                    casServerLoginUrl, protocol.getServiceParameterName(), serviceUrl(request, response), renew, false);
+                    casServerLoginUrl, protocol.getServiceParameterName(), serviceUrl(request, response), renew, false, null);
             logger.debug("Redirecting to {}", redirectUrl);
             response.sendRedirect(redirectUrl);
         } catch (IOException e) {

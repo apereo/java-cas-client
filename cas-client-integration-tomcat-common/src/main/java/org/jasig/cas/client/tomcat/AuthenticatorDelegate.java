@@ -89,7 +89,7 @@ public final class AuthenticatorDelegate {
                     this.serviceParameterName, this.artifactParameterName, true);
             if (CommonUtils.isBlank(token)) {
                 final String redirectUrl = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
-                        this.serviceParameterName, service, false, false);
+                        this.serviceParameterName, service, false, false, null);
                 logger.debug("Redirecting to {}", redirectUrl);
                 CommonUtils.sendRedirect(response, redirectUrl);
                 return null;
