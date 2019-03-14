@@ -179,12 +179,14 @@ public final class CommonUtils {
      * @param serviceUrl the actual service's url.
      * @param renew whether we should send renew or not.
      * @param gateway where we should send gateway or not.
+     * @param method the method used by the CAS server to send the user back to the application.
      * @return the fully constructed redirect url.
      */
     public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName,
-            final String serviceUrl, final boolean renew, final boolean gateway) {
+            final String serviceUrl, final boolean renew, final boolean gateway, final String method) {
         return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="
-                + urlEncode(serviceUrl) + (renew ? "&renew=true" : "") + (gateway ? "&gateway=true" : "");
+                + urlEncode(serviceUrl) + (renew ? "&renew=true" : "") + (gateway ? "&gateway=true" : "")
+                + (method != null ? "&method=" + method : "");
     }
 
     /**
