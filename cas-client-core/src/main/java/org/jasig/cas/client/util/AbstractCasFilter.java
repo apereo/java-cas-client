@@ -25,6 +25,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 /**
  *  Abstract filter that contains code that is common to all CAS filters.
@@ -140,6 +141,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      * @return the ticket if its found, null otherwise.
      */
     protected String retrieveTicketFromRequest(final HttpServletRequest request) {
-        return CommonUtils.safeGetParameter(request, this.protocol.getArtifactParameterName());
+        return CommonUtils.safeGetParameter(request, this.protocol.getArtifactParameterName(),
+                Arrays.asList(this.protocol.getArtifactParameterName()));
     }
 }

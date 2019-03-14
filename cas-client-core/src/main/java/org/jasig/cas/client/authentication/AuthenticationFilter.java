@@ -46,6 +46,7 @@ import java.util.Map;
  * <li><code>casServerLoginUrl</code> - the url to log into CAS, i.e. https://cas.rutgers.edu/login</li>
  * <li><code>renew</code> - true/false on whether to use renew or not.</li>
  * <li><code>gateway</code> - true/false on whether to use gateway or not.</li>
+ * <li><code>method</code> - the method used by the CAS server to send the user back to the application (redirect or post).</li>
  * </ul>
  *
  * <p>Please see AbstractCasFilter for additional properties.</p>
@@ -69,6 +70,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
      * Whether to send the gateway request or not.
      */
     private boolean gateway = false;
+
+    /**
+     * The method used by the CAS server to send the user back to the application.
+     */
+    private String method;
 
     private GatewayResolver gatewayStorage = new DefaultGatewayResolverImpl();
 
@@ -107,6 +113,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
             setRenew(getBoolean(ConfigurationKeys.RENEW));
             setGateway(getBoolean(ConfigurationKeys.GATEWAY));
+            setMethod(getString(ConfigurationKeys.METHOD));
 
             final String ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
             final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
@@ -195,7 +202,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         logger.debug("Constructed service url: {}", modifiedServiceUrl);
 
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
-            getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway);
+            getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway, this.method);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
         this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
@@ -207,6 +214,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
     public final void setGateway(final boolean gateway) {
         this.gateway = gateway;
+    }
+
+    public void setMethod(final String method) {
+        this.method = method;
     }
 
     public final void setCasServerUrlPrefix(final String casServerUrlPrefix) {
