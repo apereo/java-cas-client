@@ -27,6 +27,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.proxy.*;
@@ -152,7 +153,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
                     .replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "");
             try {
                 final KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-                final PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(content));
+                final PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(new Base64().decode(content));
                 return keyFactory.generatePrivate(keySpecPKCS8);
             } catch (final Exception e) {
                 throw new RuntimeException(e);

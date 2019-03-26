@@ -24,6 +24,8 @@ import java.util.*;
 import javax.crypto.Cipher;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
@@ -135,7 +137,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         if (this.privateKey != null) {
             try {
                 final Cipher cipher = Cipher.getInstance(privateKey.getAlgorithm());
-                final byte[] cred64 = Base64.getDecoder().decode(encryptedPgt);
+                final byte[] cred64 = new Base64().decode(encryptedPgt);
                 cipher.init(Cipher.DECRYPT_MODE, privateKey);
                 final byte[] cipherData = cipher.doFinal(cred64);
                 final String pgt = new String(cipherData);
