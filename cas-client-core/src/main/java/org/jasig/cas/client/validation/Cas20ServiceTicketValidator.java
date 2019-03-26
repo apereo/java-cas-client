@@ -114,9 +114,6 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         final List<String> values = XmlUtils.getTextForElements(response, "proxyGrantingTicket");
         for (final String value : values) {
             if (value != null) {
-                /*if (!value.startsWith("PGTIOU-")) {
-                    return retrieveProxyGrantingTicketViaEncryption(value);
-                }*/
                 if (value.startsWith("PGTIOU-")) {
                     return retrieveProxyGrantingTicketFromStorage(value);
                 } else {

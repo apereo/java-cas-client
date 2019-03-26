@@ -146,7 +146,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         return (T) ReflectUtils.newInstance(ticketValidatorClass, casServerUrlPrefix);
     }
 
-    private PrivateKey buildPrivateKey(final String key) {
+    static PrivateKey buildPrivateKey(final String key) {
         if (key != null) {
             final String content = key.replaceAll("\\n", "").replaceAll("\\t", "")
                     .replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "");
