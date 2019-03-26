@@ -19,6 +19,9 @@
 package org.jasig.cas.client.validation;
 
 import java.io.IOException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +57,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
             TOLERANCE.getName(), IGNORE_PATTERN.getName(), IGNORE_URL_PATTERN_TYPE.getName(), HOSTNAME_VERIFIER.getName(), HOSTNAME_VERIFIER_CONFIG.getName(),
             EXCEPTION_ON_VALIDATION_FAILURE.getName(), REDIRECT_AFTER_VALIDATION.getName(), USE_SESSION.getName(), SECRET_KEY.getName(), CIPHER_ALGORITHM.getName(), PROXY_RECEPTOR_URL.getName(),
             PROXY_GRANTING_TICKET_STORAGE_CLASS.getName(), MILLIS_BETWEEN_CLEAN_UPS.getName(), ACCEPT_ANY_PROXY.getName(), ALLOWED_PROXY_CHAINS.getName(), TICKET_VALIDATOR_CLASS.getName(),
-            PROXY_CALLBACK_URL.getName(), RELAY_STATE_PARAMETER_NAME.getName()
+            PROXY_CALLBACK_URL.getName(), RELAY_STATE_PARAMETER_NAME.getName(), METHOD.getName(), PRIVATE_KEY.getName()
     };
 
     /**
@@ -71,6 +74,8 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     protected Class<? extends Cas20ServiceTicketValidator> defaultServiceTicketValidatorClass;
 
     protected Class<? extends Cas20ProxyTicketValidator> defaultProxyTicketValidatorClass;
+
+    private PrivateKey privateKey;
 
     /**
      * Storage location of ProxyGrantingTickets and Proxy Ticket IOUs.
@@ -113,6 +118,8 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         }
 
         this.millisBetweenCleanUps = getInt(ConfigurationKeys.MILLIS_BETWEEN_CLEAN_UPS);
+
+        this.privateKey = buildPrivateKey(getString(PRIVATE_KEY));
         super.initInternal(filterConfig);
     }
 
@@ -137,6 +144,21 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         }
 
         return (T) ReflectUtils.newInstance(ticketValidatorClass, casServerUrlPrefix);
+    }
+
+    private PrivateKey buildPrivateKey(final String key) {
+        if (key != null) {
+            final String content = key.replaceAll("\\n", "").replaceAll("\\t", "")
+                    .replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "");
+            try {
+                final KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                final PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(content));
+                return keyFactory.generatePrivate(keySpecPKCS8);
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
     }
 
     /**
@@ -183,6 +205,8 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
                 additionalParameters.put(s, filterConfig.getInitParameter(s));
             }
         }
+
+        validator.setPrivateKey(this.privateKey);
 
         validator.setCustomParameters(additionalParameters);
         return validator;
