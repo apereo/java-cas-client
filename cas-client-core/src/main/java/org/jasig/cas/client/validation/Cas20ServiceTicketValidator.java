@@ -47,6 +47,9 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTicketValidator {
 
+    public static final String PGT_ATTRIBUTE = "proxyGrantingTicket";
+    private static final String PGTIOU_PREFIX = "PGTIOU-";
+
     /** The CAS 2.0 protocol proxy callback url. */
     private String proxyCallbackUrl;
 
@@ -100,6 +103,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         final Assertion assertion;
         final Map<String, Object> attributes = extractCustomAttributes(response);
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
+            attributes.remove(PGT_ATTRIBUTE);
             final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes,
                     proxyGrantingTicket, this.proxyRetriever);
             assertion = new AssertionImpl(attributePrincipal);
@@ -113,10 +117,10 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     }
 
     protected String retrieveProxyGrantingTicket(final String response) {
-        final List<String> values = XmlUtils.getTextForElements(response, "proxyGrantingTicket");
+        final List<String> values = XmlUtils.getTextForElements(response, PGT_ATTRIBUTE);
         for (final String value : values) {
             if (value != null) {
-                if (value.startsWith("PGTIOU-")) {
+                if (value.startsWith(PGTIOU_PREFIX)) {
                     return retrieveProxyGrantingTicketFromStorage(value);
                 } else {
                     return retrieveProxyGrantingTicketViaEncryption(value);
