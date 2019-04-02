@@ -371,7 +371,8 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 | `millisBetweenCleanUps` | Startup delay for the cleanup task to remove expired tickets from the storage. Defaults to `60000 msec` | No
 | `ticketValidatorClass` | Ticket validator class to use/create | No
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
-| `privateKey` | A RSA private key to decrypt PGTs directly sent encrypted as an attribute | No
+| `privateKeyPath` | The path to a private key to decrypt PGTs directly sent encrypted as an attribute | No
+| `privateKeyAlgorithm` | The algorithm of the private key. Defaults to `RSA` | No
 
 #### org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, 

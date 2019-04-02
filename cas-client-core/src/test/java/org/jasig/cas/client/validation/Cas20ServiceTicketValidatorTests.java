@@ -43,22 +43,6 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
     private static final String PGTIOU = "PGTIOU-1-test";
     private static final String PGT = "PGT-1-ixcY6jtRXZ4OrJ39SadtLEcTLsGNhE8-NYtvDTK3kk5iAEdatRcnGrGjLckOwK8xU6ocastest";
     private static final String ENCRYPTED_PGT = "H3wqFQLBlvhbrPVo4yrwIF9p8yJhCfzHnLHgTWTYVw42sLDJj7c3PBFHKgZfaY9l57qDbKA0fZY979GGFFgnSz1VOOlTgVRi/nmbpwlScRLHP8qUf2JGUyhu0+nTRp6TcQiEqpf5iquXNyQ9UXPyWPdTM/YtgtYtcIOzMovjN5c=";
-    private static final String PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----\n" +
-            "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBANy6npifj4rfcDuP\n" +
-            "J2jlha4NhugGVrrmjhuKSRIzEK9dYC8PAv9DLr2LirvP+dmj87ZeBVCV8oVyJdJK\n" +
-            "Xip9aPRHlcgsLP+DxuPAbev20wlQUaEaWyZIJNtnj4ZyOfFEQTy27fHssGGYgdn3\n" +
-            "8W5K3Ce4YgFePiI2z0r+aZg880B/AgMBAAECgYEAuzbGAamENEOji8C1qnDSW3g5\n" +
-            "rl6B/XBDo/Q8WeVaB4Npa0COSDeRU08h0n5p6kD3GvzQATPNSYYxshVFnUBVXRgH\n" +
-            "YwE2XUWYXCMkuxnsT0lsPzhBBZQBl+Z2niF16y/M8kD4WtU25jFUnyw7ymY6/a2i\n" +
-            "56p4lgw6VKMWxB9HzRECQQD5tbERNTxFHbJsFbiwgmNFdv9KvO2lGqNIKepwVhrf\n" +
-            "xCtphxZ+T9MZT+7xTmPf3EjZQzyk1KvyP6WLlkL5JjOTAkEA4koKAS4YidLwHkNW\n" +
-            "G4OzB/RpGyfs/eaLryQBmpRoj/tnnlqil6S6yDTaor1afRoRJF2Ns27SA61r2ul6\n" +
-            "1gsq5QJBAMgT87dE/3CltdNyqBQNtTrweOdKb+ONb20f4K933nqStPIOAlDc5tju\n" +
-            "Ohbw54dz+o7Sl+G+YbNtmdg5Ypo9KK8CQD6xfpYXHEtK+qWXyEp1MWu5xkj0xc8O\n" +
-            "SZLradpW1aVWZL3VpIhY5jrDkfNWfLR+PVOS68hTorHMIT6UQyj8DRUCQQC2idIA\n" +
-            "FbF3gID9A5ZuL1kqk9QzVPmj/IBOF5LwNORkoUDZcNcHkCPWUKNj/lBo6F/ITYCe\n" +
-            "+W6QJE/M7kVYdpsp\n" +
-            "-----END PRIVATE KEY-----";
 
     private Cas20ServiceTicketValidator ticketValidator;
 
@@ -78,7 +62,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         this.ticketValidator.setProxyCallbackUrl("test");
         this.ticketValidator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
         this.ticketValidator.setProxyRetriever(getProxyRetriever());
-        this.ticketValidator.setPrivateKey(Cas20ProxyReceivingTicketValidationFilter.buildPrivateKey(PRIVATE_KEY));
+        this.ticketValidator.setPrivateKey(Cas20ProxyReceivingTicketValidationFilter.buildPrivateKey("src/test/resources/private.pem", "RSA"));
         this.ticketValidator.setRenew(true);
         proxyGrantingTicketField = AttributePrincipalImpl.class.getDeclaredField("proxyGrantingTicket");
         proxyGrantingTicketField.setAccessible(true);
