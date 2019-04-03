@@ -19,9 +19,13 @@
 package org.jasig.cas.client.validation;
 
 import java.io.StringReader;
+import java.security.PrivateKey;
 import java.util.*;
+import javax.crypto.Cipher;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
@@ -43,6 +47,9 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTicketValidator {
 
+    public static final String PGT_ATTRIBUTE = "proxyGrantingTicket";
+    private static final String PGTIOU_PREFIX = "PGTIOU-";
+
     /** The CAS 2.0 protocol proxy callback url. */
     private String proxyCallbackUrl;
 
@@ -52,12 +59,14 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     /** Implementation of the proxy retriever. */
     private ProxyRetriever proxyRetriever;
 
+    /** Private key for decryption */
+    private PrivateKey privateKey;
+
     /**
      * Constructs an instance of the CAS 2.0 Service Ticket Validator with the supplied
      * CAS server url prefix.
      *
      * @param casServerUrlPrefix the CAS Server URL prefix.
-     * @param urlFactory URL connection factory to use when communicating with the server
      */
     public Cas20ServiceTicketValidator(final String casServerUrlPrefix) {
         super(casServerUrlPrefix);
@@ -85,14 +94,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         }
 
         final String principal = parsePrincipalFromResponse(response);
-        final String proxyGrantingTicketIou = parseProxyGrantingTicketFromResponse(response);
-
-        final String proxyGrantingTicket;
-        if (CommonUtils.isBlank(proxyGrantingTicketIou) || this.proxyGrantingTicketStorage == null) {
-            proxyGrantingTicket = null;
-        } else {
-            proxyGrantingTicket = this.proxyGrantingTicketStorage.retrieve(proxyGrantingTicketIou);
-        }
+        final String proxyGrantingTicket = retrieveProxyGrantingTicket(response);
 
         if (CommonUtils.isEmpty(principal)) {
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
@@ -101,6 +103,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         final Assertion assertion;
         final Map<String, Object> attributes = extractCustomAttributes(response);
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
+            attributes.remove(PGT_ATTRIBUTE);
             final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes,
                     proxyGrantingTicket, this.proxyRetriever);
             assertion = new AssertionImpl(attributePrincipal);
@@ -113,8 +116,42 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         return assertion;
     }
 
-    protected String parseProxyGrantingTicketFromResponse(final String response) {
-        return XmlUtils.getTextForElement(response, "proxyGrantingTicket");
+    protected String retrieveProxyGrantingTicket(final String response) {
+        final List<String> values = XmlUtils.getTextForElements(response, PGT_ATTRIBUTE);
+        for (final String value : values) {
+            if (value != null) {
+                if (value.startsWith(PGTIOU_PREFIX)) {
+                    return retrieveProxyGrantingTicketFromStorage(value);
+                } else {
+                    return retrieveProxyGrantingTicketViaEncryption(value);
+                }
+            }
+        }
+        return null;
+    }
+
+    protected String retrieveProxyGrantingTicketFromStorage(final String pgtIou) {
+        if (this.proxyGrantingTicketStorage != null) {
+            return this.proxyGrantingTicketStorage.retrieve(pgtIou);
+        }
+        return null;
+    }
+
+    protected String retrieveProxyGrantingTicketViaEncryption(final String encryptedPgt) {
+        if (this.privateKey != null) {
+            try {
+                final Cipher cipher = Cipher.getInstance(privateKey.getAlgorithm());
+                final byte[] cred64 = new Base64().decode(encryptedPgt);
+                cipher.init(Cipher.DECRYPT_MODE, privateKey);
+                final byte[] cipherData = cipher.doFinal(cred64);
+                final String pgt = new String(cipherData);
+                logger.debug("Decrypted PGT: {}", pgt);
+                return pgt;
+            } catch (final Exception e) {
+                logger.error("Unable to decrypt PGT", e);
+            }
+        }
+        return null;
     }
 
     protected String parsePrincipalFromResponse(final String response) {
@@ -257,5 +294,13 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         public Map<String, Object> getAttributes() {
             return this.attributes;
         }
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(final PrivateKey privateKey) {
+        this.privateKey = privateKey;
     }
 }

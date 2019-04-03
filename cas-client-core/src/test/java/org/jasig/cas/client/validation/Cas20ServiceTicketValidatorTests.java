@@ -20,8 +20,10 @@ package org.jasig.cas.client.validation;
 
 import static org.junit.Assert.*;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.util.List;
 import org.jasig.cas.client.PublicTestHttpServer;
+import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.proxy.ProxyRetriever;
@@ -37,32 +39,33 @@ import org.junit.Test;
 public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValidatorTests {
 
     private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8088);
+    private static final String USERNAME = "username";
+    private static final String PGTIOU = "PGTIOU-1-test";
+    private static final String PGT = "PGT-1-ixcY6jtRXZ4OrJ39SadtLEcTLsGNhE8-NYtvDTK3kk5iAEdatRcnGrGjLckOwK8xU6ocastest";
+    private static final String ENCRYPTED_PGT = "H3wqFQLBlvhbrPVo4yrwIF9p8yJhCfzHnLHgTWTYVw42sLDJj7c3PBFHKgZfaY9l57qDbKA0fZY979GGFFgnSz1VOOlTgVRi/nmbpwlScRLHP8qUf2JGUyhu0+nTRp6TcQiEqpf5iquXNyQ9UXPyWPdTM/YtgtYtcIOzMovjN5c=";
 
     private Cas20ServiceTicketValidator ticketValidator;
 
     private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
 
+    private Field proxyGrantingTicketField;
+
     public Cas20ServiceTicketValidatorTests() {
         super();
     }
 
-    /*@AfterClass
-    public static void classCleanUp() {
-        server.shutdown();
-    } */
-
     @Before
     public void setUp() throws Exception {
-        this.proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
+        this.proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
+        this.proxyGrantingTicketStorage.save(PGTIOU, PGT);
         this.ticketValidator = new Cas20ServiceTicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8088");
         this.ticketValidator.setProxyCallbackUrl("test");
-        this.ticketValidator.setProxyGrantingTicketStorage(getProxyGrantingTicketStorage());
+        this.ticketValidator.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
         this.ticketValidator.setProxyRetriever(getProxyRetriever());
+        this.ticketValidator.setPrivateKey(Cas20ProxyReceivingTicketValidationFilter.buildPrivateKey("src/test/resources/private.pem", "RSA"));
         this.ticketValidator.setRenew(true);
-    }
-
-    private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
-        return new ProxyGrantingTicketStorageImpl();
+        proxyGrantingTicketField = AttributePrincipalImpl.class.getDeclaredField("proxyGrantingTicket");
+        proxyGrantingTicketField.setAccessible(true);
     }
 
     private ProxyRetriever getProxyRetriever() {
@@ -90,8 +93,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
     }
 
     @Test
-    public void testYesResponseButNoPgt() throws TicketValidationException, UnsupportedEncodingException {
-        final String USERNAME = "username";
+    public void testYesResponseButNoPgtiou() throws TicketValidationException, UnsupportedEncodingException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
                 + USERNAME + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
@@ -102,10 +104,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
     }
 
     @Test
-    public void testYesResponseWithPgt() throws TicketValidationException, UnsupportedEncodingException {
-        final String USERNAME = "username";
-        final String PGTIOU = "testPgtIou";
-        final String PGT = "test";
+    public void testYesResponseWithPgtiou() throws TicketValidationException, UnsupportedEncodingException, IllegalAccessException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
                 + USERNAME
                 + "</cas:user><cas:proxyGrantingTicket>"
@@ -113,17 +112,15 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
                 + "</cas:proxyGrantingTicket></cas:authenticationSuccess></cas:serviceResponse>";
 
         server.content = RESPONSE.getBytes(server.encoding);
-        this.proxyGrantingTicketStorage.save(PGTIOU, PGT);
 
         final Assertion assertion = this.ticketValidator.validate("test", "test");
-        assertEquals(USERNAME, assertion.getPrincipal().getName());
-        //        assertEquals(PGT, assertion.getProxyGrantingTicketId());
+        final AttributePrincipalImpl principal = (AttributePrincipalImpl) assertion.getPrincipal();
+        assertEquals(USERNAME, principal.getName());
+        assertEquals(PGT, proxyGrantingTicketField.get(principal));
     }
 
     @Test
-    public void testGetAttributes() throws TicketValidationException, UnsupportedEncodingException {
-        final String USERNAME = "username";
-        final String PGTIOU = "testPgtIou";
+    public void testGetAttributes() throws TicketValidationException, UnsupportedEncodingException, IllegalAccessException {
         final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
                 + USERNAME
                 + "</cas:user><cas:proxyGrantingTicket>"
@@ -132,20 +129,53 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
 
         server.content = RESPONSE.getBytes(server.encoding);
         final Assertion assertion = this.ticketValidator.validate("test", "test");
-        assertEquals(USERNAME, assertion.getPrincipal().getName());
-        assertEquals("test", assertion.getPrincipal().getAttributes().get("password"));
-        assertEquals("id", assertion.getPrincipal().getAttributes().get("eduPersonId"));
-        assertEquals("test1\n\ntest", assertion.getPrincipal().getAttributes().get("longAttribute"));
+        final AttributePrincipalImpl principal = (AttributePrincipalImpl) assertion.getPrincipal();
+        assertEquals(USERNAME, principal.getName());
+        assertEquals("test", principal.getAttributes().get("password"));
+        assertEquals("id", principal.getAttributes().get("eduPersonId"));
+        assertEquals("test1\n\ntest", principal.getAttributes().get("longAttribute"));
         try {
-            List<?> multivalued = (List<?>) assertion.getPrincipal().getAttributes().get("multivaluedAttribute");
+            List<?> multivalued = (List<?>) principal.getAttributes().get("multivaluedAttribute");
             assertArrayEquals(new String[] { "value1", "value2" }, multivalued.toArray());
         } catch (Exception e) {
             fail("'multivaluedAttribute' attribute expected as List<Object> object.");
         }
-        //assertEquals(PGT, assertion.getProxyGrantingTicketId());
+        assertEquals(PGT, proxyGrantingTicketField.get(principal));
     }
 
+    @Test
+    public void testYesResponseWithEncryptedPgt() throws TicketValidationException, UnsupportedEncodingException, IllegalAccessException {
+        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
+                + USERNAME
+                + "</cas:user><cas:attributes><cas:proxyGrantingTicket>"
+                + ENCRYPTED_PGT
+                + "</cas:proxyGrantingTicket></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
 
+        server.content = RESPONSE.getBytes(server.encoding);
+
+        final Assertion assertion = this.ticketValidator.validate("test", "test");
+        final AttributePrincipalImpl principal = (AttributePrincipalImpl) assertion.getPrincipal();
+        assertEquals(USERNAME, principal.getName());
+        assertEquals(PGT, proxyGrantingTicketField.get(principal));
+    }
+
+    @Test
+    public void testYesResponseWithPgtiouAndEncryptedPgt() throws TicketValidationException, UnsupportedEncodingException, IllegalAccessException {
+        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
+                + USERNAME
+                + "</cas:user><cas:proxyGrantingTicket>"
+                + PGTIOU
+                + "</cas:proxyGrantingTicket><cas:attributes><cas:proxyGrantingTicket>"
+                + ENCRYPTED_PGT
+                + "</cas:proxyGrantingTicket></cas:attributes></cas:authenticationSuccess></cas:serviceResponse>";
+
+        server.content = RESPONSE.getBytes(server.encoding);
+
+        final Assertion assertion = this.ticketValidator.validate("test", "test");
+        final AttributePrincipalImpl principal = (AttributePrincipalImpl) assertion.getPrincipal();
+        assertEquals(USERNAME, principal.getName());
+        assertEquals(PGT, proxyGrantingTicketField.get(principal));
+    }
 
     @Test
     public void testInvalidResponse() throws Exception {
