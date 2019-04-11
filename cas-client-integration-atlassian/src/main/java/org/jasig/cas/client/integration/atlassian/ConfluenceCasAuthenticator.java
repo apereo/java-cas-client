@@ -60,19 +60,22 @@ public final class ConfluenceCasAuthenticator extends ConfluenceAuthenticator {
         final Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
 
         if (assertion != null) {
-            final Principal p = getUser(assertion.getPrincipal().getName());
+            final String username = assertion.getPrincipal().getName();
+            final Principal user = getUser(username);
 
-            // user doesn't exist 
-            if (p == null) {
+            // user doesn't exist
+            if (user == null) {
                 LOGGER.error("Could not determine principal for [{}]", assertion.getPrincipal().getName());
+                getElevatedSecurityGuard().onFailedLoginAttempt(request, username);
                 return null;
             }
 
-            LOGGER.debug("Logging in [{}] from CAS.", p.getName());
+            LOGGER.debug("Logging in [{}] from CAS.", username);
 
-            session.setAttribute(LOGGED_IN_KEY, p);
+            getElevatedSecurityGuard().onSuccessfulLoginAttempt(request, username);
+            session.setAttribute(LOGGED_IN_KEY, user);
             session.setAttribute(LOGGED_OUT_KEY, null);
-            return p;
+            return user;
         }
 
         return super.getUser(request, response);
