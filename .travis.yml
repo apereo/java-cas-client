@@ -27,7 +27,7 @@ cache:
   - "$HOME/.m2/repository"
 script: "mvn install --settings travis/settings.xml"
 jdk:
-  - oraclejdk11
+  - openjdk11
 env:
   global:
   - secure: "JM/FMiec3GYShrMlJQSW2QG208+V0GCAj2bsP5eF8q4yzgp6o4rT+r57KDIDD6MapRN+G1Pnl3WPcS0aQYnwOhPg4tA2De1bFUPaJltP47eHFfblpjZeHMxcauCQ6BwFFr8yuC0ORsYCW3TOK00Mxq4CRlTlg5iclzHyS/pnkLI="
