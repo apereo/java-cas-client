@@ -61,6 +61,7 @@ public final class XmlUtils {
         final Map<String, Boolean> features = new HashMap<String, Boolean>();
         features.put(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         features.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        features.put("http://apache.org/xml/features/disallow-doctype-decl", true);
         for (final Map.Entry<String, Boolean> entry : features.entrySet()) {
             try {
                 factory.setFeature(entry.getKey(), entry.getValue());
@@ -68,6 +69,7 @@ public final class XmlUtils {
                 LOGGER.warn("Failed setting XML feature {}: {}", entry.getKey(), e);
             }
         }
+        factory.setExpandEntityReferences(false);
         factory.setNamespaceAware(true);
         try {
             return factory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
@@ -83,11 +85,14 @@ public final class XmlUtils {
      */
     public static XMLReader getXmlReader() {
         try {
-            final XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-            reader.setFeature("http://xml.org/sax/features/namespaces", true);
-            reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
-            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            return reader;
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            return factory.newSAXParser().getXMLReader();
         } catch (final Exception e) {
             throw new RuntimeException("Unable to create XMLReader", e);
         }
