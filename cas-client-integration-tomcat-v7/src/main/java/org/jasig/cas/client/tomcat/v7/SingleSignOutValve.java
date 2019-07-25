@@ -60,10 +60,6 @@ public class SingleSignOutValve extends ValveBase implements SessionListener {
         this.handler.setRelayStateParameterName(name);
     }
 
-    public void setCasServerUrlPrefix(final String casServerUrlPrefix) {
-        this.handler.setCasServerUrlPrefix(casServerUrlPrefix);
-    }
-
     public void setLogoutCallbackPath(String logoutCallbackPath) {
         this.handler.setLogoutCallbackPath(logoutCallbackPath);
     }

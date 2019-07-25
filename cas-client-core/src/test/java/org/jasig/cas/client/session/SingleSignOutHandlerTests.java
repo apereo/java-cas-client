@@ -37,7 +37,6 @@ public final class SingleSignOutHandlerTests {
 
     private final static String ANOTHER_PARAMETER = "anotherParameter";
     private final static String TICKET = "ST-xxxxxxxx";
-    private final static String URL = "http://mycasserver";
     private final static String LOGOUT_PARAMETER_NAME = "logoutRequest";
     private final static String RELAY_STATE_PARAMETER_NAME = "RelayState";
     private final static String ARTIFACT_PARAMETER_NAME = "ticket2";
@@ -52,7 +51,6 @@ public final class SingleSignOutHandlerTests {
         handler.setLogoutParameterName(LOGOUT_PARAMETER_NAME);
         handler.setRelayStateParameterName(RELAY_STATE_PARAMETER_NAME);
         handler.setArtifactParameterName(ARTIFACT_PARAMETER_NAME);
-        handler.setCasServerUrlPrefix(URL);
         handler.init();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();

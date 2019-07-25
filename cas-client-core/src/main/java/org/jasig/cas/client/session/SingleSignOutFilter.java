@@ -47,7 +47,6 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
             setArtifactParameterName(getString(ConfigurationKeys.ARTIFACT_PARAMETER_NAME));
             setLogoutParameterName(getString(ConfigurationKeys.LOGOUT_PARAMETER_NAME));
             setRelayStateParameterName(getString(ConfigurationKeys.RELAY_STATE_PARAMETER_NAME));
-            setCasServerUrlPrefix(getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX));
             setLogoutCallbackPath(getString(ConfigurationKeys.LOGOUT_CALLBACK_PATH));
             HANDLER.setArtifactParameterOverPost(getBoolean(ConfigurationKeys.ARTIFACT_PARAMETER_OVER_POST));
             HANDLER.setEagerlyCreateSessions(getBoolean(ConfigurationKeys.EAGERLY_CREATE_SESSIONS));
@@ -66,10 +65,6 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
     
     public void setRelayStateParameterName(final String name) {
         HANDLER.setRelayStateParameterName(name);
-    }
-
-    public void setCasServerUrlPrefix(final String casServerUrlPrefix) {
-        HANDLER.setCasServerUrlPrefix(casServerUrlPrefix);
     }
 
     public void setLogoutCallbackPath(String logoutCallbackPath) {
