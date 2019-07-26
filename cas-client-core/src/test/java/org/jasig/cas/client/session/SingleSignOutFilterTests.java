@@ -55,7 +55,6 @@ public class SingleSignOutFilterTests {
     @Before
     public void setUp() throws Exception {
         filter = new SingleSignOutFilter();
-        filter.setCasServerUrlPrefix(CAS_SERVER_URL_PREFIX);
         filter.setIgnoreInitConfiguration(true);
         filter.init(new MockFilterConfig());
         request = new MockHttpServletRequest();

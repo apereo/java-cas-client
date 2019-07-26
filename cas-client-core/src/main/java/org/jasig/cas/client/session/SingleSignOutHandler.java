@@ -62,9 +62,6 @@ public final class SingleSignOutHandler {
     
     /** Parameter name that stores the state of the CAS server webflow for the callback */
     private String relayStateParameterName = ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue();
-    
-    /** The prefix url of the CAS server */
-    private String casServerUrlPrefix = "";
 
     /** The logout callback path configured at the CAS server, if there is one */
     private String logoutCallbackPath;
@@ -104,13 +101,6 @@ public final class SingleSignOutHandler {
     }
 
     /**
-     * @param casServerUrlPrefix The prefix url of the CAS server.
-     */
-    public void setCasServerUrlPrefix(final String casServerUrlPrefix) {
-        this.casServerUrlPrefix = casServerUrlPrefix;
-    }
-
-    /**
      * @param logoutCallbackPath The logout callback path configured at the CAS server.
      */
     public void setLogoutCallbackPath(String logoutCallbackPath) {
@@ -137,11 +127,6 @@ public final class SingleSignOutHandler {
             CommonUtils.assertNotNull(this.logoutParameterName, "logoutParameterName cannot be null.");
             CommonUtils.assertNotNull(this.sessionMappingStorage, "sessionMappingStorage cannot be null.");
             CommonUtils.assertNotNull(this.relayStateParameterName, "relayStateParameterName cannot be null.");
-            CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
-
-            if (CommonUtils.isBlank(this.casServerUrlPrefix)) {
-                logger.warn("Front Channel single sign out redirects are disabled when the 'casServerUrlPrefix' value is not set.");
-            }
 
             if (this.artifactParameterOverPost) {
                 this.safeParameters = Arrays.asList(this.logoutParameterName, this.artifactParameterName);
