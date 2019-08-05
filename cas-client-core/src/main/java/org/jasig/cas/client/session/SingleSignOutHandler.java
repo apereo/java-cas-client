@@ -313,6 +313,7 @@ public final class SingleSignOutHandler {
 
     private class Servlet25LogoutStrategy implements LogoutStrategy {
 
+        @Override
         public void logout(final HttpServletRequest request) {
             // nothing additional to do here
         }
@@ -320,6 +321,7 @@ public final class SingleSignOutHandler {
 
     private class Servlet30LogoutStrategy implements LogoutStrategy {
 
+        @Override
         public void logout(final HttpServletRequest request) {
             try {
                 request.logout();

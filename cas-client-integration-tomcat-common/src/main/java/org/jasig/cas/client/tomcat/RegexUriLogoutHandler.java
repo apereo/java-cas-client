@@ -52,6 +52,7 @@ public final class RegexUriLogoutHandler extends AbstractLogoutHandler {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isLogoutRequest(final HttpServletRequest request) {
         return this.logoutUriPattern.matcher(request.getRequestURI()).matches();
     }

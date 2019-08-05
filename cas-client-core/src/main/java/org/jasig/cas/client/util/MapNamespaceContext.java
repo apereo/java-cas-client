@@ -61,10 +61,12 @@ public class MapNamespaceContext implements NamespaceContext {
         this.namespaceMap = namespaceMap;
     }
 
+    @Override
     public String getNamespaceURI(final String prefix) {
         return namespaceMap.get(prefix);
     }
 
+    @Override
     public String getPrefix(final String namespaceURI) {
         for (final Map.Entry<String, String> entry : namespaceMap.entrySet()) {
             if (entry.getValue().equalsIgnoreCase(namespaceURI)) {
@@ -74,6 +76,7 @@ public class MapNamespaceContext implements NamespaceContext {
         return null;
     }
 
+    @Override
     public Iterator getPrefixes(final String namespaceURI) {
         return Collections.singleton(getPrefix(namespaceURI)).iterator();
     }

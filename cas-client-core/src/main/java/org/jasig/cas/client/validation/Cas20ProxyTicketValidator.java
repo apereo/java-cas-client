@@ -46,6 +46,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
         return this.allowedProxyChains;
     }
 
+    @Override
     protected String getUrlSuffix() {
         return "proxyValidate";
     }

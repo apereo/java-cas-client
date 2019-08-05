@@ -41,6 +41,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
 
     private final AtomicBoolean handlerInitialized = new AtomicBoolean(false);
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
         if (!isIgnoreInitConfiguration()) {
@@ -75,8 +76,9 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         HANDLER.setSessionMappingStorage(storage);
     }
 
+    @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-            final FilterChain filterChain) throws IOException, ServletException {
+                         final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
@@ -93,6 +95,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         }
     }
 
+    @Override
     public void destroy() {
         // nothing to do
     }

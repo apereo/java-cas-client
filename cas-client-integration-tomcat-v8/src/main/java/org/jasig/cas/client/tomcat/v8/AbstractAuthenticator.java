@@ -23,7 +23,11 @@ import java.security.Principal;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.catalina.*;
+import org.apache.catalina.LifecycleEvent;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
+import org.apache.catalina.LifecycleState;
+import org.apache.catalina.Realm;
 import org.apache.catalina.authenticator.AuthenticatorBase;
 import org.apache.catalina.connector.Request;
 import org.jasig.cas.client.tomcat.AuthenticatorDelegate;
@@ -61,6 +65,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
      *
      * @return the authentication method.
      */
+    @Override
     protected String getAuthMethod() {
         return getAuthenticationMethod();
     }
@@ -87,10 +92,11 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
      */
     protected abstract TicketValidator getTicketValidator();
 
+    @Override
     protected void startInternal() throws LifecycleException {
         super.startInternal();
         logger.debug("{} starting.", getName());
-        final Realm realm = this.context.getRealm();
+        final Realm realm = getContainer().getRealm();
         try {
             CommonUtils.assertTrue(realm instanceof CasRealm, "Expected CasRealm but got " + realm.getClass());
             CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
@@ -151,7 +157,8 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     }
 
     /** {@inheritDoc} */
-    public final boolean authenticate(final Request request, final HttpServletResponse response) throws IOException {
+    @Override
+    public final boolean doAuthenticate(final Request request, final HttpServletResponse response) throws IOException {
         Principal principal = request.getUserPrincipal();
         boolean result = false;
         if (principal == null) {
@@ -168,6 +175,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public void lifecycleEvent(final LifecycleEvent event) {
         if (AFTER_START_EVENT.equals(event.getType())) {
             logger.debug("{} processing lifecycle event {}", getName(), AFTER_START_EVENT);
@@ -184,7 +192,8 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     /** {@inheritDoc} 
      * @throws LifecycleException */
-    protected synchronized void setState(LifecycleState state, Object data) throws LifecycleException {
+    @Override
+    protected synchronized void setState(final LifecycleState state, final Object data) throws LifecycleException {
         super.setState(state, data);
         if (LifecycleState.STARTED.equals(state)) {
             logger.info("{} started.", getName());

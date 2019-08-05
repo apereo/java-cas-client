@@ -34,6 +34,7 @@ public final class WebXmlConfigurationStrategyImpl extends BaseConfigurationStra
 
     private FilterConfig filterConfig;
 
+    @Override
     protected String get(final ConfigurationKey configurationKey) {
         final String value = this.filterConfig.getInitParameter(configurationKey.getName());
 
@@ -54,6 +55,7 @@ public final class WebXmlConfigurationStrategyImpl extends BaseConfigurationStra
         return null;
     }
 
+    @Override
     public void init(final FilterConfig filterConfig, final Class<? extends Filter> clazz) {
         this.filterConfig = filterConfig;
     }

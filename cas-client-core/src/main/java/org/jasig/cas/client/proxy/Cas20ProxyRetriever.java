@@ -75,6 +75,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
         this.urlConnectionFactory = urlFactory;
     }
 
+    @Override
     public String getProxyTicketIdFor(final String proxyGrantingTicketId, final String targetService) {
         CommonUtils.assertNotNull(proxyGrantingTicketId, "proxyGrantingTicketId cannot be null.");
         CommonUtils.assertNotNull(targetService, "targetService cannot be null.");

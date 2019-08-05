@@ -95,14 +95,17 @@ public final class MemcachedBackedProxyGrantingTicketStorageImpl extends
         }
     }
 
+    @Override
     public void saveInternal(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         handleSynchronousRequest(this.client.add(proxyGrantingTicketIou, 120, proxyGrantingTicket));
     }
 
+    @Override
     public String retrieveInternal(final String proxyGrantingTicketIou) {
         return (String) this.client.get(proxyGrantingTicketIou);
     }
 
+    @Override
     public void cleanUp() {
         // we actually don't have anything to do here, yay!
     }

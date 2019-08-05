@@ -45,6 +45,7 @@ public abstract class AbstractConfigurationFilter implements Filter {
 
     private ConfigurationStrategy configurationStrategy;
 
+    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         final String configurationStrategyName = filterConfig.getServletContext().getInitParameter(CONFIGURATION_STRATEGY_KEY);
         this.configurationStrategy = ReflectUtils.newInstance(ConfigurationStrategyName.resolveToConfigurationStrategy(configurationStrategyName));

@@ -40,6 +40,7 @@ public abstract class AbstractLogoutValve extends ValveBase {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Override
     public final void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (getLogoutHandler().isLogoutRequest(request)) {
             getLogoutHandler().logout(request, response);

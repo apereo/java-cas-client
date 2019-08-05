@@ -42,6 +42,7 @@ public final class RegexUriLogoutValve extends AbstractLogoutValve {
         this.logoutHandler.setLogoutUriRegex(regex);
     }
 
+    @Override
     protected void startInternal() throws LifecycleException {
         super.startInternal();
         this.logoutHandler.init();
@@ -49,6 +50,7 @@ public final class RegexUriLogoutValve extends AbstractLogoutValve {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected LogoutHandler getLogoutHandler() {
         return this.logoutHandler;
     }

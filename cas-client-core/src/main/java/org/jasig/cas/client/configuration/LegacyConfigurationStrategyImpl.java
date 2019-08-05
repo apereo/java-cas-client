@@ -36,11 +36,13 @@ public final class LegacyConfigurationStrategyImpl extends BaseConfigurationStra
 
     private final JndiConfigurationStrategyImpl jndiConfigurationStrategy = new JndiConfigurationStrategyImpl();
 
+    @Override
     public void init(FilterConfig filterConfig, Class<? extends Filter> filterClazz) {
         this.webXmlConfigurationStrategy.init(filterConfig, filterClazz);
         this.jndiConfigurationStrategy.init(filterConfig, filterClazz);
     }
 
+    @Override
     protected String get(final ConfigurationKey key) {
         final String value1 = this.webXmlConfigurationStrategy.get(key);
 

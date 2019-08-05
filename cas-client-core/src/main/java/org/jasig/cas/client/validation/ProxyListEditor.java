@@ -36,6 +36,7 @@ import org.jasig.cas.client.util.CommonUtils;
  */
 public final class ProxyListEditor extends PropertyEditorSupport {
 
+    @Override
     public void setAsText(final String text) throws IllegalArgumentException {
         final BufferedReader reader = new BufferedReader(new StringReader(text));
         final List<String[]> proxyChains = new ArrayList<String[]>();

@@ -49,18 +49,22 @@ public final class SimpleGroup extends SimplePrincipal implements Group {
         super(name);
     }
 
+    @Override
     public boolean addMember(final Principal user) {
         return this.members.add(user);
     }
 
+    @Override
     public boolean isMember(final Principal member) {
         return this.members.contains(member);
     }
 
+    @Override
     public Enumeration<? extends Principal> members() {
         return Collections.enumeration(this.members);
     }
 
+    @Override
     public boolean removeMember(final Principal user) {
         return this.members.remove(user);
     }

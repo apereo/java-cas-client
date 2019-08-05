@@ -78,14 +78,17 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      *
      * @param urlParameters the Map containing the existing parameters to send to the server.
      */
+    @Override
     protected final void populateUrlAttributeMap(final Map<String, String> urlParameters) {
         urlParameters.put("pgtUrl", this.proxyCallbackUrl);
     }
 
+    @Override
     protected String getUrlSuffix() {
         return "serviceValidate";
     }
 
+    @Override
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         final String error = parseAuthenticationFailureFromResponse(response);
 

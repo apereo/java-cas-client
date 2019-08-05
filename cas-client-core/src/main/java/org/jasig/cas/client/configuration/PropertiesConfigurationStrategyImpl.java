@@ -65,6 +65,7 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
         return this.properties.getProperty(property);
     }
 
+    @Override
     public void init(final FilterConfig filterConfig, final Class<? extends Filter> filterClazz) {
         this.simpleFilterName = filterClazz.getSimpleName();
         final String fileLocationFromFilterConfig = filterConfig.getInitParameter(CONFIGURATION_FILE_LOCATION);

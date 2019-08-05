@@ -64,6 +64,7 @@ public final class ProxyCallbackValve extends ValveBase {
         this.proxyCallbackUrl = proxyCallbackUrl;
     }
 
+    @Override
     protected void startInternal() throws LifecycleException {
         super.startInternal();
 
@@ -78,6 +79,7 @@ public final class ProxyCallbackValve extends ValveBase {
         logger.info("Startup completed.");
     }
 
+    @Override
     public void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (this.proxyCallbackUrl.equals(request.getRequestURI())) {
             logger.debug("Processing proxy callback request.");

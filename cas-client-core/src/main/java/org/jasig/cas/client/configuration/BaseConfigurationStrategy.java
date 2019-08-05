@@ -33,40 +33,50 @@ public abstract class BaseConfigurationStrategy implements ConfigurationStrategy
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Override
     public final boolean getBoolean(final ConfigurationKey<Boolean> configurationKey) {
         return getValue(configurationKey, new Parser<Boolean>() {
+            @Override
             public Boolean parse(final String value) {
                 return CommonUtils.toBoolean(value);
             }
         });
     }
 
+    @Override
     public final long getLong(final ConfigurationKey<Long> configurationKey) {
         return getValue(configurationKey, new Parser<Long>() {
+            @Override
             public Long parse(final String value) {
                 return CommonUtils.toLong(value, configurationKey.getDefaultValue());
             }
         });
     }
 
+    @Override
     public final int getInt(final ConfigurationKey<Integer> configurationKey) {
         return getValue(configurationKey, new Parser<Integer>() {
+            @Override
             public Integer parse(final String value) {
                 return CommonUtils.toInt(value, configurationKey.getDefaultValue());
             }
         });
     }
 
+    @Override
     public final String getString(final ConfigurationKey<String> configurationKey) {
         return getValue(configurationKey, new Parser<String>() {
+            @Override
             public String parse(final String value) {
                 return value;
             }
         });
     }
 
+    @Override
     public <T> Class<? extends T> getClass(final ConfigurationKey<Class<? extends T>> configurationKey) {
         return getValue(configurationKey, new Parser<Class<? extends T>>() {
+            @Override
             public Class<? extends T> parse(final String value) {
                 try {
                     return ReflectUtils.loadClass(value);

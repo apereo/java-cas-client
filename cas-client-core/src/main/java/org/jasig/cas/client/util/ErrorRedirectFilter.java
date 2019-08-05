@@ -49,10 +49,12 @@ public final class ErrorRedirectFilter implements Filter {
 
     private String defaultErrorRedirectPage;
 
+    @Override
     public void destroy() {
         // nothing to do here
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -94,6 +96,7 @@ public final class ErrorRedirectFilter implements Filter {
         return throwable;
     }
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         this.defaultErrorRedirectPage = filterConfig.getInitParameter("defaultErrorRedirectPage");
 

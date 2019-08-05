@@ -60,10 +60,12 @@ public abstract class AbstractEncryptedProxyGrantingTicketStorageImpl implements
         this.cipherAlgorithm = cipherAlgorithm;
     }
 
+    @Override
     public final void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         saveInternal(proxyGrantingTicketIou, encrypt(proxyGrantingTicket));
     }
 
+    @Override
     public final String retrieve(final String proxyGrantingTicketIou) {
         return decrypt(retrieveInternal(proxyGrantingTicketIou));
     }

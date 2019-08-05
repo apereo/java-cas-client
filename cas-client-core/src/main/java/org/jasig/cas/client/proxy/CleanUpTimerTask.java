@@ -39,6 +39,7 @@ public final class CleanUpTimerTask extends TimerTask {
         this.proxyGrantingTicketStorage = proxyGrantingTicketStorage;
     }
 
+    @Override
     public void run() {
         this.proxyGrantingTicketStorage.cleanUp();
     }

@@ -56,6 +56,7 @@ public final class WhitelistHostnameVerifier implements HostnameVerifier, Serial
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean verify(final String hostname, final SSLSession session) {
 
         for (final String allowedHost : this.allowedHosts) {

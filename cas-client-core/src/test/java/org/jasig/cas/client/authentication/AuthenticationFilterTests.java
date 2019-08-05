@@ -94,6 +94,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
@@ -116,6 +117,7 @@ public final class AuthenticationFilterTests {
         request.setSecure(true);
         final FilterChain filterChain = new FilterChain() {
 
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
@@ -146,6 +148,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
@@ -165,6 +168,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
@@ -185,6 +189,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
         final FilterChain filterChain = new FilterChain() {
 
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
@@ -267,6 +272,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
 
         final FilterChain filterChain = new FilterChain() {
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
             }
         };
@@ -296,6 +302,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
 
         final FilterChain filterChain = new FilterChain() {
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
             }
         };
@@ -330,6 +337,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
 
         final FilterChain filterChain = new FilterChain() {
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
             }
         };
@@ -359,6 +367,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
 
         final FilterChain filterChain = new FilterChain() {
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
             }
         };
@@ -388,6 +397,7 @@ public final class AuthenticationFilterTests {
         final MockHttpServletResponse response = new MockHttpServletResponse();
 
         final FilterChain filterChain = new FilterChain() {
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
             }
         };

@@ -34,8 +34,9 @@ public final class FacesCompatibleAuthenticationRedirectStrategy implements Auth
 
     private static final String FACES_PARTIAL_AJAX_PARAMETER = "javax.faces.partial.ajax";
 
+    @Override
     public void redirect(final HttpServletRequest request, final HttpServletResponse response,
-            final String potentialRedirectUrl) throws IOException {
+                         final String potentialRedirectUrl) throws IOException {
 
         if (CommonUtils.isNotBlank(request.getParameter(FACES_PARTIAL_AJAX_PARAMETER))) {
             // this is an ajax request - redirect ajaxly

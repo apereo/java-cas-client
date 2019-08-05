@@ -32,12 +32,14 @@ import org.jasig.cas.client.validation.Assertion;
  */
 public final class AssertionThreadLocalFilter implements Filter {
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         // nothing to do here
     }
 
+    @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-            final FilterChain filterChain) throws IOException, ServletException {
+                         final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpSession session = request.getSession(false);
         final Assertion assertion = (Assertion) (session == null ? request
@@ -52,6 +54,7 @@ public final class AssertionThreadLocalFilter implements Filter {
         }
     }
 
+    @Override
     public void destroy() {
         // nothing to do
     }

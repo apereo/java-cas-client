@@ -96,10 +96,12 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
         CommonUtils.assertNotNull(this.attributes, "attributes cannot be null.");
     }
 
+    @Override
     public Map<String, Object> getAttributes() {
         return this.attributes;
     }
 
+    @Override
     public String getProxyTicketFor(String service) {
         if (proxyGrantingTicket != null) {
             return this.proxyRetriever.getProxyTicketIdFor(this.proxyGrantingTicket, service);

@@ -37,6 +37,7 @@ public class Cas30JsonServiceTicketValidatorTests extends AbstractTicketValidato
             /** Unique Id for serialization. */
             private static final long serialVersionUID = 1L;
 
+            @Override
             public String getProxyTicketIdFor(final String proxyGrantingTicketId, final String targetService) {
                 return "test";
             }

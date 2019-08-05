@@ -51,14 +51,17 @@ public class CleanUpTimerTaskTest extends TestCase {
             return cleanUpCalled;
         }
 
+        @Override
         public void cleanUp() {
             cleanUpCalled = true;
         }
 
+        @Override
         public String retrieve(String proxyGrantingTicketIou) {
             return null;
         }
 
+        @Override
         public void save(String proxyGrantingTicketIou, String proxyGrantingTicket) {
         }
     }

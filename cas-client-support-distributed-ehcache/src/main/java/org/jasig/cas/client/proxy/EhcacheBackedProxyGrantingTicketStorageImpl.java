@@ -48,6 +48,7 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl extends AbstractE
         this.cache = cache;
     }
 
+    @Override
     public void saveInternal(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         final Element element = new Element(proxyGrantingTicketIou, proxyGrantingTicket);
         try {
@@ -57,6 +58,7 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl extends AbstractE
         }
     }
 
+    @Override
     public String retrieveInternal(final String proxyGrantingTicketIou) {
         final Element element = this.cache.get(proxyGrantingTicketIou);
 
@@ -67,6 +69,7 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl extends AbstractE
         return (String) element.getValue();
     }
 
+    @Override
     public void cleanUp() {
         // nothing to do
     }

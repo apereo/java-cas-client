@@ -203,8 +203,9 @@ public class CasLoginModule implements LoginModule {
      *      names, e.g. DAYS, HOURS, MINUTES, SECONDS, MILLISECONDS. Default unit is MINUTES.</li>
      * </ul>
      */
+    @Override
     public final void initialize(final Subject subject, final CallbackHandler handler, final Map<String, ?> state,
-            final Map<String, ?> options) {
+                                 final Map<String, ?> options) {
 
         this.assertion = null;
         this.callbackHandler = handler;
@@ -277,6 +278,7 @@ public class CasLoginModule implements LoginModule {
         // template method
     }
 
+    @Override
     public final boolean login() throws LoginException {
         logger.debug("Performing login.");
 
@@ -341,6 +343,7 @@ public class CasLoginModule implements LoginModule {
         return result;
     }
 
+    @Override
     public final boolean abort() throws LoginException {
         if (this.ticket != null) {
             this.ticket = null;
@@ -369,6 +372,7 @@ public class CasLoginModule implements LoginModule {
         // template method
     }
 
+    @Override
     public final boolean commit() throws LoginException {
 
         if (!preCommit()) {
@@ -439,6 +443,7 @@ public class CasLoginModule implements LoginModule {
         return result;
     }
 
+    @Override
     public final boolean logout() throws LoginException {
         logger.debug("Performing logout.");
 

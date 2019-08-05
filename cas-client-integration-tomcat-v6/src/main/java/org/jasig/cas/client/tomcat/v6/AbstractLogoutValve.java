@@ -34,6 +34,7 @@ import org.jasig.cas.client.tomcat.LogoutHandler;
  * @since 3.1.12
  */
 public abstract class AbstractLogoutValve extends AbstractLifecycleValve {
+    @Override
     public final void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (getLogoutHandler().isLogoutRequest(request)) {
             getLogoutHandler().logout(request, response);

@@ -50,6 +50,7 @@ public class ServiceAndTicketCallbackHandler implements CallbackHandler {
         this.ticket = ticket;
     }
 
+    @Override
     public void handle(final Callback[] callbacks) throws IOException, UnsupportedCallbackException {
         for (final Callback callback : callbacks) {
             if (callback instanceof NameCallback) {

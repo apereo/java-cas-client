@@ -47,6 +47,7 @@ public class SimplePrincipal implements Principal, Serializable {
         CommonUtils.assertNotNull(this.name, "name cannot be null.");
     }
 
+    @Override
     public final String getName() {
         return this.name;
     }

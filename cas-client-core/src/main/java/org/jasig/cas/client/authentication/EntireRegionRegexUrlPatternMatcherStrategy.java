@@ -41,10 +41,12 @@ public final class EntireRegionRegexUrlPatternMatcherStrategy implements UrlPatt
         this.setPattern(pattern);
     }
 
+    @Override
     public boolean matches(final String url) {
         return this.pattern.matcher(url).matches();
     }
 
+    @Override
     public void setPattern(final String pattern) {
         this.pattern = Pattern.compile(pattern);
     }

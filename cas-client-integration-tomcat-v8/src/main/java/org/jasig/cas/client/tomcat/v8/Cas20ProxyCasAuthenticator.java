@@ -50,18 +50,22 @@ public final class Cas20ProxyCasAuthenticator extends AbstractCasAuthenticator {
         this.allowedProxyChains = allowedProxyChains;
     }
 
+    @Override
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
 
+    @Override
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }
 
+    @Override
     protected String getName() {
         return NAME;
     }
 
+    @Override
     protected void startInternal() throws LifecycleException {
         super.startInternal();
         this.ticketValidator = new Cas20ProxyTicketValidator(getCasServerUrlPrefix());

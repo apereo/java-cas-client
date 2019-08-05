@@ -47,6 +47,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
 
         final Timer timer = new Timer(true) {
+            @Override
             public void schedule(TimerTask task, long delay, long period) {
                 scheduleMethodFlag.setCalled();
             }
@@ -66,6 +67,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
 
         final Timer timer = new Timer(true) {
+            @Override
             public void cancel() {
                 cancelMethodFlag.setCalled();
                 super.cancel();
@@ -87,6 +89,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
 
         final TimerTask timerTask = new TimerTask() {
+            @Override
             public void run() {
                 timerTaskFlag.setCalled();
             }
@@ -112,6 +115,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
 
         final TimerTask timerTask = new TimerTask() {
+            @Override
             public void run() {
                 timerTaskFlag.setCalled();
             }

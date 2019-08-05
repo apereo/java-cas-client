@@ -54,6 +54,7 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
     /** Whether or not to ignore case in role membership queries */
     private boolean ignoreCase;
 
+    @Override
     public void destroy() {
         // nothing to do
     }
@@ -63,8 +64,9 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
      * <code>request.getRemoteUser</code> to the underlying Assertion object
      * stored in the user session.
      */
+    @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-            final FilterChain filterChain) throws IOException, ServletException {
+                         final FilterChain filterChain) throws IOException, ServletException {
         final AttributePrincipal principal = retrievePrincipalFromSessionOrRequest(servletRequest);
 
         filterChain.doFilter(new CasHttpServletRequestWrapper((HttpServletRequest) servletRequest, principal),
@@ -81,6 +83,7 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
         return assertion == null ? null : assertion.getPrincipal();
     }
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
         this.roleAttribute = getString(ConfigurationKeys.ROLE_ATTRIBUTE);
@@ -96,14 +99,17 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
             this.principal = principal;
         }
 
+        @Override
         public Principal getUserPrincipal() {
             return this.principal;
         }
 
+        @Override
         public String getRemoteUser() {
             return principal != null ? this.principal.getName() : null;
         }
 
+        @Override
         public boolean isUserInRole(final String role) {
             if (CommonUtils.isBlank(role)) {
                 logger.debug("No valid role provided.  Returning false.");

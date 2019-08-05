@@ -50,12 +50,14 @@ public class PropertiesCasRealm extends AbstractCasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startInternal() throws LifecycleException {
         super.startInternal();
         this.delegate.readProperties();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected CasRealm getDelegate() {
         return this.delegate;
     }

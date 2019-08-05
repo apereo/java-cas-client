@@ -55,8 +55,9 @@ public final class Servlet3AuthenticationFilter extends AbstractCasFilter {
         super(Protocol.CAS2);
     }
 
+    @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-            final FilterChain chain) throws IOException, ServletException {
+                         final FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpSession session = request.getSession();

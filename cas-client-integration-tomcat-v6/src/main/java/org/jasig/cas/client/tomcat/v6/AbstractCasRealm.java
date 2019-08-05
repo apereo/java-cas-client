@@ -37,16 +37,19 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** {@inheritDoc} */
+    @Override
     public Principal authenticate(final Principal p) {
         return getDelegate().authenticate(p);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getRoles(final Principal p) {
         return getDelegate().getRoles(p);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasRole(final Principal principal, final String role) {
         return getDelegate().hasRole(principal, role);
     }
@@ -57,21 +60,25 @@ public abstract class AbstractCasRealm extends RealmBase implements CasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getInfo() {
         return getClass().getName() + "/1.0";
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getName() {
         return getClass().getSimpleName();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getPassword(final String username) {
         throw new UnsupportedOperationException();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected Principal getPrincipal(final String username) {
         throw new UnsupportedOperationException();
     }

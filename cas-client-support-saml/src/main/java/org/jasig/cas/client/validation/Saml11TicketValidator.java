@@ -106,10 +106,12 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         }
     }
 
+    @Override
     protected String getUrlSuffix() {
         return "samlValidate";
     }
 
+    @Override
     protected void populateUrlAttributeMap(final Map<String, String> urlParameters) {
         final String service = urlParameters.get("service");
         urlParameters.remove("service");
@@ -117,6 +119,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         urlParameters.put("TARGET", service);
     }
 
+    @Override
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         try {
             final Document document = XmlUtils.newDocument(response);
@@ -187,6 +190,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         return false;
     }
 
+    @Override
     protected String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
         final String request = String.format(
                 SAML_REQUEST_TEMPLATE,

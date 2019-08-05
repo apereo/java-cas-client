@@ -52,6 +52,7 @@ public final class StaticUriLogoutHandler extends AbstractLogoutHandler {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isLogoutRequest(final HttpServletRequest request) {
         return this.logoutUri.equals(request.getRequestURI());
     }
