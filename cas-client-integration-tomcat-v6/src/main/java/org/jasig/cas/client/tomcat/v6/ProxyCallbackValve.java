@@ -60,6 +60,7 @@ public final class ProxyCallbackValve extends AbstractLifecycleValve {
         this.proxyCallbackUrl = proxyCallbackUrl;
     }
 
+    @Override
     public void start() throws LifecycleException {
         super.start();
 
@@ -74,6 +75,7 @@ public final class ProxyCallbackValve extends AbstractLifecycleValve {
         logger.info("Startup completed.");
     }
 
+    @Override
     public void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (this.proxyCallbackUrl.equals(request.getRequestURI())) {
             logger.debug("Processing proxy callback request.");
@@ -85,6 +87,7 @@ public final class ProxyCallbackValve extends AbstractLifecycleValve {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getName() {
         return NAME;
     }

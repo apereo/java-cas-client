@@ -50,6 +50,7 @@ public final class RegexHostnameVerifier implements HostnameVerifier, Serializab
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean verify(final String hostname, final SSLSession session) {
         return pattern.matcher(hostname).matches();
     }

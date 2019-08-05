@@ -36,10 +36,12 @@ public final class SingleSignOutHttpSessionListener implements HttpSessionListen
 
     private SessionMappingStorage sessionMappingStorage;
 
+    @Override
     public void sessionCreated(final HttpSessionEvent event) {
         // nothing to do at the moment
     }
 
+    @Override
     public void sessionDestroyed(final HttpSessionEvent event) {
         if (sessionMappingStorage == null) {
             sessionMappingStorage = getSessionMappingStorage();

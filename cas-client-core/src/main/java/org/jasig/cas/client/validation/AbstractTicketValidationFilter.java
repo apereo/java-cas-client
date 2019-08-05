@@ -127,6 +127,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         return null;
     }
 
+    @Override
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         setExceptionOnValidationFailure(getBoolean(ConfigurationKeys.EXCEPTION_ON_VALIDATION_FAILURE));
         setRedirectAfterValidation(getBoolean(ConfigurationKeys.REDIRECT_AFTER_VALIDATION));
@@ -141,6 +142,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         super.initInternal(filterConfig);
     }
 
+    @Override
     public void init() {
         super.init();
         CommonUtils.assertNotNull(this.ticketValidator, "ticketValidator cannot be null.");
@@ -186,8 +188,9 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
         // nothing to do here.
     }
 
+    @Override
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
-            final FilterChain filterChain) throws IOException, ServletException {
+                               final FilterChain filterChain) throws IOException, ServletException {
 
         if (!preFilter(servletRequest, servletResponse, filterChain)) {
             return;

@@ -91,6 +91,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         super(protocol);
     }
 
+    @Override
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         setProxyReceptorUrl(getString(ConfigurationKeys.PROXY_RECEPTOR_URL));
 
@@ -122,6 +123,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         super.initInternal(filterConfig);
     }
 
+    @Override
     public void init() {
         super.init();
         CommonUtils.assertNotNull(this.proxyGrantingTicketStorage, "proxyGrantingTicketStorage cannot be null.");
@@ -158,6 +160,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
      * @param filterConfig the Filter Configuration object.
      * @return a fully constructed TicketValidator.
      */
+    @Override
     protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
         final boolean allowAnyProxy = getBoolean(ConfigurationKeys.ACCEPT_ANY_PROXY);
         final String allowedProxyChains = getString(ConfigurationKeys.ALLOWED_PROXY_CHAINS);
@@ -203,6 +206,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         return validator;
     }
 
+    @Override
     public void destroy() {
         super.destroy();
         this.timer.cancel();
@@ -211,6 +215,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     /**
      * This processes the ProxyReceptor request before the ticket validation code executes.
      */
+    @Override
     protected final boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                                       final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;

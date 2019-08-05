@@ -29,6 +29,7 @@ import javax.servlet.FilterConfig;
  */
 public class SystemPropertiesConfigurationStrategyImpl extends BaseConfigurationStrategy {
 
+    @Override
     public void init(FilterConfig filterConfig, Class<? extends Filter> filterClazz) {
     }
 

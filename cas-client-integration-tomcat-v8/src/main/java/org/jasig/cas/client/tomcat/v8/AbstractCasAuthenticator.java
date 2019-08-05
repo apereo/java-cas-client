@@ -37,10 +37,12 @@ public abstract class AbstractCasAuthenticator extends AbstractAuthenticator {
         this.proxyCallbackUrl = proxyCallbackUrl;
     }
 
+    @Override
     protected final String getArtifactParameterName() {
         return "ticket";
     }
 
+    @Override
     protected final String getServiceParameterName() {
         return "service";
     }

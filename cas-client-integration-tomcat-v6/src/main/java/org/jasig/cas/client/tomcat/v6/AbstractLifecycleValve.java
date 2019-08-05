@@ -43,26 +43,31 @@ public abstract class AbstractLifecycleValve extends ValveBase implements Lifecy
     private final LifecycleSupport lifecycle = new LifecycleSupport(this);
 
     /** {@inheritDoc} */
+    @Override
     public void addLifecycleListener(final LifecycleListener listener) {
         lifecycle.addLifecycleListener(listener);
     }
 
     /** {@inheritDoc} */
+    @Override
     public LifecycleListener[] findLifecycleListeners() {
         return lifecycle.findLifecycleListeners();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeLifecycleListener(final LifecycleListener listener) {
         lifecycle.removeLifecycleListener(listener);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void start() throws LifecycleException {
         logger.debug("{} starting.", getName());
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop() throws LifecycleException {
         logger.debug("{} stopping.", getName());
     }

@@ -119,6 +119,7 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
 
     private FilterChain createFilterChain() {
         return new FilterChain() {
+            @Override
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 HttpServletRequestWrapperFilterTests.this.mockRequest = (HttpServletRequest) request;
             }

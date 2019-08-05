@@ -45,6 +45,7 @@ public abstract class AbstractLogoutHandler implements LogoutHandler {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void logout(final HttpServletRequest request, final HttpServletResponse response) {
         logger.debug("Processing logout request from CAS server.");
 

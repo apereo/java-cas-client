@@ -44,6 +44,7 @@ public final class StaticUriLogoutValve extends AbstractLogoutValve {
         this.logoutHandler.setLogoutUri(logoutUri);
     }
 
+    @Override
     public void start() throws LifecycleException {
         super.start();
         this.logoutHandler.init();
@@ -51,11 +52,13 @@ public final class StaticUriLogoutValve extends AbstractLogoutValve {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getName() {
         return NAME;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected LogoutHandler getLogoutHandler() {
         return this.logoutHandler;
     }

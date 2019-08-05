@@ -91,6 +91,7 @@ public class PropertiesCasRealmDelegate implements CasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Principal authenticate(final Principal p) {
         if (this.roleMap.containsKey(p.getName())) {
             return p;
@@ -100,12 +101,14 @@ public class PropertiesCasRealmDelegate implements CasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getRoles(final Principal p) {
         final Set<String> roleSet = this.roleMap.get(p.getName());
         return roleSet.toArray(new String[roleSet.size()]);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasRole(final Principal principal, final String role) {
         if ("*".equals(role)) {
             return true;

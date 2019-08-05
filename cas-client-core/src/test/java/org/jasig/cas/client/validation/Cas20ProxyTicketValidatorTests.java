@@ -75,6 +75,7 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
             /** Unique Id For serialization. */
             private static final long serialVersionUID = 1L;
 
+            @Override
             public String getProxyTicketIdFor(String proxyGrantingTicketId, String targetService) {
                 return "test";
             }

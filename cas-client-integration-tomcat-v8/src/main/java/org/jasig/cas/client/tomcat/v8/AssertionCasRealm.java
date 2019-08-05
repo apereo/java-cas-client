@@ -43,6 +43,7 @@ public class AssertionCasRealm extends AbstractCasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected CasRealm getDelegate() {
         return delegate;
     }

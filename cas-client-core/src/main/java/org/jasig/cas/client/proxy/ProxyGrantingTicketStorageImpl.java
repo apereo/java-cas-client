@@ -79,6 +79,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * NOTE: you can only retrieve a ProxyGrantingTicket once with this method.
      * Its removed after retrieval.
      */
+    @Override
     public String retrieve(final String proxyGrantingTicketIou) {
         if (CommonUtils.isBlank(proxyGrantingTicketIou)) {
             return null;
@@ -97,6 +98,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
         return holder.getProxyGrantingTicket();
     }
 
+    @Override
     public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
         final ProxyGrantingTicketHolder holder = new ProxyGrantingTicketHolder(proxyGrantingTicket);
 
@@ -109,6 +111,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      * Cleans up old, expired proxy tickets. This method must be
      * called regularly via an external thread or timer.
      */
+    @Override
     public void cleanUp() {
         for (final Map.Entry<String, ProxyGrantingTicketHolder> holder : this.cache.entrySet()) {
             if (holder.getValue().isExpired(this.timeout)) {

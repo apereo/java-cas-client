@@ -37,18 +37,22 @@ public class Cas10CasAuthenticator extends AbstractCasAuthenticator {
 
     private Cas10TicketValidator ticketValidator;
 
+    @Override
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
 
+    @Override
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }
 
+    @Override
     protected String getName() {
         return NAME;
     }
 
+    @Override
     public void start() throws LifecycleException {
         super.start();
         this.ticketValidator = new Cas10TicketValidator(getCasServerUrlPrefix());

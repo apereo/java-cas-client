@@ -77,10 +77,12 @@ public final class DelegatingFilter implements Filter {
         this.exactMatch = exactMatch;
     }
 
+    @Override
     public void destroy() {
         // nothing to do here
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
             throws IOException, ServletException {
 
@@ -107,6 +109,7 @@ public final class DelegatingFilter implements Filter {
         }
     }
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         // nothing to do here.
     }

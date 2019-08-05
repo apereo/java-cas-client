@@ -35,6 +35,7 @@ public class PropertiesCasRealmDelegateTests extends TestCase {
     private final PropertiesCasRealmDelegate realm = new PropertiesCasRealmDelegate();
 
     /** {@inheritDoc} */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         realm.setPropertiesFilePath("src/test/resources/org/jasig/cas/client/tomcat/user-roles.properties");

@@ -50,6 +50,7 @@ public final class ConfigurationStrategyNameTests {
             return null;
         }
 
+        @Override
         public void init(FilterConfig filterConfig, Class<? extends Filter> filterClazz) {
 
         }

@@ -54,11 +54,13 @@ public class AssertionCasRealmDelegate implements CasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Principal authenticate(final Principal p) {
         return p;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getRoles(final Principal p) {
         CommonUtils.assertTrue(p instanceof AttributePrincipal,
                 "Expected instance of AttributePrincipal but got " + p.getClass());
@@ -70,6 +72,7 @@ public class AssertionCasRealmDelegate implements CasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasRole(final Principal principal, final String role) {
         if ("*".equals(role)) {
             return true;

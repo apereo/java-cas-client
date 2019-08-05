@@ -61,6 +61,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
      *
      * @return the authentication method.
      */
+    @Override
     protected String getAuthMethod() {
         return getAuthenticationMethod();
     }
@@ -87,6 +88,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
      */
     protected abstract TicketValidator getTicketValidator();
 
+    @Override
     protected void startInternal() throws LifecycleException {
         super.startInternal();
         logger.debug("{} starting.", getName());
@@ -170,6 +172,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public void lifecycleEvent(final LifecycleEvent event) {
         if (AFTER_START_EVENT.equals(event.getType())) {
             logger.debug("{} processing lifecycle event {}", getName(), AFTER_START_EVENT);
@@ -186,6 +189,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     /** {@inheritDoc} 
      * @throws LifecycleException */
+    @Override
     protected synchronized void setState(final LifecycleState state, final Object data) throws LifecycleException {
         super.setState(state, data);
         if (LifecycleState.STARTED.equals(state)) {

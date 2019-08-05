@@ -80,6 +80,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
      */
     protected abstract TicketValidator getTicketValidator();
 
+    @Override
     public void start() throws LifecycleException {
         super.start();
         logger.debug("{} starting.", getName());
@@ -144,6 +145,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean authenticate(final Request request, final Response response, final LoginConfig loginConfig)
             throws IOException {
         Principal principal = request.getUserPrincipal();
@@ -162,6 +164,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public void lifecycleEvent(final LifecycleEvent event) {
         if (AFTER_START_EVENT.equals(event.getType())) {
             logger.debug("{} processing lifecycle event {}", getName(), AFTER_START_EVENT);
@@ -172,6 +175,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getInfo() {
         return getName() + "/1.0";
     }

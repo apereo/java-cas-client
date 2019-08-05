@@ -69,6 +69,7 @@ public class SingleSignOutValve extends ValveBase implements SessionListener {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void invoke(final Request request, final Response response) throws IOException, ServletException {
         if (this.handler.process(request, response)) {
             getNext().invoke(request, response);
@@ -76,6 +77,7 @@ public class SingleSignOutValve extends ValveBase implements SessionListener {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void sessionEvent(final SessionEvent event) {
         if (Session.SESSION_DESTROYED_EVENT.equals(event.getType())) {
             logger.debug("Cleaning up SessionMappingStorage on destroySession event");
@@ -84,6 +86,7 @@ public class SingleSignOutValve extends ValveBase implements SessionListener {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startInternal() throws LifecycleException {
         super.startInternal();
         logger.info("Starting...");

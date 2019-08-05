@@ -63,6 +63,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
         this.protocol = protocol;
     }
 
+    @Override
     public final void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
         if (!isIgnoreInitConfiguration()) {
@@ -97,6 +98,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     }
 
     // empty implementation as most filters won't need this.
+    @Override
     public void destroy() {
         // nothing to do
     }

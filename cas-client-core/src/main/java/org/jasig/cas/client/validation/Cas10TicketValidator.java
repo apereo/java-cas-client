@@ -35,10 +35,12 @@ public final class Cas10TicketValidator extends AbstractCasProtocolUrlBasedTicke
         super(casServerUrlPrefix);
     }
 
+    @Override
     protected String getUrlSuffix() {
         return "validate";
     }
 
+    @Override
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         if (!response.startsWith("yes")) {
             throw new TicketValidationException("CAS Server could not validate ticket.");

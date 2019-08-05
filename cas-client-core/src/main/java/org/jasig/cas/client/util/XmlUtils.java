@@ -118,13 +118,15 @@ public final class XmlUtils {
 
             private StringBuilder buffer = new StringBuilder();
 
+            @Override
             public void startElement(final String uri, final String localName, final String qName,
-                    final Attributes attributes) throws SAXException {
+                                     final Attributes attributes) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = true;
                 }
             }
 
+            @Override
             public void endElement(final String uri, final String localName, final String qName) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = false;
@@ -133,6 +135,7 @@ public final class XmlUtils {
                 }
             }
 
+            @Override
             public void characters(char[] ch, int start, int length) throws SAXException {
                 if (this.foundElement) {
                     this.buffer.append(ch, start, length);
@@ -169,19 +172,22 @@ public final class XmlUtils {
 
             private boolean foundElement = false;
 
+            @Override
             public void startElement(final String uri, final String localName, final String qName,
-                    final Attributes attributes) throws SAXException {
+                                     final Attributes attributes) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = true;
                 }
             }
 
+            @Override
             public void endElement(final String uri, final String localName, final String qName) throws SAXException {
                 if (localName.equals(element)) {
                     this.foundElement = false;
                 }
             }
 
+            @Override
             public void characters(char[] ch, int start, int length) throws SAXException {
                 if (this.foundElement) {
                     builder.append(ch, start, length);

@@ -82,6 +82,7 @@ public class JndiConfigurationStrategyImpl extends BaseConfigurationStrategy {
     }
 
 
+    @Override
     public final void init(final FilterConfig filterConfig, final Class<? extends Filter> clazz) {
         this.simpleFilterName = clazz.getSimpleName();
         try {

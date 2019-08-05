@@ -28,10 +28,12 @@ public final class ContainsPatternUrlPatternMatcherStrategy implements UrlPatter
 
     private String pattern;
     
+    @Override
     public boolean matches(final String url) {
         return url.contains(this.pattern);
     }
 
+    @Override
     public void setPattern(final String pattern) {
         this.pattern = pattern;
     }

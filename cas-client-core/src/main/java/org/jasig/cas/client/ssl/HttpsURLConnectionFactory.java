@@ -78,6 +78,7 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
         this.hostnameVerifier = verifier;
     }
 
+    @Override
     public HttpURLConnection buildHttpURLConnection(final URLConnection url) {
         return this.configureHttpsConnectionIfNeeded(url);
     }

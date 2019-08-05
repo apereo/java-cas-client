@@ -37,6 +37,7 @@ public class AssertionCasRealm extends AbstractCasRealm {
     private final AssertionCasRealmDelegate delegate = new AssertionCasRealmDelegate();
 
     /** {@inheritDoc} */
+    @Override
     public void start() throws LifecycleException {
         super.start();
         logger.info("Startup completed.");
@@ -50,6 +51,7 @@ public class AssertionCasRealm extends AbstractCasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected CasRealm getDelegate() {
         return this.delegate;
     }

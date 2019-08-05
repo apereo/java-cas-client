@@ -50,6 +50,7 @@ public class PropertiesCasRealm extends AbstractCasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void start() throws LifecycleException {
         super.start();
         this.delegate.readProperties();
@@ -57,6 +58,7 @@ public class PropertiesCasRealm extends AbstractCasRealm {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected CasRealm getDelegate() {
         return this.delegate;
     }

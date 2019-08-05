@@ -44,6 +44,7 @@ public final class TicketCredential implements Principal {
         this.ticket = ticket;
     }
 
+    @Override
     public String getName() {
         return this.ticket;
     }

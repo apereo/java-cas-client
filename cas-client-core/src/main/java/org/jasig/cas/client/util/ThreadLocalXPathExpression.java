@@ -50,18 +50,22 @@ public class ThreadLocalXPathExpression extends ThreadLocal<XPathExpression> imp
         this.context = context;
     }
 
+    @Override
     public Object evaluate(final Object o, final QName qName) throws XPathExpressionException {
         return get().evaluate(o, qName);
     }
 
+    @Override
     public String evaluate(final Object o) throws XPathExpressionException {
         return get().evaluate(o);
     }
 
+    @Override
     public Object evaluate(final InputSource inputSource, final QName qName) throws XPathExpressionException {
         return get().evaluate(inputSource, qName);
     }
 
+    @Override
     public String evaluate(final InputSource inputSource) throws XPathExpressionException {
         return get().evaluate(inputSource);
     }

@@ -100,6 +100,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         super(protocol);
     }
 
+    @Override
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
@@ -149,6 +150,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         }
     }
 
+    @Override
     public void init() {
         super.init();
 
@@ -160,6 +162,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         CommonUtils.assertNotNull(this.casServerLoginUrl, message);
     }
 
+    @Override
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                                final FilterChain filterChain) throws IOException, ServletException {
 

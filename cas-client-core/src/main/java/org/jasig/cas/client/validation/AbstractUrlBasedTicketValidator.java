@@ -181,6 +181,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     protected abstract String retrieveResponseFromServer(URL validationUrl, String ticket);
 
+    @Override
     public final Assertion validate(final String ticket, final String service) throws TicketValidationException {
         final String validationUrl = constructValidationUrl(ticket, service);
         logger.debug("Constructing validation url: {}", validationUrl);

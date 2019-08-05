@@ -48,6 +48,7 @@ public final class Saml11Authenticator extends AbstractAuthenticator {
         this.tolerance = ms;
     }
 
+    @Override
     protected void startInternal() throws LifecycleException {
         super.startInternal();
         this.ticketValidator = new Saml11TicketValidator(getCasServerUrlPrefix());
@@ -60,24 +61,29 @@ public final class Saml11Authenticator extends AbstractAuthenticator {
         this.ticketValidator.setRenew(isRenew());
     }
 
+    @Override
     protected TicketValidator getTicketValidator() {
         return this.ticketValidator;
     }
 
+    @Override
     protected String getAuthenticationMethod() {
         return AUTH_METHOD;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getArtifactParameterName() {
         return "SAMLart";
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getServiceParameterName() {
         return "TARGET";
     }
 
+    @Override
     protected String getName() {
         return NAME;
     }

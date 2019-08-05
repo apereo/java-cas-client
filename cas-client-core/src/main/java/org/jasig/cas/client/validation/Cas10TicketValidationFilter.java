@@ -40,6 +40,7 @@ public class Cas10TicketValidationFilter extends AbstractTicketValidationFilter 
         super(Protocol.CAS1);
     }
 
+    @Override
     protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
         final String casServerUrlPrefix = getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX);
         final Cas10TicketValidator validator = new Cas10TicketValidator(casServerUrlPrefix);

@@ -45,10 +45,12 @@ public final class RegexUrlPatternMatcherStrategy implements UrlPatternMatcherSt
         this.setPattern(pattern);
     }
 
+    @Override
     public boolean matches(final String url) {
         return this.pattern.matcher(url).find();
     }
 
+    @Override
     public void setPattern(final String pattern) {
         this.pattern = Pattern.compile(pattern);
     }

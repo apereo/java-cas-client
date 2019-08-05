@@ -35,10 +35,12 @@ public final class ExactUrlPatternMatcherStrategy implements UrlPatternMatcherSt
         this.setPattern(pattern);
     }
 
+    @Override
     public boolean matches(final String url) {
         return url.equals(this.pattern);
     }
 
+    @Override
     public void setPattern(final String pattern) {
         this.pattern = pattern;
     }
