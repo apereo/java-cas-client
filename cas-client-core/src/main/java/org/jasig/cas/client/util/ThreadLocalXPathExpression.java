@@ -102,7 +102,7 @@ public class ThreadLocalXPathExpression extends ThreadLocal<XPathExpression> imp
             final XPath xPath = XPathFactory.newInstance().newXPath();
             xPath.setNamespaceContext(context);
             return xPath.compile(expression);
-        } catch (XPathExpressionException e) {
+        } catch (final XPathExpressionException e) {
             throw new IllegalArgumentException("Invalid XPath expression");
         }
     }

@@ -65,7 +65,7 @@ public final class XmlUtils {
         for (final Map.Entry<String, Boolean> entry : features.entrySet()) {
             try {
                 factory.setFeature(entry.getKey(), entry.getValue());
-            } catch (ParserConfigurationException e) {
+            } catch (final ParserConfigurationException e) {
                 LOGGER.warn("Failed setting XML feature {}: {}", entry.getKey(), e);
             }
         }
@@ -73,7 +73,7 @@ public final class XmlUtils {
         factory.setNamespaceAware(true);
         try {
             return factory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("XML parsing error: " + e);
         }
     }
@@ -136,7 +136,7 @@ public final class XmlUtils {
             }
 
             @Override
-            public void characters(char[] ch, int start, int length) throws SAXException {
+            public void characters(final char[] ch, final int start, final int length) throws SAXException {
                 if (this.foundElement) {
                     this.buffer.append(ch, start, length);
                 }
@@ -188,7 +188,7 @@ public final class XmlUtils {
             }
 
             @Override
-            public void characters(char[] ch, int start, int length) throws SAXException {
+            public void characters(final char[] ch, final int start, final int length) throws SAXException {
                 if (this.foundElement) {
                     builder.append(ch, start, length);
                 }

@@ -189,7 +189,7 @@ public abstract class AbstractAuthenticator extends AuthenticatorBase implements
 
     /** {@inheritDoc} */
     @Override
-    protected synchronized void setState(LifecycleState state, Object data) throws LifecycleException {
+    protected synchronized void setState(final LifecycleState state, final Object data) throws LifecycleException {
         super.setState(state, data);
         if (LifecycleState.STARTED.equals(state)) {
             logger.info("{} started.", getName());

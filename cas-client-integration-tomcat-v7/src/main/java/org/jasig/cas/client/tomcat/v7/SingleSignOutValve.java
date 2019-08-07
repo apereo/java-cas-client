@@ -60,7 +60,7 @@ public class SingleSignOutValve extends ValveBase implements SessionListener {
         this.handler.setRelayStateParameterName(name);
     }
 
-    public void setLogoutCallbackPath(String logoutCallbackPath) {
+    public void setLogoutCallbackPath(final String logoutCallbackPath) {
         this.handler.setLogoutCallbackPath(logoutCallbackPath);
     }
 

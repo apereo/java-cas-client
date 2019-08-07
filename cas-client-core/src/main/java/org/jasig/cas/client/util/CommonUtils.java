@@ -313,7 +313,7 @@ public final class CommonUtils {
 
         final URIBuilder builder;
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
-            String scheme = request.isSecure() ? "https://" : "http://";
+            final String scheme = request.isSecure() ? "https://" : "http://";
             builder = new URIBuilder(scheme + serverName, encode);
         } else {
             builder = new URIBuilder(serverName, encode);
@@ -328,13 +328,13 @@ public final class CommonUtils {
         final List<String> serviceParameterNames = Arrays.asList(serviceParameterName.split(","));
         if (!serviceParameterNames.isEmpty() && !originalRequestUrl.getQueryParams().isEmpty()) {
             for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
-                String name = pair.getName();
+                final String name = pair.getName();
                 if (!name.equals(artifactParameterName) && !serviceParameterNames.contains(name)) {
                     if (name.contains("&") || name.contains("=") ){
-                        URIBuilder encodedParamBuilder = new URIBuilder();
+                        final URIBuilder encodedParamBuilder = new URIBuilder();
                         encodedParamBuilder.setParameters(name);
                         for (final URIBuilder.BasicNameValuePair pair2 :encodedParamBuilder.getQueryParams()){
-                            String name2 = pair2.getName();
+                            final String name2 = pair2.getName();
                             if (!name2.equals(artifactParameterName) && !serviceParameterNames.contains(name2)) {
                                 builder.addParameter(name2, pair2.getValue());
                             }
@@ -708,7 +708,7 @@ public final class CommonUtils {
      * @param string a possibly <code>null</code> string
      * @return a non-<code>null</code> string
      */
-    public static String nullToEmpty(String string) {
+    public static String nullToEmpty(final String string) {
         return string == null ? "" : string;
     }
 
@@ -718,7 +718,7 @@ public final class CommonUtils {
      * @param uri a string that may or may not end with a slash
      * @return the same string, except with a slash suffix (if necessary).
      */
-    public static String addTrailingSlash(String uri) {
+    public static String addTrailingSlash(final String uri) {
         return uri.endsWith("/") ? uri : uri + "/";
     }
 }

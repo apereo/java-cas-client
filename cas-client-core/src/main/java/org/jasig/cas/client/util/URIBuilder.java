@@ -86,7 +86,7 @@ public final class URIBuilder {
         }
     }
 
-    public URIBuilder(final String string, boolean encode) {
+    public URIBuilder(final String string, final boolean encode) {
         super();
         try {
             setEncode(encode);
@@ -252,7 +252,7 @@ public final class URIBuilder {
         return this.encode ? CommonUtils.urlEncode(fragment) : fragment;
     }
 
-    public URIBuilder setEncode(boolean encode) {
+    public URIBuilder setEncode(final boolean encode) {
         this.encode = encode;
         return this;
     }

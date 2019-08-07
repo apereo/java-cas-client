@@ -9,9 +9,7 @@
 
     <packaging>jar</packaging>
     <artifactId>cas-client-support-distributed-memcached</artifactId>
-    <name>Jasig CAS Client for Java - Distributed Proxy Storage Support:
-        Memcached
-    </name>
+    <name>Jasig CAS Client for Java - Distributed Proxy Storage Support: Memcached</name>
 
     <dependencies>
         <dependency>

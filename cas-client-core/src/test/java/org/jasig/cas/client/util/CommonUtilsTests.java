@@ -69,7 +69,7 @@ public final class CommonUtilsTests extends TestCase {
         CommonUtils.assertNotNull(new Object(), CONST_MESSAGE);
         try {
             CommonUtils.assertNotNull(null, CONST_MESSAGE);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             assertEquals(CONST_MESSAGE, e.getMessage());
         }
     }
@@ -81,13 +81,13 @@ public final class CommonUtilsTests extends TestCase {
         CommonUtils.assertNotEmpty(c, CONST_MESSAGE);
         try {
             CommonUtils.assertNotEmpty(new ArrayList<Object>(), CONST_MESSAGE);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             assertEquals(CONST_MESSAGE, e.getMessage());
         }
 
         try {
             CommonUtils.assertNotEmpty(null, CONST_MESSAGE);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             assertEquals(CONST_MESSAGE, e.getMessage());
         }
     }
@@ -97,7 +97,7 @@ public final class CommonUtilsTests extends TestCase {
         CommonUtils.assertTrue(true, CONST_MESSAGE);
         try {
             CommonUtils.assertTrue(false, CONST_MESSAGE);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             assertEquals(CONST_MESSAGE, e.getMessage());
         }
     }

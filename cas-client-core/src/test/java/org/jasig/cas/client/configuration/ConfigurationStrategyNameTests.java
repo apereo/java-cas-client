@@ -46,12 +46,12 @@ public final class ConfigurationStrategyNameTests {
     private class TestClass extends BaseConfigurationStrategy {
 
         @Override
-        protected String get(ConfigurationKey configurationKey) {
+        protected String get(final ConfigurationKey configurationKey) {
             return null;
         }
 
         @Override
-        public void init(FilterConfig filterConfig, Class<? extends Filter> filterClazz) {
+        public void init(final FilterConfig filterConfig, final Class<? extends Filter> filterClazz) {
 
         }
     }

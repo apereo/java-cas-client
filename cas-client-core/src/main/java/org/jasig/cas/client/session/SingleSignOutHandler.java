@@ -103,7 +103,7 @@ public final class SingleSignOutHandler {
     /**
      * @param logoutCallbackPath The logout callback path configured at the CAS server.
      */
-    public void setLogoutCallbackPath(String logoutCallbackPath) {
+    public void setLogoutCallbackPath(final String logoutCallbackPath) {
         this.logoutCallbackPath = logoutCallbackPath;
     }
 
@@ -169,11 +169,11 @@ public final class SingleSignOutHandler {
         return false;
     }
 
-    private boolean pathEligibleForLogout(HttpServletRequest request) {
+    private boolean pathEligibleForLogout(final HttpServletRequest request) {
         return logoutCallbackPath == null || logoutCallbackPath.equals(getPath(request));
     }
 
-    private String getPath(HttpServletRequest request) {
+    private String getPath(final HttpServletRequest request) {
         return request.getServletPath() + CommonUtils.nullToEmpty(request.getPathInfo());
     }
 

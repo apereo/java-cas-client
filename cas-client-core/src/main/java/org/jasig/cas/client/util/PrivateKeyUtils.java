@@ -29,7 +29,7 @@ public class PrivateKeyUtils {
     }
 
     public static PrivateKey createKey(final String path, final String algorithm) {
-        PrivateKey key = readPemPrivateKey(path);
+        final PrivateKey key = readPemPrivateKey(path);
         if (key == null) {
             return readDERPrivateKey(path, algorithm);
         } else {
@@ -70,8 +70,8 @@ public class PrivateKeyUtils {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(file);
-            long byteLength = file.length();
-            byte[] bytes = new byte[(int) byteLength];
+            final long byteLength = file.length();
+            final byte[] bytes = new byte[(int) byteLength];
             fis.read(bytes, 0, (int) byteLength);
             final PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(bytes);
             final KeyFactory factory = KeyFactory.getInstance(algorithm);

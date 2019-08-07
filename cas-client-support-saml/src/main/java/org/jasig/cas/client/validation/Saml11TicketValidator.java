@@ -90,7 +90,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         try {
             SAML_REQUEST_TEMPLATE = IOUtils.readString(
                     Saml11TicketValidator.class.getResourceAsStream("/META-INF/cas/samlRequestTemplate.xml"));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Cannot load SAML request template from classpath", e);
         }
 
@@ -101,7 +101,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
         try {
             random = SecureRandom.getInstance("SHA1PRNG");
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             throw new IllegalStateException("Cannot find required SHA1PRNG algorithm");
         }
     }

@@ -47,7 +47,7 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public synchronized void addSessionById(String mappingId, HttpSession session) {
+    public synchronized void addSessionById(final String mappingId, final HttpSession session) {
         ID_TO_SESSION_KEY_MAPPING.put(session.getId(), mappingId);
         MANAGED_SESSIONS.put(mappingId, session);
 
@@ -71,7 +71,7 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
     }
 
     @Override
-    public synchronized HttpSession removeSessionByMappingId(String mappingId) {
+    public synchronized HttpSession removeSessionByMappingId(final String mappingId) {
         final HttpSession session = MANAGED_SESSIONS.get(mappingId);
 
         if (session != null) {

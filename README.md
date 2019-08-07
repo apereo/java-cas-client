@@ -62,7 +62,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 </dependency>
 ```
 
-- Atlassian integration is provided by this dependency:
+- Atlassian integration (Deprecated) is provided by this dependency:
 
 ```xml
 <dependency>
@@ -118,6 +118,16 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 <dependency>
    <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v85</artifactId>
+   <version>${java.cas.client.version}</version>
+</dependency>
+```
+
+- Spring Boot AutoConfiguration is provided by this dependency:
+
+```xml
+<dependency>
+   <groupId>org.jasig.cas.client</groupId>
+   <artifactId>cas-client-support-springboot</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
 ```
@@ -749,6 +759,106 @@ You have been logged out of [APPLICATION NAME GOES HERE].
 To log out of all applications, click here. (provide link to CAS server's logout)
 ```
 
+<a name="springboot-autoconfiguration"></a>
+## Spring Boot AutoConfiguration
+
+### Usage 
+
+* Define a dependency:
+
+> Maven:
+
+```xml
+<dependency>
+   <groupId>org.jasig.cas.client</groupId>
+   <artifactId>cas-client-support-springboot</artifactId>
+   <version>${java.cas.client.version}</version>
+</dependency>
+```
+
+> Gradle:
+
+```groovy
+dependencies {
+    ...
+    compile 'org.jasig.cas.client:cas-client-support-springboot:${java.cas.client.version}'
+    ...
+}
+```
+
+* Add the following required properties in Spring Boot's `application.properties` or `application.yml`:
+
+```properties
+cas.server-url-prefix=https://cashost.com/cas
+cas.server-login-url=https://cashost.com/cas/login
+cas.client-host-url=https://casclient.com
+```
+
+* Annotate Spring Boot application (or any @Configuration class) with `@EnableCasClient` annotation
+
+```java
+@SpringBootApplication
+@Controller
+@EnableCasClient
+public class MyApplication { .. }
+```
+
+> For CAS3 protocol (authentication and validation filters) - which is default if nothing is specified
+
+```properties
+cas.validation-type=CAS3
+```
+
+> For CAS2 protocol (authentication and validation filters)
+
+```properties
+cas.validation-type=CAS
+```
+
+> For SAML protocol (authentication and validation filters)
+
+```properties
+cas.validation-type=SAML
+```
+
+### Available optional properties
+
+* `cas.authentication-url-patterns`
+* `cas.validation-url-patterns`
+* `cas.request-wrapper-url-patterns`
+* `cas.assertion-thread-local-url-patterns`
+* `cas.gateway`
+* `cas.use-session`
+* `cas.redirect-after-validation`
+* `cas.allowed-proxy-chains`
+* `cas.proxy-callback-url`
+* `cas.proxy-receptor-url`
+* `cas.accept-any-proxy`
+* `server.context-parameters.renew`
+
+### Advanced configuration
+
+This module does not expose ALL the CAS client configuration options via standard Spring property sources, but only most commonly used ones.
+If there is a need however, to set any number of not exposed, 'exotic' properties, you can implement the `CasClientConfigurer`
+class in your `@EnableCasClient` annotated class and override appropriate configuration method(s) for CAS client filter(s) in question.
+For example:
+
+```java
+@SpringBootApplication
+@EnableCasClient
+class CasProtectedApplication implements CasClientConfigurer {    
+    @Override
+    void configureValidationFilter(FilterRegistrationBean validationFilter) {           
+        validationFilter.getInitParameters().put("millisBetweenCleanUps", "120000");
+    }        
+    @Override
+    void configureAuthenticationFilter(FilterRegistrationBean authenticationFilter) {
+        authenticationFilter.getInitParameters().put("artifactParameterName", "casTicket");
+        authenticationFilter.getInitParameters().put("serviceParameterName", "targetService");
+    }                                
+}
+``` 
+
 <a name="jaas"></a>
 ## JAAS
 The client supports the Java Authentication and Authorization Service (JAAS) framework, which provides authn facilities to CAS-enabled JEE applications.
@@ -870,7 +980,7 @@ If you have any trouble, you can enable the log of cas in `jboss-logging.xml` by
 <logger category="org.jasig">
    <level name="DEBUG" />
 </logger>
-``` 
+```       
 
 <a name="tomcat-678-integration"></a>
 ## Tomcat 6/7/8 Integration

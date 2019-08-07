@@ -105,7 +105,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
 
-            String loginUrl = getString(ConfigurationKeys.CAS_SERVER_LOGIN_URL);
+            final String loginUrl = getString(ConfigurationKeys.CAS_SERVER_LOGIN_URL);
             if (loginUrl != null) {
                 setCasServerLoginUrl(loginUrl);
             } else {
@@ -154,7 +154,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public void init() {
         super.init();
 
-        String message = String.format(
+        final String message = String.format(
             "one of %s and %s must not be null.",
             ConfigurationKeys.CAS_SERVER_LOGIN_URL.getName(),
             ConfigurationKeys.CAS_SERVER_URL_PREFIX.getName());

@@ -54,7 +54,7 @@ public class Cas30ServiceTicketValidator extends Cas20ServiceTicketValidator {
      * @return - Map of attributes
      */
     @Override
-    protected Map<String, Object> extractCustomAttributes(String xml) {
+    protected Map<String, Object> extractCustomAttributes(final String xml) {
         final Document document = XmlUtils.newDocument(xml);
 
         // Check if attributes are inlined.  If not return default super method results

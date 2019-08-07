@@ -200,7 +200,7 @@ public class CasAuthenticatorTest {
         final HttpURLConnection uc;
         try {
             uc = (HttpURLConnection) new URL(url).openConnection();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("Invalid URL: " + url, e);
         }
         uc.setInstanceFollowRedirects(false);

@@ -48,7 +48,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
 
         final Timer timer = new Timer(true) {
             @Override
-            public void schedule(TimerTask task, long delay, long period) {
+            public void schedule(final TimerTask task, final long delay, final long period) {
                 scheduleMethodFlag.setCalled();
             }
         };
@@ -140,19 +140,19 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     }
 
     public void testThrowsForNullStorage() throws Exception {
-        Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
         filter.setProxyGrantingTicketStorage(null);
 
         try {
             filter.init();
             fail("expected an exception due to null ProxyGrantingTicketStorage");
-        } catch (IllegalArgumentException exception) {
+        } catch (final IllegalArgumentException exception) {
             // test passes
         }
     }
 
     public void testGetTicketValidator() throws Exception {
-        Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
 
         // Test case #1
         final MockFilterConfig config1 = new MockFilterConfig();
@@ -165,7 +165,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
 
     @Test
     public void getTicketValidatorWithProxyChains() throws Exception {
-        Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
         // Test case #2
         final MockFilterConfig config2 = new MockFilterConfig();
         config2.addInitParameter("allowedProxyChains", "https://a.example.com https://b.example.com");
@@ -178,7 +178,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
 
     @Test
     public void getTIcketValidatorWithProxyChainsAndLineBreak() throws Exception {
-        Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
 
         // Test case #3
         final MockFilterConfig config3 = new MockFilterConfig();

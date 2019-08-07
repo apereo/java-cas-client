@@ -81,7 +81,7 @@ public class ReflectUtilsTests extends TestCase {
         /**
          * @param count the count to set
          */
-        public void setCount(int count) {
+        public void setCount(final int count) {
             this.count = count;
         }
 
@@ -95,7 +95,7 @@ public class ReflectUtilsTests extends TestCase {
         /**
          * @param name the name to set
          */
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
 
@@ -109,7 +109,7 @@ public class ReflectUtilsTests extends TestCase {
         /**
          * @param flag the flag to set
          */
-        public void setFlag(boolean flag) {
+        public void setFlag(final boolean flag) {
             this.flag = flag;
         }
 
@@ -122,7 +122,7 @@ public class ReflectUtilsTests extends TestCase {
             return state;
         }
 
-        public void setState(String state) {
+        public void setState(final String state) {
             this.state = state;
         }
     }
