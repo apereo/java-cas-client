@@ -95,7 +95,7 @@ public final class AuthenticationFilterTests {
         final FilterChain filterChain = new FilterChain() {
 
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -118,7 +118,7 @@ public final class AuthenticationFilterTests {
         final FilterChain filterChain = new FilterChain() {
 
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -149,7 +149,7 @@ public final class AuthenticationFilterTests {
         final FilterChain filterChain = new FilterChain() {
 
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -169,7 +169,7 @@ public final class AuthenticationFilterTests {
         final FilterChain filterChain = new FilterChain() {
 
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -190,7 +190,7 @@ public final class AuthenticationFilterTests {
         final FilterChain filterChain = new FilterChain() {
 
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
                 // nothing to do
             }
         };
@@ -273,7 +273,7 @@ public final class AuthenticationFilterTests {
 
         final FilterChain filterChain = new FilterChain() {
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
         };
 
@@ -303,7 +303,7 @@ public final class AuthenticationFilterTests {
 
         final FilterChain filterChain = new FilterChain() {
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
         };
 
@@ -338,7 +338,7 @@ public final class AuthenticationFilterTests {
 
         final FilterChain filterChain = new FilterChain() {
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
         };
 
@@ -368,7 +368,7 @@ public final class AuthenticationFilterTests {
 
         final FilterChain filterChain = new FilterChain() {
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
         };
 
@@ -398,7 +398,7 @@ public final class AuthenticationFilterTests {
 
         final FilterChain filterChain = new FilterChain() {
             @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
         };
 

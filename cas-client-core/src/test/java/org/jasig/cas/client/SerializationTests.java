@@ -49,7 +49,7 @@ public class SerializationTests extends TestCase {
             final ObjectOutputStream out = new ObjectOutputStream(byteOut);
             try {
                 out.writeObject(subjects[i]);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Assert.fail("Serialization failed for " + subjects[i]);
             } finally {
                 out.close();
@@ -59,7 +59,7 @@ public class SerializationTests extends TestCase {
             final ObjectInputStream in = new ObjectInputStream(byteIn);
             try {
                 Assert.assertEquals(subjects[i], in.readObject());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Assert.fail("Deserialization failed for " + subjects[i]);
             } finally {
                 in.close();

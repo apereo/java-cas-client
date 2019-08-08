@@ -48,23 +48,23 @@ public final class PublicTestHttpServer extends Thread {
 
     private static final Map<Integer, PublicTestHttpServer> serverMap = new HashMap<Integer, PublicTestHttpServer>();
 
-    private PublicTestHttpServer(String data, String encoding, String MIMEType, int port)
+    private PublicTestHttpServer(final String data, final String encoding, final String MIMEType, final int port)
             throws UnsupportedEncodingException {
         this(data.getBytes(encoding), encoding, MIMEType, port);
     }
 
-    private PublicTestHttpServer(byte[] data, String encoding, String MIMEType, int port)
+    private PublicTestHttpServer(final byte[] data, final String encoding, final String MIMEType, final int port)
             throws UnsupportedEncodingException {
         this.content = data;
         this.port = port;
         this.encoding = encoding;
-        String header = "HTTP/1.0 200 OK\r\n" + "Server: OneFile 1.0\r\n" + "Content-type: " + MIMEType + "\r\n\r\n";
+        final String header = "HTTP/1.0 200 OK\r\n" + "Server: OneFile 1.0\r\n" + "Content-type: " + MIMEType + "\r\n\r\n";
         this.header = header.getBytes("ASCII");
     }
 
     public static synchronized PublicTestHttpServer instance(final int port) {
         if (serverMap.containsKey(port)) {
-            PublicTestHttpServer server = serverMap.get(port);
+            final PublicTestHttpServer server = serverMap.get(port);
             server.waitUntilReady();
             return server;
         }
@@ -75,7 +75,7 @@ public final class PublicTestHttpServer extends Thread {
             serverMap.put(port, server);
             server.waitUntilReady();
             return server;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -83,7 +83,7 @@ public final class PublicTestHttpServer extends Thread {
     private void waitUntilReady() {
         try {
             ready.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("interrupted", e);
         }
@@ -117,7 +117,7 @@ public final class PublicTestHttpServer extends Thread {
                     // read the first line only; that's all we need
                     final StringBuffer request = new StringBuffer(80);
                     while (true) {
-                        int c = in.read();
+                        final int c = in.read();
                         if (c == '\r' || c == '\n' || c == -1)
                             break;
                         request.append((char) c);

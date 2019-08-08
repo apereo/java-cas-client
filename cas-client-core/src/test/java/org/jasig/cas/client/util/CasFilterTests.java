@@ -62,7 +62,7 @@ public final class CasFilterTests {
             super(Protocol.CAS2);
         }
         @Override
-        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+        public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
                 ServletException {
             // nothing to do
         }

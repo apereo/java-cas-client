@@ -76,7 +76,7 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
             private static final long serialVersionUID = 1L;
 
             @Override
-            public String getProxyTicketIdFor(String proxyGrantingTicketId, String targetService) {
+            public String getProxyTicketIdFor(final String proxyGrantingTicketId, final String targetService) {
                 return "test";
             }
         };
@@ -100,7 +100,7 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
         try {
             this.ticketValidator.validate("test", "test");
             fail("Invalid proxy chain");
-        } catch (InvalidProxyChainTicketValidationException e) {
+        } catch (final InvalidProxyChainTicketValidationException e) {
             // expected
         }
     }
@@ -131,7 +131,7 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
         try {
             this.ticketValidator.validate("test", "test");
             fail("Invalid proxy chain");
-        } catch (InvalidProxyChainTicketValidationException e) {
+        } catch (final InvalidProxyChainTicketValidationException e) {
             // expected
         }
     }

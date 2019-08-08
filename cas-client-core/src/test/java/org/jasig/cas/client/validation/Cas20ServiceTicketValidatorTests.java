@@ -75,7 +75,7 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
             private static final long serialVersionUID = 1L;
 
             @Override
-            public String getProxyTicketIdFor(String proxyGrantingTicketId, String targetService) {
+            public String getProxyTicketIdFor(final String proxyGrantingTicketId, final String targetService) {
                 return "test";
             }
         };
@@ -136,9 +136,9 @@ public final class Cas20ServiceTicketValidatorTests extends AbstractTicketValida
         assertEquals("id", principal.getAttributes().get("eduPersonId"));
         assertEquals("test1\n\ntest", principal.getAttributes().get("longAttribute"));
         try {
-            List<?> multivalued = (List<?>) principal.getAttributes().get("multivaluedAttribute");
+            final List<?> multivalued = (List<?>) principal.getAttributes().get("multivaluedAttribute");
             assertArrayEquals(new String[] { "value1", "value2" }, multivalued.toArray());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             fail("'multivaluedAttribute' attribute expected as List<Object> object.");
         }
         assertEquals(PGT, proxyGrantingTicketField.get(principal));

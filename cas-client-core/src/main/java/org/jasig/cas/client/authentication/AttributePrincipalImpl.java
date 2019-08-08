@@ -102,7 +102,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
     }
 
     @Override
-    public String getProxyTicketFor(String service) {
+    public String getProxyTicketFor(final String service) {
         if (proxyGrantingTicket != null) {
             return this.proxyRetriever.getProxyTicketIdFor(this.proxyGrantingTicket, service);
         }

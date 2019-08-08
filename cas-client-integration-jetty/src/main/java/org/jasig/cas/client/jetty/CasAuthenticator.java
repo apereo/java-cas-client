@@ -167,7 +167,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
                 logger.info("Successfully authenticated {}", assertion.getPrincipal());
                 authentication = new CasAuthentication(this, ticket, assertion);
                 cacheAuthentication(request, authentication);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new ServerAuthException("CAS ticket validation failed", e);
             }
         }
@@ -240,7 +240,7 @@ public class CasAuthenticator extends AbstractLifeCycle implements Authenticator
                     casServerLoginUrl, protocol.getServiceParameterName(), serviceUrl(request, response), renew, false, null);
             logger.debug("Redirecting to {}", redirectUrl);
             response.sendRedirect(redirectUrl);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.debug("Redirect to CAS failed with error", e);
             throw new ServerAuthException("Redirect to CAS failed", e);
         }

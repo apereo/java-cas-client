@@ -126,7 +126,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
         buffer.append(this.casServerUrlPrefix);
         buffer.append(suffix);
 
-        for (Map.Entry<String, String> entry : urlParameters.entrySet()) {
+        for (final Map.Entry<String, String> entry : urlParameters.entrySet()) {
             final String key = entry.getKey();
             final String value = entry.getValue();
 

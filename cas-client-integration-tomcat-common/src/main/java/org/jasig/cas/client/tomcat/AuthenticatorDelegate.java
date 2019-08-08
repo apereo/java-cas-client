@@ -107,7 +107,7 @@ public final class AuthenticatorDelegate {
                 return null;
             }
         }
-        Principal p = realm.authenticate(assertion.getPrincipal());
+        final Principal p = realm.authenticate(assertion.getPrincipal());
         if (p == null) {
             logger.debug("{} failed to authenticate to {}", assertion.getPrincipal().getName(), realm);
             setUnauthorized(response, null);
@@ -192,7 +192,7 @@ public final class AuthenticatorDelegate {
             } else {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Error setting 403 status.", e);
         }
     }

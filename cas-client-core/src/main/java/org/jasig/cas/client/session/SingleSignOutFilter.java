@@ -68,7 +68,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         HANDLER.setRelayStateParameterName(name);
     }
 
-    public void setLogoutCallbackPath(String logoutCallbackPath) {
+    public void setLogoutCallbackPath(final String logoutCallbackPath) {
         HANDLER.setLogoutCallbackPath(logoutCallbackPath);
     }
 

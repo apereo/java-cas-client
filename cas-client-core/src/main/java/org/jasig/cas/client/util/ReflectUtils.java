@@ -164,7 +164,7 @@ public final class ReflectUtils {
         do {
             try {
                 field = clazz.getDeclaredField(fieldName);
-            } catch (NoSuchFieldException e) {
+            } catch (final NoSuchFieldException e) {
                 clazz = clazz.getSuperclass();
             }
         } while (field == null && clazz != null);
@@ -176,7 +176,7 @@ public final class ReflectUtils {
                 field.setAccessible(true);
             }
             return field.get(target);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalArgumentException("Error getting field " + fieldName, e);
         }
     }

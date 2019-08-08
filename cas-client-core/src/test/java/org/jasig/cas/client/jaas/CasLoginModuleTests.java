@@ -117,7 +117,7 @@ public class CasLoginModuleTests {
         try {
             module.login();
             fail("Login did not throw FailedLoginException as expected.");
-        } catch (LoginException e) {
+        } catch (final LoginException e) {
             assertEquals(TicketValidationException.class, e.getCause().getClass());
         }
         module.commit();
@@ -181,7 +181,7 @@ public class CasLoginModuleTests {
             module.login();
             module.commit();
             Assert.fail("Login should have failed.");
-        } catch (LoginException e) {
+        } catch (final LoginException e) {
             assertEquals(TicketValidationException.class, e.getCause().getClass());
         }
         assertEquals(0, this.subject.getPrincipals().size());
@@ -229,7 +229,7 @@ public class CasLoginModuleTests {
         try {
             module.login();
             fail("Should have thrown FailedLoginException.");
-        } catch (LoginException e) {
+        } catch (final LoginException e) {
             assertEquals(TicketValidationException.class, e.getCause().getClass());
         }
     }
@@ -237,7 +237,7 @@ public class CasLoginModuleTests {
     private boolean hasPrincipalName(final Subject subject, final Class<? extends Principal> principalClass,
             final String name) {
         final Set<? extends Principal> principals = subject.getPrincipals(principalClass);
-        for (Principal p : principals) {
+        for (final Principal p : principals) {
             if (p.getName().equals(name)) {
                 return true;
             }

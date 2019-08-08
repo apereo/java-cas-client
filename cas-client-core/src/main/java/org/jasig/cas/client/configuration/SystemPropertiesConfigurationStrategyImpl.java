@@ -30,11 +30,11 @@ import javax.servlet.FilterConfig;
 public class SystemPropertiesConfigurationStrategyImpl extends BaseConfigurationStrategy {
 
     @Override
-    public void init(FilterConfig filterConfig, Class<? extends Filter> filterClazz) {
+    public void init(final FilterConfig filterConfig, final Class<? extends Filter> filterClazz) {
     }
 
     @Override
-    protected String get(ConfigurationKey configurationKey) {
+    protected String get(final ConfigurationKey configurationKey) {
         return System.getProperty(configurationKey.getName());
     }
 }

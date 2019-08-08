@@ -54,7 +54,7 @@ public class URIBuilderTests {
 
     @Test
     public void allPartsUsed() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -65,7 +65,7 @@ public class URIBuilderTests {
 
     @Test
     public void noSchemeUsed() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setHost("apache.org")
                 .setPath("/shindig")
                 .setCustomQuery("hello=world")
@@ -75,7 +75,7 @@ public class URIBuilderTests {
 
     @Test
     public void noAuthorityUsed() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setPath("/shindig")
                 .setCustomQuery("hello=world")
@@ -85,7 +85,7 @@ public class URIBuilderTests {
 
     @Test
     public void noPathUsed() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setCustomQuery("hello=world")
@@ -95,7 +95,7 @@ public class URIBuilderTests {
 
     @Test
     public void noQueryUsed() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -105,7 +105,7 @@ public class URIBuilderTests {
 
     @Test
     public void noFragmentUsed() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -115,7 +115,7 @@ public class URIBuilderTests {
 
     @Test
     public void hostRelativePaths() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setPath("/shindig")
                 .setCustomQuery("hello=world")
                 .setFragment("foo");
@@ -124,7 +124,7 @@ public class URIBuilderTests {
 
     @Test
     public void relativePaths() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setPath("foo")
                 .setCustomQuery("hello=world")
                 .setFragment("foo");
@@ -133,7 +133,7 @@ public class URIBuilderTests {
 
     @Test
     public void noPathNoHostNoAuthority() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setCustomQuery("hello=world")
                 .setFragment("foo");
         assertEquals("?hello=world#foo", builder.toString());
@@ -141,7 +141,7 @@ public class URIBuilderTests {
 
     @Test
     public void justSchemeAndAuthority() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org");
         assertEquals("http://apache.org", builder.toString());
@@ -149,14 +149,14 @@ public class URIBuilderTests {
 
     @Test
     public void justPath() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setPath("/shindig");
         assertEquals("/shindig", builder.toString());
     }
 
     @Test
     public void justAuthorityAndPath() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setHost("apache.org")
                 .setPath("/shindig");
         assertEquals("//apache.org/shindig", builder.toString());
@@ -164,21 +164,21 @@ public class URIBuilderTests {
 
     @Test
     public void justQuery() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setCustomQuery("hello=world");
         assertEquals("?hello=world", builder.toString());
     }
 
     @Test
     public void justFragment() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setFragment("foo");
         assertEquals("#foo", builder.toString());
     }
 
     @Test
     public void addSingleQueryParameter() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -189,7 +189,7 @@ public class URIBuilderTests {
 
     @Test
     public void addTwoQueryParameters() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -201,10 +201,10 @@ public class URIBuilderTests {
 
     @Test
     public void iterableQueryParameters() {
-        List<URIBuilder.BasicNameValuePair> list = new ArrayList<URIBuilder.BasicNameValuePair>();
+        final List<URIBuilder.BasicNameValuePair> list = new ArrayList<URIBuilder.BasicNameValuePair>();
         list.add(new URIBuilder.BasicNameValuePair("hello", "world"));
         list.add(new URIBuilder.BasicNameValuePair("hello", "monde"));
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -215,14 +215,14 @@ public class URIBuilderTests {
 
     @Test
     public void removeQueryParameter() {
-        URIBuilder uri = new URIBuilder("http://www.example.com/foo?bar=baz&quux=baz");
+        final URIBuilder uri = new URIBuilder("http://www.example.com/foo?bar=baz&quux=baz");
         uri.removeQuery();
         assertEquals("http://www.example.com/foo", uri.toString());
     }
 
     @Test
     public void addIdenticalParameters() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -234,7 +234,7 @@ public class URIBuilderTests {
 
     @Test
     public void queryStringIsUnescaped() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -244,7 +244,7 @@ public class URIBuilderTests {
 
     @Test
     public void queryParamsAreEscaped() {
-        URIBuilder builder = new URIBuilder(true)
+        final URIBuilder builder = new URIBuilder(true)
                 .setScheme("http")
                 .setHost("apache.org")
                 .setEncodedPath("/shindig")
@@ -256,7 +256,7 @@ public class URIBuilderTests {
 
     @Test
     public void addSingleFragmentParameter() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -267,7 +267,7 @@ public class URIBuilderTests {
 
     @Test
     public void fragmentStringIsUnescaped() {
-        URIBuilder builder = new URIBuilder(true)
+        final URIBuilder builder = new URIBuilder(true)
                 .setScheme("http")
                 .setHost("apache.org")
                 .setPath("/shindig")
@@ -278,15 +278,15 @@ public class URIBuilderTests {
 
     @Test
     public void parse() {
-        URIBuilder builder = new URIBuilder()
+        final URIBuilder builder = new URIBuilder()
                 .digestURI(URI.create("http://apache.org/shindig?foo=bar%26baz&foo=three%3Dbaz#blah"));
 
         assertEquals("http", builder.getScheme());
         assertEquals("apache.org", builder.getHost());
         assertEquals("/shindig", builder.getPath());
 
-        List<URIBuilder.BasicNameValuePair> list = builder.getQueryParams();
-        for (URIBuilder.BasicNameValuePair pair : list) {
+        final List<URIBuilder.BasicNameValuePair> list = builder.getQueryParams();
+        for (final URIBuilder.BasicNameValuePair pair : list) {
             assertEquals("foo", pair.getName());
             assertTrue(pair.getValue().equals("three=baz") || pair.getValue().equals("bar&baz"));
         }
@@ -296,16 +296,16 @@ public class URIBuilderTests {
 
     @Test
     public void constructFromUriAndBack() {
-        URI uri = URI.create("http://apache.org/foo/bar?foo=bar&a=b&c=d&y=z&foo=zoo#foo");
-        URIBuilder builder = new URIBuilder(uri);
+        final URI uri = URI.create("http://apache.org/foo/bar?foo=bar&a=b&c=d&y=z&foo=zoo#foo");
+        final URIBuilder builder = new URIBuilder(uri);
 
         assertEquals(uri, builder.build());
     }
 
     @Test
     public void constructFromUriAndModify() {
-        URI uri = URI.create("http://apache.org/foo/bar?foo=bar#foo");
-        URIBuilder builder = new URIBuilder(uri);
+        final URI uri = URI.create("http://apache.org/foo/bar?foo=bar#foo");
+        final URIBuilder builder = new URIBuilder(uri);
 
         builder.setHost("example.org");
         builder.addParameter("bar", "foo");
@@ -315,8 +315,8 @@ public class URIBuilderTests {
 
     @Test
     public void equalsAndHashCodeOk() {
-        URIBuilder uri = new URIBuilder().digestURI(URI.create("http://example.org/foo/bar/baz?blah=blah#boo"));
-        URIBuilder uri2 = new URIBuilder(URI.create("http://example.org/foo/bar/baz?blah=blah#boo"));
+        final URIBuilder uri = new URIBuilder().digestURI(URI.create("http://example.org/foo/bar/baz?blah=blah#boo"));
+        final URIBuilder uri2 = new URIBuilder(URI.create("http://example.org/foo/bar/baz?blah=blah#boo"));
 
         assertEquals(uri, uri2);
         assertEquals(uri2, uri);

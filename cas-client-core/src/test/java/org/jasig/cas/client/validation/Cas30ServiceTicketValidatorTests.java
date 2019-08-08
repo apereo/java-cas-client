@@ -69,7 +69,7 @@ public final class Cas30ServiceTicketValidatorTests extends AbstractTicketValida
             private static final long serialVersionUID = 1L;
 
             @Override
-            public String getProxyTicketIdFor(String proxyGrantingTicketId, String targetService) {
+            public String getProxyTicketIdFor(final String proxyGrantingTicketId, final String targetService) {
                 return "test";
             }
         };
@@ -135,9 +135,9 @@ public final class Cas30ServiceTicketValidatorTests extends AbstractTicketValida
         assertEquals("id", assertion.getPrincipal().getAttributes().get("eduPersonId"));
         assertEquals("test1\n\ntest", assertion.getPrincipal().getAttributes().get("longAttribute"));
         try {
-            List<?> multivalued = (List<?>) assertion.getPrincipal().getAttributes().get("multivaluedAttribute");
+            final List<?> multivalued = (List<?>) assertion.getPrincipal().getAttributes().get("multivaluedAttribute");
             assertArrayEquals(new String[] { "value1", "value2" }, multivalued.toArray());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             fail("'multivaluedAttribute' attribute expected as List<Object> object.");
         }
         //assertEquals(PGT, assertion.getProxyGrantingTicketId());
@@ -160,9 +160,9 @@ public final class Cas30ServiceTicketValidatorTests extends AbstractTicketValida
         assertEquals("id", assertion.getPrincipal().getAttributes().get("eduPersonId"));
         assertEquals("test1\n\ntest", assertion.getPrincipal().getAttributes().get("longAttribute"));
         try {
-            List<?> multivalued = (List<?>) assertion.getPrincipal().getAttributes().get("multivaluedAttribute");
+            final List<?> multivalued = (List<?>) assertion.getPrincipal().getAttributes().get("multivaluedAttribute");
             assertArrayEquals(new String[] { "value1", "value2" }, multivalued.toArray());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             fail("'multivaluedAttribute' attribute expected as List<Object> object.");
         }
         //assertEquals(PGT, assertion.getProxyGrantingTicketId());

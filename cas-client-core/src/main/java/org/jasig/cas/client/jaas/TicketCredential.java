@@ -53,7 +53,7 @@ public final class TicketCredential implements Principal {
         return this.ticket;
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
