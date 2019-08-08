@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
  * may implement the {@link CasClientConfigurer} callback interface and override only necessary methods.
  *
  * @author Dmitriy Kopylenko
- * @since 1.0.0
+ * @since 3.6.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
