@@ -12,7 +12,7 @@ import java.util.List;
  * Will be used to customize CAS filters via simple properties or YAML files in standard Spring Boot PropertySources.
  *
  * @author Dmitriy Kopylenko
- * @since 1.0.0
+ * @since 3.6.0
  */
 @ConfigurationProperties(prefix = "cas", ignoreUnknownFields = false)
 public class CasClientConfigurationProperties {

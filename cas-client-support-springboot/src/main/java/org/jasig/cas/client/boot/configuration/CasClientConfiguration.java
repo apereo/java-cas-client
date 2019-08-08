@@ -29,7 +29,7 @@ import java.util.Map;
  * {@link EnableCasClient} meta annotation.
  *
  * @author Dmitriy Kopylenko
- * @since 1.0.0
+ * @since 3.6.0
  */
 @Configuration
 @EnableConfigurationProperties(CasClientConfigurationProperties.class)

@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
  * explicitly configure or customize CAS client filters created by {@link CasClientConfiguration}.
  *
  * @author Dmitriy Kopylenko
- * @since 1.0.0
+ * @since 3.6.0
  */
 public interface CasClientConfigurer {
 
