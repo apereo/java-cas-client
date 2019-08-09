@@ -122,6 +122,16 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 </dependency>
 ```
 
+- Tomcat 9.0.x is provided by this dependency:
+
+```xml
+<dependency>
+   <groupId>org.jasig.cas.client</groupId>
+   <artifactId>cas-client-integration-tomcat-v90</artifactId>
+   <version>${java.cas.client.version}</version>
+</dependency>
+```
+
 - Spring Boot AutoConfiguration is provided by this dependency:
 
 ```xml
@@ -983,7 +993,7 @@ If you have any trouble, you can enable the log of cas in `jboss-logging.xml` by
 ```       
 
 <a name="tomcat-678-integration"></a>
-## Tomcat 6/7/8 Integration
+## Tomcat 6/7/8/9 Integration
 The client supports container-based CAS authentication and authorization support for the Tomcat servlet container. 
 
 Suppose a single Tomcat container hosts multiple Web applications with similar authentication and authorization needs. Prior to Tomcat container support, each application would require a similar configuration of CAS servlet filters and authorization configuration in the `web.xml` servlet descriptor. Using the new container-based authentication/authorization feature, a single CAS configuration can be applied to the container and leveraged by all Web applications hosted by the container.
@@ -993,8 +1003,8 @@ CAS authentication support for Tomcat is based on the Tomcat-specific Realm comp
 <a name="component-overview"></a>
 ### Component Overview
 In the following discussion of components, only the Tomcat 8.x components are mentioned. Tomcat 8.0.x components are housed inside
-`org.jasig.cas.client.tomcat.v8` while Tomcat 8.5.x components are inside `org.jasig.cas.client.tomcat.v85`. You should be able to use
-the same exact configuration between the two modules provided package names are adjusted for each release. 
+`org.jasig.cas.client.tomcat.v8` while Tomcat 8.5.x components are inside `org.jasig.cas.client.tomcat.v85`. Tomcat 9 packages are
+available at `org.jasig.cas.client.tomcat.v90`. You should be able to use the same exact configuration between the two modules provided package names are adjusted for each release. 
 
 The Tomcat 7.0.x and 6.0.x components have exactly the same name, but **are in the tomcat.v7 and tomcat.v6 packages**, e.g. 
 `org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator` or `org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator`.
