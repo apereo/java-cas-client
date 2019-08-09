@@ -16,15 +16,30 @@ specific language governing permissions and limitations
 under the License.
 
 This project includes:
+  Apache Commons Codec under Apache License, Version 2.0
+  Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
+  Bouncy Castle Provider under Bouncy Castle Licence
+  Hamcrest Core under New BSD License
+  Jackson-annotations under The Apache Software License, Version 2.0
+  Jackson-core under The Apache Software License, Version 2.0
+  jackson-databind under The Apache Software License, Version 2.0
   Jasig CAS Client for Java - Common Tomcat Integration Support under Apache License Version 2.0
   Jasig CAS Client for Java - Core under Apache License Version 2.0
   Jasig CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
-  Jasig CAS Client for Java - Tomcat 8.x Integration under Apache License Version 2.0
+  Jasig CAS Client for Java - Tomcat 8.5.x Integration under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
-  JCL 1.1.1 implemented over SLF4J under MIT License
-  Joda-Time under Apache 2
-  JUnit under Common Public License Version 1.0
+  JCL 1.2 implemented over SLF4J under MIT License
+  Joda-Time under Apache License, Version 2.0
+  JUnit under Eclipse Public License 1.0
   SLF4J API Module under MIT License
   SLF4J Simple Binding under MIT License
+  tomcat-annotations-api under Apache License, Version 2.0
   tomcat-catalina under Apache License, Version 2.0
+  tomcat-coyote under Apache License, Version 2.0
+  tomcat-el-api under Apache License, Version 2.0
+  tomcat-embed-core under Apache License, Version 2.0
+  tomcat-jaspic-api under Apache License, Version 2.0
+  tomcat-jni under Apache License, Version 2.0
+  tomcat-jsp-api under Apache License, Version 2.0
+  tomcat-util-scan under Apache License, Version 2.0
 
