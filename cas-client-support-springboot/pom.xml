@@ -74,6 +74,6 @@
     </dependencies>
 
     <properties>
-        <springboot.version>2.1.7.RELEASE</springboot.version>
+        <springboot.version>2.1.8.RELEASE</springboot.version>
     </properties>
 </project>
