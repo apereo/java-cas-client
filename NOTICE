@@ -48,6 +48,7 @@ This project includes:
   Jasig CAS Client for Java - Tomcat 7.x Integration under Apache License Version 2.0
   Jasig CAS Client for Java - Tomcat 8.5.x Integration under Apache License Version 2.0
   Jasig CAS Client for Java - Tomcat 8.x Integration under Apache License Version 2.0
+  Jasig CAS Client for Java - Tomcat 9.0.x Integration under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
   javax.annotation API under CDDL + GPLv2 with classpath exception
   JBoss Application Server Tomcat under lgpl
