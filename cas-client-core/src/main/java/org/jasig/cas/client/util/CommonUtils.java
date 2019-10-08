@@ -6,9 +6,9 @@
  * Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License.  You may obtain a
  * copy of the License at the following location:
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,16 +18,6 @@
  */
 package org.jasig.cas.client.util;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.*;
-
-import javax.net.ssl.SSLException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
@@ -36,6 +26,23 @@ import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.ProxyListEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Common utilities so that we don't need to include Commons Lang.
@@ -61,19 +68,20 @@ public final class CommonUtils {
 
     private static final String SERVICE_PARAMETER_NAMES;
 
-    private CommonUtils() {
-        // nothing to do
-    }
-
     static {
         final Set<String> serviceParameterSet = new HashSet<String>(4);
         for (final Protocol protocol : Protocol.values()) {
             serviceParameterSet.add(protocol.getServiceParameterName());
         }
         SERVICE_PARAMETER_NAMES = serviceParameterSet.toString()
-                .replaceAll("\\[|\\]", "")
-                .replaceAll("\\s", "");
+            .replaceAll("\\[|\\]", "")
+            .replaceAll("\\s", "");
     }
+
+    private CommonUtils() {
+        // nothing to do
+    }
+
     /**
      * Check whether the object is null or not. If it is, throw an exception and
      * display the message.
@@ -183,15 +191,30 @@ public final class CommonUtils {
      * @return the fully constructed redirect url.
      */
     public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName,
-            final String serviceUrl, final boolean renew, final boolean gateway, final String method) {
+                                              final String serviceUrl, final boolean renew, final boolean gateway, final String method) {
         return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="
-                + urlEncode(serviceUrl) + (renew ? "&renew=true" : "") + (gateway ? "&gateway=true" : "")
-                + (method != null ? "&method=" + method : "");
+            + urlEncode(serviceUrl) + (renew ? "&renew=true" : "") + (gateway ? "&gateway=true" : "")
+            + (method != null ? "&method=" + method : "");
+    }
+
+    /**
+     * Construct redirect url to a CAS server.
+     *
+     * @param casServerLoginUrl    the cas server login url
+     * @param serviceParameterName the service parameter name
+     * @param serviceUrl           the service url
+     * @param renew                the renew
+     * @param gateway              the gateway
+     * @return the string
+     */
+    public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName,
+                                              final String serviceUrl, final boolean renew, final boolean gateway) {
+        return constructRedirectUrl(casServerLoginUrl, serviceParameterName, serviceUrl, renew, gateway, null);
     }
 
     /**
      * Url encode a value using UTF-8 encoding.
-     * 
+     *
      * @param value the value to encode.
      * @return the encoded value.
      */
@@ -204,8 +227,8 @@ public final class CommonUtils {
     }
 
     public static void readAndRespondToProxyReceptorRequest(final HttpServletRequest request,
-            final HttpServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage)
-            throws IOException {
+                                                            final HttpServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage)
+        throws IOException {
         final String proxyGrantingTicketIou = request.getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
 
         final String proxyGrantingTicket = request.getParameter(PARAM_PROXY_GRANTING_TICKET);
@@ -216,12 +239,12 @@ public final class CommonUtils {
         }
 
         LOGGER.debug("Received proxyGrantingTicketId [{}] for proxyGrantingTicketIou [{}]", proxyGrantingTicket,
-                proxyGrantingTicketIou);
+            proxyGrantingTicketIou);
 
         proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
 
         LOGGER.debug("Successfully saved proxyGrantingTicketId [{}] for proxyGrantingTicketIou [{}]",
-                proxyGrantingTicket, proxyGrantingTicketIou);
+            proxyGrantingTicket, proxyGrantingTicketIou);
 
         response.getWriter().write("<?xml version=\"1.0\"?>");
         response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
@@ -254,7 +277,7 @@ public final class CommonUtils {
 
         return serverNames[0];
     }
-    
+
     private static boolean requestIsOnStandardPort(final HttpServletRequest request) {
         final int serverPort = request.getServerPort();
         return serverPort == 80 || serverPort == 443;
@@ -281,7 +304,7 @@ public final class CommonUtils {
                                              final String service, final String serverNames,
                                              final String artifactParameterName, final boolean encode) {
         return constructServiceUrl(request, response, service, serverNames, SERVICE_PARAMETER_NAMES
-                , artifactParameterName, encode);
+            , artifactParameterName, encode);
     }
 
     /**
@@ -301,8 +324,8 @@ public final class CommonUtils {
      * @return the service url to use.
      */
     public static String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response,
-            final String service, final String serverNames, final String serviceParameterName,
-            final String artifactParameterName, final boolean encode) {
+                                             final String service, final String serverNames, final String serviceParameterName,
+                                             final String artifactParameterName, final boolean encode) {
         if (CommonUtils.isNotBlank(service)) {
             return encode ? response.encodeURL(service) : service;
         }
@@ -330,10 +353,10 @@ public final class CommonUtils {
             for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
                 final String name = pair.getName();
                 if (!name.equals(artifactParameterName) && !serviceParameterNames.contains(name)) {
-                    if (name.contains("&") || name.contains("=") ){
+                    if (name.contains("&") || name.contains("=")) {
                         final URIBuilder encodedParamBuilder = new URIBuilder();
                         encodedParamBuilder.setParameters(name);
-                        for (final URIBuilder.BasicNameValuePair pair2 :encodedParamBuilder.getQueryParams()){
+                        for (final URIBuilder.BasicNameValuePair pair2 : encodedParamBuilder.getQueryParams()) {
                             final String name2 = pair2.getName();
                             if (!name2.equals(artifactParameterName) && !serviceParameterNames.contains(name2)) {
                                 builder.addParameter(name2, pair2.getValue());
@@ -369,13 +392,13 @@ public final class CommonUtils {
      * @return the value of the parameter.
      */
     public static String safeGetParameter(final HttpServletRequest request, final String parameter,
-            final List<String> parameters) {
+                                          final List<String> parameters) {
         if ("POST".equals(request.getMethod()) && parameters.contains(parameter)) {
             LOGGER.debug("safeGetParameter called on a POST HttpServletRequest for Restricted Parameters.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
             return request.getParameter(parameter);
         }
         return request.getQueryString() == null || !request.getQueryString().contains(parameter) ? null : request
-                .getParameter(parameter);
+            .getParameter(parameter);
     }
 
     public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
@@ -392,11 +415,11 @@ public final class CommonUtils {
      */
     @Deprecated
     public static String getResponseFromServer(final String constructedUrl, final String encoding) {
-    	try {
+        try {
             return getResponseFromServer(new URL(constructedUrl), DEFAULT_URL_CONNECTION_FACTORY, encoding);
         } catch (final IOException e) {
             throw new RuntimeException(e.getMessage(), e);
-        }  
+        }
     }
 
     @Deprecated
@@ -413,8 +436,8 @@ public final class CommonUtils {
      * @return the response.
      */
     public static String getResponseFromServer(final URL constructedUrl, final HttpURLConnectionFactory factory,
-            final String encoding) {
-    	
+                                               final String encoding) {
+
         HttpURLConnection conn = null;
         InputStreamReader in = null;
         try {
@@ -434,13 +457,13 @@ public final class CommonUtils {
 
             return builder.toString();
         } catch (final RuntimeException e) {
-        	throw e;
+            throw e;
         } catch (final SSLException e) {
             LOGGER.error("SSL error getting response from host: {} : Error Message: {}", constructedUrl.getHost(), e.getMessage(), e);
             throw new RuntimeException(e);
         } catch (final IOException e) {
             LOGGER.error("Error getting response from host: [{}] with path: [{}] and protocol: [{}] Error Message: {}",
-            		constructedUrl.getHost(), constructedUrl.getPath(), constructedUrl.getProtocol(), e.getMessage(), e);
+                constructedUrl.getHost(), constructedUrl.getPath(), constructedUrl.getProtocol(), e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
             closeQuietly(in);
@@ -574,11 +597,11 @@ public final class CommonUtils {
             case 1: {
                 final char ch0 = str.charAt(0);
                 if (ch0 == 'y' || ch0 == 'Y' ||
-                        ch0 == 't' || ch0 == 'T') {
+                    ch0 == 't' || ch0 == 'T') {
                     return Boolean.TRUE;
                 }
                 if (ch0 == 'n' || ch0 == 'N' ||
-                        ch0 == 'f' || ch0 == 'F') {
+                    ch0 == 'f' || ch0 == 'F') {
                     return Boolean.FALSE;
                 }
                 break;
@@ -587,11 +610,11 @@ public final class CommonUtils {
                 final char ch0 = str.charAt(0);
                 final char ch1 = str.charAt(1);
                 if ((ch0 == 'o' || ch0 == 'O') &&
-                        (ch1 == 'n' || ch1 == 'N') ) {
+                    (ch1 == 'n' || ch1 == 'N')) {
                     return Boolean.TRUE;
                 }
                 if ((ch0 == 'n' || ch0 == 'N') &&
-                        (ch1 == 'o' || ch1 == 'O') ) {
+                    (ch1 == 'o' || ch1 == 'O')) {
                     return Boolean.FALSE;
                 }
                 break;
@@ -601,13 +624,13 @@ public final class CommonUtils {
                 final char ch1 = str.charAt(1);
                 final char ch2 = str.charAt(2);
                 if ((ch0 == 'y' || ch0 == 'Y') &&
-                        (ch1 == 'e' || ch1 == 'E') &&
-                        (ch2 == 's' || ch2 == 'S') ) {
+                    (ch1 == 'e' || ch1 == 'E') &&
+                    (ch2 == 's' || ch2 == 'S')) {
                     return Boolean.TRUE;
                 }
                 if ((ch0 == 'o' || ch0 == 'O') &&
-                        (ch1 == 'f' || ch1 == 'F') &&
-                        (ch2 == 'f' || ch2 == 'F') ) {
+                    (ch1 == 'f' || ch1 == 'F') &&
+                    (ch2 == 'f' || ch2 == 'F')) {
                     return Boolean.FALSE;
                 }
                 break;
@@ -618,9 +641,9 @@ public final class CommonUtils {
                 final char ch2 = str.charAt(2);
                 final char ch3 = str.charAt(3);
                 if ((ch0 == 't' || ch0 == 'T') &&
-                        (ch1 == 'r' || ch1 == 'R') &&
-                        (ch2 == 'u' || ch2 == 'U') &&
-                        (ch3 == 'e' || ch3 == 'E') ) {
+                    (ch1 == 'r' || ch1 == 'R') &&
+                    (ch2 == 'u' || ch2 == 'U') &&
+                    (ch3 == 'e' || ch3 == 'E')) {
                     return Boolean.TRUE;
                 }
                 break;
@@ -632,10 +655,10 @@ public final class CommonUtils {
                 final char ch3 = str.charAt(3);
                 final char ch4 = str.charAt(4);
                 if ((ch0 == 'f' || ch0 == 'F') &&
-                        (ch1 == 'a' || ch1 == 'A') &&
-                        (ch2 == 'l' || ch2 == 'L') &&
-                        (ch3 == 's' || ch3 == 'S') &&
-                        (ch4 == 'e' || ch4 == 'E') ) {
+                    (ch1 == 'a' || ch1 == 'A') &&
+                    (ch2 == 'l' || ch2 == 'L') &&
+                    (ch3 == 's' || ch3 == 'S') &&
+                    (ch4 == 'e' || ch4 == 'E')) {
                     return Boolean.FALSE;
                 }
                 break;
@@ -691,7 +714,7 @@ public final class CommonUtils {
      * @return the int represented by the string, or the default if conversion fails
      */
     public static int toInt(final String str, final int defaultValue) {
-        if(str == null) {
+        if (str == null) {
             return defaultValue;
         }
         try {
