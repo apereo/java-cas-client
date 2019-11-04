@@ -27,7 +27,7 @@ pull_request_rules:
     - label=dependencies
   actions:
     merge:
-      method: merge
+      method: squash
       strict: false
     delete_head_branch:
 - name: automatic merge by renovate
@@ -39,6 +39,6 @@ pull_request_rules:
     - label=dependencies
   actions:
     merge:
-      method: merge
+      method: squash
       strict: false
     delete_head_branch:
