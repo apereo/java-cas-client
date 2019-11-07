@@ -115,6 +115,24 @@ public class CasClientConfigurationProperties {
 
     private Boolean skipTicketValidation = false;
 
+    private SingleLogout singleLogout;
+
+    public static class SingleLogout{
+        /**
+         * whether to receive the single logout request from cas server.
+         */
+        private boolean enabled = false;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+    }
+
+
     public String getServerUrlPrefix() {
         return serverUrlPrefix;
     }
@@ -242,4 +260,13 @@ public class CasClientConfigurationProperties {
     public void setSkipTicketValidation(final Boolean skipTicketValidation) {
         this.skipTicketValidation = skipTicketValidation;
     }
+
+    public SingleLogout getSingleLogout() {
+        return singleLogout;
+    }
+
+    public void setSingleLogout(SingleLogout singleLogout) {
+        this.singleLogout = singleLogout;
+    }
+
 }

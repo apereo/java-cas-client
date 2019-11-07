@@ -723,6 +723,7 @@ cas.validation-type=SAML
 
 ### Available optional properties
 
+* `cas.single-logout.enabled`
 * `cas.authentication-url-patterns`
 * `cas.validation-url-patterns`
 * `cas.request-wrapper-url-patterns`
