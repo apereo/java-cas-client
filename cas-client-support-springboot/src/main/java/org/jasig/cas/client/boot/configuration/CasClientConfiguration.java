@@ -20,6 +20,8 @@ package org.jasig.cas.client.boot.configuration;
 
 import org.jasig.cas.client.authentication.AuthenticationFilter;
 import org.jasig.cas.client.authentication.Saml11AuthenticationFilter;
+import org.jasig.cas.client.session.SingleSignOutFilter;
+import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.jasig.cas.client.util.AssertionThreadLocalFilter;
 import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
 import org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter;
@@ -29,8 +31,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -40,6 +44,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.EventListener;
 
 /**
  * Configuration class providing default CAS client infrastructure filters.
@@ -198,5 +203,26 @@ public class CasClientConfiguration {
                 "implemented only once or not at all.");
         }
         this.casClientConfigurer = configurers.iterator().next();
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "cas", value = "single-logout.enabled", havingValue = "true")
+    public FilterRegistrationBean casSingleSignOutFilter() {
+        final FilterRegistrationBean singleSignOutFilter = new FilterRegistrationBean();
+        singleSignOutFilter.setFilter(new SingleSignOutFilter());
+        Map<String,String> initParameters = new HashMap<>(1);
+        initParameters.put("casServerUrlPrefix", configProps.getServerUrlPrefix());
+        singleSignOutFilter.setInitParameters(initParameters);
+        singleSignOutFilter.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return singleSignOutFilter;
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "cas", value = "single-logout.enabled", havingValue = "true")
+    public ServletListenerRegistrationBean<EventListener> casSingleSignOutListener(){
+        ServletListenerRegistrationBean<EventListener> singleSignOutListener = new ServletListenerRegistrationBean<>();
+        singleSignOutListener.setListener(new SingleSignOutHttpSessionListener());
+        singleSignOutListener.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return singleSignOutListener;
     }
 }
