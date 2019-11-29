@@ -814,10 +814,6 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
-   <init-param>
-      <param-name>casServerUrlPrefix</param-name>
-      <param-value>https://cas.example.com/cas</param-value>
-   </init-param>
 </filter>
 ...
 <filter-mapping>
@@ -840,10 +836,6 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
    <init-param>
       <param-name>artifactParameterName</param-name>
       <param-value>SAMLart</param-value>
-   </init-param>
-   <init-param>
-      <param-name>casServerUrlPrefix</param-name>
-      <param-value>https://cas.example.com/cas</param-value>
    </init-param>
 </filter>
 ...
