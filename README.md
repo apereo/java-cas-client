@@ -794,7 +794,7 @@ type="java.lang.String" value="https://www.apereo.org/cas"/>
 ### Configuring Single Sign Out
 The Single Sign Out support in CAS consists of configuring one `SingleSignOutFilter` and one `ContextListener`. Please note that if you have configured the CAS Client for Java as Web filters, this filter must come before the other filters as described.
 
-The `SingleSignOutFilter` can affect character encoding. This becomes most obvious when used in conjunction with applications such as Atlassian Confluence. Its recommended you explicitly configure either the [VT Character Encoding Filter](http://code.google.com/p/vt-middleware/wiki/vtservletfilters#CharacterEncodingFilter) or the [Spring Character Encoding Filter](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/filter/CharacterEncodingFilter.html) with explicit encodings.
+The `SingleSignOutFilter` can affect character encoding. This becomes most obvious when used in conjunction with applications such as Atlassian Confluence. It's recommended you explicitly configure either the [VT Character Encoding Filter](http://code.google.com/p/vt-middleware/wiki/vtservletfilters#CharacterEncodingFilter) or the [Spring Character Encoding Filter](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/filter/CharacterEncodingFilter.html) with explicit encodings.
 
 #### Configuration
 
@@ -802,12 +802,10 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 |----------|-------|-----------
 | `artifactParameterName` | The ticket artifact parameter name. Defaults to `ticket`| No
 | `logoutParameterName` | Defaults to `logoutRequest` | No
-| `frontLogoutParameterName` | Defaults to `SAMLRequest` | No
 | `relayStateParameterName` | Defaults to `RelayState` | No
 | `eagerlyCreateSessions` | Defaults to `true` | No
 | `artifactParameterOverPost` | Defaults to  `false` | No
 | `logoutCallbackPath` | The path which is expected to receive logout callback requests from the CAS server. This is necessary if your app needs access to the raw input stream when handling form posts. If not configured, the default behavior will check every form post for a logout parameter. | No
-| `casServerUrlPrefix` | URL to root of CAS Web application context. | Yes
 
 <a name="cas-protocol"></a>
 #### CAS Protocol
@@ -816,10 +814,6 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
-   <init-param>
-      <param-name>casServerUrlPrefix</param-name>
-      <param-value>https://cas.example.com/cas</param-value>
-   </init-param>
 </filter>
 ...
 <filter-mapping>
@@ -842,10 +836,6 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
    <init-param>
       <param-name>artifactParameterName</param-name>
       <param-value>SAMLart</param-value>
-   </init-param>
-   <init-param>
-      <param-name>casServerUrlPrefix</param-name>
-      <param-value>https://cas.example.com/cas</param-value>
    </init-param>
 </filter>
 ...
