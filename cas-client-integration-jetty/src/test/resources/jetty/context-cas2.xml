@@ -26,10 +26,10 @@
     <Set name="war"><SystemProperty name="jetty.base"/>/webapps/yourapp</Set>
     <Get name="securityHandler">
         <Set name="authenticator">
-            <New class="org.jasig.cas.client.jetty.CasAuthenticator">
+            <New class="org.apereo.cas.client.jetty.CasAuthenticator">
                 <Set name="serverNames">app.example.com</Set>
                 <Set name="ticketValidator">
-                    <New class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+                    <New class="org.apereo.cas.client.validation.Cas20ServiceTicketValidator">
                         <Arg>https://cas.example.com/cas</Arg>
                         <!--<Set name="renew">true</Set>-->
                     </New>

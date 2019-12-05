@@ -19,7 +19,7 @@
 import junit.framework.TestCase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl;
+import org.apereo.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl;
 
 /**
  * @author Scott Battaglia

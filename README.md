@@ -26,7 +26,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-    <groupId>org.jasig.cas.client</groupId>
+    <groupId>org.apereo.cas.client</groupId>
     <artifactId>cas-client-core</artifactId>
     <version>${java.cas.client.version}</version>
 </dependency>
@@ -36,7 +36,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-support-saml</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -46,7 +46,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-support-distributed-ehcache</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -56,7 +56,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-support-distributed-memcached</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -66,7 +66,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-integration-atlassian</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -76,7 +76,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-integration-jboss</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -86,7 +86,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v6</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -96,7 +96,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v7</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -106,7 +106,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v8</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -116,7 +116,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v85</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -126,7 +126,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-integration-tomcat-v90</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -136,7 +136,7 @@ files in the modules (`cas-client-integration-jboss` and `cas-client-support-dis
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-support-springboot</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -188,13 +188,13 @@ The client can be configured in `web.xml` via a series of `context-param`s and f
 An example application that is protected by the client is [available here](https://github.com/UniconLabs/cas-sample-java-webapp).
 
 <a name="orgjasigcasclientauthenticationauthenticationfilter"></a>
-#### org.jasig.cas.client.authentication.AuthenticationFilter
+#### org.apereo.cas.client.authentication.AuthenticationFilter
 The `AuthenticationFilter` is what detects whether a user needs to be authenticated or not. If a user needs to be authenticated, it will redirect the user to the CAS server.
 
 ```xml
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
-  <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.authentication.AuthenticationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://battags.ad.ess.rutgers.edu:8443/cas</param-value>
@@ -240,13 +240,13 @@ The following types are supported:
 
 
 <a name="orgjasigcasclientauthenticationsaml11authenticationfilter"></a>
-#### org.jasig.cas.client.authentication.Saml11AuthenticationFilter
+#### org.apereo.cas.client.authentication.Saml11AuthenticationFilter
 The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be authenticated or not. If a user needs to be authenticated, it will redirect the user to the CAS server.
 
 ```xml
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
-  <filter-class>org.jasig.cas.client.authentication.Saml11AuthenticationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.authentication.Saml11AuthenticationFilter</filter-class>
   <init-param>
     <param-name>casServerLoginUrl</param-name>
     <param-value>https://somewhere.cas.edu:8443/cas/login</param-value>
@@ -276,13 +276,13 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 | `method` | The method used by the CAS server to send the user back to the application. Defaults to `null` | No
 
 <a name="rgjasigcasclientvalidationcas10ticketvalidationfilter"></a>
-#### org.jasig.cas.client.validation.Cas10TicketValidationFilter
+#### org.apereo.cas.client.validation.Cas10TicketValidationFilter
 Validates tickets using the CAS 1.0 Protocol.
 
 ```xml
 <filter>
   <filter-name>CAS Validation Filter</filter-name>
-  <filter-class>org.jasig.cas.client.validation.Cas10TicketValidationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.validation.Cas10TicketValidationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://somewhere.cas.edu:8443/cas</param-value>
@@ -311,13 +311,13 @@ Validates tickets using the CAS 1.0 Protocol.
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
 <a name="orgjasigcasclientvalidationsaml11ticketvalidationfilter"></a>
-#### org.jasig.cas.client.validation.Saml11TicketValidationFilter
+#### org.apereo.cas.client.validation.Saml11TicketValidationFilter
 Validates tickets using the SAML 1.1 protocol.
 
 ```xml
 <filter>
   <filter-name>CAS Validation Filter</filter-name>
-  <filter-class>org.jasig.cas.client.validation.Saml11TicketValidationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.validation.Saml11TicketValidationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://battags.ad.ess.rutgers.edu:8443/cas</param-value>
@@ -347,7 +347,7 @@ Validates tickets using the SAML 1.1 protocol.
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
 <a name="orgjasigcasclientvalidationcas20proxyreceivingticketvalidationfilter"></a>
-#### org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter
+#### org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 2.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, a `Cas20ProxyTicketValidator` will be constructed. Otherwise a general `Cas20ServiceTicketValidator` will be constructed that does not accept proxy tickets. 
 
 **Note**: If you are using proxy validation, you should place the `filter-mapping` of the validation filter before the authentication filter.
@@ -355,7 +355,7 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 ```xml
 <filter>
   <filter-name>CAS Validation Filter</filter-name>
-  <filter-class>org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://battags.ad.ess.rutgers.edu:8443/cas</param-value>
@@ -394,12 +394,12 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 | `privateKeyPath` | The path to a private key to decrypt PGTs directly sent encrypted as an attribute | No
 | `privateKeyAlgorithm` | The algorithm of the private key. Defaults to `RSA` | No
 
-#### org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
+#### org.apereo.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, 
 a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not 
 accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
 
-#### org.jasig.cas.client.validation.json.Cas30JsonProxyReceivingTicketValidationFilter
+#### org.apereo.cas.client.validation.json.Cas30JsonProxyReceivingTicketValidationFilter
 Indentical to `Cas30ProxyReceivingTicketValidationFilter`, yet the filter is able to accept validation responses from CAS
 that are formatted as JSON per guidelines laid out by the CAS protocol. 
 See the [protocol documentation](https://apereo.github.io/cas/5.1.x/protocol/CAS-Protocol-Specification.html)
@@ -415,7 +415,7 @@ Configure the client:
 ```xml
 <init-param>
   <param-name>proxyGrantingTicketStorageClass</param-name>
-  <param-value>org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl</param-value>
+  <param-value>org.apereo.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl</param-value>
 </init-param>
 ```
 The setting provides an implementation for proxy storage using EhCache to take advantage of its replication features so that the PGT is successfully replicated and shared among nodes, regardless which node is selected as the result of the load balancer rerouting. 
@@ -432,7 +432,7 @@ When loading from the `web.xml`, the Jasig CAS Client relies on a series of defa
 <cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"/>
  
 <cache
-   name="org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl.cache"
+   name="org.apereo.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl.cache"
    maxElementsInMemory="100"
    eternal="false"
    timeToIdleSeconds="100"
@@ -450,20 +450,20 @@ Configure the client:
 ```xml
 <init-param>
   <param-name>proxyGrantingTicketStorageClass</param-name>
-  <param-value>org.jasig.cas.client.proxy. MemcachedBackedProxyGrantingTicketStorageImpl</param-value>
+  <param-value>org.apereo.cas.client.proxy. MemcachedBackedProxyGrantingTicketStorageImpl</param-value>
 </init-param>
 ```
 
 When loading from the `web.xml`, the Client relies on a series of default values, one of which being that the list of memcached servers must be defined in `/cas/casclient_memcached_hosts.txt` on the classpath). The file is a simple list of `<hostname>:<ports>` on separate lines. **BE SURE NOT TO HAVE EXTRA LINE BREAKS**.
 
 <a name="orgjasigcasclientutilhttpservletrequestwrapperfilter"></a>
-#### org.jasig.cas.client.util.HttpServletRequestWrapperFilter
+#### org.apereo.cas.client.util.HttpServletRequestWrapperFilter
 Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` return the CAS related entries.
 
 ```xml
 <filter>
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-  <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
+  <filter-class>org.apereo.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
 <filter-mapping>
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
@@ -477,13 +477,13 @@ Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` ret
 | `ignoreCase` | Whether role checking should ignore case. Defaults to `false` | No
 
 <a name="orgjasigcasclientutilassertionthreadlocalfilter"></a>
-#### org.jasig.cas.client.util.AssertionThreadLocalFilter
+#### org.apereo.cas.client.util.AssertionThreadLocalFilter
 Places the `Assertion` in a `ThreadLocal` for portions of the application that need access to it. This is useful when the Web application that this filter "fronts" needs to get the Principal name, but it has no access to the `HttpServletRequest`, hence making `getRemoteUser()` call impossible.
 
 ```xml
 <filter>
   <filter-name>CAS Assertion Thread Local Filter</filter-name>
-  <filter-class>org.jasig.cas.client.util.AssertionThreadLocalFilter</filter-class>
+  <filter-class>org.apereo.cas.client.util.AssertionThreadLocalFilter</filter-class>
 </filter>
 <filter-mapping>
   <filter-name>CAS Assertion Thread Local Filter</filter-name>
@@ -492,7 +492,7 @@ Places the `Assertion` in a `ThreadLocal` for portions of the application that n
 ```
 
 <a name="orgjasigcasclientutilerrorredirectfilter"></a>
-#### org.jasig.cas.client.util.ErrorRedirectFilter
+#### org.apereo.cas.client.util.ErrorRedirectFilter
 Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via init filter name/param values.
 
 | Property | Description | Required
@@ -504,7 +504,7 @@ Filters that redirects to the supplied url based on an exception.  Exceptions an
 ```xml
 <filter>
   <filter-name>CAS Error Redirect Filter</filter-name>
-  <filter-class>org.jasig.cas.client.util.ErrorRedirectFilter</filter-class>
+  <filter-class>org.apereo.cas.client.util.ErrorRedirectFilter</filter-class>
   <init-param>
     <param-name>java.lang.Exception</param-name>
     <param-value>/error.jsp</param-value>
@@ -550,7 +550,7 @@ As the `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have n
 ```xml
 <bean
     name="authenticationFilter"
-    class="org.jasig.cas.client.authentication.AuthenticationFilter"
+    class="org.apereo.cas.client.authentication.AuthenticationFilter"
     p:casServerLoginUrl="https://localhost:8443/cas/login"
     p:renew="false"
     p:gateway="false"
@@ -561,10 +561,10 @@ As the `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have n
 ```xml
 <bean
     name="ticketValidationFilter"
-    class="org.jasig.cas.client.validation.Cas10TicketValidationFilter"
+    class="org.apereo.cas.client.validation.Cas10TicketValidationFilter"
     p:service="https://my.local.service.com/cas-client">
     <property name="ticketValidator">
-        <bean class="org.jasig.cas.client.validation.Cas10TicketValidator">
+        <bean class="org.apereo.cas.client.validation.Cas10TicketValidator">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
         </bean>
     </property>
@@ -575,10 +575,10 @@ As the `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have n
 ```xml
 <bean
     name="ticketValidationFilter"
-    class="org.jasig.cas.client.validation.Saml11TicketValidationFilter"
+    class="org.apereo.cas.client.validation.Saml11TicketValidationFilter"
     p:service="https://my.local.service.com/cas-client">
     <property name="ticketValidator">
-        <bean class="org.jasig.cas.client.validation.Saml11TicketValidator">
+        <bean class="org.apereo.cas.client.validation.Saml11TicketValidator">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
         </bean>
     </property>
@@ -590,10 +590,10 @@ Configuration to validate tickets:
 ```xml
 <bean
     name="ticketValidationFilter"
-    class="org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
+    class="org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
     p:service="https://my.local.service.com/cas-client">
     <property name="ticketValidator">
-        <bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+        <bean class="org.apereo.cas.client.validation.Cas20ServiceTicketValidator">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
         </bean>
     </property>
@@ -604,12 +604,12 @@ Configuration to accept a Proxy Granting Ticket:
 ```xml
 <bean
     name="ticketValidationFilter"
-    class="org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
+    class="org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
     p:service="https://my.local.service.com/cas-client"
     p:proxyReceptorUrl="/proxy/receptor">
     <property name="ticketValidator">
         <bean
-            class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator"
+            class="org.apereo.cas.client.validation.Cas20ServiceTicketValidator"
             p:proxyCallbackUrl="/proxy/receptor">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
         </bean>
@@ -622,11 +622,11 @@ Configuration to accept any Proxy Ticket (and Proxy Granting Tickets):
 ```xml
 <bean
     name="ticketValidationFilter"
-    class="org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
+    class="org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
     p:service="https://my.local.service.com/cas-client"
     p:proxyReceptorUrl="/proxy/receptor">
     <property name="ticketValidator">
-        <bean class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator"
+        <bean class="org.apereo.cas.client.validation.Cas20ProxyTicketValidator"
             p:acceptAnyProxy="true"
             p:proxyCallbackUrl="/proxy/receptor">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
@@ -640,11 +640,11 @@ Configuration to accept Proxy Ticket from a chain (and Proxy Granting Tickets):
 ```xml
 <bean
     name="ticketValidationFilter"
-    class="org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
+    class="org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
     p:service="https://my.local.service.com/cas-client"
     p:proxyReceptorUrl="/proxy/receptor">
     <property name="ticketValidator">
-        <bean class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator"
+        <bean class="org.apereo.cas.client.validation.Cas20ProxyTicketValidator"
             p:proxyCallbackUrl="/proxy/receptor">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
             <property name="allowedProxyChains">
@@ -670,7 +670,7 @@ The specific filters can be configured in the following ways. Please see the Jav
 
 ```xml
 <dependency>
-   <groupId>org.jasig.cas.client</groupId>
+   <groupId>org.apereo.cas.client</groupId>
    <artifactId>cas-client-support-springboot</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -681,7 +681,7 @@ The specific filters can be configured in the following ways. Please see the Jav
 ```groovy
 dependencies {
     ...
-    compile 'org.jasig.cas.client:cas-client-support-springboot:${java.cas.client.version}'
+    compile 'org.apereo.cas.client:cas-client-support-springboot:${java.cas.client.version}'
     ...
 }
 ```
@@ -813,7 +813,7 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 ```xml
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
-   <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+   <filter-class>org.apereo.cas.client.session.SingleSignOutFilter</filter-class>
 </filter>
 ...
 <filter-mapping>
@@ -822,7 +822,7 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 </filter-mapping>
 ...
 <listener>
-    <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    <listener-class>org.apereo.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
 </listener>
 ```
 
@@ -832,7 +832,7 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 ```xml
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
-   <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+   <filter-class>org.apereo.cas.client.session.SingleSignOutFilter</filter-class>
    <init-param>
       <param-name>artifactParameterName</param-name>
       <param-value>SAMLart</param-value>
@@ -845,7 +845,7 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 </filter-mapping>
 ...
 <listener>
-    <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    <listener-class>org.apereo.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
 </listener>
 ```
 
@@ -872,8 +872,8 @@ It is expected that for JEE applications both authentication and authorization s
 
 ```
 cas {
-  org.jasig.cas.client.jaas.CasLoginModule required
-    ticketValidatorClass="org.jasig.cas.client.validation.Saml11TicketValidator"
+  org.apereo.cas.client.jaas.CasLoginModule required
+    ticketValidatorClass="org.apereo.cas.client.validation.Saml11TicketValidator"
     casServerUrlPrefix="https://cas.example.com/cas"
     tolerance="20000"
     service="https://webapp.example.com/webapp"
@@ -901,7 +901,7 @@ cas {
 | `tolerance` | The tolerance for drifting clocks when validating SAML tickets. | No
 
 ### Programmatic JAAS login using the Servlet 3
-A `org.jasig.cas.client.jaas.Servlet3AuthenticationFilter` servlet filter that performs a programmatic JAAS login using the Servlet 3.0 `HttpServletRequest#login()` facility. This component should be compatible with any servlet container that supports the Servlet 3.0/JEE6 specification.
+A `org.apereo.cas.client.jaas.Servlet3AuthenticationFilter` servlet filter that performs a programmatic JAAS login using the Servlet 3.0 `HttpServletRequest#login()` facility. This component should be compatible with any servlet container that supports the Servlet 3.0/JEE6 specification.
  
 The filter executes when it receives a CAS ticket and expects the
 `CasLoginModule` JAAS module to perform the CAS ticket validation in order to produce an `AssertionPrincipal` from which the CAS assertion is obtained and inserted into the session to enable SSO.
@@ -932,12 +932,12 @@ The `WebAuthenticationFilter` performs these operations for the JBoss AS contain
 ...
 <filter>
     <filter-name>CASWebAuthenticationFilter</filter-name>
-    <filter-class>org.jasig.cas.client.jboss.authentication.WebAuthenticationFilter</filter-class>
+    <filter-class>org.apereo.cas.client.jboss.authentication.WebAuthenticationFilter</filter-class>
 </filter>
 
 <filter>
     <filter-name>CASAuthenticationFilter</filter-name>
-    <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
+    <filter-class>org.apereo.cas.client.authentication.AuthenticationFilter</filter-class>
     <init-param>
       <param-name>casServerLoginUrl</param-name>
       <param-value>https://cas.example.com/cas/login</param-value>
@@ -953,8 +953,8 @@ The JAAS LoginModule configuration in `conf/login-config.xml` may require the fo
 ```xml
 <application-policy name="cas">
    <authentication>
-      <login-module code="org.jasig.cas.client.jaas.CasLoginModule" flag="required">
-         <module-option name="ticketValidatorClass">org.jasig.cas.client.validation.Saml11TicketValidator</module-option>
+      <login-module code="org.apereo.cas.client.jaas.CasLoginModule" flag="required">
+         <module-option name="ticketValidatorClass">org.apereo.cas.client.validation.Saml11TicketValidator</module-option>
          <module-option name="casServerUrlPrefix">http://yourcasserver/cas</module-option>
          <module-option name="tolerance">20000</module-option>
          <module-option name="defaultRoles">admin,user</module-option>
@@ -978,7 +978,7 @@ Remember not to add `<security-constraint>` and `<login-config>` elements in you
 If you have any trouble, you can enable the log of cas in `jboss-logging.xml` by adding:
 
 ```xml
-<logger category="org.jasig">
+<logger category="org.apereo">
    <level name="DEBUG" />
 </logger>
 ```       
@@ -994,21 +994,21 @@ CAS authentication support for Tomcat is based on the Tomcat-specific Realm comp
 <a name="component-overview"></a>
 ### Component Overview
 In the following discussion of components, only the Tomcat 8.x components are mentioned. Tomcat 8.0.x components are housed inside
-`org.jasig.cas.client.tomcat.v8` while Tomcat 8.5.x components are inside `org.jasig.cas.client.tomcat.v85`. Tomcat 9 packages are
-available at `org.jasig.cas.client.tomcat.v90`. You should be able to use the same exact configuration between the two modules provided package names are adjusted for each release. 
+`org.apereo.cas.client.tomcat.v8` while Tomcat 8.5.x components are inside `org.apereo.cas.client.tomcat.v85`. Tomcat 9 packages are
+available at `org.apereo.cas.client.tomcat.v90`. You should be able to use the same exact configuration between the two modules provided package names are adjusted for each release. 
 
 The Tomcat 7.0.x and 6.0.x components have exactly the same name, but **are in the tomcat.v7 and tomcat.v6 packages**, e.g. 
-`org.jasig.cas.client.tomcat.v7.Cas20CasAuthenticator` or `org.jasig.cas.client.tomcat.v6.Cas20CasAuthenticator`.
+`org.apereo.cas.client.tomcat.v7.Cas20CasAuthenticator` or `org.apereo.cas.client.tomcat.v6.Cas20CasAuthenticator`.
 
 <a name="authenticators"></a>
 #### Authenticators
 Authenticators are responsible for performing CAS authentication using a particular protocol. All protocols supported by the Jasig Java CAS client are supported: CAS 1.0, CAS 2.0, and SAML 1.1. The following components provide protocol-specific support:
 
 ```
-org.jasig.cas.client.tomcat.v8.Cas10CasAuthenticator
-org.jasig.cas.client.tomcat.v8.Cas20CasAuthenticator
-org.jasig.cas.client.tomcat.v8.Cas20ProxyCasAuthenticator
-org.jasig.cas.client.tomcat.v8.Saml11Authenticator
+org.apereo.cas.client.tomcat.v8.Cas10CasAuthenticator
+org.apereo.cas.client.tomcat.v8.Cas20CasAuthenticator
+org.apereo.cas.client.tomcat.v8.Cas20ProxyCasAuthenticator
+org.apereo.cas.client.tomcat.v8.Saml11Authenticator
 ```
 
 <a name="realms"></a>
@@ -1016,8 +1016,8 @@ org.jasig.cas.client.tomcat.v8.Saml11Authenticator
 In terms of CAS configuration, Tomcat realms serve as containers for users and role definitions. The roles defined in a Tomcat realm may be referenced in the web.xml servlet descriptor to define authorization constraints on Web applications hosted by the container. Two sources of user/role data are supported:
 
 ```
-org.jasig.cas.client.tomcat.v8.PropertiesCasRealm
-org.jasig.cas.client.tomcat.v8.AssertionCasRealm
+org.apereo.cas.client.tomcat.v8.PropertiesCasRealm
+org.apereo.cas.client.tomcat.v8.AssertionCasRealm
 ```
 
 `PropertiesCasRealm` uses a Java properties file as a source of static user/role information. This component is conceptually similar to the `MemoryRealm` component that ships with Tomcat and defines user/role data via XML configuration. The PropertiesCasRealm is different in that it explicitly lacks support for passwords, which have no use with CAS.
@@ -1032,15 +1032,15 @@ A number of Tomcat valves are provided to handle functionality outside Realms an
 Logout valves provide a way of destroying the CAS authentication state bound to the container for a particular user/session; the destruction of authenticated state is synonymous with logout for the container and its hosted applications. (Note this does not destroy the CAS SSO session.) The implementations provide various strategies to map a URI onto the state-destroying logout function.
 
 ```
-org.jasig.cas.client.tomcat.v8.StaticUriLogoutValve
-org.jasig.cas.client.tomcat.v8.RegexUriLogoutValve
+org.apereo.cas.client.tomcat.v8.StaticUriLogoutValve
+org.apereo.cas.client.tomcat.v8.RegexUriLogoutValve
 ```
 
 ##### SingleSignOutValve
-The `org.jasig.cas.client.tomcat.v8.SingleSignOutValve` allows the container to participate in CAS single sign-out. In particular this valve handles the SAML LogoutRequest message sent from the CAS server that is delivered when the CAS SSO session ends.
+The `org.apereo.cas.client.tomcat.v8.SingleSignOutValve` allows the container to participate in CAS single sign-out. In particular this valve handles the SAML LogoutRequest message sent from the CAS server that is delivered when the CAS SSO session ends.
 
 ##### ProxyCallbackValve
-The `org.jasig.cas.client.tomcat.v8.ProxyCallbackValve` provides a handler for watching request URIs for requests that contain a proxy callback request in support of the CAS 2.0 protocol proxy feature.
+The `org.apereo.cas.client.tomcat.v8.ProxyCallbackValve` provides a handler for watching request URIs for requests that contain a proxy callback request in support of the CAS 2.0 protocol proxy feature.
 
 <a name="container-setup"></a>
 ### Container Setup
@@ -1070,11 +1070,11 @@ Alternatively, CAS configuration can be applied to individual Web applications t
     This example also configures the container for CAS single sign-out.
   -->
   <Realm
-    className="org.jasig.cas.client.tomcat.v8.PropertiesCasRealm"
+    className="org.apereo.cas.client.tomcat.v8.PropertiesCasRealm"
     propertiesFilePath="conf/manager-user-roles.properties"
     />
   <Valve
-    className="org.jasig.cas.client.tomcat.v8.Cas20CasAuthenticator"
+    className="org.apereo.cas.client.tomcat.v8.Cas20CasAuthenticator"
     encoding="UTF-8"
     casServerLoginUrl="https://server.example.com/cas/login"
     casServerUrlPrefix="https://server.example.com/cas/"
@@ -1083,7 +1083,7 @@ Alternatively, CAS configuration can be applied to individual Web applications t
  
   <!-- Single sign-out support -->
   <Valve
-    className="org.jasig.cas.client.tomcat.v8.SingleSignOutValve"
+    className="org.apereo.cas.client.tomcat.v8.SingleSignOutValve"
     artifactParameterName="SAMLart"
     />
  
@@ -1093,11 +1093,11 @@ Alternatively, CAS configuration can be applied to individual Web applications t
   -->
   <!--
   <Valve
-    className="org.jasig.cas.client.tomcat.v8.RegexUriLogoutValve"
+    className="org.apereo.cas.client.tomcat.v8.RegexUriLogoutValve"
     logoutUriRegex="/manager/logout.*"
     />
   <Valve
-    className="org.jasig.cas.client.tomcat.v8.StaticUriLogoutValve"
+    className="org.apereo.cas.client.tomcat.v8.StaticUriLogoutValve"
     logoutUri="/manager/logout.html"
     />
   -->
@@ -1115,11 +1115,11 @@ The following example shows how to configure a Context for dynamic role data pro
     The attribute used for role data is "memberOf".
   -->
   <Realm
-    className="org.jasig.cas.client.tomcat.v8.AssertionCasRealm"
+    className="org.apereo.cas.client.tomcat.v8.AssertionCasRealm"
     roleAttributeName="memberOf"
     />
   <Valve
-    className="org.jasig.cas.client.tomcat.v8.Saml11Authenticator"
+    className="org.apereo.cas.client.tomcat.v8.Saml11Authenticator"
     encoding="UTF-8"
     casServerLoginUrl="https://server.example.com/cas/login"
     casServerUrlPrefix="https://server.example.com/cas/"
@@ -1128,7 +1128,7 @@ The following example shows how to configure a Context for dynamic role data pro
  
   <!-- Single sign-out support -->
   <Valve
-    className="org.jasig.cas.client.tomcat.v8.SingleSignOutValve"
+    className="org.apereo.cas.client.tomcat.v8.SingleSignOutValve"
     artifactParameterName="SAMLart"
     />
 </Context>
@@ -1140,7 +1140,7 @@ Since version 3.4.2, the Java CAS Client supports Jetty container integration vi
 
 ```xml
 <dependency>
-    <groupId>org.jasig.cas.client</groupId>
+    <groupId>org.apereo.cas.client</groupId>
     <artifactId>cas-client-integration-jetty</artifactId>
     <version>${cas-client.version}</version>
 </dependency>
@@ -1184,10 +1184,10 @@ context.getSecurityHandler().setAuthenticator(authenticator);
     <Set name="war"><SystemProperty name="jetty.base"/>/webapps/yourapp</Set>
     <Get name="securityHandler">
         <Set name="authenticator">
-            <New class="org.jasig.cas.client.jetty.CasAuthenticator">
+            <New class="org.apereo.cas.client.jetty.CasAuthenticator">
                 <Set name="serverNames">app.example.com</Set>
                 <Set name="ticketValidator">
-                    <New class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+                    <New class="org.apereo.cas.client.validation.Cas20ServiceTicketValidator">
                         <Arg>https://cas.example.com/cas</Arg>
                         <!--<Set name="renew">true</Set>-->
                     </New>
@@ -1282,7 +1282,7 @@ For JIRA, add in the Client Jira Authenticator:
 
 ```xml
 <!-- CAS:START - Java Client Jira Authenticator -->
-<authenticator class="org.jasig.cas.client.integration.atlassian.JiraCasAuthenticator"/>
+<authenticator class="org.apereo.cas.client.integration.atlassian.JiraCasAuthenticator"/>
 <!-- CAS:END -->
 ```
 
@@ -1290,7 +1290,7 @@ For Confluence, add in the Client Confluence Authenticator:
 
 ```xml
 <!-- CAS:START - Java Client Confluence Authenticator -->
-<authenticator class="org.jasig.cas.client.integration.atlassian.ConfluenceCasAuthenticator"/>
+<authenticator class="org.apereo.cas.client.integration.atlassian.ConfluenceCasAuthenticator"/>
 <!-- CAS:END -->
 ```
 
@@ -1347,7 +1347,7 @@ This configuration tested against the sample application that is included with S
 
 <filter>
    <filter-name>CAS Single Sign Out Filter</filter-name>
-   <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+   <filter-class>org.apereo.cas.client.session.SingleSignOutFilter</filter-class>
    <init-param>
       <param-name>casServerUrlPrefix</param-name>
       <param-value>https://cas.example.com/cas</param-value>
@@ -1370,7 +1370,7 @@ This configuration tested against the sample application that is included with S
 </filter-mapping>
 
 <listener>
-    <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    <listener-class>org.apereo.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
 </listener>
 
 <listener>
@@ -1467,13 +1467,13 @@ The important additions to the `web.xml` include the addition of the 403 error p
 
 <bean id="securityContextHolderAwareRequestFilter" class="org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter"/>
  
-<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator" id="ticketValidator">
+<bean class="org.apereo.cas.client.validation.Cas20ServiceTicketValidator" id="ticketValidator">
     <constructor-arg index="0" value="https://localhost:9443/cas" />
     <property name="proxyGrantingTicketStorage" ref="proxyGrantingTicketStorage" />
     <property name="proxyCallbackUrl" value="https://localhost:8443/cas-sample/secure/receptor" />
 </bean>
 
-<bean id="proxyGrantingTicketStorage" class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl" />
+<bean id="proxyGrantingTicketStorage" class="org.apereo.cas.client.proxy.ProxyGrantingTicketStorageImpl" />
 
 <sec:user-service id="userService">
     <sec:user name="rod" password="rod" authorities="ROLE_SUPERVISOR,ROLE_USER" />
@@ -1481,12 +1481,12 @@ The important additions to the `web.xml` include the addition of the 403 error p
     <sec:user name="scott" password="scott" authorities="ROLE_USER" />
 </sec:user-service>
 
-<bean id="casAuthenticationFilter" class="org.jasig.cas.client.authentication.AuthenticationFilter">
+<bean id="casAuthenticationFilter" class="org.apereo.cas.client.authentication.AuthenticationFilter">
     <property name="casServerLoginUrl" value="https://localhost:9443/cas/login" />
     <property name="serverName" value="https://localhost:8443" />
 </bean>
 
-<bean id="casValidationFilter" class="org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter">
+<bean id="casValidationFilter" class="org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter">
     <property name="serverName" value="https://localhost:8443" />
     <property name="exceptionOnValidationFailure" value="true" />
     <property name="proxyGrantingTicketStorage" ref="proxyGrantingTicketStorage" />
@@ -1495,7 +1495,7 @@ The important additions to the `web.xml` include the addition of the 403 error p
     <property name="proxyReceptorUrl" value="/secure/receptor" />
 </bean>
 
-<bean id="wrappingFilter" class="org.jasig.cas.client.util.HttpServletRequestWrapperFilter" />
+<bean id="wrappingFilter" class="org.apereo.cas.client.util.HttpServletRequestWrapperFilter" />
 ...
 ```
 
