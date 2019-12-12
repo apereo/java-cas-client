@@ -157,8 +157,8 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         // Test case #1
         final MockFilterConfig config1 = new MockFilterConfig();
         config1.addInitParameter("allowedProxyChains", "https://a.example.com");
-        config1.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
-        config1.addInitParameter("service", "http://www.jasig.org");
+        config1.addInitParameter("casServerUrlPrefix", "https://cas.apereo.org/");
+        config1.addInitParameter("service", "http://www.apereo.org");
         filter.init(config1);
         assertNotNull(filter.getTicketValidator(config1));
     }
@@ -169,8 +169,8 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         // Test case #2
         final MockFilterConfig config2 = new MockFilterConfig();
         config2.addInitParameter("allowedProxyChains", "https://a.example.com https://b.example.com");
-        config2.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
-        config2.addInitParameter("service", "http://www.jasig.org");
+        config2.addInitParameter("casServerUrlPrefix", "https://cas.apereo.org/");
+        config2.addInitParameter("service", "http://www.apereo.org");
         filter.init(config2);
         assertNotNull(filter.getTicketValidator(config2));
     }
@@ -184,8 +184,8 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         final MockFilterConfig config3 = new MockFilterConfig();
         config3.addInitParameter("allowedProxyChains",
                 "https://a.example.com https://b.example.com\nhttps://c.example.com");
-        config3.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
-        config3.addInitParameter("service", "http://www.jasig.org");
+        config3.addInitParameter("casServerUrlPrefix", "https://cas.apereo.org/");
+        config3.addInitParameter("service", "http://www.apereo.org");
         filter.init(config3);
         assertNotNull(filter.getTicketValidator(config3));
     }
@@ -208,7 +208,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
         final MockServletContext context = new MockServletContext();
         context.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         context.addInitParameter("renew", "true");
-        context.addInitParameter("service", "http://www.jasig.org");
+        context.addInitParameter("service", "http://www.apereo.org");
         final MockFilterConfig config = new MockFilterConfig(context);
         f.init(config);
         final TicketValidator validator = f.getTicketValidator(config);

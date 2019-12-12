@@ -23,8 +23,8 @@ This project includes:
   atlassian-osuser under Atlassian End User License
   Confluence Core under Atlassian End User License
   Google Collections Library under The Apache Software License, Version 2.0
-  Jasig CAS Client for Java - Atlassian Integration under Apache License Version 2.0
-  Jasig CAS Client for Java - Core under Apache License Version 2.0
+  Apereo CAS Client for Java - Atlassian Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - Core under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
   JCL 1.1.1 implemented over SLF4J under MIT License
   JUnit under Common Public License Version 1.0

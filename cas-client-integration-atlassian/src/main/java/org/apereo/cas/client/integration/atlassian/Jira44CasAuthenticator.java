@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of JiraSeraphAuthenticator to allow people to configure 
- * JIRA 4.4 and above to authenticate via Jasig CAS
+ * JIRA 4.4 and above to authenticate via Apereo CAS
  *
  * @author Scott Battaglia
  * @author Martin Stiborsky

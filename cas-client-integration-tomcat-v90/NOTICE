@@ -23,10 +23,10 @@ This project includes:
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
-  Jasig CAS Client for Java - Common Tomcat Integration Support under Apache License Version 2.0
-  Jasig CAS Client for Java - Core under Apache License Version 2.0
-  Jasig CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
-  Jasig CAS Client for Java - Tomcat 9.0.x Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - Common Tomcat Integration Support under Apache License Version 2.0
+  Apereo CAS Client for Java - Core under Apache License Version 2.0
+  Apereo CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
+  Apereo CAS Client for Java - Tomcat 9.0.x Integration under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
   JCL 1.2 implemented over SLF4J under MIT License
   Joda-Time under Apache License, Version 2.0

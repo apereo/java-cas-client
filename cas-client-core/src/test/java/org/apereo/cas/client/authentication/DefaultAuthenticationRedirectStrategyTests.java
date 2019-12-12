@@ -35,7 +35,7 @@ public class DefaultAuthenticationRedirectStrategyTests {
 
     @Test
     public void didWeRedirect() throws Exception {
-        final String redirectUrl = "http://www.jasig.org";
+        final String redirectUrl = "http://www.apereo.org";
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
 

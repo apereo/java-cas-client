@@ -187,7 +187,7 @@ The client can be configured in `web.xml` via a series of `context-param`s and f
 
 An example application that is protected by the client is [available here](https://github.com/UniconLabs/cas-sample-java-webapp).
 
-<a name="orgjasigcasclientauthenticationauthenticationfilter"></a>
+<a name="orgapereocasclientauthenticationauthenticationfilter"></a>
 #### org.apereo.cas.client.authentication.AuthenticationFilter
 The `AuthenticationFilter` is what detects whether a user needs to be authenticated or not. If a user needs to be authenticated, it will redirect the user to the CAS server.
 
@@ -239,7 +239,7 @@ The following types are supported:
 | `FULL_REGEX` | Matches the URL the `ignorePattern` using `Matcher#matches()`. It matches the expression against the entire string as it implicitly add a `^` at the start and `$` at the end of the pattern, so it will not match substring or part of the string. `^` and `$` are meta characters that represents start of the string and end of the string respectively.
 
 
-<a name="orgjasigcasclientauthenticationsaml11authenticationfilter"></a>
+<a name="orgapereocasclientauthenticationsaml11authenticationfilter"></a>
 #### org.apereo.cas.client.authentication.Saml11AuthenticationFilter
 The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be authenticated or not. If a user needs to be authenticated, it will redirect the user to the CAS server.
 
@@ -275,7 +275,7 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 | `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
 | `method` | The method used by the CAS server to send the user back to the application. Defaults to `null` | No
 
-<a name="rgjasigcasclientvalidationcas10ticketvalidationfilter"></a>
+<a name="rgapereocasclientvalidationcas10ticketvalidationfilter"></a>
 #### org.apereo.cas.client.validation.Cas10TicketValidationFilter
 Validates tickets using the CAS 1.0 Protocol.
 
@@ -310,7 +310,7 @@ Validates tickets using the CAS 1.0 Protocol.
 | `encoding` | Specifies the encoding charset the client should use | No
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
-<a name="orgjasigcasclientvalidationsaml11ticketvalidationfilter"></a>
+<a name="orgapereocasclientvalidationsaml11ticketvalidationfilter"></a>
 #### org.apereo.cas.client.validation.Saml11TicketValidationFilter
 Validates tickets using the SAML 1.1 protocol.
 
@@ -346,7 +346,7 @@ Validates tickets using the SAML 1.1 protocol.
 | `encoding` | Specifies the encoding charset the client should use | No
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
-<a name="orgjasigcasclientvalidationcas20proxyreceivingticketvalidationfilter"></a>
+<a name="orgapereocasclientvalidationcas20proxyreceivingticketvalidationfilter"></a>
 #### org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 2.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, a `Cas20ProxyTicketValidator` will be constructed. Otherwise a general `Cas20ServiceTicketValidator` will be constructed that does not accept proxy tickets. 
 
@@ -422,7 +422,7 @@ The setting provides an implementation for proxy storage using EhCache to take a
 
 Configuration of this parameter is not enough. The EhCache configuration needs to enable the replication mechanism through once of its suggested ways. A sample of that configuration based on RMI replication can be found here. Please note that while the sample is done for a distributed ticket registry implementation, the basic idea and configuration should easily be transferable. 
 
-When loading from the `web.xml`, the Jasig CAS Client relies on a series of default values, one of which being that the cache must be configured in the default location (i.e. `classpath:ehcache.xml`). 
+When loading from the `web.xml`, the Apereo CAS Client relies on a series of default values, one of which being that the cache must be configured in the default location (i.e. `classpath:ehcache.xml`). 
 
 ```xml
 <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
@@ -456,7 +456,7 @@ Configure the client:
 
 When loading from the `web.xml`, the Client relies on a series of default values, one of which being that the list of memcached servers must be defined in `/cas/casclient_memcached_hosts.txt` on the classpath). The file is a simple list of `<hostname>:<ports>` on separate lines. **BE SURE NOT TO HAVE EXTRA LINE BREAKS**.
 
-<a name="orgjasigcasclientutilhttpservletrequestwrapperfilter"></a>
+<a name="orgapereocasclientutilhttpservletrequestwrapperfilter"></a>
 #### org.apereo.cas.client.util.HttpServletRequestWrapperFilter
 Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` return the CAS related entries.
 
@@ -476,7 +476,7 @@ Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` ret
 | `roleAttribute` | Used to determine the principal role. | No
 | `ignoreCase` | Whether role checking should ignore case. Defaults to `false` | No
 
-<a name="orgjasigcasclientutilassertionthreadlocalfilter"></a>
+<a name="orgapereocasclientutilassertionthreadlocalfilter"></a>
 #### org.apereo.cas.client.util.AssertionThreadLocalFilter
 Places the `Assertion` in a `ThreadLocal` for portions of the application that need access to it. This is useful when the Web application that this filter "fronts" needs to get the Principal name, but it has no access to the `HttpServletRequest`, hence making `getRemoteUser()` call impossible.
 
@@ -491,7 +491,7 @@ Places the `Assertion` in a `ThreadLocal` for portions of the application that n
 </filter-mapping>
 ```
 
-<a name="orgjasigcasclientutilerrorredirectfilter"></a>
+<a name="orgapereocasclientutilerrorredirectfilter"></a>
 #### org.apereo.cas.client.util.ErrorRedirectFilter
 Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via init filter name/param values.
 
@@ -1002,7 +1002,7 @@ The Tomcat 7.0.x and 6.0.x components have exactly the same name, but **are in t
 
 <a name="authenticators"></a>
 #### Authenticators
-Authenticators are responsible for performing CAS authentication using a particular protocol. All protocols supported by the Jasig Java CAS client are supported: CAS 1.0, CAS 2.0, and SAML 1.1. The following components provide protocol-specific support:
+Authenticators are responsible for performing CAS authentication using a particular protocol. All protocols supported by the Apereo Java CAS client are supported: CAS 1.0, CAS 2.0, and SAML 1.1. The following components provide protocol-specific support:
 
 ```
 org.apereo.cas.client.tomcat.v8.Cas10CasAuthenticator

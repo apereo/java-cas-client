@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of a ProxyRetriever that follows the CAS 2.0 specification.
  * For more information on the CAS 2.0 specification, please see the <a
- * href="http://www.jasig.org/cas/protocol">specification
+ * href="http://www.apereo.org/cas/protocol">specification
  * document</a>.
  * <p/>
  * In general, this class will make a call to the CAS server with some specified

@@ -38,7 +38,7 @@ public class PropertiesCasRealmDelegateTests extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        realm.setPropertiesFilePath("src/test/resources/org/jasig/cas/client/tomcat/user-roles.properties");
+        realm.setPropertiesFilePath("src/test/resources/org/apereo/cas/client/tomcat/user-roles.properties");
         realm.readProperties();
     }
 

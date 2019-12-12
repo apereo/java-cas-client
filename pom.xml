@@ -26,7 +26,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jasig.cas.client</groupId>
-    <version>3.6.2-SNAPSHOT</version>
+    <version>4.0.0-M1</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
 
@@ -300,8 +300,6 @@
         <module>cas-client-support-saml</module>
         <module>cas-client-support-springboot</module>
         <module>cas-client-integration-tomcat-common</module>
-        <module>cas-client-integration-tomcat-v6</module>
-        <module>cas-client-integration-tomcat-v7</module>
         <module>cas-client-integration-tomcat-v8</module>
         <module>cas-client-integration-tomcat-v85</module>
         <module>cas-client-integration-tomcat-v90</module>

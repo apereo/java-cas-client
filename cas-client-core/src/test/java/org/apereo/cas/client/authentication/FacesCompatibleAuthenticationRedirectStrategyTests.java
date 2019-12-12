@@ -35,7 +35,7 @@ public class FacesCompatibleAuthenticationRedirectStrategyTests {
 
     @Test
     public void didWeRedirect() throws Exception {
-        final String redirectUrl = "http://www.jasig.org";
+        final String redirectUrl = "http://www.apereo.org";
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -45,7 +45,7 @@ public class FacesCompatibleAuthenticationRedirectStrategyTests {
 
     @Test
     public void facesPartialResponse() throws Exception {
-        final String redirectUrl = "http://www.jasig.org";
+        final String redirectUrl = "http://www.apereo.org";
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
         request.setParameter("javax.faces.partial.ajax", "true");
