@@ -22,11 +22,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cas-client</artifactId>
-        <groupId>org.jasig.cas.client</groupId>
+        <groupId>org.apereo.cas.client</groupId>
         <version>4.0.0-M1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>Jasig CAS Client for Java - Distributed Proxy Storage Support: EhCache
+    <name>Apereo CAS Client for Java - Distributed Proxy Storage Support: EhCache
     </name>
 
     <artifactId>cas-client-support-distributed-ehcache</artifactId>
@@ -34,7 +34,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${project.version}</version>
             <type>jar</type>

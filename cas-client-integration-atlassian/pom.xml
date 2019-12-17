@@ -20,14 +20,14 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>org.jasig.cas.client</groupId>
+        <groupId>org.apereo.cas.client</groupId>
         <version>3.6.1</version>
         <artifactId>cas-client</artifactId>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cas-client-integration-atlassian</artifactId>
     <packaging>jar</packaging>
-    <name>Jasig CAS Client for Java - Atlassian Integration</name>
+    <name>Apereo CAS Client for Java - Atlassian Integration</name>
 
     <dependencies>
 
@@ -1443,7 +1443,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>

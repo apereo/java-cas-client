@@ -20,18 +20,18 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>org.jasig.cas.client</groupId>
+        <groupId>org.apereo.cas.client</groupId>
         <version>4.0.0-M1</version>
         <artifactId>cas-client</artifactId>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cas-client-support-saml</artifactId>
     <packaging>jar</packaging>
-    <name>Jasig CAS Client for Java - SAML Protocol Support</name>
+    <name>Apereo CAS Client for Java - SAML Protocol Support</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -43,7 +43,7 @@
 
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>

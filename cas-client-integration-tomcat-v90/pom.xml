@@ -22,28 +22,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cas-client</artifactId>
-        <groupId>org.jasig.cas.client</groupId>
+        <groupId>org.apereo.cas.client</groupId>
         <version>4.0.0-M1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cas-client-integration-tomcat-v90</artifactId>
     <packaging>jar</packaging>
-    <name>Jasig CAS Client for Java - Tomcat 9.0.x Integration</name>
+    <name>Apereo CAS Client for Java - Tomcat 9.0.x Integration</name>
 
     <properties>
         <tomcat.version>9.0.29</tomcat.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-integration-tomcat-common</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-support-saml</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
@@ -88,7 +88,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jasig.cas.client</groupId>
+            <groupId>org.apereo.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
