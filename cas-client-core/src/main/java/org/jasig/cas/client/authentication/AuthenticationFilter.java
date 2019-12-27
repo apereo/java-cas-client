@@ -82,6 +82,10 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
     private UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass = null;
 
+    private String internalIp = null;
+
+    private static final String X_REAL_IP = "x-real-ip";
+
     private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
         new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
 
@@ -115,6 +119,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
             setRenew(getBoolean(ConfigurationKeys.RENEW));
             setGateway(getBoolean(ConfigurationKeys.GATEWAY));
             setMethod(getString(ConfigurationKeys.METHOD));
+            setInternalIp(getString(ConfigurationKeys.INTERNAL_IP));
 
             final String ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
             final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
@@ -168,6 +173,12 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+        if (isInternalRequest(request)) {
+            logger.debug("Request is ignored [internal].");
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (isRequestUrlExcluded(request)) {
             logger.debug("Request is ignored.");
@@ -231,8 +242,22 @@ public class AuthenticationFilter extends AbstractCasFilter {
         this.casServerLoginUrl = casServerLoginUrl;
     }
 
+    public void setInternalIp(String internalIp) {
+        this.internalIp = internalIp;
+    }
+
     public final void setGatewayStorage(final GatewayResolver gatewayStorage) {
         this.gatewayStorage = gatewayStorage;
+    }
+
+    private boolean isInternalRequest(final HttpServletRequest request) {
+        if (this.internalIp == null) {
+            return false;
+        }
+
+        String realIp = request.getHeader(X_REAL_IP);
+
+        return this.internalIp.equals(realIp);
     }
 
     private boolean isRequestUrlExcluded(final HttpServletRequest request) {

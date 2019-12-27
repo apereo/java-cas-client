@@ -64,6 +64,7 @@ public interface ConfigurationKeys {
      */
     @Deprecated
     ConfigurationKey<Boolean> DISABLE_XML_SCHEMA_VALIDATION = new ConfigurationKey<Boolean>("disableXmlSchemaValidation", Boolean.FALSE);
+    ConfigurationKey<String> INTERNAL_IP = new ConfigurationKey<String>("internalIp", null);
     ConfigurationKey<String> IGNORE_PATTERN = new ConfigurationKey<String>("ignorePattern", null);
     ConfigurationKey<String> IGNORE_URL_PATTERN_TYPE = new ConfigurationKey<String>("ignoreUrlPatternType", "REGEX");
     ConfigurationKey<Class<? extends HostnameVerifier>> HOSTNAME_VERIFIER = new ConfigurationKey<Class<? extends HostnameVerifier>>("hostnameVerifier", null);
