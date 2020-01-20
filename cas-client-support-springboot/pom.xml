@@ -83,6 +83,6 @@
     </dependencies>
 
     <properties>
-        <springboot.version>2.2.3.RELEASE</springboot.version>
+        <springboot.version>2.2.4.RELEASE</springboot.version>
     </properties>
 </project>
