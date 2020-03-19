@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <version>7.0.100</version>
+            <version>7.0.103</version>
             <type>jar</type>
             <scope>provided</scope>
             <exclusions>
