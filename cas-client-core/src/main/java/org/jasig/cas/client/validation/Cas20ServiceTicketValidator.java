@@ -20,7 +20,12 @@ package org.jasig.cas.client.validation;
 
 import java.io.StringReader;
 import java.security.PrivateKey;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import javax.crypto.Cipher;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -79,7 +84,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @param urlParameters the Map containing the existing parameters to send to the server.
      */
     @Override
-    protected final void populateUrlAttributeMap(final Map<String, String> urlParameters) {
+    protected void populateUrlAttributeMap(final Map<String, String> urlParameters) {
         urlParameters.put("pgtUrl", this.proxyCallbackUrl);
     }
 
