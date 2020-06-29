@@ -20,11 +20,7 @@ package org.jasig.cas.client.validation;
 
 import java.io.StringReader;
 import java.security.PrivateKey;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.crypto.Cipher;
 import javax.xml.parsers.SAXParser;
