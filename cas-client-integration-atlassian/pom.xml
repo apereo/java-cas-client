@@ -80,53 +80,17 @@
         </dependency>
 
         <dependency>
-            <artifactId>atlassian-user</artifactId>
-            <groupId>com.atlassian.user</groupId>
-            <version>5.4.14</version>
+            <groupId>com.atlassian.crowd</groupId>
+            <artifactId>crowd-api</artifactId>
+            <version>2.10.4</version>
             <scope>provided</scope>
-            <type>jar</type>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>opensymphony</groupId>
-                    <artifactId>oscore</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>opensymphony</groupId>
-                    <artifactId>propertyset</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.transaction</groupId>
-                    <artifactId>jta</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ofbcore</groupId>
-                    <artifactId>ofbcore-jira-entity</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ofbcore</groupId>
-                    <artifactId>ofbcore-jira-share</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>dom4j</groupId>
-                    <artifactId>dom4j</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>com.atlassian.crowd</groupId>
+            <artifactId>crowd-core</artifactId>
+            <version>2.10.4</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <artifactId>atlassian-osuser</artifactId>
             <groupId>com.atlassian.osuser</groupId>
@@ -1461,6 +1425,10 @@
             <name>Atlassian 3rd Party Repository</name>
             <url>https://maven.atlassian.com/3rdparty/</url>
         </repository>
-
+        <repository>
+            <id>packages-atlassian</id>
+            <name>packages atlassian</name>
+            <url>https://packages.atlassian.com/maven-external/</url>
+        </repository>
     </repositories>
 </project>
