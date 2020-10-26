@@ -23,8 +23,8 @@ import org.jasig.cas.client.util.AbstractConfigurationFilter;
 import org.jasig.cas.client.validation.Assertion;
 import org.springframework.security.cas.authentication.CasAssertionAuthenticationToken;
 import org.springframework.security.cas.authentication.CasAuthenticationToken;
-import org.springframework.security.cas.userdetails.GrantedAuthorityFromAssertionAttributesUserDetailsService;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -44,9 +44,14 @@ import java.io.IOException;
  * @since 3.6.2
  */
 public class SpringSecurityAssertionSessionContextFilter extends AbstractConfigurationFilter {
+    private final AuthenticationUserDetailsService<CasAssertionAuthenticationToken> userDetailsService;
+
     private final String[] attributes;
 
-    public SpringSecurityAssertionSessionContextFilter(final String... attributes) {
+    public SpringSecurityAssertionSessionContextFilter(
+        final AuthenticationUserDetailsService<CasAssertionAuthenticationToken> userDetailsService,
+        final String... attributes) {
+        this.userDetailsService = userDetailsService;
         this.attributes = attributes;
     }
 
@@ -60,10 +65,7 @@ public class SpringSecurityAssertionSessionContextFilter extends AbstractConfigu
             final Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
 
             final CasAssertionAuthenticationToken token = new CasAssertionAuthenticationToken(assertion, "");
-            final GrantedAuthorityFromAssertionAttributesUserDetailsService service =
-                new GrantedAuthorityFromAssertionAttributesUserDetailsService(this.attributes);
-
-            final UserDetails userDetails = service.loadUserDetails(token);
+            final UserDetails userDetails = userDetailsService.loadUserDetails(token);
             final CasAuthenticationToken authentication = new CasAuthenticationToken("CasAuthenticationToken",
                 userDetails,
                 userDetails,

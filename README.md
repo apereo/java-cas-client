@@ -730,12 +730,51 @@ cas.validation-type=SAML
 * `cas.assertion-thread-local-url-patterns`
 * `cas.gateway`
 * `cas.use-session`
+* `cas.attribute-authorities`
 * `cas.redirect-after-validation`
 * `cas.allowed-proxy-chains`
 * `cas.proxy-callback-url`
 * `cas.proxy-receptor-url`
 * `cas.accept-any-proxy`
 * `server.context-parameters.renew`
+
+### Spring Security Integration
+
+An application that is handling security concerns via Spring Security can take advantage
+of this module to automatically populate the Spring Security authentication context
+with roles and authorities that are fetched as attributes from the CAS assertion. 
+
+To do so, the attributes names (i.e. `membership`) from the CAS assertion that should be translated to Spring Security 
+authorities must be specified in the configuration:
+
+```properties
+cas.attribute-authorities=membership
+```
+
+The application may then enforce role-based security via:
+
+```java 
+@EnableCasClient
+public class MyConfiguration extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers("/").permitAll()
+            .antMatchers("/protected-endpoint").hasAuthority("ADMIN")
+            .anyRequest().authenticated();
+    }
+}
+```
+
+The translation between CAS attributes and Spring Security authorities and/or roles can be customized using 
+the following bean definition:
+
+```java
+@Bean
+public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> springSecurityCasUserDetailsService() {
+    return null;
+}
+```    
 
 ### Advanced configuration
 

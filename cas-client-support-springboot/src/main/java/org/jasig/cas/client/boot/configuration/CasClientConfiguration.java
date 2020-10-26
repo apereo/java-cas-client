@@ -37,7 +37,10 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.security.cas.authentication.CasAssertionAuthenticationToken;
 import org.springframework.security.cas.authentication.CasAuthenticationToken;
+import org.springframework.security.cas.userdetails.GrantedAuthorityFromAssertionAttributesUserDetailsService;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import javax.servlet.Filter;
@@ -227,20 +230,30 @@ public class CasClientConfiguration {
         return singleSignOutListener;
     }
 
-
-    @Bean
+    @Configuration
+    @EnableConfigurationProperties(CasClientConfigurationProperties.class)
     @ConditionalOnClass(CasAuthenticationToken.class)
     @ConditionalOnProperty(prefix = "cas", value = "use-session", havingValue = "true", matchIfMissing = true)
-    @ConditionalOnMissingBean(name = "springSecurityAssertionSessionContextFilter")
-    public FilterRegistrationBean springSecurityAssertionSessionContextFilter() {
-        FilterRegistrationBean filter = new FilterRegistrationBean();
-        filter.setFilter(new SpringSecurityAssertionSessionContextFilter(
-            configProps.getAttributeAuthorities().toArray(new String[]{})));
-        filter.setEnabled(!configProps.getAttributeAuthorities().isEmpty());
-        filter.setOrder(0);
-        if (this.casClientConfigurer != null) {
-            this.casClientConfigurer.configureHttpServletRequestWrapperFilter(filter);
+    public class SpringSecurityAssertionAutoConfiguration {
+
+        @Bean
+        @ConditionalOnMissingBean(name = "springSecurityAssertionSessionContextFilter")
+        public FilterRegistrationBean springSecurityAssertionSessionContextFilter() {
+            final FilterRegistrationBean filter = new FilterRegistrationBean();
+            filter.setFilter(new SpringSecurityAssertionSessionContextFilter(springSecurityCasUserDetailsService()));
+            filter.setEnabled(!configProps.getAttributeAuthorities().isEmpty());
+            filter.setOrder(0);
+            if (casClientConfigurer != null) {
+                casClientConfigurer.configureHttpServletRequestWrapperFilter(filter);
+            }
+            return filter;
         }
-        return filter;
+
+        @Bean
+        @ConditionalOnMissingBean(name = "springSecurityCasUserDetailsService")
+        public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> springSecurityCasUserDetailsService() {
+            return new GrantedAuthorityFromAssertionAttributesUserDetailsService(
+                configProps.getAttributeAuthorities().toArray(new String[]{}));
+        }
     }
 }
