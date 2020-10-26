@@ -9,4 +9,5 @@ target
 *.iws
 .idea/
 .DS_Store
+.java-version
 .idea

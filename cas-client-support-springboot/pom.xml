@@ -31,6 +31,19 @@
     <description>Library providing annotation-based configuration support for CAS Java clients.
         Primarily designed for super easy CASification of Spring Boot apps.
     </description>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springboot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
@@ -45,7 +58,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>${springboot.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -63,10 +75,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-            <version>${springboot.version}</version>
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-cas</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.jasig.cas.client</groupId>

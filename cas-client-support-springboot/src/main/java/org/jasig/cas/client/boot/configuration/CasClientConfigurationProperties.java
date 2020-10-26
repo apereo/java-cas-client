@@ -81,12 +81,12 @@ public class CasClientConfigurationProperties {
     /**
      * Validation filter useSession parameter.
      */
-    private Boolean useSession;
+    private Boolean useSession = Boolean.TRUE;
 
     /**
      * Validation filter redirectAfterValidation.
      */
-    private Boolean redirectAfterValidation;
+    private Boolean redirectAfterValidation = Boolean.TRUE;
 
     /**
      * Cas20ProxyReceivingTicketValidationFilter acceptAnyProxy parameter.
@@ -107,6 +107,12 @@ public class CasClientConfigurationProperties {
      * Cas20ProxyReceivingTicketValidationFilter proxyReceptorUrl parameter.
      */
     private String proxyReceptorUrl;
+
+    /**
+     * Name of attributes to fetch from assertion
+     * to use when populating spring security context.
+     */
+    private List<String> attributesAsAuthorities = new ArrayList<>();
 
     /**
      * ValidationType the CAS protocol validation type. Defaults to CAS3 if not explicitly set.
@@ -269,4 +275,11 @@ public class CasClientConfigurationProperties {
         this.singleLogout = singleLogout;
     }
 
+    public List<String> getAttributesAsAuthorities() {
+        return attributesAsAuthorities;
+    }
+
+    public void setAttributesAsAuthorities(final List<String> attributesAsAuthorities) {
+        this.attributesAsAuthorities = attributesAsAuthorities;
+    }
 }
