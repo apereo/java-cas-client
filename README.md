@@ -753,7 +753,8 @@ cas.attribute-authorities=membership
 
 The application may then enforce role-based security via:
 
-```java 
+```java         
+@SpringBootApplication
 @EnableCasClient
 public class MyConfiguration extends WebSecurityConfigurerAdapter {
     @Override
