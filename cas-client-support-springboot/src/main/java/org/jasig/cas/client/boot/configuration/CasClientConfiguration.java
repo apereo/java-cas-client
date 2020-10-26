@@ -235,7 +235,8 @@ public class CasClientConfiguration {
     public FilterRegistrationBean springSecurityAssertionSessionContextFilter() {
         FilterRegistrationBean filter = new FilterRegistrationBean();
         filter.setFilter(new SpringSecurityAssertionSessionContextFilter(
-            configProps.getAttributesAsAuthorities().toArray(new String[]{})));
+            configProps.getAttributeAuthorities().toArray(new String[]{})));
+        filter.setEnabled(!configProps.getAttributeAuthorities().isEmpty());
         filter.setOrder(0);
         if (this.casClientConfigurer != null) {
             this.casClientConfigurer.configureHttpServletRequestWrapperFilter(filter);

@@ -112,7 +112,7 @@ public class CasClientConfigurationProperties {
      * Name of attributes to fetch from assertion
      * to use when populating spring security context.
      */
-    private List<String> attributesAsAuthorities = new ArrayList<>();
+    private List<String> attributeAuthorities = new ArrayList<>();
 
     /**
      * ValidationType the CAS protocol validation type. Defaults to CAS3 if not explicitly set.
@@ -275,11 +275,11 @@ public class CasClientConfigurationProperties {
         this.singleLogout = singleLogout;
     }
 
-    public List<String> getAttributesAsAuthorities() {
-        return attributesAsAuthorities;
+    public List<String> getAttributeAuthorities() {
+        return attributeAuthorities;
     }
 
-    public void setAttributesAsAuthorities(final List<String> attributesAsAuthorities) {
-        this.attributesAsAuthorities = attributesAsAuthorities;
+    public void setAttributeAuthorities(final List<String> attributeAuthorities) {
+        this.attributeAuthorities = attributeAuthorities;
     }
 }
