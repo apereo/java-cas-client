@@ -17,10 +17,10 @@ under the License.
 
 This project includes:
   Apache Commons Codec under Apache License, Version 2.0
-  asm under BSD
-  asm-analysis under BSD
-  asm-commons under BSD
-  asm-tree under BSD
+  asm under BSD-3-Clause
+  asm-analysis under BSD-3-Clause
+  asm-commons under BSD-3-Clause
+  asm-tree under BSD-3-Clause
   Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
   Bouncy Castle Provider under Bouncy Castle Licence
   Eclipse Compiler for Java(TM) under Eclipse Public License - v 2.0
@@ -32,7 +32,7 @@ This project includes:
   Jasig CAS Client for Java - Jetty Container Integration under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
   javax.annotation API under CDDL + GPLv2 with classpath exception
-  JCL 1.2 implemented over SLF4J under MIT License
+  JCL 1.2 implemented over SLF4J under Apache License, Version 2.0
   Jetty :: Apache JSP Implementation under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Http Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: IO Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0

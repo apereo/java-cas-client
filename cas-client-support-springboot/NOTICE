@@ -21,16 +21,17 @@ This project includes:
   Apache Log4j to SLF4J Adapter under Apache License, Version 2.0
   Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
   Bouncy Castle Provider under Bouncy Castle Licence
-  Hamcrest Core under New BSD License
+  Hamcrest under BSD License 3
+  Hamcrest Core under BSD License 3
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
+  Jakarta Annotations API under EPL 2.0 or GPL2 w/ CPE
   Jasig CAS Client for Java - Core under Apache License Version 2.0
   Jasig CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
   Jasig CAS Client for Java - Spring Boot Support under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
-  javax.annotation API under CDDL + GPLv2 with classpath exception
-  JCL 1.2 implemented over SLF4J under MIT License
+  JCL 1.2 implemented over SLF4J under Apache License, Version 2.0
   Joda-Time under Apache License, Version 2.0
   JUL to SLF4J bridge under MIT License
   JUnit under Eclipse Public License 1.0
@@ -41,13 +42,18 @@ This project includes:
   SnakeYAML under Apache License, Version 2.0
   Spring AOP under Apache License, Version 2.0
   Spring Beans under Apache License, Version 2.0
-  Spring Boot under Apache License, Version 2.0
-  Spring Boot AutoConfigure under Apache License, Version 2.0
-  Spring Boot Logging Starter under Apache License, Version 2.0
-  Spring Boot Starter under Apache License, Version 2.0
   Spring Commons Logging Bridge under Apache License, Version 2.0
   Spring Context under Apache License, Version 2.0
   Spring Core under Apache License, Version 2.0
   Spring Expression Language (SpEL) under Apache License, Version 2.0
   Spring TestContext Framework under Apache License, Version 2.0
+  Spring Web under Apache License, Version 2.0
+  spring-boot under Apache License, Version 2.0
+  spring-boot-autoconfigure under Apache License, Version 2.0
+  spring-boot-configuration-processor under Apache License, Version 2.0
+  spring-boot-starter under Apache License, Version 2.0
+  spring-boot-starter-logging under Apache License, Version 2.0
+  spring-security-cas under The Apache Software License, Version 2.0
+  spring-security-core under The Apache Software License, Version 2.0
+  spring-security-web under The Apache Software License, Version 2.0
 

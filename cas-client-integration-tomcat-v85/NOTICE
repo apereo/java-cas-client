@@ -28,7 +28,7 @@ This project includes:
   Jasig CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
   Jasig CAS Client for Java - Tomcat 8.5.x Integration under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
-  JCL 1.2 implemented over SLF4J under MIT License
+  JCL 1.2 implemented over SLF4J under Apache License, Version 2.0
   Joda-Time under Apache License, Version 2.0
   JUnit under Eclipse Public License 1.0
   SLF4J API Module under MIT License
