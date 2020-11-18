@@ -10,7 +10,7 @@ All client artifacts are published to Maven central. Depending on functionality,
 ## Build [![Build Status](https://travis-ci.org/apereo/java-cas-client.png?branch=master)](https://travis-ci.org/apereo/java-cas-client)
 
 ```bash
-git clone git@github.com:apereo/java-cas-client.git
+git clone git@github.com/apereo/java-cas-client.git
 cd java-cas-client
 mvn clean package
 ```
