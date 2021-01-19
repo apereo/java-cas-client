@@ -33,7 +33,7 @@
 
     <properties>
         <!-- Note Jetty 9.2.x is the last version to support Java SE 7 -->
-        <jetty.version>9.4.36.v20210114</jetty.version>
+        <jetty.version>11.0.0</jetty.version>
     </properties>
 
     <dependencies>
