@@ -34,7 +34,7 @@
         <dependency>
             <artifactId>atlassian-seraph</artifactId>
             <groupId>com.atlassian.seraph</groupId>
-            <version>4.1.0</version>
+            <version>4.1.1</version>
             <scope>provided</scope>
             <type>jar</type>
             <exclusions>
