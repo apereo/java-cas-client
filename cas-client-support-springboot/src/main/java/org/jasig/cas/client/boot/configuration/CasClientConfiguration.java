@@ -217,7 +217,11 @@ public class CasClientConfiguration {
         Map<String, String> initParameters = new HashMap<>(1);
         initParameters.put("casServerUrlPrefix", configProps.getServerUrlPrefix());
         singleSignOutFilter.setInitParameters(initParameters);
-        singleSignOutFilter.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        //adjust filter order,cause the highest order will affect other module such as spring-session
+        singleSignOutFilter.setOrder(Ordered.HIGHEST_PRECEDENCE+200);
+        if (this.casClientConfigurer != null) {
+            this.casClientConfigurer.configureSingleSignOutFilter(singleSignOutFilter);
+        }
         return singleSignOutFilter;
     }
 
@@ -226,7 +230,11 @@ public class CasClientConfiguration {
     public ServletListenerRegistrationBean<EventListener> casSingleSignOutListener() {
         ServletListenerRegistrationBean<EventListener> singleSignOutListener = new ServletListenerRegistrationBean<>();
         singleSignOutListener.setListener(new SingleSignOutHttpSessionListener());
-        singleSignOutListener.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        //adjust listener order,cause the highest order will affect other module such as spring-session
+        singleSignOutListener.setOrder(Ordered.HIGHEST_PRECEDENCE+200);
+        if (this.casClientConfigurer != null) {
+            this.casClientConfigurer.configureSingleSignOutListener(singleSignOutListener);
+        }
         return singleSignOutListener;
     }
 
