@@ -20,6 +20,7 @@ package org.jasig.cas.client.session;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionIdListener;
 import javax.servlet.http.HttpSessionListener;
 
 /**
@@ -32,9 +33,20 @@ import javax.servlet.http.HttpSessionListener;
  * @version $Revision$ Date$
  * @since 3.1
  */
-public final class SingleSignOutHttpSessionListener implements HttpSessionListener {
+public final class SingleSignOutHttpSessionListener implements HttpSessionListener, HttpSessionIdListener {
 
     private SessionMappingStorage sessionMappingStorage;
+
+    protected SessionMappingStorage getSessionMappingStorage() {
+        if (sessionMappingStorage == null) {
+            this.setSessionMappingStorage(SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage());
+        }
+        return sessionMappingStorage;
+    }
+
+    public void setSessionMappingStorage(SessionMappingStorage sessionMappingStorage) {
+        this.sessionMappingStorage = sessionMappingStorage;
+    }
 
     @Override
     public void sessionCreated(final HttpSessionEvent event) {
@@ -43,20 +55,12 @@ public final class SingleSignOutHttpSessionListener implements HttpSessionListen
 
     @Override
     public void sessionDestroyed(final HttpSessionEvent event) {
-        if (sessionMappingStorage == null) {
-            sessionMappingStorage = getSessionMappingStorage();
-        }
         final HttpSession session = event.getSession();
-        sessionMappingStorage.removeBySessionById(session.getId());
+        getSessionMappingStorage().removeBySessionById(session.getId());
     }
 
-    /**
-     * Obtains a {@link SessionMappingStorage} object. Assumes this method will always return the same
-     * instance of the object.  It assumes this because it generally lazily calls the method.
-     * 
-     * @return the SessionMappingStorage
-     */
-    protected static SessionMappingStorage getSessionMappingStorage() {
-        return SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage();
+    @Override
+    public void sessionIdChanged(HttpSessionEvent event, String oldSessionId) {
+        getSessionMappingStorage().changeSessionId(oldSessionId, event.getSession());
     }
 }
