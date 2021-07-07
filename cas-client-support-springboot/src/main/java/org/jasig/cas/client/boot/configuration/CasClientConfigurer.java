@@ -19,6 +19,9 @@
 package org.jasig.cas.client.boot.configuration;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
+
+import java.util.EventListener;
 
 /**
  * Callback interface to be implemented by {@link org.springframework.context.annotation.Configuration Configuration} classes annotated with
@@ -60,5 +63,21 @@ public interface CasClientConfigurer {
      * @param assertionThreadLocalFilter the assertion thread local filter
      */
     default void configureAssertionThreadLocalFilter(final FilterRegistrationBean assertionThreadLocalFilter) {
+    }
+
+    /**
+     * Configure or customize CAS single sign out filter.
+     *
+     * @param singleSignOutFilter the single sign out filter
+     */
+    default void configureSingleSignOutFilter(FilterRegistrationBean singleSignOutFilter){
+    }
+
+    /**
+     * Configure or customize CAS single sign out listener.
+     *
+     * @param singleSignOutListener the single sign out listener
+     */
+    default void configureSingleSignOutListener(ServletListenerRegistrationBean<EventListener> singleSignOutListener){
     }
 }
