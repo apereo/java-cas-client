@@ -43,7 +43,6 @@ import org.springframework.mock.web.MockHttpSession;
  */
 public class SingleSignOutFilterTests {
 
-    private final static String CAS_SERVER_URL_PREFIX = "http://myhost.com/mycasserver";
     private final static String TICKET = "ST-yyyyy";
     private final static String RELAY_STATE = "e1s1";
 

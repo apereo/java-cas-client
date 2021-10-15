@@ -31,13 +31,11 @@ import junit.framework.Assert;
 
 public class Cas30JsonServiceTicketValidatorTests extends AbstractTicketValidatorTests {
     private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8088);
-    private ProxyGrantingTicketStorage proxyGrantingTicketStorage;
 
     private Cas30JsonServiceTicketValidator ticketValidator;
 
     @Before
     public void setUp() throws Exception {
-        this.proxyGrantingTicketStorage = getProxyGrantingTicketStorage();
         this.ticketValidator = new Cas30JsonServiceTicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8088");
         this.ticketValidator.setProxyCallbackUrl("test");
         this.ticketValidator.setProxyGrantingTicketStorage(getProxyGrantingTicketStorage());
