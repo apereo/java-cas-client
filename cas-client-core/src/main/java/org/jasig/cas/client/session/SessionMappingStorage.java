@@ -51,4 +51,10 @@ public interface SessionMappingStorage {
      */
     void addSessionById(String mappingId, HttpSession session);
 
+    /**
+     * Fixing mapping after session id change.
+     * @param newSessionId session id after change
+     * @param oldSessionId session id before change
+     */
+    void changeSessionId(String oldSessionId, String newSessionId);
 }

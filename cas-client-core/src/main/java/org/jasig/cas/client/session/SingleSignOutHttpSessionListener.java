@@ -20,6 +20,7 @@ package org.jasig.cas.client.session;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionIdListener;
 import javax.servlet.http.HttpSessionListener;
 
 /**
@@ -32,7 +33,7 @@ import javax.servlet.http.HttpSessionListener;
  * @version $Revision$ Date$
  * @since 3.1
  */
-public final class SingleSignOutHttpSessionListener implements HttpSessionListener {
+public final class SingleSignOutHttpSessionListener implements HttpSessionListener, HttpSessionIdListener {
 
     private SessionMappingStorage sessionMappingStorage;
 
@@ -48,6 +49,15 @@ public final class SingleSignOutHttpSessionListener implements HttpSessionListen
         }
         final HttpSession session = event.getSession();
         sessionMappingStorage.removeBySessionById(session.getId());
+    }
+
+    @Override
+    public void sessionIdChanged(HttpSessionEvent event, String oldSessionId) {
+        if (sessionMappingStorage == null) {
+            sessionMappingStorage = getSessionMappingStorage();
+        }
+        final HttpSession session = event.getSession();
+        sessionMappingStorage.changeSessionId(oldSessionId, session.getId());
     }
 
     /**

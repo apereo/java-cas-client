@@ -80,4 +80,14 @@ public final class HashMapBackedSessionMappingStorage implements SessionMappingS
 
         return session;
     }
+
+    @Override
+    public synchronized void changeSessionId(String oldSessionId, String newSessionId) {
+        logger.debug("Fixing session id mapping, old id: {}, new id: {}", oldSessionId, newSessionId);
+
+        String removedValue = ID_TO_SESSION_KEY_MAPPING.remove(oldSessionId);
+        if (removedValue != null) {
+            ID_TO_SESSION_KEY_MAPPING.put(newSessionId, removedValue);
+        }
+    }
 }
