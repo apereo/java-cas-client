@@ -23,13 +23,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.authentication.SimpleGroup;
 import org.jasig.cas.client.authentication.SimplePrincipal;
 import org.jasig.cas.client.jaas.AssertionPrincipal;
 import org.jasig.cas.client.validation.AssertionImpl;
+import org.junit.Assert;
 
 /**
  * Confirms serialization support for classes intended for session storage or

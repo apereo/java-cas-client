@@ -27,7 +27,7 @@ import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.junit.Before;
 import org.junit.Test;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class Cas30JsonServiceTicketValidatorTests extends AbstractTicketValidatorTests {
     private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8088);
