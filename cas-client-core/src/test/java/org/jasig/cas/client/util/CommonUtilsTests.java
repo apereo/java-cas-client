@@ -169,7 +169,6 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testConstructServiceUrlWithParamsCas() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
@@ -183,7 +182,6 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testConstructServiceUrlWithParamsCasAndServerNameWithSchema() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
@@ -198,7 +196,6 @@ public final class CommonUtilsTests extends TestCase {
 
 
     public void testConstructServiceUrlWithParamsSaml() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
@@ -212,7 +209,6 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testConstructServiceUrlWithEncodedParamsSaml() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
@@ -226,7 +222,6 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testConstructServiceUrlWithNoServiceParametersPassed() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
@@ -266,7 +261,6 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testConstructServiceUrlWithEncodedParamsSamlAndNoEncoding() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
         final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);

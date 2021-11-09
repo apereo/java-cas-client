@@ -32,8 +32,6 @@ import java.util.concurrent.TimeUnit;
  */
 public final class PublicTestHttpServer extends Thread {
 
-    private static PublicTestHttpServer httpServer;
-
     public byte[] content;
 
     private final byte[] header;
@@ -96,8 +94,6 @@ public final class PublicTestHttpServer extends Thread {
         } catch (final Exception e) {
             System.err.println(e);
         }
-
-        httpServer = null;
     }
 
     @Override
