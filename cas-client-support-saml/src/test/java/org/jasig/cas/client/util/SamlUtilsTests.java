@@ -20,20 +20,22 @@ package org.jasig.cas.client.util;
 
 import java.util.Date;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Test cases for {@link SamlUtils}.
  *
  * @author Marvin S. Addison
+ * @author Emil Sierżęga
  */
-public class SamlUtilsTest {
+public class SamlUtilsTests {
 
     @Test
     public void testParseUtcDate() {
         final Date expected = new Date(1424437961025L);
-        assertEquals(expected, SamlUtils.parseUtcDate("2015-02-20T08:12:41.025-0500"));
+        Assert.assertEquals(expected, SamlUtils.parseUtcDate("2015-02-20T08:12:41.025-0500"));
+        final Date expectedNoMillis = new Date(1424437961000L);
+        Assert.assertEquals(expectedNoMillis, SamlUtils.parseUtcDate("2015-02-20T08:12:41-0500"));
     }
 }
