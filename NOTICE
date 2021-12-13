@@ -26,6 +26,7 @@ This project includes:
   asm-analysis under BSD-3-Clause
   asm-commons under BSD-3-Clause
   asm-tree under BSD-3-Clause
+  Bouncy Castle ASN.1 Extension and Utility APIs under Bouncy Castle Licence
   Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
   Bouncy Castle Provider under Bouncy Castle Licence
   catalina under Apache License, Version 2.0
@@ -66,6 +67,7 @@ This project includes:
   Jetty :: Servlet Annotations under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Servlet Handling under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Utilities under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Utilities :: Ajax(JSON) under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Webapp Application Support under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: XML utilities under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Joda-Time under Apache License, Version 2.0
@@ -91,9 +93,10 @@ This project includes:
   spring-boot-configuration-processor under Apache License, Version 2.0
   spring-boot-starter under Apache License, Version 2.0
   spring-boot-starter-logging under Apache License, Version 2.0
-  spring-security-cas under The Apache Software License, Version 2.0
-  spring-security-core under The Apache Software License, Version 2.0
-  spring-security-web under The Apache Software License, Version 2.0
+  spring-security-cas under Apache License, Version 2.0
+  spring-security-core under Apache License, Version 2.0
+  spring-security-crypto under Apache License, Version 2.0
+  spring-security-web under Apache License, Version 2.0
   Spymemcached under The Apache Software License, Version 2.0
   tomcat-annotations-api under Apache License, Version 2.0
   tomcat-catalina under Apache License, Version 2.0

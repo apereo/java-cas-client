@@ -19,6 +19,7 @@ This project includes:
   Apache Commons Codec under Apache License, Version 2.0
   Apache Log4j API under Apache License, Version 2.0
   Apache Log4j to SLF4J Adapter under Apache License, Version 2.0
+  Bouncy Castle ASN.1 Extension and Utility APIs under Bouncy Castle Licence
   Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
   Bouncy Castle Provider under Bouncy Castle Licence
   Hamcrest under BSD License 3
@@ -53,7 +54,8 @@ This project includes:
   spring-boot-configuration-processor under Apache License, Version 2.0
   spring-boot-starter under Apache License, Version 2.0
   spring-boot-starter-logging under Apache License, Version 2.0
-  spring-security-cas under The Apache Software License, Version 2.0
-  spring-security-core under The Apache Software License, Version 2.0
-  spring-security-web under The Apache Software License, Version 2.0
+  spring-security-cas under Apache License, Version 2.0
+  spring-security-core under Apache License, Version 2.0
+  spring-security-crypto under Apache License, Version 2.0
+  spring-security-web under Apache License, Version 2.0
 

@@ -19,6 +19,7 @@ This project includes:
   Apache Commons Codec under Apache License, Version 2.0
   Apache Log4j under The Apache Software License, Version 2.0
   Apache XML Security under The Apache Software License, Version 2.0
+  Bouncy Castle ASN.1 Extension and Utility APIs under Bouncy Castle Licence
   Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
   Bouncy Castle Provider under Bouncy Castle Licence
   Hamcrest Core under New BSD License
