@@ -53,6 +53,10 @@ public class CasClientConfigurationProperties {
     @NonNull
     private String clientHostUrl;
 
+    private String hostnameVerifier;
+
+    private String sslConfigFile;
+
     /**
      * List of URL patterns protected by CAS authentication filter.
      */
@@ -137,7 +141,6 @@ public class CasClientConfigurationProperties {
             this.enabled = enabled;
         }
     }
-
 
     public String getServerUrlPrefix() {
         return serverUrlPrefix;
@@ -271,7 +274,7 @@ public class CasClientConfigurationProperties {
         return singleLogout;
     }
 
-    public void setSingleLogout(SingleLogout singleLogout) {
+    public void setSingleLogout(final SingleLogout singleLogout) {
         this.singleLogout = singleLogout;
     }
 
@@ -281,5 +284,21 @@ public class CasClientConfigurationProperties {
 
     public void setAttributeAuthorities(final List<String> attributeAuthorities) {
         this.attributeAuthorities = attributeAuthorities;
+    }
+
+    public String getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    public void setHostnameVerifier(final String hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
+    }
+
+    public String getSslConfigFile() {
+        return sslConfigFile;
+    }
+
+    public void setSslConfigFile(final String sslConfigFile) {
+        this.sslConfigFile = sslConfigFile;
     }
 }

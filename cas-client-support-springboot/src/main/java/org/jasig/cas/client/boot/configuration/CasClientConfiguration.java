@@ -20,6 +20,7 @@ package org.jasig.cas.client.boot.configuration;
 
 import org.jasig.cas.client.authentication.AuthenticationFilter;
 import org.jasig.cas.client.authentication.Saml11AuthenticationFilter;
+import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.jasig.cas.client.util.AssertionThreadLocalFilter;
@@ -44,11 +45,14 @@ import org.springframework.security.core.userdetails.AuthenticationUserDetailsSe
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import javax.servlet.Filter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Configuration class providing default CAS client infrastructure filters.
@@ -109,29 +113,37 @@ public class CasClientConfiguration {
         initFilter(validationFilter,
             targetCasValidationFilter,
             1,
-            constructInitParams("casServerUrlPrefix", this.configProps.getServerUrlPrefix(), this.configProps.getClientHostUrl()),
+            constructInitParams(ConfigurationKeys.CAS_SERVER_URL_PREFIX.getName(), this.configProps.getServerUrlPrefix(), this.configProps.getClientHostUrl()),
             this.configProps.getValidationUrlPatterns());
 
         if (this.configProps.getUseSession() != null) {
-            validationFilter.getInitParameters().put("useSession", String.valueOf(this.configProps.getUseSession()));
+            validationFilter.getInitParameters().put(ConfigurationKeys.USE_SESSION.getName(), String.valueOf(this.configProps.getUseSession()));
         }
         if (this.configProps.getRedirectAfterValidation() != null) {
-            validationFilter.getInitParameters().put("redirectAfterValidation", String.valueOf(this.configProps.getRedirectAfterValidation()));
+            validationFilter.getInitParameters().put(ConfigurationKeys.REDIRECT_AFTER_VALIDATION.getName(),
+                String.valueOf(this.configProps.getRedirectAfterValidation()));
+        }
+
+        if (this.configProps.getHostnameVerifier() != null) {
+            validationFilter.getInitParameters().put(ConfigurationKeys.HOSTNAME_VERIFIER.getName(), this.configProps.getHostnameVerifier());
+        }
+        if (this.configProps.getSslConfigFile() != null) {
+            validationFilter.getInitParameters().put(ConfigurationKeys.SSL_CONFIG_FILE.getName(), this.configProps.getSslConfigFile());
         }
 
         //Proxy tickets validation
         if (this.configProps.getAcceptAnyProxy() != null) {
-            validationFilter.getInitParameters().put("acceptAnyProxy", String.valueOf(this.configProps.getAcceptAnyProxy()));
+            validationFilter.getInitParameters().put(ConfigurationKeys.ACCEPT_ANY_PROXY.getName(), String.valueOf(this.configProps.getAcceptAnyProxy()));
         }
         if (!this.configProps.getAllowedProxyChains().isEmpty()) {
-            validationFilter.getInitParameters().put("allowedProxyChains",
+            validationFilter.getInitParameters().put(ConfigurationKeys.ALLOWED_PROXY_CHAINS.getName(),
                 StringUtils.collectionToDelimitedString(this.configProps.getAllowedProxyChains(), " "));
         }
         if (this.configProps.getProxyCallbackUrl() != null) {
-            validationFilter.getInitParameters().put("proxyCallbackUrl", this.configProps.getProxyCallbackUrl());
+            validationFilter.getInitParameters().put(ConfigurationKeys.PROXY_CALLBACK_URL.getName(), this.configProps.getProxyCallbackUrl());
         }
         if (this.configProps.getProxyReceptorUrl() != null) {
-            validationFilter.getInitParameters().put("proxyReceptorUrl", this.configProps.getProxyReceptorUrl());
+            validationFilter.getInitParameters().put(ConfigurationKeys.PROXY_RECEPTOR_URL.getName(), this.configProps.getProxyReceptorUrl());
         }
 
         if (this.casClientConfigurer != null) {
@@ -152,11 +164,11 @@ public class CasClientConfiguration {
         initFilter(authnFilter,
             targetCasAuthnFilter,
             2,
-            constructInitParams("casServerLoginUrl", this.configProps.getServerLoginUrl(), this.configProps.getClientHostUrl()),
+            constructInitParams(ConfigurationKeys.CAS_SERVER_LOGIN_URL.getName(), this.configProps.getServerLoginUrl(), this.configProps.getClientHostUrl()),
             this.configProps.getAuthenticationUrlPatterns());
 
         if (this.configProps.getGateway() != null) {
-            authnFilter.getInitParameters().put("gateway", String.valueOf(this.configProps.getGateway()));
+            authnFilter.getInitParameters().put(ConfigurationKeys.GATEWAY.getName(), String.valueOf(this.configProps.getGateway()));
         }
 
         if (this.casClientConfigurer != null) {
@@ -214,8 +226,8 @@ public class CasClientConfiguration {
     public FilterRegistrationBean casSingleSignOutFilter() {
         final FilterRegistrationBean singleSignOutFilter = new FilterRegistrationBean();
         singleSignOutFilter.setFilter(new SingleSignOutFilter());
-        Map<String, String> initParameters = new HashMap<>(1);
-        initParameters.put("casServerUrlPrefix", configProps.getServerUrlPrefix());
+        final Map<String, String> initParameters = new HashMap<>(1);
+        initParameters.put(ConfigurationKeys.CAS_SERVER_URL_PREFIX.getName(), configProps.getServerUrlPrefix());
         singleSignOutFilter.setInitParameters(initParameters);
         singleSignOutFilter.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return singleSignOutFilter;
