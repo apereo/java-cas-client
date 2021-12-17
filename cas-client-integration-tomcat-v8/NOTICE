@@ -21,6 +21,7 @@ This project includes:
   Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
   Bouncy Castle Provider under Bouncy Castle Licence
   Hamcrest Core under New BSD License
+  istack common utility code runtime under CDDL 1.1 or GPL2 w/ CPE
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
@@ -29,6 +30,9 @@ This project includes:
   Jasig CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
   Jasig CAS Client for Java - Tomcat 8.x Integration under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
+  JavaBeans Activation Framework API jar under CDDL/GPLv2+CE
+  JAXB Core under CDDL+GPL License
+  jaxb-api under CDDL 1.1 or GPL2 w/ CPE
   JCL 1.2 implemented over SLF4J under Apache License, Version 2.0
   Joda-Time under Apache License, Version 2.0
   JUnit under Eclipse Public License 1.0
@@ -41,4 +45,5 @@ This project includes:
   tomcat-jni under Apache License, Version 2.0
   tomcat-jsp-api under Apache License, Version 2.0
   tomcat-util-scan under Apache License, Version 2.0
+  TXW2 Runtime under CDDL+GPL License
 
