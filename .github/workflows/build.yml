@@ -62,6 +62,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Build with Gradle
         run: mvn clean install
 
@@ -77,6 +78,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ env.JDK_CURRENT }}
+          distribution: 'temurin'
       - name: Publish SNAPSHOTs
         if: ${{ env.SONATYPE_USER != null && env.SONATYPE_PWD != null }}
         run:  mvn deploy --settings ./.github/workflows/settings.xml
