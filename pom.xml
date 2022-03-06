@@ -309,6 +309,6 @@
         <ehcache.version>2.6.11</ehcache.version>
         <clover.version>3.0.2</clover.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <jackson.version>2.13.1</jackson.version>
+        <jackson.version>2.13.2</jackson.version>
     </properties>
 </project>
