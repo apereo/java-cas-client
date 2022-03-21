@@ -57,7 +57,7 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <version>8.5.76</version>
+            <version>8.5.77</version>
             <type>jar</type>
             <scope>provided</scope>
             <exclusions>
