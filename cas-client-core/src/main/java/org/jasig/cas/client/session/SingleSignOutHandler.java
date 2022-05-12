@@ -19,6 +19,7 @@
 package org.jasig.cas.client.session;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -27,7 +28,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.bind.DatatypeConverter;
 
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
@@ -232,7 +232,7 @@ public final class SingleSignOutHandler {
      * @return the uncompressed logout message.
      */
     private String uncompressLogoutMessage(final String originalMessage) {
-        final byte[] binaryMessage = DatatypeConverter.parseBase64Binary(originalMessage);
+        final byte[] binaryMessage = Base64.getDecoder().decode(originalMessage);
 
         Inflater decompresser = null;
         try {
