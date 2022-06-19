@@ -24,12 +24,11 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.*;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.util.*;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -172,17 +171,17 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             return false;
         }
 
-        final DateTime currentTime = new DateTime(DateTimeZone.UTC);
-        final Interval validityRange = new Interval(
-                new DateTime(notBefore).minus(this.tolerance),
-                new DateTime(notOnOrAfter).plus(this.tolerance));
+        final ZonedDateTime currentTime = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime startTime = ZonedDateTime.ofInstant(notBefore.toInstant(), ZoneOffset.UTC);
+        final ZonedDateTime endTime = ZonedDateTime.ofInstant(notOnOrAfter.toInstant(), ZoneOffset.UTC);
 
-        if (validityRange.contains(currentTime)) {
+        // This is awkward, because we want to INCLUDE startTime and EXCLUDE endTime
+        if (!currentTime.isBefore(startTime) && endTime.isAfter(currentTime)) {
             logger.debug("Current time is within the interval validity.");
             return true;
         }
 
-        if (currentTime.isBefore(validityRange.getStart())) {
+        if (currentTime.isBefore(startTime)) {
             logger.debug("Assertion is not yet valid");
         } else {
             logger.debug("Assertion is expired");

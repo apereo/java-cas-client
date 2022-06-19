@@ -18,12 +18,11 @@
  */
 package org.jasig.cas.client.util;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * SAML utility class.
@@ -33,20 +32,32 @@ import org.joda.time.format.ISODateTimeFormat;
  */
 public final class SamlUtils {
 
-    private static final DateTimeFormatter ISO_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+    private static final DateTimeFormatter ISO_FORMATTER_NO_MILLIS = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss"))
+            .parseLenient()
+            .appendOffset("+HHMM", "Z")
+            .parseStrict()
+            .toFormatter();
+    private static final DateTimeFormatter ISO_PARSER_WITH_MILLIS = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            .parseLenient()
+            .appendOffset("+HHMM", "Z")
+            .parseStrict()
+            .toFormatter();
 
     private SamlUtils() {
         // nothing to do
     }
 
     public static String formatForUtcTime(final Date date) {
-        return ISO_FORMAT.print(new DateTime(date).withZone(DateTimeZone.UTC));
+        return ISO_FORMATTER_NO_MILLIS.format(ZonedDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC));
     }
 
     public static Date parseUtcDate(final String date) {
         if (CommonUtils.isEmpty(date)) {
             return null;
         }
-        return ISODateTimeFormat.dateTimeParser().parseDateTime(date).toDate();
+        return Date.from(ZonedDateTime.parse(date, ISO_PARSER_WITH_MILLIS).toInstant());
     }
 }
