@@ -18,8 +18,8 @@
  */
 package org.jasig.cas.client.session;
 
-import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.Charset;
+import java.util.Base64;
 import java.util.Date;
 import java.util.zip.Deflater;
 
@@ -50,6 +50,6 @@ public final class LogoutMessageGenerator {
         final int resultSize = deflater.deflate(buffer);
         final byte[] output = new byte[resultSize];
         System.arraycopy(buffer, 0, output, 0, resultSize);
-        return DatatypeConverter.printBase64Binary(output);
+        return Base64.getEncoder().encodeToString(output);
     }
 }
