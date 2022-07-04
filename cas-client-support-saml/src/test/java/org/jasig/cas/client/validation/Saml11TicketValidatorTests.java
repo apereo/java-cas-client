@@ -21,16 +21,14 @@ package org.jasig.cas.client.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import java.io.UnsupportedEncodingException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Date;
 import org.jasig.cas.client.PublicTestHttpServer;
 import org.jasig.cas.client.util.SamlUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  * @author Scott Battaglia
@@ -80,16 +78,17 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
 
     @Test
     public void testCompatibilityValidationSuccessWithNoAttributes() throws UnsupportedEncodingException {
-        final Interval range = currentTimeRangeInterval();
+        final ZonedDateTime startTime = currentTimeRangeStart();
+        final ZonedDateTime endTime = currentTimeRangeEnd();
         final Date now = new Date();
         final String RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><Response xmlns=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" IssueInstant=\""
                 + SamlUtils.formatForUtcTime(now)
                 + "\" MajorVersion=\"1\" MinorVersion=\"1\" Recipient=\"test\" ResponseID=\"_e1e2124c08ab456eab0bbab3e1c0c433\"><Status><StatusCode Value=\"samlp:Success\"></StatusCode></Status><Assertion xmlns=\"urn:oasis:names:tc:SAML:1.0:assertion\" AssertionID=\"_d2fd0d6e4da6a6d7d2ba5274ab570d5c\" IssueInstant=\""
                 + SamlUtils.formatForUtcTime(now)
                 + "\" Issuer=\"testIssuer\" MajorVersion=\"1\" MinorVersion=\"1\"><Conditions NotBefore=\""
-                + SamlUtils.formatForUtcTime(range.getStart().toDate())
+                + SamlUtils.formatForUtcTime(Date.from(startTime.toInstant()))
                 + "\" NotOnOrAfter=\""
-                + SamlUtils.formatForUtcTime(range.getEnd().toDate())
+                + SamlUtils.formatForUtcTime(Date.from(endTime.toInstant()))
                 + "\"><AudienceRestrictionCondition><Audience>test</Audience></AudienceRestrictionCondition></Conditions><AuthenticationStatement AuthenticationInstant=\"2008-06-19T14:34:44.426Z\" AuthenticationMethod=\"urn:ietf:rfc:2246\"><Subject><NameIdentifier>testPrincipal</NameIdentifier><SubjectConfirmation><ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</ConfirmationMethod></SubjectConfirmation></Subject></AuthenticationStatement></Assertion></Response></SOAP-ENV:Body></SOAP-ENV:Envelope>";
         server.content = RESPONSE.getBytes(server.encoding);
         try {
@@ -102,7 +101,8 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
 
     @Test
     public void openSaml2GeneratedResponse() throws UnsupportedEncodingException {
-        final Interval range = currentTimeRangeInterval();
+        final ZonedDateTime startTime = currentTimeRangeStart();
+        final ZonedDateTime endTime = currentTimeRangeEnd();
         final Date now = new Date();
 
         final String response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap11:Envelope xmlns:soap11=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap11:Body>"
@@ -114,9 +114,9 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
                 + SamlUtils.formatForUtcTime(now)
                 + "\" Issuer=\"localhost\" MajorVersion=\"1\" MinorVersion=\"1\">"
                 + "<saml1:Conditions NotBefore=\""
-                + SamlUtils.formatForUtcTime(range.getStart().toDate())
+                + SamlUtils.formatForUtcTime(Date.from(startTime.toInstant()))
                 + "\" NotOnOrAfter=\""
-                + SamlUtils.formatForUtcTime(range.getEnd().toDate())
+                + SamlUtils.formatForUtcTime(Date.from(endTime.toInstant()))
                 + "\">"
                 + "<saml1:AudienceRestrictionCondition><saml1:Audience>https://example.com/test-client/secure/</saml1:Audience>"
                 + "</saml1:AudienceRestrictionCondition></saml1:Conditions>"
@@ -151,7 +151,11 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
         }
     }
 
-    private Interval currentTimeRangeInterval() {
-        return new Interval(new DateTime(DateTimeZone.UTC).minus(5000), new DateTime(DateTimeZone.UTC).plus(200000000));
+    private ZonedDateTime currentTimeRangeStart() {
+        return ZonedDateTime.now(ZoneOffset.UTC).minus(5000, ChronoUnit.MILLIS);
+    }
+
+    private ZonedDateTime currentTimeRangeEnd() {
+        return ZonedDateTime.now(ZoneOffset.UTC).plus(200000000, ChronoUnit.MILLIS);
     }
 }

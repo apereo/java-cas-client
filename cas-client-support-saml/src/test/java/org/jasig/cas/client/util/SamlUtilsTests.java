@@ -18,10 +18,11 @@
  */
 package org.jasig.cas.client.util;
 
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Test cases for {@link SamlUtils}.
@@ -37,5 +38,17 @@ public class SamlUtilsTests {
         Assert.assertEquals(expected, SamlUtils.parseUtcDate("2015-02-20T08:12:41.025-0500"));
         final Date expectedNoMillis = new Date(1424437961000L);
         Assert.assertEquals(expectedNoMillis, SamlUtils.parseUtcDate("2015-02-20T08:12:41-0500"));
+    }
+
+    @Test
+    public void testFormatUtcDate() {
+        final Calendar calendar = Calendar.getInstance();
+        final String expected = "2015-02-20T13:12:41Z";
+
+        calendar.setTimeInMillis(1424437961025L);
+        Assert.assertEquals(expected, SamlUtils.formatForUtcTime(calendar.getTime()));
+
+        calendar.setTimeInMillis(1424437961000L);
+        Assert.assertEquals(expected, SamlUtils.formatForUtcTime(calendar.getTime()));
     }
 }

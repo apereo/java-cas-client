@@ -35,11 +35,6 @@
             <artifactId>cas-client-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.10.14</version>
-        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
