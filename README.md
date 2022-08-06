@@ -115,13 +115,13 @@ The client can be configured in `web.xml` via a series of `context-param`s and f
 An example application that is protected by the client is [available here](https://github.com/UniconLabs/cas-sample-java-webapp).
 
 <a name="orgapereocasclientauthenticationauthenticationfilter"></a>
-#### authentication.org.apereo.cas.client.AuthenticationFilter
+#### org.apereo.cas.client.authentication.AuthenticationFilter
 The `AuthenticationFilter` is what detects whether a user needs to be authenticated or not. If a user needs to be authenticated, it will redirect the user to the CAS server.
 
 ```xml
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
-  <filter-class>authentication.org.apereo.cas.client.AuthenticationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.authentication.AuthenticationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://battags.ad.ess.rutgers.edu:8443/cas</param-value>
@@ -167,13 +167,13 @@ The following types are supported:
 
 
 <a name="orgapereocasclientauthenticationsaml11authenticationfilter"></a>
-#### authentication.org.apereo.cas.client.Saml11AuthenticationFilter
+#### org.apereo.cas.client.authentication.Saml11AuthenticationFilter
 The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be authenticated or not. If a user needs to be authenticated, it will redirect the user to the CAS server.
 
 ```xml
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
-  <filter-class>authentication.org.apereo.cas.client.Saml11AuthenticationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.authentication.Saml11AuthenticationFilter</filter-class>
   <init-param>
     <param-name>casServerLoginUrl</param-name>
     <param-value>https://somewhere.cas.edu:8443/cas/login</param-value>
@@ -203,13 +203,13 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 | `method` | The method used by the CAS server to send the user back to the application. Defaults to `null` | No
 
 <a name="rgapereocasclientvalidationcas10ticketvalidationfilter"></a>
-#### validation.org.apereo.cas.client.Cas10TicketValidationFilter
+#### org.apereo.cas.client.validation.Cas10TicketValidationFilter
 Validates tickets using the CAS 1.0 Protocol.
 
 ```xml
 <filter>
   <filter-name>CAS Validation Filter</filter-name>
-  <filter-class>validation.org.apereo.cas.client.Cas10TicketValidationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.validation.Cas10TicketValidationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://somewhere.cas.edu:8443/cas</param-value>
@@ -238,13 +238,13 @@ Validates tickets using the CAS 1.0 Protocol.
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
 <a name="orgapereocasclientvalidationsaml11ticketvalidationfilter"></a>
-#### validation.org.apereo.cas.client.Saml11TicketValidationFilter
+#### org.apereo.cas.client.validation.Saml11TicketValidationFilter
 Validates tickets using the SAML 1.1 protocol.
 
 ```xml
 <filter>
   <filter-name>CAS Validation Filter</filter-name>
-  <filter-class>validation.org.apereo.cas.client.Saml11TicketValidationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.validation.Saml11TicketValidationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://battags.ad.ess.rutgers.edu:8443/cas</param-value>
@@ -274,7 +274,7 @@ Validates tickets using the SAML 1.1 protocol.
 | `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
 
 <a name="orgapereocasclientvalidationcas20proxyreceivingticketvalidationfilter"></a>
-#### validation.org.apereo.cas.client.Cas20ProxyReceivingTicketValidationFilter
+#### org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 2.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, a `Cas20ProxyTicketValidator` will be constructed. Otherwise a general `Cas20ServiceTicketValidator` will be constructed that does not accept proxy tickets. 
 
 **Note**: If you are using proxy validation, you should place the `filter-mapping` of the validation filter before the authentication filter.
@@ -282,7 +282,7 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 ```xml
 <filter>
   <filter-name>CAS Validation Filter</filter-name>
-  <filter-class>validation.org.apereo.cas.client.Cas20ProxyReceivingTicketValidationFilter</filter-class>
+  <filter-class>org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
     <param-value>https://battags.ad.ess.rutgers.edu:8443/cas</param-value>
@@ -321,12 +321,12 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 | `privateKeyPath` | The path to a private key to decrypt PGTs directly sent encrypted as an attribute | No
 | `privateKeyAlgorithm` | The algorithm of the private key. Defaults to `RSA` | No
 
-#### validation.org.apereo.cas.client.Cas30ProxyReceivingTicketValidationFilter
+#### org.apereo.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, 
 a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not 
 accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
 
-#### json.validation.org.apereo.cas.client.Cas30JsonProxyReceivingTicketValidationFilter
+#### json.org.apereo.cas.client.validation.Cas30JsonProxyReceivingTicketValidationFilter
 Indentical to `Cas30ProxyReceivingTicketValidationFilter`, yet the filter is able to accept validation responses from CAS
 that are formatted as JSON per guidelines laid out by the CAS protocol. 
 See the [protocol documentation](https://apereo.github.io/cas/5.1.x/protocol/CAS-Protocol-Specification.html)
@@ -491,7 +491,7 @@ As the `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have n
     class="org.apereo.cas.client.validation.Cas10TicketValidationFilter"
     p:service="https://my.local.service.com/cas-client">
     <property name="ticketValidator">
-        <bean class="validation.org.apereo.cas.client.Cas10TicketValidator">
+        <bean class="org.apereo.cas.client.validation.Cas10TicketValidator">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
         </bean>
     </property>
@@ -505,7 +505,7 @@ As the `HttpServletRequestWrapperFilter` and `AssertionThreadLocalFilter` have n
     class="org.apereo.cas.client.validation.Saml11TicketValidationFilter"
     p:service="https://my.local.service.com/cas-client">
     <property name="ticketValidator">
-        <bean class="validation.org.apereo.cas.client.Saml11TicketValidator">
+        <bean class="org.apereo.cas.client.validation.Saml11TicketValidator">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
         </bean>
     </property>
@@ -520,7 +520,7 @@ Configuration to validate tickets:
     class="org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
     p:service="https://my.local.service.com/cas-client">
     <property name="ticketValidator">
-        <bean class="validation.org.apereo.cas.client.Cas20ServiceTicketValidator">
+        <bean class="org.apereo.cas.client.validation.Cas20ServiceTicketValidator">
             <constructor-arg index="0" value="https://localhost:8443/cas" />
         </bean>
     </property>
