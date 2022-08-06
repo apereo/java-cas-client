@@ -27,7 +27,7 @@ env:
   SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
   GH_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  JDK_CURRENT: 8
+  JDK_CURRENT: 17
 
 ##########################################################################
 

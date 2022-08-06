@@ -40,19 +40,19 @@ This project includes:
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
   Jakarta Annotations API under EPL 2.0 or GPL2 w/ CPE
-  Jasig CAS Client for Java - Common Tomcat Integration Support under Apache License Version 2.0
-  Jasig CAS Client for Java - Core under Apache License Version 2.0
-  Jasig CAS Client for Java - Distributed Proxy Storage Support: EhCache under Apache License Version 2.0
-  Jasig CAS Client for Java - Distributed Proxy Storage Support: Memcached under Apache License Version 2.0
-  Jasig CAS Client for Java - JBoss Integration under Apache License Version 2.0
-  Jasig CAS Client for Java - Jetty Container Integration under Apache License Version 2.0
-  Jasig CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
-  Jasig CAS Client for Java - Spring Boot Support under Apache License Version 2.0
-  Jasig CAS Client for Java - Tomcat 6.x Integration under Apache License Version 2.0
-  Jasig CAS Client for Java - Tomcat 7.x Integration under Apache License Version 2.0
-  Jasig CAS Client for Java - Tomcat 8.5.x Integration under Apache License Version 2.0
-  Jasig CAS Client for Java - Tomcat 8.x Integration under Apache License Version 2.0
-  Jasig CAS Client for Java - Tomcat 9.0.x Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - Common Tomcat Integration Support under Apache License Version 2.0
+  Apereo CAS Client for Java - Core under Apache License Version 2.0
+  Apereo CAS Client for Java - Distributed Proxy Storage Support: EhCache under Apache License Version 2.0
+  Apereo CAS Client for Java - Distributed Proxy Storage Support: Memcached under Apache License Version 2.0
+  Apereo CAS Client for Java - JBoss Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - Jetty Container Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - SAML Protocol Support under Apache License Version 2.0
+  Apereo CAS Client for Java - Spring Boot Support under Apache License Version 2.0
+  Apereo CAS Client for Java - Tomcat 6.x Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - Tomcat 7.x Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - Tomcat 8.5.x Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - Tomcat 8.x Integration under Apache License Version 2.0
+  Apereo CAS Client for Java - Tomcat 9.0.x Integration under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
   JavaBeans Activation Framework API jar under CDDL/GPLv2+CE
   javax.annotation API under CDDL + GPLv2 with classpath exception

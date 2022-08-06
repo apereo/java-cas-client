@@ -26,8 +26,8 @@ This project includes:
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
-  Jasig CAS Client for Java - Core under Apache License Version 2.0
-  Jasig CAS Client for Java - Distributed Proxy Storage Support: EhCache under Apache License Version 2.0
+  Apereo CAS Client for Java - Core under Apache License Version 2.0
+  Apereo CAS Client for Java - Distributed Proxy Storage Support: EhCache under Apache License Version 2.0
   Java Servlet API under CDDL + GPLv2 with classpath exception
   JavaBeans Activation Framework API jar under CDDL/GPLv2+CE
   JAXB Core under CDDL+GPL License
