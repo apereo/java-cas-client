@@ -326,7 +326,7 @@ Validates the tickets using the CAS 3.0 protocol. If you provide either the `acc
 a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30ServiceTicketValidator` will be constructed that does not 
 accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
 
-#### json.org.apereo.cas.client.validation.Cas30JsonProxyReceivingTicketValidationFilter
+#### org.apereo.cas.client.validation.Cas30JsonProxyReceivingTicketValidationFilter
 Indentical to `Cas30ProxyReceivingTicketValidationFilter`, yet the filter is able to accept validation responses from CAS
 that are formatted as JSON per guidelines laid out by the CAS protocol. 
 See the [protocol documentation](https://apereo.github.io/cas/5.1.x/protocol/CAS-Protocol-Specification.html)
@@ -342,7 +342,7 @@ Configure the client:
 ```xml
 <init-param>
   <param-name>proxyGrantingTicketStorageClass</param-name>
-  <param-value>proxy.org.apereo.cas.client.EhcacheBackedProxyGrantingTicketStorageImpl</param-value>
+  <param-value>org.apereo.cas.client.EhcacheBackedProxyGrantingTicketStorageImpl</param-value>
 </init-param>
 ```
 The setting provides an implementation for proxy storage using EhCache to take advantage of its replication features so that the PGT is successfully replicated and shared among nodes, regardless which node is selected as the result of the load balancer rerouting. 
@@ -359,7 +359,7 @@ When loading from the `web.xml`, the Apereo CAS Client relies on a series of def
 <cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"/>
  
 <cache
-   name="proxy.org.apereo.cas.client.EhcacheBackedProxyGrantingTicketStorageImpl.cache"
+   name="org.apereo.cas.client.EhcacheBackedProxyGrantingTicketStorageImpl.cache"
    maxElementsInMemory="100"
    eternal="false"
    timeToIdleSeconds="100"
@@ -370,6 +370,7 @@ When loading from the `web.xml`, the Apereo CAS Client relies on a series of def
 ```
 
 ###### Memcached
+
 A similar implementation based on Memcached is also available.
 
 Configure the client:
@@ -377,20 +378,21 @@ Configure the client:
 ```xml
 <init-param>
   <param-name>proxyGrantingTicketStorageClass</param-name>
-  <param-value>org.apereocas.client.proxy. MemcachedBackedProxyGrantingTicketStorageImpl</param-value>
+  <param-value>org.apereo.cas.client.proxy.MemcachedBackedProxyGrantingTicketStorageImpl</param-value>
 </init-param>
 ```
 
 When loading from the `web.xml`, the Client relies on a series of default values, one of which being that the list of memcached servers must be defined in `/cas/casclient_memcached_hosts.txt` on the classpath). The file is a simple list of `<hostname>:<ports>` on separate lines. **BE SURE NOT TO HAVE EXTRA LINE BREAKS**.
 
 <a name="orgapereocasclientutilhttpservletrequestwrapperfilter"></a>
-#### util.org.apereo.cas.client.HttpServletRequestWrapperFilter
+#### org.apereo.cas.client.HttpServletRequestWrapperFilter
+
 Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` return the CAS related entries.
 
 ```xml
 <filter>
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-  <filter-class>util.org.apereo.cas.client.HttpServletRequestWrapperFilter</filter-class>
+  <filter-class>org.apereo.cas.client.HttpServletRequestWrapperFilter</filter-class>
 </filter>
 <filter-mapping>
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
@@ -404,13 +406,14 @@ Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` ret
 | `ignoreCase` | Whether role checking should ignore case. Defaults to `false` | No
 
 <a name="orgapereocasclientutilassertionthreadlocalfilter"></a>
-#### util.org.apereo.cas.client.AssertionThreadLocalFilter
+
+#### org.apereo.cas.client.AssertionThreadLocalFilter
 Places the `Assertion` in a `ThreadLocal` for portions of the application that need access to it. This is useful when the Web application that this filter "fronts" needs to get the Principal name, but it has no access to the `HttpServletRequest`, hence making `getRemoteUser()` call impossible.
 
 ```xml
 <filter>
   <filter-name>CAS Assertion Thread Local Filter</filter-name>
-  <filter-class>util.org.apereo.cas.client.AssertionThreadLocalFilter</filter-class>
+  <filter-class>org.apereo.cas.client.AssertionThreadLocalFilter</filter-class>
 </filter>
 <filter-mapping>
   <filter-name>CAS Assertion Thread Local Filter</filter-name>
@@ -419,7 +422,8 @@ Places the `Assertion` in a `ThreadLocal` for portions of the application that n
 ```
 
 <a name="orgapereocasclientutilerrorredirectfilter"></a>
-#### util.org.apereo.cas.client.ErrorRedirectFilter
+
+#### org.apereo.cas.client.ErrorRedirectFilter
 Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via init filter name/param values.
 
 | Property | Description | Required
@@ -449,6 +453,7 @@ Filters that redirects to the supplied url based on an exception.  Exceptions an
 
 
 <a name="client-configuration-using-spring"></a>
+
 ### Client Configuration Using Spring
 
 Configuration via Spring IoC will depend heavily on `DelegatingFilterProxy` class. For each filter that will be configured for CAS via Spring, a corresponding `DelegatingFilterProxy` is needed in the web.xml.
