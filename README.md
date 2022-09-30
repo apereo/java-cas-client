@@ -23,7 +23,7 @@ mvn clean package
 
 ```xml
 <dependency>
-    <groupId>org.apereo.cas.client</groupId>
+    <groupId>org.jasig.cas.client</groupId>
     <artifactId>cas-client-core</artifactId>
     <version>${java.cas.client.version}</version>
 </dependency>
@@ -33,7 +33,7 @@ mvn clean package
 
 ```xml
 <dependency>
-   <groupId>org.apereo.cas.client</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-saml</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -43,7 +43,7 @@ mvn clean package
 
 ```xml
 <dependency>
-   <groupId>org.apereo.cas.client</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-distributed-ehcache</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -53,7 +53,7 @@ mvn clean package
 
 ```xml
 <dependency>
-   <groupId>org.apereo.cas.client</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-distributed-memcached</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
@@ -63,7 +63,7 @@ mvn clean package
 
 ```xml
 <dependency>
-   <groupId>org.apereo.cas.client</groupId>
+   <groupId>org.jasig.cas.client</groupId>
    <artifactId>cas-client-support-springboot</artifactId>
    <version>${java.cas.client.version}</version>
 </dependency>
