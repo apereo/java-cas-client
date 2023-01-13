@@ -23,7 +23,7 @@
     <parent>
         <artifactId>cas-client</artifactId>
         <groupId>org.apereo.cas.client</groupId>
-        <version>4.0.1-SNAPSHOT</version>
+        <version>4.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Apereo CAS Client for Java - Distributed Proxy Storage Support: EhCache
