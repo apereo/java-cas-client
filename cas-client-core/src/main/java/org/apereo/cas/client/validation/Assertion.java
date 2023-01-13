@@ -63,6 +63,13 @@ public interface Assertion extends Serializable {
     Map<String, Object> getAttributes();
 
     /**
+     * Metadata associated with this assertion, not strictly classified
+     * as an authentication or principal attribute.
+     * @return map
+     */
+    Map<String, Serializable> getContext();
+
+    /**
      * The principal for which this assertion is valid.
      *
      * @return the principal.
@@ -76,4 +83,6 @@ public interface Assertion extends Serializable {
      * @since 3.3.0 (though in 3.3.0, no one actually calls this)
      */
     boolean isValid();
+
+    
 }

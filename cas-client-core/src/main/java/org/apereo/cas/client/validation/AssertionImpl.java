@@ -22,8 +22,10 @@ import org.apereo.cas.client.authentication.AttributePrincipal;
 import org.apereo.cas.client.authentication.AttributePrincipalImpl;
 import org.apereo.cas.client.util.CommonUtils;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,6 +51,8 @@ public final class AssertionImpl implements Assertion {
 
     /** Map of key/value pairs associated with this assertion. I.e. authentication type. */
     private final Map<String, Object> attributes;
+
+    private final Map<String, ? extends Serializable> context;
 
     /** The principal for which this assertion is valid for. */
     private final AttributePrincipal principal;
@@ -78,9 +82,19 @@ public final class AssertionImpl implements Assertion {
      * @param attributes the key/value pairs for this attribute.
      */
     public AssertionImpl(final AttributePrincipal principal, final Map<String, Object> attributes) {
-        this(principal, new Date(), null, new Date(), attributes);
+        this(principal, attributes, new HashMap<>());
     }
 
+    public AssertionImpl(final AttributePrincipal principal, final Map<String, Object> attributes,
+                         final Map<String, ? extends Serializable> context) {
+        this(principal, new Date(), null, new Date(), attributes, context);
+    }
+
+    public AssertionImpl(final AttributePrincipal principal, final Date validFromDate, final Date validUntilDate,
+                         final Date authenticationDate, final Map<String, Object> attributes) {
+        this(principal, validFromDate, validUntilDate, authenticationDate, attributes, new HashMap<>());
+    }
+    
     /**
      * Creates a new Assertion with the supplied principal, Assertion attributes, and start and valid until dates.
      *
@@ -90,12 +104,14 @@ public final class AssertionImpl implements Assertion {
      * @param attributes the key/value pairs for this attribute.
      */
     public AssertionImpl(final AttributePrincipal principal, final Date validFromDate, final Date validUntilDate,
-                         final Date authenticationDate, final Map<String, Object> attributes) {
+                         final Date authenticationDate, final Map<String, Object> attributes,
+                         final Map<String, ? extends Serializable> context) {
         this.principal = principal;
         this.validFromDate = validFromDate;
         this.validUntilDate = validUntilDate;
         this.attributes = attributes;
         this.authenticationDate = authenticationDate;
+        this.context = context;
 
         CommonUtils.assertNotNull(this.principal, "principal cannot be null.");
         CommonUtils.assertNotNull(this.validFromDate, "validFromDate cannot be null.");
@@ -125,6 +141,11 @@ public final class AssertionImpl implements Assertion {
     @Override
     public AttributePrincipal getPrincipal() {
         return this.principal;
+    }
+
+    @Override
+    public Map<String, Serializable> getContext() {
+        return Map.copyOf(this.context);
     }
 
     @Override
