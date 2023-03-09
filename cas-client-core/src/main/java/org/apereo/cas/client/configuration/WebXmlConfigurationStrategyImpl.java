@@ -44,7 +44,6 @@ public final class WebXmlConfigurationStrategyImpl extends BaseConfigurationStra
         final String value = this.filterConfig.getInitParameter(configurationKey.getName());
 
         if (CommonUtils.isNotBlank(value)) {
-            CommonUtils.assertFalse(ConfigurationKeys.RENEW.equals(configurationKey), "Renew MUST be specified via context parameter or JNDI environment to avoid misconfiguration.");
             logger.info("Property [{}] loaded from FilterConfig.getInitParameter with value [{}]", configurationKey, value);
             return value;
         }
