@@ -96,7 +96,7 @@ public final class DelegatingFilter implements Filter {
 
         if (CommonUtils.isNotEmpty(parameter)) {
             for (final String key : this.delegators.keySet()) {
-                if ((parameter.equals(key) && this.exactMatch) || (parameter.matches(key) && !this.exactMatch)) {
+                if (validateKey(parameter, key)) {
                     final Filter filter = this.delegators.get(key);
                     logger.debug("Match found for parameter [{}] with value [{}]. Delegating to filter [{}]",
                         this.requestParameterName, parameter, filter.getClass().getName());
@@ -113,6 +113,10 @@ public final class DelegatingFilter implements Filter {
         } else {
             filterChain.doFilter(request, response);
         }
+    }
+
+    private boolean validateKey(String parameter, String key) {
+        return (parameter.equals(key) && this.exactMatch) || (parameter.matches(key) && !this.exactMatch);
     }
 
     @Override

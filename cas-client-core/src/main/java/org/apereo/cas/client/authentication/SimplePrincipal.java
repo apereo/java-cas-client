@@ -37,20 +37,20 @@ public class SimplePrincipal implements Principal, Serializable {
     private static final long serialVersionUID = -5645357206342793145L;
 
     /** The unique identifier for this principal. */
-    private final String name;
+    private final String principalName;
 
     /**
      * Creates a new principal with the given name.
-     * @param name Principal name.
+     * @param principalName Principal name.
      */
-    public SimplePrincipal(final String name) {
-        this.name = name;
-        CommonUtils.assertNotNull(this.name, "name cannot be null.");
+    public SimplePrincipal(final String principalName) {
+        this.principalName = principalName;
+        CommonUtils.assertNotNull(this.principalName, "name cannot be null.");
     }
 
     @Override
     public final String getName() {
-        return this.name;
+        return this.principalName;
     }
 
     public int hashCode() {
