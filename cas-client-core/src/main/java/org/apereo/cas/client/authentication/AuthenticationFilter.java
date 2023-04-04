@@ -18,6 +18,10 @@
  */
 package org.apereo.cas.client.authentication;
 
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.apereo.cas.client.Protocol;
 import org.apereo.cas.client.configuration.ConfigurationKeys;
 import org.apereo.cas.client.util.AbstractCasFilter;
@@ -25,18 +29,7 @@ import org.apereo.cas.client.util.CommonUtils;
 import org.apereo.cas.client.util.ReflectUtils;
 import org.apereo.cas.client.validation.Assertion;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -57,16 +50,6 @@ import java.util.Map;
  * @since 3.0
  */
 public class AuthenticationFilter extends AbstractCasFilter {
-    private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
-        new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
-
-    static {
-        PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);
-        PATTERN_MATCHER_TYPES.put("REGEX", RegexUrlPatternMatcherStrategy.class);
-        PATTERN_MATCHER_TYPES.put("FULL_REGEX", EntireRegionRegexUrlPatternMatcherStrategy.class);
-        PATTERN_MATCHER_TYPES.put("EXACT", ExactUrlPatternMatcherStrategy.class);
-    }
-
     /**
      * The URL to the CAS Server login.
      */
@@ -106,9 +89,9 @@ public class AuthenticationFilter extends AbstractCasFilter {
         super.init();
 
         final String message = String.format(
-            "one of %s and %s must not be null.",
-            ConfigurationKeys.CAS_SERVER_LOGIN_URL.getName(),
-            ConfigurationKeys.CAS_SERVER_URL_PREFIX.getName());
+                "one of %s and %s must not be null.",
+                ConfigurationKeys.CAS_SERVER_LOGIN_URL.getName(),
+                ConfigurationKeys.CAS_SERVER_URL_PREFIX.getName());
 
         CommonUtils.assertNotNull(this.casServerLoginUrl, message);
     }
@@ -133,21 +116,12 @@ public class AuthenticationFilter extends AbstractCasFilter {
             final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
 
             if (ignorePattern != null) {
-                final Class<? extends UrlPatternMatcherStrategy> ignoreUrlMatcherClass = PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
-                if (ignoreUrlMatcherClass != null) {
-                    this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlMatcherClass.getName());
-                } else {
-                    try {
-                        logger.trace("Assuming {} is a qualified class name...", ignoreUrlPatternType);
-                        this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlPatternType);
-                    } catch (final IllegalArgumentException e) {
-                        logger.error("Could not instantiate class [{}]", ignoreUrlPatternType, e);
-                    }
-                }
+                this.ignoreUrlPatternMatcherStrategyClass = createUrlPatternMatcherStrategy(ignoreUrlPatternType);
                 if (this.ignoreUrlPatternMatcherStrategyClass != null) {
                     this.ignoreUrlPatternMatcherStrategyClass.setPattern(ignorePattern);
                 }
             }
+
 
             final Class<? extends GatewayResolver> gatewayStorageClass = getClass(ConfigurationKeys.GATEWAY_STORAGE_CLASS);
 
@@ -206,7 +180,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         logger.debug("Constructed service url: {}", modifiedServiceUrl);
 
         final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
-            getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway, this.method);
+                getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway, this.method);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
         this.authenticationRedirectStrategy.redirect(request, response, urlToRedirectTo);
@@ -237,7 +211,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     }
 
     public final void setIgnoreUrlPatternMatcherStrategyClass(
-        final UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass) {
+            final UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass) {
         this.ignoreUrlPatternMatcherStrategyClass = ignoreUrlPatternMatcherStrategyClass;
     }
 
@@ -252,6 +226,27 @@ public class AuthenticationFilter extends AbstractCasFilter {
         }
         final String requestUri = urlBuffer.toString();
         return this.ignoreUrlPatternMatcherStrategyClass.matches(requestUri);
+    }
+
+    private UrlPatternMatcherStrategy createUrlPatternMatcherStrategy(String type) {
+        switch (type) {
+            case "CONTAINS":
+                return new ContainsPatternUrlPatternMatcherStrategy();
+            case "REGEX":
+                return new RegexUrlPatternMatcherStrategy();
+            case "FULL_REGEX":
+                return new EntireRegionRegexUrlPatternMatcherStrategy();
+            case "EXACT":
+                return new ExactUrlPatternMatcherStrategy();
+            default:
+                try {
+                    logger.trace("Assuming {} is a qualified class name...", type);
+                    return ReflectUtils.newInstance(type);
+                } catch (final IllegalArgumentException e) {
+                    logger.error("Could not instantiate class [{}]", type, e);
+                    return null;
+                }
+        }
     }
 
 }

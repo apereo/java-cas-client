@@ -30,7 +30,7 @@ import java.io.Serializable;
  * @since 3.1.10
  *
  */
-public final class WhitelistHostnameVerifier implements HostnameVerifier, Serializable {
+public final class WhitelistHostnameVerifier extends AbstractHostnameVerifier implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
