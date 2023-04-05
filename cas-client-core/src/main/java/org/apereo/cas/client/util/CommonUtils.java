@@ -349,6 +349,15 @@ public final class CommonUtils {
         builder.setEncodedPath(builder.getEncodedPath() + request.getRequestURI());
 
         final List<String> serviceParameterNames = Arrays.asList(serviceParameterName.split(","));
+        validateServiceParameters(artifactParameterName, originalRequestUrl, builder, serviceParameterNames);
+
+        final String result = builder.toString();
+        final String returnValue = encode ? response.encodeURL(result) : result;
+        LOGGER.debug("serviceUrl generated: {}", returnValue);
+        return returnValue;
+    }
+
+    private static void validateServiceParameters(String artifactParameterName, URIBuilder originalRequestUrl, URIBuilder builder, List<String> serviceParameterNames) {
         if (!serviceParameterNames.isEmpty() && !originalRequestUrl.getQueryParams().isEmpty()) {
             for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
                 final String name = pair.getName();
@@ -368,11 +377,6 @@ public final class CommonUtils {
                 }
             }
         }
-
-        final String result = builder.toString();
-        final String returnValue = encode ? response.encodeURL(result) : result;
-        LOGGER.debug("serviceUrl generated: {}", returnValue);
-        return returnValue;
     }
 
     /**
