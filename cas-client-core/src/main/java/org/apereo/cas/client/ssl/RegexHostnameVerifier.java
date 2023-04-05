@@ -18,7 +18,6 @@
  */
 package org.apereo.cas.client.ssl;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 import java.io.Serializable;
 import java.util.regex.Pattern;
@@ -32,7 +31,7 @@ import java.util.regex.Pattern;
  * @since 3.1.10
  *
  */
-public final class RegexHostnameVerifier implements HostnameVerifier, Serializable {
+public final class RegexHostnameVerifier extends AbstractHostnameVerifier implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

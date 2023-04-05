@@ -29,7 +29,7 @@ import javax.net.ssl.SSLSession;
  * @version $Revision$ $Date$
  * @since 3.1.10
  */
-public final class AnyHostnameVerifier implements HostnameVerifier {
+public final class AnyHostnameVerifier extends AbstractHostnameVerifier {
 
     /** {@inheritDoc} */
     @Override
