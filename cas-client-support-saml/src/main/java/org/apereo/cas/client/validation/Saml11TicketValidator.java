@@ -178,8 +178,8 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
         }
 
         final ZonedDateTime currentTime = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime startTime = ZonedDateTime.ofInstant(notBefore.toInstant(), ZoneOffset.UTC);
-        final ZonedDateTime endTime = ZonedDateTime.ofInstant(notOnOrAfter.toInstant(), ZoneOffset.UTC);
+        final ZonedDateTime startTime = ZonedDateTime.ofInstant(notBefore.toInstant().minusMillis(tolerance), ZoneOffset.UTC);
+        final ZonedDateTime endTime = ZonedDateTime.ofInstant(notOnOrAfter.toInstant().plusMillis(tolerance), ZoneOffset.UTC);
 
         // This is awkward, because we want to INCLUDE startTime and EXCLUDE endTime
         if (!currentTime.isBefore(startTime) && endTime.isAfter(currentTime)) {

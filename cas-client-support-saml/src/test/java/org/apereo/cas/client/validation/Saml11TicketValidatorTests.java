@@ -42,10 +42,13 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
 
     private static final PublicTestHttpServer server = PublicTestHttpServer.instance(9051);
 
+    private static final long CLIENT_TOLERANCE = 5000L;
+    private static final long SERVER_TOLERANCE = 1000L;
+
     @Before
     public void setUp() throws Exception {
         this.validator = new Saml11TicketValidator(CONST_CAS_SERVER_URL_PREFIX + "9051");
-        this.validator.setTolerance(1000L);
+        this.validator.setTolerance(CLIENT_TOLERANCE);
     }
 
     /*@AfterClass
@@ -96,6 +99,54 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
             assertEquals("testPrincipal", a.getPrincipal().getName());
         } catch (final TicketValidationException e) {
             fail(e.toString());
+        }
+    }
+
+    @Test
+    public void testCompatibilityValidationSuccessInsideTolerance() throws UnsupportedEncodingException {
+        final long addedTime = CLIENT_TOLERANCE;
+        final Date startTime = Date.from(currentTimeRangeStart().toInstant().plusMillis(addedTime));
+        final Date endTime = Date.from(currentTimeRangeEnd().toInstant().plusMillis(addedTime));
+        final Date now = Date.from(ZonedDateTime.now(ZoneOffset.UTC).toInstant().plusMillis(addedTime));
+        final String RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><Response xmlns=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" IssueInstant=\""
+                + SamlUtils.formatForUtcTime(now)
+                + "\" MajorVersion=\"1\" MinorVersion=\"1\" Recipient=\"test\" ResponseID=\"_e1e2124c08ab456eab0bbab3e1c0c433\"><Status><StatusCode Value=\"samlp:Success\"></StatusCode></Status><Assertion xmlns=\"urn:oasis:names:tc:SAML:1.0:assertion\" AssertionID=\"_d2fd0d6e4da6a6d7d2ba5274ab570d5c\" IssueInstant=\""
+                + SamlUtils.formatForUtcTime(now)
+                + "\" Issuer=\"testIssuer\" MajorVersion=\"1\" MinorVersion=\"1\"><Conditions NotBefore=\""
+                + SamlUtils.formatForUtcTime(startTime)
+                + "\" NotOnOrAfter=\""
+                + SamlUtils.formatForUtcTime(endTime)
+                + "\"><AudienceRestrictionCondition><Audience>test</Audience></AudienceRestrictionCondition></Conditions><AuthenticationStatement AuthenticationInstant=\"2008-06-19T14:34:44.426Z\" AuthenticationMethod=\"urn:ietf:rfc:2246\"><Subject><NameIdentifier>testPrincipal</NameIdentifier><SubjectConfirmation><ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</ConfirmationMethod></SubjectConfirmation></Subject></AuthenticationStatement></Assertion></Response></SOAP-ENV:Body></SOAP-ENV:Envelope>";
+        server.content = RESPONSE.getBytes(server.encoding);
+        try {
+            final Assertion a = this.validator.validate("test", "test");
+            assertEquals("testPrincipal", a.getPrincipal().getName());
+        } catch (final TicketValidationException e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test
+    public void testCompatibilityValidationFailedOutsideTolerance() throws UnsupportedEncodingException {
+        final long addedTime = 2 * CLIENT_TOLERANCE;
+        final Date startTime = Date.from(currentTimeRangeStart().toInstant().plusMillis(addedTime));
+        final Date endTime = Date.from(currentTimeRangeEnd().toInstant().plusMillis(addedTime));
+        final Date now = Date.from(ZonedDateTime.now(ZoneOffset.UTC).toInstant().plusMillis(addedTime));
+        final String RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header/><SOAP-ENV:Body><Response xmlns=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" IssueInstant=\""
+                + SamlUtils.formatForUtcTime(now)
+                + "\" MajorVersion=\"1\" MinorVersion=\"1\" Recipient=\"test\" ResponseID=\"_e1e2124c08ab456eab0bbab3e1c0c433\"><Status><StatusCode Value=\"samlp:Success\"></StatusCode></Status><Assertion xmlns=\"urn:oasis:names:tc:SAML:1.0:assertion\" AssertionID=\"_d2fd0d6e4da6a6d7d2ba5274ab570d5c\" IssueInstant=\""
+                + SamlUtils.formatForUtcTime(now)
+                + "\" Issuer=\"testIssuer\" MajorVersion=\"1\" MinorVersion=\"1\"><Conditions NotBefore=\""
+                + SamlUtils.formatForUtcTime(startTime)
+                + "\" NotOnOrAfter=\""
+                + SamlUtils.formatForUtcTime(endTime)
+                + "\"><AudienceRestrictionCondition><Audience>test</Audience></AudienceRestrictionCondition></Conditions><AuthenticationStatement AuthenticationInstant=\"2008-06-19T14:34:44.426Z\" AuthenticationMethod=\"urn:ietf:rfc:2246\"><Subject><NameIdentifier>testPrincipal</NameIdentifier><SubjectConfirmation><ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</ConfirmationMethod></SubjectConfirmation></Subject></AuthenticationStatement></Assertion></Response></SOAP-ENV:Body></SOAP-ENV:Envelope>";
+        server.content = RESPONSE.getBytes(server.encoding);
+        try {
+            this.validator.validate("test", "test");
+            fail("ValidationException expected due to out of tolerance");
+        } catch (final TicketValidationException e) {
+            // expected
         }
     }
 
@@ -152,10 +203,10 @@ public final class Saml11TicketValidatorTests extends AbstractTicketValidatorTes
     }
 
     private ZonedDateTime currentTimeRangeStart() {
-        return ZonedDateTime.now(ZoneOffset.UTC).minus(5000, ChronoUnit.MILLIS);
+        return ZonedDateTime.now(ZoneOffset.UTC).minus(SERVER_TOLERANCE, ChronoUnit.MILLIS);
     }
 
     private ZonedDateTime currentTimeRangeEnd() {
-        return ZonedDateTime.now(ZoneOffset.UTC).plus(200000000, ChronoUnit.MILLIS);
+        return ZonedDateTime.now(ZoneOffset.UTC).plus(SERVER_TOLERANCE, ChronoUnit.MILLIS);
     }
 }
