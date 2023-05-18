@@ -137,34 +137,33 @@ The `AuthenticationFilter` is what detects whether a user needs to be authentica
 </filter-mapping>
 ```
 
-| Property | Description | Required
-|----------|-------|-----------
-| `casServerUrlPrefix` | The start of the CAS server URL, i.e. `https://localhost:8443/cas` | Yes (unless `casServerLoginUrl` is set)
-| `casServerLoginUrl` | Defines the location of the CAS server login URL, i.e. `https://localhost:8443/cas/login`. This overrides `casServerUrlPrefix`, if set. | Yes (unless `casServerUrlPrefix` is set)
-| `serverName` | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. https://localhost:8443 (you must include the protocol, but port is optional if it's a standard port). | Yes
-| `service` | The service URL to send to the CAS server, i.e. `https://localhost:8443/yourwebapp/index.html` | No
-| `renew` | specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting. | No
-| `gateway ` | specifies whether `gateway=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all) | No
-| `artifactParameterName ` | specifies the name of the request parameter on where to find the artifact (i.e. `ticket`). | No
-| `serviceParameterName ` | specifies the name of the request parameter on where to find the service (i.e. `service`) | No
-| `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
-| `ignorePattern` | Defines the url pattern to ignore, when intercepting authentication requests. | No
-| `ignoreUrlPatternType` | Defines the type of the pattern specified. Defaults to `REGEX`. Other types are `CONTAINS`, `EXACT`, `FULL_REGEX`. Can also accept a fully-qualified class name that implements `UrlPatternMatcherStrategy`. | No
-| `gatewayStorageClass` | The storage class used to record gateway requests | No
-| `authenticationRedirectStrategyClass` | The class name of the component to decide how to handle authn redirects to CAS | No
-| `method` | The method used by the CAS server to send the user back to the application. Defaults to `null` | No
+| Property                              | Description                                                                                                                                                                                                              | Required                                 |
+|---------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------|
+| `casServerUrlPrefix`                  | The start of the CAS server URL, i.e. `https://localhost:8443/cas`                                                                                                                                                       | Yes (unless `casServerLoginUrl` is set)  |
+| `casServerLoginUrl`                   | Defines the location of the CAS server login URL, i.e. `https://localhost:8443/cas/login`. This overrides `casServerUrlPrefix`, if set.                                                                                  | Yes (unless `casServerUrlPrefix` is set) |
+| `serverName`                          | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. https://localhost:8443 (you must include the protocol, but port is optional if it's a standard port). | Yes                                      |
+| `service`                             | The service URL to send to the CAS server, i.e. `https://localhost:8443/yourwebapp/index.html`                                                                                                                           | No                                       |
+| `renew`                               | specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting.                         | No                                       |
+| `gateway `                            | specifies whether `gateway=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all)                                                                                             | No                                       |
+| `artifactParameterName `              | specifies the name of the request parameter on where to find the artifact (i.e. `ticket`).                                                                                                                               | No                                       |
+| `serviceParameterName `               | specifies the name of the request parameter on where to find the service (i.e. `service`)                                                                                                                                | No                                       |
+| `encodeServiceUrl `                   | Whether the client should auto encode the service url. Defaults to `true`                                                                                                                                                | No                                       |
+| `ignorePattern`                       | Defines the url pattern to ignore, when intercepting authentication requests.                                                                                                                                            | No                                       |
+| `ignoreUrlPatternType`                | Defines the type of the pattern specified. Defaults to `REGEX`. Other types are `CONTAINS`, `EXACT`, `FULL_REGEX`. Can also accept a fully-qualified class name that implements `UrlPatternMatcherStrategy`.             | No                                       |
+| `gatewayStorageClass`                 | The storage class used to record gateway requests                                                                                                                                                                        | No                                       |
+| `authenticationRedirectStrategyClass` | The class name of the component to decide how to handle authn redirects to CAS                                                                                                                                           | No                                       |
+| `method`                              | The method used by the CAS server to send the user back to the application. Defaults to `null`                                                                                                                           | No                                       |
 
 ##### Ignore Patterns
 
 The following types are supported:
 
-| Type | Description 
-|----------|-------
-| `REGEX` | Matches the URL the `ignorePattern` using `Matcher#find()`. It matches the next occurrence within the substring that matches the regex.
-| `CONTAINS` | Uses the `String#contains()` operation to determine if the url contains the specified pattern. Behavior is case-sensitive.
-| `EXACT` | Uses the `String#equals()` operation to determine if the url exactly equals the specified pattern. Behavior is case-sensitive.
-| `FULL_REGEX` | Matches the URL the `ignorePattern` using `Matcher#matches()`. It matches the expression against the entire string as it implicitly add a `^` at the start and `$` at the end of the pattern, so it will not match substring or part of the string. `^` and `$` are meta characters that represents start of the string and end of the string respectively.
-
+| Type         | Description                                                                                                                                                                                                                                                                                                                                                 |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `REGEX`      | Matches the URL the `ignorePattern` using `Matcher#find()`. It matches the next occurrence within the substring that matches the regex.                                                                                                                                                                                                                     |
+| `CONTAINS`   | Uses the `String#contains()` operation to determine if the url contains the specified pattern. Behavior is case-sensitive.                                                                                                                                                                                                                                  |
+| `EXACT`      | Uses the `String#equals()` operation to determine if the url exactly equals the specified pattern. Behavior is case-sensitive.                                                                                                                                                                                                                              |
+| `FULL_REGEX` | Matches the URL the `ignorePattern` using `Matcher#matches()`. It matches the expression against the entire string as it implicitly add a `^` at the start and `$` at the end of the pattern, so it will not match substring or part of the string. `^` and `$` are meta characters that represents start of the string and end of the string respectively. |
 
 <a name="orgapereocasclientauthenticationsaml11authenticationfilter"></a>
 #### org.apereo.cas.client.authentication.Saml11AuthenticationFilter
@@ -189,18 +188,18 @@ The SAML 1.1 `AuthenticationFilter` is what detects whether a user needs to be a
 </filter-mapping>
 ```
 
-| Property | Description | Required
-|----------|-------|-----------
-| `casServerUrlPrefix` | The start of the CAS server URL, i.e. `https://localhost:8443/cas` | Yes (unless `casServerLoginUrl` is set)
-| `casServerLoginUrl` | Defines the location of the CAS server login URL, i.e. `https://localhost:8443/cas/login`. This overrides `casServerUrlPrefix`, if set. | Yes (unless `casServerUrlPrefix` is set)
-| `serverName` | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. https://localhost:8443 (you must include the protocol, but port is optional if it's a standard port). | Yes
-| `service` | The service URL to send to the CAS server, i.e. `https://localhost:8443/yourwebapp/index.html` | No
-| `renew` | specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting. | No
-| `gateway ` | specifies whether `gateway=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all) | No
-| `artifactParameterName ` | specifies the name of the request parameter on where to find the artifact (i.e. `SAMLart`). | No
-| `serviceParameterName ` | specifies the name of the request parameter on where to find the service (i.e. `TARGET`) | No
-| `encodeServiceUrl ` | Whether the client should auto encode the service url. Defaults to `true` | No
-| `method` | The method used by the CAS server to send the user back to the application. Defaults to `null` | No
+| Property                 | Description                                                                                                                                                                                                              | Required                                 |
+|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------|
+| `casServerUrlPrefix`     | The start of the CAS server URL, i.e. `https://localhost:8443/cas`                                                                                                                                                       | Yes (unless `casServerLoginUrl` is set)  |
+| `casServerLoginUrl`      | Defines the location of the CAS server login URL, i.e. `https://localhost:8443/cas/login`. This overrides `casServerUrlPrefix`, if set.                                                                                  | Yes (unless `casServerUrlPrefix` is set) |
+| `serverName`             | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. https://localhost:8443 (you must include the protocol, but port is optional if it's a standard port). | Yes                                      |
+| `service`                | The service URL to send to the CAS server, i.e. `https://localhost:8443/yourwebapp/index.html`                                                                                                                           | No                                       |
+| `renew`                  | specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting.                         | No                                       |
+| `gateway `               | specifies whether `gateway=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all)                                                                                             | No                                       |
+| `artifactParameterName ` | specifies the name of the request parameter on where to find the artifact (i.e. `SAMLart`).                                                                                                                              | No                                       |
+| `serviceParameterName `  | specifies the name of the request parameter on where to find the service (i.e. `TARGET`)                                                                                                                                 | No                                       |
+| `encodeServiceUrl `      | Whether the client should auto encode the service url. Defaults to `true`                                                                                                                                                | No                                       |
+| `method`                 | The method used by the CAS server to send the user back to the application. Defaults to `null`                                                                                                                           | No                                       |
 
 <a name="rgapereocasclientvalidationcas10ticketvalidationfilter"></a>
 #### org.apereo.cas.client.validation.Cas10TicketValidationFilter
@@ -225,17 +224,17 @@ Validates tickets using the CAS 1.0 Protocol.
 </filter-mapping>
 ```
 
-| Property | Description | Required
-|----------|-------|-----------
-| `casServerUrlPrefix ` | The start of the CAS server URL, i.e. `https://localhost:8443/cas` | Yes
-| `serverName` | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. `https://localhost:8443` (you must include the protocol, but port is optional if it's a standard port). | Yes
-| `renew` | Specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting. | No
-| `redirectAfterValidation ` | Whether to redirect to the same URL after ticket validation, but without the ticket in the parameter. Defaults to `true`. | No
-| `useSession ` | Whether to store the Assertion in session or not. If sessions are not used, tickets will be required for each request. Defaults to `true`. | No
-| `exceptionOnValidationFailure ` | Whether to throw an exception or not on ticket validation failure. Defaults to `true`. | No
-| `sslConfigFile` | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.
-| `encoding` | Specifies the encoding charset the client should use | No
-| `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
+| Property                        | Description                                                                                                                                                                                                                                                                                                             | Required |
+|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `casServerUrlPrefix `           | The start of the CAS server URL, i.e. `https://localhost:8443/cas`                                                                                                                                                                                                                                                      | Yes      |
+| `serverName`                    | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. `https://localhost:8443` (you must include the protocol, but port is optional if it's a standard port).                                                                                              | Yes      |
+| `renew`                         | Specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting.                                                                                                                        | No       |
+| `redirectAfterValidation `      | Whether to redirect to the same URL after ticket validation, but without the ticket in the parameter. Defaults to `true`.                                                                                                                                                                                               | No       |
+| `useSession `                   | Whether to store the Assertion in session or not. If sessions are not used, tickets will be required for each request. Defaults to `true`.                                                                                                                                                                              | No       |
+| `exceptionOnValidationFailure ` | Whether to throw an exception or not on ticket validation failure. Defaults to `true`.                                                                                                                                                                                                                                  | No       |
+| `sslConfigFile`                 | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.      |
+| `encoding`                      | Specifies the encoding charset the client should use                                                                                                                                                                                                                                                                    | No       |
+| `hostnameVerifier`              | Hostname verifier class name, used when making back-channel calls                                                                                                                                                                                                                                                       | No       |
 
 <a name="orgapereocasclientvalidationsaml11ticketvalidationfilter"></a>
 #### org.apereo.cas.client.validation.Saml11TicketValidationFilter
@@ -260,18 +259,18 @@ Validates tickets using the SAML 1.1 protocol.
 </filter-mapping>
 ```
 
-| Property | Description | Required
-|----------|-------|-----------
-| `casServerUrlPrefix ` | The start of the CAS server URL, i.e. `https://localhost:8443/cas` | Yes
-| `serverName` | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. `https://localhost:8443` (you must include the protocol, but port is optional if it's a standard port). | Yes
-| `renew` | Specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting. | No
-| `redirectAfterValidation ` | Whether to redirect to the same URL after ticket validation, but without the ticket in the parameter. Defaults to `true`. | No
-| `useSession ` | Whether to store the Assertion in session or not. If sessions are not used, tickets will be required for each request. Defaults to `true`. | No
-| `exceptionOnValidationFailure ` | whether to throw an exception or not on ticket validation failure. Defaults to `true` | No
-| `tolerance ` | The tolerance for drifting clocks when validating SAML tickets. Note that 10 seconds should be more than enough for most environments that have NTP time synchronization. Defaults to `1000 msec` | No
-| `sslConfigFile` | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.
-| `encoding` | Specifies the encoding charset the client should use | No
-| `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
+| Property                        | Description                                                                                                                                                                                                                                                                                                             | Required |
+|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `casServerUrlPrefix `           | The start of the CAS server URL, i.e. `https://localhost:8443/cas`                                                                                                                                                                                                                                                      | Yes      |
+| `serverName`                    | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. `https://localhost:8443` (you must include the protocol, but port is optional if it's a standard port).                                                                                              | Yes      |
+| `renew`                         | Specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting.                                                                                                                        | No       |
+| `redirectAfterValidation `      | Whether to redirect to the same URL after ticket validation, but without the ticket in the parameter. Defaults to `true`.                                                                                                                                                                                               | No       |
+| `useSession `                   | Whether to store the Assertion in session or not. If sessions are not used, tickets will be required for each request. Defaults to `true`.                                                                                                                                                                              | No       |
+| `exceptionOnValidationFailure ` | whether to throw an exception or not on ticket validation failure. Defaults to `true`                                                                                                                                                                                                                                   | No       |
+| `tolerance `                    | The tolerance for drifting clocks when validating SAML tickets. Note that 10 seconds should be more than enough for most environments that have NTP time synchronization. Defaults to `1000 msec`                                                                                                                       | No       |
+| `sslConfigFile`                 | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.      |
+| `encoding`                      | Specifies the encoding charset the client should use                                                                                                                                                                                                                                                                    | No       |
+| `hostnameVerifier`              | Hostname verifier class name, used when making back-channel calls                                                                                                                                                                                                                                                       | No       |
 
 <a name="orgapereocasclientvalidationcas20proxyreceivingticketvalidationfilter"></a>
 #### org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter
@@ -298,28 +297,28 @@ Validates the tickets using the CAS 2.0 protocol. If you provide either the `acc
 </filter-mapping>
 ```
 
-| Property | Description | Required
-|----------|-------|-----------
-| `casServerUrlPrefix ` | The start of the CAS server URL, i.e. `https://localhost:8443/cas` | Yes
-| `serverName` | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. `https://localhost:8443` (you must include the protocol, but port is optional if it's a standard port). | Yes
-| `renew` | Specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting. | No
-| `redirectAfterValidation ` | Whether to redirect to the same URL after ticket validation, but without the ticket in the parameter. Defaults to `true`. | No
-| `useSession ` | Whether to store the Assertion in session or not. If sessions are not used, tickets will be required for each request. Defaults to `true`. | No
-| `exceptionOnValidationFailure ` | whether to throw an exception or not on ticket validation failure. Defaults to `true` | No
-| `proxyReceptorUrl ` | The URL to watch for `PGTIOU/PGT` responses from the CAS server. Should be defined from the root of the context. For example, if your application is deployed in `/cas-client-app` and you want the proxy receptor URL to be `/cas-client-app/my/receptor` you need to configure proxyReceptorUrl to be `/my/receptor`. | No
-| `acceptAnyProxy ` | Specifies whether any proxy is OK. Defaults to `false`. | No
-| `allowedProxyChains ` | Specifies the proxy chain. Each acceptable proxy chain should include a space-separated list of URLs (for exact match) or regular expressions of URLs (starting by the `^` character). Each acceptable proxy chain should appear on its own line. | No
-| `proxyCallbackUrl` | The callback URL to provide the CAS server to accept Proxy Granting Tickets. | No
-| `proxyGrantingTicketStorageClass ` | Specify an implementation of the ProxyGrantingTicketStorage class that has a no-arg constructor. | No
-| `sslConfigFile` | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.
-| `encoding` | Specifies the encoding charset the client should use | No
-| `secretKey` | The secret key used by the `proxyGrantingTicketStorageClass` if it supports encryption. | No
-| `cipherAlgorithm` | The algorithm used by the `proxyGrantingTicketStorageClass` if it supports encryption. Defaults to `DESede` | No
-| `millisBetweenCleanUps` | Startup delay for the cleanup task to remove expired tickets from the storage. Defaults to `60000 msec` | No
-| `ticketValidatorClass` | Ticket validator class to use/create | No
-| `hostnameVerifier` | Hostname verifier class name, used when making back-channel calls | No
-| `privateKeyPath` | The path to a private key to decrypt PGTs directly sent encrypted as an attribute | No
-| `privateKeyAlgorithm` | The algorithm of the private key. Defaults to `RSA` | No
+| Property                           | Description                                                                                                                                                                                                                                                                                                             | Required |
+|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `casServerUrlPrefix `              | The start of the CAS server URL, i.e. `https://localhost:8443/cas`                                                                                                                                                                                                                                                      | Yes      |
+| `serverName`                       | The name of the server this application is hosted on. Service URL will be dynamically constructed using this, i.e. `https://localhost:8443` (you must include the protocol, but port is optional if it's a standard port).                                                                                              | Yes      |
+| `renew`                            | Specifies whether `renew=true` should be sent to the CAS server. Valid values are either `true/false` (or no value at all). Note that `renew` cannot be specified as local `init-param` setting.                                                                                                                        | No       |
+| `redirectAfterValidation `         | Whether to redirect to the same URL after ticket validation, but without the ticket in the parameter. Defaults to `true`.                                                                                                                                                                                               | No       |
+| `useSession `                      | Whether to store the Assertion in session or not. If sessions are not used, tickets will be required for each request. Defaults to `true`.                                                                                                                                                                              | No       |
+| `exceptionOnValidationFailure `    | whether to throw an exception or not on ticket validation failure. Defaults to `true`                                                                                                                                                                                                                                   | No       |
+| `proxyReceptorUrl `                | The URL to watch for `PGTIOU/PGT` responses from the CAS server. Should be defined from the root of the context. For example, if your application is deployed in `/cas-client-app` and you want the proxy receptor URL to be `/cas-client-app/my/receptor` you need to configure proxyReceptorUrl to be `/my/receptor`. | No       |
+| `acceptAnyProxy `                  | Specifies whether any proxy is OK. Defaults to `false`.                                                                                                                                                                                                                                                                 | No       |
+| `allowedProxyChains `              | Specifies the proxy chain. Each acceptable proxy chain should include a space-separated list of URLs (for exact match) or regular expressions of URLs (starting by the `^` character). Each acceptable proxy chain should appear on its own line.                                                                       | No       |
+| `proxyCallbackUrl`                 | The callback URL to provide the CAS server to accept Proxy Granting Tickets.                                                                                                                                                                                                                                            | No       |
+| `proxyGrantingTicketStorageClass ` | Specify an implementation of the ProxyGrantingTicketStorage class that has a no-arg constructor.                                                                                                                                                                                                                        | No       |
+| `sslConfigFile`                    | A reference to a properties file that includes SSL settings for client-side SSL config, used during back-channel calls. The configuration includes keys for `protocol` which defaults to `SSL`, `keyStoreType`, `keyStorePath`, `keyStorePass`, `keyManagerType` which defaults to `SunX509` and `certificatePassword`. | No.      |
+| `encoding`                         | Specifies the encoding charset the client should use                                                                                                                                                                                                                                                                    | No       |
+| `secretKey`                        | The secret key used by the `proxyGrantingTicketStorageClass` if it supports encryption.                                                                                                                                                                                                                                 | No       |
+| `cipherAlgorithm`                  | The algorithm used by the `proxyGrantingTicketStorageClass` if it supports encryption. Defaults to `DESede`                                                                                                                                                                                                             | No       |
+| `millisBetweenCleanUps`            | Startup delay for the cleanup task to remove expired tickets from the storage. Defaults to `60000 msec`                                                                                                                                                                                                                 | No       |
+| `ticketValidatorClass`             | Ticket validator class to use/create                                                                                                                                                                                                                                                                                    | No       |
+| `hostnameVerifier`                 | Hostname verifier class name, used when making back-channel calls                                                                                                                                                                                                                                                       | No       |
+| `privateKeyPath`                   | The path to a private key to decrypt PGTs directly sent encrypted as an attribute                                                                                                                                                                                                                                       | No       |
+| `privateKeyAlgorithm`              | The algorithm of the private key. Defaults to `RSA`                                                                                                                                                                                                                                                                     | No       |
 
 #### org.apereo.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
 Validates the tickets using the CAS 3.0 protocol. If you provide either the `acceptAnyProxy` or the `allowedProxyChains` parameters, 
@@ -327,13 +326,51 @@ a `Cas30ProxyTicketValidator` will be constructed. Otherwise a general `Cas30Ser
 accept proxy tickets. Supports all configurations that are available for `Cas20ProxyReceivingTicketValidationFilter`.
 
 #### org.apereo.cas.client.validation.Cas30JsonProxyReceivingTicketValidationFilter
-Indentical to `Cas30ProxyReceivingTicketValidationFilter`, yet the filter is able to accept validation responses from CAS
+Identical to `Cas30ProxyReceivingTicketValidationFilter`, yet the filter is able to accept validation responses from CAS
 that are formatted as JSON per guidelines laid out by the CAS protocol. 
 See the [protocol documentation](https://apereo.github.io/cas/5.1.x/protocol/CAS-Protocol-Specification.html)
 for more info.
 
+<a name="orgapereocasclientvalidationcasjwtticketvalidationfilter"></a>
+#### org.apereo.cas.client.validation.CasJWTTicketValidationFilter
+Validates service tickets that issued by the CAS server as JWTs.
+
+At the moment, only JWTs that are first signed and then encrypted (in that order) are supported by this filter.
+
+```xml
+<filter>
+  <filter-name>CAS Validation Filter</filter-name>
+  <filter-class>org.apereo.cas.client.validation.CasJWTTicketValidationFilter</filter-class>
+  <init-param>
+    <param-name>signingKey</param-name>
+    <param-value>...</param-value>
+  </init-param>
+  <init-param>
+    <param-name>encryptionKey</param-name>
+    <param-value>...</param-value>
+  </init-param>
+</filter>
+<filter-mapping>
+    <filter-name>CAS Validation Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+| Property                  | Description                                                           | Required |
+|---------------------------|-----------------------------------------------------------------------|----------|
+| `signingKey `             | The signing key. Only `AES` secret keys are supported.                | Yes      |
+| `encryptionKey `          | The encryption key. Only `AES` secret keys are supported.             | Yes      |
+| `expectedIssuer `         | `iss` claim value that is required to match what is in the JWT.       | Yes      |
+| `expectedAudience `       | `aud` claim value that is required to match what is in the JWT.       | Yes      |
+| `encryptionKeyAlgorithm ` | Default is `AES`.                                                     | No       |
+| `encryptionKeyAlgorithm ` | Default is `AES`.                                                     | No       |
+| `requiredClaims `         | Default is `sub,aud,iat,jti,exp,iss`.                                 | No       |
+| `base64EncryptionKey `    | If encryption key should be base64-decoded first. Default is `true`.  | No       |
+| `base64SigningKey `       | If encryption key should be base64-decoded first. Default is `false`. | No       |
+
 ##### Proxy Authentication vs. Distributed Caching
-The client has support for clustering and distributing the TGT state among application nodes that are behind a load balancer. In order to do so, the parameter needs to be defined as such for the filter.
+The client has support for clustering and distributing the TGT state among application nodes that are behind a load balancer. In order to do so, 
+the parameter needs to be defined as such for the filter.
 
 ###### Ehcache
 
@@ -400,10 +437,10 @@ Wraps an `HttpServletRequest` so that the `getRemoteUser` and `getPrincipal` ret
 </filter-mapping>
 ```
 
-| Property | Description | Required
-|----------|-------|-----------
-| `roleAttribute` | Used to determine the principal role. | No
-| `ignoreCase` | Whether role checking should ignore case. Defaults to `false` | No
+| Property        | Description                                                   | Required |
+|-----------------|---------------------------------------------------------------|----------|
+| `roleAttribute` | Used to determine the principal role.                         | No       |
+| `ignoreCase`    | Whether role checking should ignore case. Defaults to `false` | No       |
 
 <a name="orgapereocasclientutilassertionthreadlocalfilter"></a>
 
@@ -426,11 +463,10 @@ Places the `Assertion` in a `ThreadLocal` for portions of the application that n
 #### org.apereo.cas.client.ErrorRedirectFilter
 Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via init filter name/param values.
 
-| Property | Description | Required
-|----------|-------|-----------
-| `defaultErrorRedirectPage` | Default url to redirect to, in case no error matches are found. | Yes
-| `java.lang.Exception` | Fully qualified exception name. Its value must be redirection url | No
-
+| Property                   | Description                                                       | Required |
+|----------------------------|-------------------------------------------------------------------|----------|
+| `defaultErrorRedirectPage` | Default url to redirect to, in case no error matches are found.   | Yes      |
+| `java.lang.Exception`      | Fully qualified exception name. Its value must be redirection url | No       |
 
 ```xml
 <filter>
@@ -740,14 +776,14 @@ The `SingleSignOutFilter` can affect character encoding. This becomes most obvio
 
 #### Configuration
 
-| Property | Description | Required
-|----------|-------|-----------
-| `artifactParameterName` | The ticket artifact parameter name. Defaults to `ticket`| No
-| `logoutParameterName` | Defaults to `logoutRequest` | No
-| `relayStateParameterName` | Defaults to `RelayState` | No
-| `eagerlyCreateSessions` | Defaults to `true` | No
-| `artifactParameterOverPost` | Defaults to  `false` | No
-| `logoutCallbackPath` | The path which is expected to receive logout callback requests from the CAS server. This is necessary if your app needs access to the raw input stream when handling form posts. If not configured, the default behavior will check every form post for a logout parameter. | No
+| Property                    | Description                                                                                                                                                                                                                                                                 | Required |
+|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `artifactParameterName`     | The ticket artifact parameter name. Defaults to `ticket`                                                                                                                                                                                                                    | No       |
+| `logoutParameterName`       | Defaults to `logoutRequest`                                                                                                                                                                                                                                                 | No       |
+| `relayStateParameterName`   | Defaults to `RelayState`                                                                                                                                                                                                                                                    | No       |
+| `eagerlyCreateSessions`     | Defaults to `true`                                                                                                                                                                                                                                                          | No       |
+| `artifactParameterOverPost` | Defaults to  `false`                                                                                                                                                                                                                                                        | No       |
+| `logoutCallbackPath`        | The path which is expected to receive logout callback requests from the CAS server. This is necessary if your app needs access to the raw input stream when handling form posts. If not configured, the default behavior will check every form post for a logout parameter. | No       |
 
 <a name="cas-protocol"></a>
 #### CAS Protocol
@@ -829,18 +865,18 @@ cas {
 ```
 
 
-| Property | Description | Required
-|----------|-------|-----------|
-| `ticketValidatorClass ` | Fully-qualified class name of CAS ticket validator class. | Yes
-| `casServerUrlPrefix` | URL to root of CAS Web application context. | Yes
-| `service` | CAS service parameter that may be overridden by callback handler. **Note**: service must be specified by at least one component such that it is available at service ticket validation time. | No
-| `defaultRoles` | Comma-delimited list of static roles applied to all authenticated principals. | No
-| `roleAttributeNames` | Comma-delimited list of attribute names that describe role data delivered to CAS in the service-ticket validation response that should be applied to the current authenticated principal. | No
-| `principalGroupName` | The name of a group principal containing the primary principal name of the current JAAS subject. The default value is `CallerPrincipal`. | No
-| `roleGroupName` | The name of a group principal containing all role data. The default value is `Roles`. | No
-| `cacheAssertions` | Flag to enable assertion caching. This may be required for JAAS providers that attempt to periodically reauthenticate to renew principal. Since CAS tickets are one-time-use, a cached assertion must be provided on reauthentication. | No
-| `cacheTimeout` | Assertion cache timeout in minutes. | No
-| `tolerance` | The tolerance for drifting clocks when validating SAML tickets. | No
+| Property                | Description                                                                                                                                                                                                                            | Required |
+|-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `ticketValidatorClass ` | Fully-qualified class name of CAS ticket validator class.                                                                                                                                                                              | Yes      |
+| `casServerUrlPrefix`    | URL to root of CAS Web application context.                                                                                                                                                                                            | Yes      |
+| `service`               | CAS service parameter that may be overridden by callback handler. **Note**: service must be specified by at least one component such that it is available at service ticket validation time.                                           | No       |
+| `defaultRoles`          | Comma-delimited list of static roles applied to all authenticated principals.                                                                                                                                                          | No       |
+| `roleAttributeNames`    | Comma-delimited list of attribute names that describe role data delivered to CAS in the service-ticket validation response that should be applied to the current authenticated principal.                                              | No       |
+| `principalGroupName`    | The name of a group principal containing the primary principal name of the current JAAS subject. The default value is `CallerPrincipal`.                                                                                               | No       |
+| `roleGroupName`         | The name of a group principal containing all role data. The default value is `Roles`.                                                                                                                                                  | No       |
+| `cacheAssertions`       | Flag to enable assertion caching. This may be required for JAAS providers that attempt to periodically reauthenticate to renew principal. Since CAS tickets are one-time-use, a cached assertion must be provided on reauthentication. | No       |
+| `cacheTimeout`          | Assertion cache timeout in minutes.                                                                                                                                                                                                    | No       |
+| `tolerance`             | The tolerance for drifting clocks when validating SAML tickets.                                                                                                                                                                        | No       |
 
 ### Programmatic JAAS login using the Servlet 3
 A `jaas.org.apereo.cas.client.Servlet3AuthenticationFilter` servlet filter that performs a programmatic JAAS login using the Servlet 3.0 `HttpServletRequest#login()` facility. This component should be compatible with any servlet container that supports the Servlet 3.0/JEE6 specification.

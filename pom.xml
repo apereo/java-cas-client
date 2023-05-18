@@ -194,6 +194,12 @@
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus.jose.jwt.version}</version>
+                <optional>true</optional>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -264,7 +270,7 @@
         <bouncycastle.version>1.70</bouncycastle.version>
         <springboot.version>3.0.6</springboot.version>
         <spring.security.version>6.1.0</spring.security.version>
-
+        <nimbus.jose.jwt.version>9.31</nimbus.jose.jwt.version>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
         <maven.enforcer.plugin.version>3.3.0</maven.enforcer.plugin.version>
         <maven.surefire.plugin.version>3.1.0</maven.surefire.plugin.version>
