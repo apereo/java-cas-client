@@ -59,7 +59,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
     @Override
     protected void customParseResponse(final String response, final Assertion assertion)
         throws TicketValidationException {
-        final List<String> proxies = parseProxiesFromResponse(response);
+        final var proxies = parseProxiesFromResponse(response);
 
         if (proxies == null) {
             throw new InvalidProxyChainTicketValidationException(
@@ -80,7 +80,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
             return;
         }
 
-        final String[] proxiedList = proxies.toArray(new String[proxies.size()]);
+        final var proxiedList = proxies.toArray(new String[proxies.size()]);
         if (this.allowedProxyChains.contains(proxiedList)) {
             return;
         }

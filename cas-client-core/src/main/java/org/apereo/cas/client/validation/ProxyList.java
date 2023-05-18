@@ -42,15 +42,15 @@ public final class ProxyList {
 
     private final List<List<UrlPatternMatcherStrategy>> proxyChains;
 
-    public ProxyList(final List<String[]> proxyChains) {
+    public ProxyList(final Iterable<String[]> proxyChains) {
         CommonUtils.assertNotNull(proxyChains, "List of proxy chains cannot be null.");
 
-        this.proxyChains = new ArrayList<List<UrlPatternMatcherStrategy>>();
+        this.proxyChains = new ArrayList<>();
 
-        for (final String[] list : proxyChains) {
-            final List<UrlPatternMatcherStrategy> chain = new ArrayList<UrlPatternMatcherStrategy>();
+        for (final var list : proxyChains) {
+            final List<UrlPatternMatcherStrategy> chain = new ArrayList<>();
 
-            for (final String item : list) {
+            for (final var item : list) {
                 if (item.startsWith("^")) {
                     chain.add(new RegexUrlPatternMatcherStrategy(item));
                 } else {
@@ -63,18 +63,18 @@ public final class ProxyList {
     }
 
     public ProxyList() {
-        this(new ArrayList<String[]>());
+        this(new ArrayList<>());
     }
 
     public boolean contains(final String[] proxiedList) {
         StringBuilder loggingOutput;
 
-        for (final List<UrlPatternMatcherStrategy> proxyChain : this.proxyChains) {
+        for (final var proxyChain : this.proxyChains) {
             loggingOutput = new StringBuilder();
 
             if (proxyChain.size() == proxiedList.length) {
-                for (int linkIndex = 0; linkIndex < proxyChain.size(); linkIndex++) {
-                    final String linkToTest = proxiedList[linkIndex];
+                for (var linkIndex = 0; linkIndex < proxyChain.size(); linkIndex++) {
+                    final var linkToTest = proxiedList[linkIndex];
                     loggingOutput.append(linkToTest);
 
                     if (proxyChain.get(linkIndex).matches(linkToTest)) {

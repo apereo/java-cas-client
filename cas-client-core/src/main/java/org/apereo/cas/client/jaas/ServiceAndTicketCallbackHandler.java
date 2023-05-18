@@ -56,7 +56,7 @@ public class ServiceAndTicketCallbackHandler implements CallbackHandler {
 
     @Override
     public void handle(final Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-        for (final Callback callback : callbacks) {
+        for (final var callback : callbacks) {
             if (callback instanceof NameCallback) {
                 ((NameCallback) callback).setName(this.service);
             } else if (callback instanceof PasswordCallback) {

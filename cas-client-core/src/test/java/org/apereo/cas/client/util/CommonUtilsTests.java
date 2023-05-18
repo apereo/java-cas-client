@@ -26,6 +26,8 @@ import junit.framework.TestCase;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,16 +43,16 @@ public final class CommonUtilsTests extends TestCase {
     private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8092);
 
     public void testRedirectUrlWithParam() {
-        final String loginUrl = "http://localhost:8080/login?myName=foo";
-        final String fullyConstructedUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", false, false, null);
+        final var loginUrl = "http://localhost:8080/login?myName=foo";
+        final var fullyConstructedUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", false, false, null);
 
         assertEquals("http://localhost:8080/login?myName=foo&foo=foo", fullyConstructedUrl);
 
-        int count = 0;
-        final char[] chars = fullyConstructedUrl.toCharArray();
+        var count = 0;
+        final var chars = fullyConstructedUrl.toCharArray();
 
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == '?') {
+        for (final char aChar : chars) {
+            if (aChar == '?') {
                 count++;
             }
         }
@@ -59,14 +61,14 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testRedirectUrlWithMethod() {
-        final String loginUrl = "http://localhost:8080/login";
-        final String redirectUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", true, true, "post");
+        final var loginUrl = "http://localhost:8080/login";
+        final var redirectUrl = CommonUtils.constructRedirectUrl(loginUrl, "foo", "foo", true, true, "post");
 
         assertEquals("http://localhost:8080/login?foo=foo&renew=true&gateway=true&method=post", redirectUrl);
     }
 
     public void testAssertNotNull() {
-        final String CONST_MESSAGE = "test";
+        final var CONST_MESSAGE = "test";
         CommonUtils.assertNotNull(new Object(), CONST_MESSAGE);
         try {
             CommonUtils.assertNotNull(null, CONST_MESSAGE);
@@ -76,12 +78,12 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testAssertNotEmpty() {
-        final String CONST_MESSAGE = "test";
-        final Collection<Object> c = new ArrayList<Object>();
+        final var CONST_MESSAGE = "test";
+        final Collection<Object> c = new ArrayList<>();
         c.add(new Object());
         CommonUtils.assertNotEmpty(c, CONST_MESSAGE);
         try {
-            CommonUtils.assertNotEmpty(new ArrayList<Object>(), CONST_MESSAGE);
+            CommonUtils.assertNotEmpty(new ArrayList<>(), CONST_MESSAGE);
         } catch (final IllegalArgumentException e) {
             assertEquals(CONST_MESSAGE, e.getMessage());
         }
@@ -94,7 +96,7 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testAssertTrue() {
-        final String CONST_MESSAGE = "test";
+        final var CONST_MESSAGE = "test";
         CommonUtils.assertTrue(true, CONST_MESSAGE);
         try {
             CommonUtils.assertTrue(false, CONST_MESSAGE);
@@ -136,60 +138,60 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testConstructServiceUrlWithTrailingSlash() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
             "service", "ticket", false);
 
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
     public void testConstructServiceUrlWithServerNameContainingPath() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.my.server.com/app",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.my.server.com/app",
             Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName(), false);
 
         assertEquals("https://www.my.server.com/app/hello/hithere/", constructedUrl);
     }
 
     public void testConstructServiceUrlWithServerNameContainingPathAndSchema() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.my.server.com/app",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.my.server.com/app",
             Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName(), false);
 
         assertEquals("https://www.my.server.com/app/hello/hithere/", constructedUrl);
     }
 
     public void testConstructServiceUrlWithParamsCas() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
         request.setQueryString("service=this&ticket=that&custom=custom");
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
             Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
 
     public void testConstructServiceUrlWithParamsCasAndServerNameWithSchema() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
         request.setQueryString("service=this&ticket=that&custom=custom");
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "https://www.myserver.com",
             Protocol.CAS3.getServiceParameterName(), Protocol.CAS3.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
@@ -197,78 +199,78 @@ public final class CommonUtilsTests extends TestCase {
 
 
     public void testConstructServiceUrlWithParamsSaml() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
         request.setQueryString("TARGET=this&SAMLart=that&custom=custom");
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
             Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
 
     public void testConstructServiceUrlWithEncodedParamsSaml() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
         request.setQueryString("TARGET%3Dthis%26SAMLart%3Dthat%26custom%3Dcustom");
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
             Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
 
     public void testConstructServiceUrlWithNoServiceParametersPassed() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
         request.setQueryString("TARGET=Test1&service=Test2&custom=custom");
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
             Protocol.SAML11.getArtifactParameterName(), true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom", constructedUrl);
     }
 
     public void testConstructServiceUrlWithEncodedParams2Saml() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
         request.setQueryString("TARGET%3Dthis%26SAMLart%3Dthat%26custom%3Dcustom%20value%20here%26another%3Dgood");
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
             Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom+value+here&another=good", constructedUrl);
     }
 
     public void testConstructServiceUrlWithoutEncodedParamsSamlAndNoEncoding() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
         request.setQueryString("TARGET=this&SAMLart=that&custom=custom value here&another=good");
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
             Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), false);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom value here&another=good", constructedUrl);
     }
 
     public void testConstructServiceUrlWithEncodedParamsSamlAndNoEncoding() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.setScheme("https");
         request.setSecure(true);
         request.setQueryString("TARGET=this&SAMLart=that&custom=custom+value+here&another=good");
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null, "www.myserver.com",
             Protocol.SAML11.getServiceParameterName(), Protocol.SAML11.getArtifactParameterName(), true);
 
         assertEquals("https://www.myserver.com/hello/hithere/?custom=custom+value+here&another=good", constructedUrl);
@@ -283,34 +285,34 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testConstructUrlWithMultipleHostsNoPortsOrProtocol() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.addHeader("Host", "www.myserver.com");
         request.setScheme("https");
         request.setSecure(true);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
             "www.amazon.com www.bestbuy.com www.myserver.com", "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
     public void testConstructURlWithMultipleHostsAndPorts() {
-        final String CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+        final var CONST_MY_URL = "https://www.myserver.com/hello/hithere/";
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.addHeader("Host", "www.myserver.com");
         request.setScheme("https");
         request.setSecure(true);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
             "http://www.amazon.com https://www.bestbuy.com https://www.myserver.com", "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }
 
     public void testGetResponseFromServer() throws Exception {
-        final String RESPONSE = "test1\r\ntest2";
+        final var RESPONSE = "test1\r\ntest2";
         server.content = RESPONSE.getBytes(server.encoding);
 
-        final String responsedContent = CommonUtils.getResponseFromServer(new URL("http://localhost:8092"), new HttpsURLConnectionFactory(), null);
+        final var responsedContent = CommonUtils.getResponseFromServer(new URL("http://localhost:8092"), new HttpsURLConnectionFactory(), null);
         assertEquals(RESPONSE, responsedContent);
     }
 
@@ -320,28 +322,28 @@ public final class CommonUtilsTests extends TestCase {
     }
 
     public void testUrlEncodeWithQueryParameters() {
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/idp/authN/ExtCas");
+        final var request = new MockHttpServletRequest("GET", "/idp/authN/ExtCas");
         request.setQueryString("conversation=e1s1&ticket=ST-1234-123456789-a&entityId=https://test.edu/sp?alias=1234-1234-1234-1234&something=else");
         request.addHeader("Host", "www.myserver.com");
         request.setScheme("https");
         request.setSecure(true);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
             "https://my.server.com",
             "service", "ticket", false);
         assertEquals("https://my.server.com/idp/authN/ExtCas?conversation=e1s1&entityId=https://test.edu/sp?alias=1234-1234-1234-1234&something=else",
             constructedUrl);
     }
 
-    private void constructUrlNonStandardPortAndNoPortInConfigTest(final String serverNameList) {
-        final String CONST_MY_URL = "https://www.myserver.com:555/hello/hithere/";
-        final MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello/hithere/");
+    private static void constructUrlNonStandardPortAndNoPortInConfigTest(final String serverNameList) {
+        final var CONST_MY_URL = "https://www.myserver.com:555/hello/hithere/";
+        final var request = new MockHttpServletRequest("GET", "/hello/hithere/");
         request.addHeader("Host", "www.myserver.com");
         request.setScheme("https");
         request.setSecure(true);
         request.setServerPort(555);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final String constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
+        final HttpServletResponse response = new MockHttpServletResponse();
+        final var constructedUrl = CommonUtils.constructServiceUrl(request, response, null,
             serverNameList, "service", "ticket", false);
         assertEquals(CONST_MY_URL, constructedUrl);
     }

@@ -39,8 +39,8 @@ public final class ProxyListEditor extends PropertyEditorSupport {
 
     @Override
     public void setAsText(final String text) throws IllegalArgumentException {
-        final BufferedReader reader = new BufferedReader(new StringReader(text));
-        final List<String[]> proxyChains = new ArrayList<String[]>();
+        final var reader = new BufferedReader(new StringReader(text));
+        final List<String[]> proxyChains = new ArrayList<>();
 
         try {
             String line;

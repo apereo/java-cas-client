@@ -30,19 +30,19 @@ import junit.framework.TestCase;
  */
 public class ReflectUtilsTests extends TestCase {
     /**
-     * Test method for {@link ReflectUtils#newInstance(java.lang.String, java.lang.Object[])}.
+     * Test method for {@link ReflectUtils#newInstance(String, Object[])}.
      */
     public void testNewInstanceStringObjectArray() {
-        final Object result = ReflectUtils.newInstance("org.apereo.cas.client.validation.Cas10TicketValidator",
+        final var result = ReflectUtils.newInstance("org.apereo.cas.client.validation.Cas10TicketValidator",
             new Object[]{"https://localhost/cas"});
         assertNotNull(result);
     }
 
     /**
-     * Test method for {@link ReflectUtils#setProperty(java.lang.String, java.lang.Object, java.lang.Object)}.
+     * Test method for {@link ReflectUtils#setProperty(String, Object, Object)}.
      */
     public void testSetPropertyStringObjectObject() {
-        final TestBean bean = new TestBean();
+        final var bean = new TestBean();
 
         ReflectUtils.setProperty("count", new Integer(30000), bean);
         assertEquals(30000, bean.getCount());
@@ -55,13 +55,13 @@ public class ReflectUtilsTests extends TestCase {
     }
 
     public void testGetField() {
-        final TestBean bean = new TestBean();
+        final var bean = new TestBean();
         bean.setName("bob");
         assertEquals(bean.getName(), ReflectUtils.getField("name", bean));
     }
 
     public void testGetFieldSuperclass() {
-        final TestSubBean bean = new TestSubBean();
+        final var bean = new TestSubBean();
         bean.setName("bob");
         assertEquals(bean.getName(), ReflectUtils.getField("name", bean));
     }

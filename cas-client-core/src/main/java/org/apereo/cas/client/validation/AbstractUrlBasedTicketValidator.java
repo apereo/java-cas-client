@@ -79,12 +79,12 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
 
     @Override
     public final Assertion validate(final String ticket, final String service) throws TicketValidationException {
-        final String validationUrl = constructValidationUrl(ticket, service);
+        final var validationUrl = constructValidationUrl(ticket, service);
         logger.debug("Constructing validation url: {}", validationUrl);
 
         try {
             logger.debug("Retrieving response from server.");
-            final String serverResponse = retrieveResponseFromServer(new URL(validationUrl), ticket);
+            final var serverResponse = retrieveResponseFromServer(new URL(validationUrl), ticket);
 
             if (serverResponse == null) {
                 throw new TicketValidationException("The CAS server returned no response.");
@@ -121,7 +121,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      * @return the fully constructed URL.
      */
     protected final String constructValidationUrl(final String ticket, final String serviceUrl) {
-        final Map<String, String> urlParameters = new HashMap<String, String>();
+        final Map<String, String> urlParameters = new HashMap<>();
 
         logger.debug("Placing URL parameters in map.");
         urlParameters.put("ticket", ticket);
@@ -139,24 +139,24 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
             urlParameters.putAll(this.customParameters);
         }
 
-        final String suffix = getUrlSuffix();
-        final StringBuilder buffer = new StringBuilder(urlParameters.size() * 10 + this.casServerUrlPrefix.length()
-                                                       + suffix.length() + 1);
+        final var suffix = getUrlSuffix();
+        final var buffer = new StringBuilder(urlParameters.size() * 10 + this.casServerUrlPrefix.length()
+                                             + suffix.length() + 1);
 
-        int i = 0;
+        var i = 0;
 
         buffer.append(this.casServerUrlPrefix);
         buffer.append(suffix);
 
-        for (final Map.Entry<String, String> entry : urlParameters.entrySet()) {
-            final String key = entry.getKey();
-            final String value = entry.getValue();
+        for (final var entry : urlParameters.entrySet()) {
+            final var key = entry.getKey();
+            final var value = entry.getValue();
 
             if (value != null) {
                 buffer.append(i++ == 0 ? "?" : "&");
                 buffer.append(key);
                 buffer.append("=");
-                final String encodedValue = encodeUrl(value);
+                final var encodedValue = encodeUrl(value);
                 buffer.append(encodedValue);
             }
         }
@@ -171,7 +171,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
      * @param url the url to encode.
      * @return the encoded url, or the original url if "UTF-8" character encoding could not be found.
      */
-    protected final String encodeUrl(final String url) {
+    protected static String encodeUrl(final String url) {
         if (url == null) {
             return null;
         }

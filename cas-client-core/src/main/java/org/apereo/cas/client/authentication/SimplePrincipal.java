@@ -20,6 +20,7 @@ package org.apereo.cas.client.authentication;
 
 import org.apereo.cas.client.util.CommonUtils;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.security.Principal;
 
@@ -34,6 +35,7 @@ import java.security.Principal;
 public class SimplePrincipal implements Principal, Serializable {
 
     /** SimplePrincipal.java */
+    @Serial
     private static final long serialVersionUID = -5645357206342793145L;
 
     /** The unique identifier for this principal. */

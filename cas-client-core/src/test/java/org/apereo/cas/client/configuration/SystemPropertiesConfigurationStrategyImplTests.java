@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
  */
 public class SystemPropertiesConfigurationStrategyImplTests {
 
-    private final static String PARAMETER_NAME = "parameter";
+    private static final String PARAMETER_NAME = "parameter";
 
     private SystemPropertiesConfigurationStrategyImpl impl;
 
@@ -49,14 +49,14 @@ public class SystemPropertiesConfigurationStrategyImplTests {
 
     @Test
     public void testNoSystemPropertyDefined() {
-        final ConfigurationKey<String> key = ConfigurationKeys.SERVER_NAME;
+        final var key = ConfigurationKeys.SERVER_NAME;
         // no system property defined
         assertEquals(key.getDefaultValue(), impl.getString(key));
     }
 
     @Test
     public void testWithSystemProperty() {
-        final ConfigurationKey<String> key = ConfigurationKeys.ARTIFACT_PARAMETER_NAME;
+        final var key = ConfigurationKeys.ARTIFACT_PARAMETER_NAME;
         System.setProperty(key.getName(), PARAMETER_NAME);
         assertEquals(PARAMETER_NAME, impl.getString(key));
     }

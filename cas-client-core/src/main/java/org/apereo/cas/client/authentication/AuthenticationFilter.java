@@ -32,7 +32,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -58,7 +57,7 @@ import java.util.Map;
  */
 public class AuthenticationFilter extends AbstractCasFilter {
     private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
-        new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
+        new HashMap<>();
 
     static {
         PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);
@@ -105,7 +104,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public void init() {
         super.init();
 
-        final String message = String.format(
+        final var message = String.format(
             "one of %s and %s must not be null.",
             ConfigurationKeys.CAS_SERVER_LOGIN_URL.getName(),
             ConfigurationKeys.CAS_SERVER_URL_PREFIX.getName());
@@ -118,7 +117,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         if (!isIgnoreInitConfiguration()) {
             super.initInternal(filterConfig);
 
-            final String loginUrl = getString(ConfigurationKeys.CAS_SERVER_LOGIN_URL);
+            final var loginUrl = getString(ConfigurationKeys.CAS_SERVER_LOGIN_URL);
             if (loginUrl != null) {
                 setCasServerLoginUrl(loginUrl);
             } else {
@@ -129,11 +128,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
             setGateway(getBoolean(ConfigurationKeys.GATEWAY));
             setMethod(getString(ConfigurationKeys.METHOD));
 
-            final String ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
-            final String ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
+            final var ignorePattern = getString(ConfigurationKeys.IGNORE_PATTERN);
+            final var ignoreUrlPatternType = getString(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE);
 
             if (ignorePattern != null) {
-                final Class<? extends UrlPatternMatcherStrategy> ignoreUrlMatcherClass = PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
+                final var ignoreUrlMatcherClass = PATTERN_MATCHER_TYPES.get(ignoreUrlPatternType);
                 if (ignoreUrlMatcherClass != null) {
                     this.ignoreUrlPatternMatcherStrategyClass = ReflectUtils.newInstance(ignoreUrlMatcherClass.getName());
                 } else {
@@ -149,13 +148,13 @@ public class AuthenticationFilter extends AbstractCasFilter {
                 }
             }
 
-            final Class<? extends GatewayResolver> gatewayStorageClass = getClass(ConfigurationKeys.GATEWAY_STORAGE_CLASS);
+            final var gatewayStorageClass = getClass(ConfigurationKeys.GATEWAY_STORAGE_CLASS);
 
             if (gatewayStorageClass != null) {
                 setGatewayStorage(ReflectUtils.newInstance(gatewayStorageClass));
             }
 
-            final Class<? extends AuthenticationRedirectStrategy> authenticationRedirectStrategyClass = getClass(ConfigurationKeys.AUTHENTICATION_REDIRECT_STRATEGY_CLASS);
+            final var authenticationRedirectStrategyClass = getClass(ConfigurationKeys.AUTHENTICATION_REDIRECT_STRATEGY_CLASS);
 
             if (authenticationRedirectStrategyClass != null) {
                 this.authenticationRedirectStrategy = ReflectUtils.newInstance(authenticationRedirectStrategyClass);
@@ -167,8 +166,8 @@ public class AuthenticationFilter extends AbstractCasFilter {
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                                final FilterChain filterChain) throws IOException, ServletException {
 
-        final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpServletResponse response = (HttpServletResponse) servletResponse;
+        final var request = (HttpServletRequest) servletRequest;
+        final var response = (HttpServletResponse) servletResponse;
 
         if (isRequestUrlExcluded(request)) {
             logger.debug("Request is ignored.");
@@ -176,17 +175,17 @@ public class AuthenticationFilter extends AbstractCasFilter {
             return;
         }
 
-        final HttpSession session = request.getSession(false);
-        final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
+        final var session = request.getSession(false);
+        final var assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
 
         if (assertion != null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String serviceUrl = constructServiceUrl(request, response);
-        final String ticket = retrieveTicketFromRequest(request);
-        final boolean wasGatewayed = this.gateway && this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
+        final var serviceUrl = constructServiceUrl(request, response);
+        final var ticket = retrieveTicketFromRequest(request);
+        final var wasGatewayed = this.gateway && this.gatewayStorage.hasGatewayedAlready(request, serviceUrl);
 
         if (CommonUtils.isNotBlank(ticket) || wasGatewayed) {
             filterChain.doFilter(request, response);
@@ -205,7 +204,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
 
         logger.debug("Constructed service url: {}", modifiedServiceUrl);
 
-        final String urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
+        final var urlToRedirectTo = CommonUtils.constructRedirectUrl(this.casServerLoginUrl,
             getProtocol().getServiceParameterName(), modifiedServiceUrl, this.renew, this.gateway, this.method);
 
         logger.debug("redirecting to \"{}\"", urlToRedirectTo);
@@ -246,11 +245,11 @@ public class AuthenticationFilter extends AbstractCasFilter {
             return false;
         }
 
-        final StringBuffer urlBuffer = request.getRequestURL();
+        final var urlBuffer = request.getRequestURL();
         if (request.getQueryString() != null) {
             urlBuffer.append("?").append(request.getQueryString());
         }
-        final String requestUri = urlBuffer.toString();
+        final var requestUri = urlBuffer.toString();
         return this.ignoreUrlPatternMatcherStrategyClass.matches(requestUri);
     }
 

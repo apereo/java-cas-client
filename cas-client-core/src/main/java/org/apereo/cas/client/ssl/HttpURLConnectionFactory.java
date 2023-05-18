@@ -24,11 +24,12 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * A factory to prepare and configure {@link java.net.URLConnection} instances. 
+ * A factory to prepare and configure {@link URLConnection} instances.
  *
  * @author Misagh Moayyed
  * @since 3.3
  */
+@FunctionalInterface
 public interface HttpURLConnectionFactory extends Serializable {
 
     /**

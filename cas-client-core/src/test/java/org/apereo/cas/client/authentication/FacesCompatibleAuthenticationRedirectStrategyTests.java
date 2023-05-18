@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import static org.junit.Assert.*;
 
 public class FacesCompatibleAuthenticationRedirectStrategyTests {
@@ -36,9 +38,9 @@ public class FacesCompatibleAuthenticationRedirectStrategyTests {
 
     @Test
     public void didWeRedirect() throws Exception {
-        final String redirectUrl = "http://www.apereo.org";
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final var redirectUrl = "http://www.apereo.org";
+        final HttpServletRequest request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
 
         this.strategy.redirect(request, response, redirectUrl);
         assertEquals(redirectUrl, response.getRedirectedUrl());
@@ -46,9 +48,9 @@ public class FacesCompatibleAuthenticationRedirectStrategyTests {
 
     @Test
     public void facesPartialResponse() throws Exception {
-        final String redirectUrl = "http://www.apereo.org";
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final var redirectUrl = "http://www.apereo.org";
+        final var request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
         request.setParameter("javax.faces.partial.ajax", "true");
         this.strategy.redirect(request, response, redirectUrl);
         assertNull(response.getRedirectedUrl());

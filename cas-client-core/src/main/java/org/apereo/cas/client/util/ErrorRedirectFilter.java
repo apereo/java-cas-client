@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
-import java.util.List;
 
 /**
  * Filters that redirects to the supplied url based on an exception.  Exceptions and the urls are configured via
@@ -50,7 +50,7 @@ public final class ErrorRedirectFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final List<ErrorHolder> errors = new ArrayList<ErrorHolder>();
+    private final Collection<ErrorHolder> errors = new ArrayList<>();
 
     private String defaultErrorRedirectPage;
 
@@ -60,7 +60,7 @@ public final class ErrorRedirectFilter implements Filter {
 
         final Enumeration<?> enumeration = filterConfig.getInitParameterNames();
         while (enumeration.hasMoreElements()) {
-            final String className = (String) enumeration.nextElement();
+            final var className = (String) enumeration.nextElement();
             try {
                 if (!className.equals("defaultErrorRedirectPage")) {
                     this.errors.add(new ErrorHolder(className, filterConfig.getInitParameter(className)));
@@ -74,13 +74,13 @@ public final class ErrorRedirectFilter implements Filter {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
         throws IOException, ServletException {
-        final HttpServletResponse httpResponse = (HttpServletResponse) response;
+        final var httpResponse = (HttpServletResponse) response;
         try {
             filterChain.doFilter(request, response);
         } catch (final Exception e) {
-            final Throwable t = extractErrorToCompare(e);
+            final var t = extractErrorToCompare(e);
             ErrorHolder currentMatch = null;
-            for (final ErrorHolder errorHolder : this.errors) {
+            for (final var errorHolder : this.errors) {
                 if (errorHolder.exactMatch(t)) {
                     currentMatch = errorHolder;
                     break;
@@ -108,7 +108,7 @@ public final class ErrorRedirectFilter implements Filter {
 
         private String url;
 
-        protected ErrorHolder(final String className, final String url) throws ClassNotFoundException {
+        private ErrorHolder(final String className, final String url) throws ClassNotFoundException {
             this.className = Class.forName(className);
             this.url = url;
         }
@@ -132,8 +132,8 @@ public final class ErrorRedirectFilter implements Filter {
      * @param throwable the throwable to look for a root cause.
      * @return the throwable to use for comparison.  MUST NOT BE NULL.
      */
-    private Throwable extractErrorToCompare(final Throwable throwable) {
-        final Throwable cause = throwable.getCause();
+    private static Throwable extractErrorToCompare(final Throwable throwable) {
+        final var cause = throwable.getCause();
 
         if (cause != null) {
             return cause;

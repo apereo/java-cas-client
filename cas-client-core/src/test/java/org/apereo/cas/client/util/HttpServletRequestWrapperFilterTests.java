@@ -23,17 +23,15 @@ import org.apereo.cas.client.authentication.AttributePrincipalImpl;
 import org.apereo.cas.client.validation.AssertionImpl;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import junit.framework.TestCase;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,13 +45,13 @@ import java.util.Map;
 
 public final class HttpServletRequestWrapperFilterTests extends TestCase {
 
-    protected HttpServletRequest mockRequest;
+    private HttpServletRequest mockRequest;
 
     public void testWrappedRequest() throws Exception {
-        final HttpServletRequestWrapperFilter filter = new HttpServletRequestWrapperFilter();
+        final var filter = new HttpServletRequestWrapperFilter();
         filter.init(new MockFilterConfig());
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpSession session = new MockHttpSession();
+        final var request = new MockHttpServletRequest();
+        final HttpSession session = new MockHttpSession();
 
         session.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, new AssertionImpl("test"));
         request.setSession(session);
@@ -65,15 +63,15 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
     }
 
     public void testIsUserInRole() throws Exception {
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpSession session = new MockHttpSession();
-        final MockFilterConfig config = new MockFilterConfig();
+        final var request = new MockHttpServletRequest();
+        final HttpSession session = new MockHttpSession();
+        final var config = new MockFilterConfig();
 
         config.addInitParameter("roleAttribute", "memberOf");
-        final HttpServletRequestWrapperFilter filter = new HttpServletRequestWrapperFilter();
+        final var filter = new HttpServletRequestWrapperFilter();
         filter.init(config);
 
-        final Map<String, Object> attributes = new HashMap<String, Object>();
+        final Map<String, Object> attributes = new HashMap<>();
         attributes.put("memberOf", "administrators");
         final AttributePrincipal principal = new AttributePrincipalImpl("alice", attributes);
         session.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, new AssertionImpl(principal));
@@ -91,16 +89,16 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
     }
 
     public void testIsUserInRoleCaseInsensitive() throws Exception {
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpSession session = new MockHttpSession();
-        final MockFilterConfig config = new MockFilterConfig();
+        final var request = new MockHttpServletRequest();
+        final HttpSession session = new MockHttpSession();
+        final var config = new MockFilterConfig();
 
         config.addInitParameter("roleAttribute", "groupMembership");
         config.addInitParameter("ignoreCase", "true");
-        final HttpServletRequestWrapperFilter filter = new HttpServletRequestWrapperFilter();
+        final var filter = new HttpServletRequestWrapperFilter();
         filter.init(config);
 
-        final Map<String, Object> attributes = new HashMap<String, Object>();
+        final Map<String, Object> attributes = new HashMap<>();
         attributes.put("groupMembership", Arrays.asList(new Object[]{"animals", "ducks"}));
         final AttributePrincipal principal = new AttributePrincipalImpl("daffy", attributes);
         session.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, new AssertionImpl(principal));
@@ -120,12 +118,6 @@ public final class HttpServletRequestWrapperFilterTests extends TestCase {
     }
 
     private FilterChain createFilterChain() {
-        return new FilterChain() {
-            @Override
-            public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
-                HttpServletRequestWrapperFilterTests.this.mockRequest = (HttpServletRequest) request;
-            }
-
-        };
+        return (request, response) -> HttpServletRequestWrapperFilterTests.this.mockRequest = (HttpServletRequest) request;
     }
 }

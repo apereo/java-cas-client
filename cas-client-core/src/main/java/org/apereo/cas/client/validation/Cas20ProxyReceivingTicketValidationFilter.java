@@ -44,7 +44,6 @@ import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -138,15 +137,15 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     protected void initInternal(final FilterConfig filterConfig) throws ServletException {
         setProxyReceptorUrl(getString(ConfigurationKeys.PROXY_RECEPTOR_URL));
 
-        final Class<? extends ProxyGrantingTicketStorage> proxyGrantingTicketStorageClass = getClass(ConfigurationKeys.PROXY_GRANTING_TICKET_STORAGE_CLASS);
+        final var proxyGrantingTicketStorageClass = getClass(ConfigurationKeys.PROXY_GRANTING_TICKET_STORAGE_CLASS);
 
         if (proxyGrantingTicketStorageClass != null) {
             this.proxyGrantingTicketStorage = ReflectUtils.newInstance(proxyGrantingTicketStorageClass);
 
             if (this.proxyGrantingTicketStorage instanceof AbstractEncryptedProxyGrantingTicketStorageImpl) {
-                final AbstractEncryptedProxyGrantingTicketStorageImpl p = (AbstractEncryptedProxyGrantingTicketStorageImpl) this.proxyGrantingTicketStorage;
-                final String cipherAlgorithm = getString(ConfigurationKeys.CIPHER_ALGORITHM);
-                final String secretKey = getString(ConfigurationKeys.SECRET_KEY);
+                final var p = (AbstractEncryptedProxyGrantingTicketStorageImpl) this.proxyGrantingTicketStorage;
+                final var cipherAlgorithm = getString(ConfigurationKeys.CIPHER_ALGORITHM);
+                final var secretKey = getString(ConfigurationKeys.SECRET_KEY);
 
                 p.setCipherAlgorithm(cipherAlgorithm);
 
@@ -174,14 +173,14 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
      */
     @Override
     protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
-        final boolean allowAnyProxy = getBoolean(ConfigurationKeys.ACCEPT_ANY_PROXY);
-        final String allowedProxyChains = getString(ConfigurationKeys.ALLOWED_PROXY_CHAINS);
-        final String casServerUrlPrefix = getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX);
-        final Class<? extends Cas20ServiceTicketValidator> ticketValidatorClass = getClass(ConfigurationKeys.TICKET_VALIDATOR_CLASS);
+        final var allowAnyProxy = getBoolean(ConfigurationKeys.ACCEPT_ANY_PROXY);
+        final var allowedProxyChains = getString(ConfigurationKeys.ALLOWED_PROXY_CHAINS);
+        final var casServerUrlPrefix = getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX);
+        final var ticketValidatorClass = getClass(ConfigurationKeys.TICKET_VALIDATOR_CLASS);
         final Cas20ServiceTicketValidator validator;
 
         if (allowAnyProxy || CommonUtils.isNotBlank(allowedProxyChains)) {
-            final Cas20ProxyTicketValidator v = createNewTicketValidator(ticketValidatorClass, casServerUrlPrefix,
+            final var v = createNewTicketValidator(ticketValidatorClass, casServerUrlPrefix,
                 this.defaultProxyTicketValidatorClass);
             v.setAcceptAnyProxy(allowAnyProxy);
             v.setAllowedProxyChains(CommonUtils.createProxyList(allowedProxyChains));
@@ -201,11 +200,11 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         validator.setRenew(getBoolean(ConfigurationKeys.RENEW));
         validator.setEncoding(getString(ConfigurationKeys.ENCODING));
 
-        final Map<String, String> additionalParameters = new HashMap<String, String>();
-        final List<String> params = Arrays.asList(RESERVED_INIT_PARAMS);
+        final Map<String, String> additionalParameters = new HashMap<>();
+        final var params = Arrays.asList(RESERVED_INIT_PARAMS);
 
         for (final Enumeration<?> e = filterConfig.getInitParameterNames(); e.hasMoreElements(); ) {
-            final String s = (String) e.nextElement();
+            final var s = (String) e.nextElement();
 
             if (!params.contains(s)) {
                 additionalParameters.put(s, filterConfig.getInitParameter(s));
@@ -224,9 +223,9 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
     @Override
     protected final boolean preFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                                       final FilterChain filterChain) throws IOException, ServletException {
-        final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        final String requestUri = request.getRequestURI();
+        final var request = (HttpServletRequest) servletRequest;
+        final var response = (HttpServletResponse) servletResponse;
+        final var requestUri = request.getRequestURI();
 
         if (CommonUtils.isEmpty(this.proxyReceptorUrl) || !requestUri.endsWith(this.proxyReceptorUrl)) {
             return true;
@@ -268,8 +267,8 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         this.millisBetweenCleanUps = millisBetweenCleanUps;
     }
 
-    private <T> T createNewTicketValidator(final Class<? extends Cas20ServiceTicketValidator> ticketValidatorClass, final String casServerUrlPrefix,
-                                           final Class<T> clazz) {
+    private static <T> T createNewTicketValidator(final Class<? extends Cas20ServiceTicketValidator> ticketValidatorClass, final String casServerUrlPrefix,
+                                                  final Class<T> clazz) {
         if (ticketValidatorClass == null) {
             return ReflectUtils.newInstance(clazz, casServerUrlPrefix);
         }

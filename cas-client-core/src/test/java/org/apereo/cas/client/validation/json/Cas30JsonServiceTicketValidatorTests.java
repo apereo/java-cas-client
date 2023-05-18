@@ -23,12 +23,13 @@ import org.apereo.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.apereo.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.apereo.cas.client.proxy.ProxyRetriever;
 import org.apereo.cas.client.validation.AbstractTicketValidatorTests;
-import org.apereo.cas.client.validation.Assertion;
 import org.apereo.cas.client.validation.TicketValidationException;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.Serial;
 
 public class Cas30JsonServiceTicketValidatorTests extends AbstractTicketValidatorTests {
     private static final PublicTestHttpServer server = PublicTestHttpServer.instance(8088);
@@ -46,34 +47,34 @@ public class Cas30JsonServiceTicketValidatorTests extends AbstractTicketValidato
 
     @Test
     public void testSuccessfulJsonResponse() throws Exception {
-        final String RESPONSE = "{ " +
-                                "\"serviceResponse\" : {  " +
-                                "\"authenticationSuccess\" : {   " +
-                                "\"user\" : \"casuser\",  " +
-                                "\"proxyGrantingTicket\" : \"PGTIOU-84678-8a9d\" ," +
-                                "\"attributes\" : {      " +
-                                "\"cn\" : [ \"Name\" ]  " +
-                                '}' +
-                                '}' +
-                                '}' +
-                                '}';
+        final var RESPONSE = "{ " +
+                             "\"serviceResponse\" : {  " +
+                             "\"authenticationSuccess\" : {   " +
+                             "\"user\" : \"casuser\",  " +
+                             "\"proxyGrantingTicket\" : \"PGTIOU-84678-8a9d\" ," +
+                             "\"attributes\" : {      " +
+                             "\"cn\" : [ \"Name\" ]  " +
+                             '}' +
+                             '}' +
+                             '}' +
+                             '}';
 
         server.content = RESPONSE.getBytes(server.encoding);
-        final Assertion assertion = ticketValidator.validate("test", "test");
+        final var assertion = ticketValidator.validate("test", "test");
         Assert.assertEquals(assertion.getPrincipal().getName(), "casuser");
         Assert.assertTrue(assertion.getPrincipal().getAttributes().containsKey("cn"));
     }
 
     @Test(expected = TicketValidationException.class)
     public void testFailingJsonResponse() throws Exception {
-        final String RESPONSE = "{ " +
-                                "\"serviceResponse\" : {  " +
-                                "\"authenticationFailure\" : {   " +
-                                "\"code\" : \"INVALID_TICKET\",  " +
-                                "\"description\" : \"Description\"  " +
-                                '}' +
-                                '}' +
-                                '}';
+        final var RESPONSE = "{ " +
+                             "\"serviceResponse\" : {  " +
+                             "\"authenticationFailure\" : {   " +
+                             "\"code\" : \"INVALID_TICKET\",  " +
+                             "\"description\" : \"Description\"  " +
+                             '}' +
+                             '}' +
+                             '}';
 
         server.content = RESPONSE.getBytes(server.encoding);
         ticketValidator.validate("test", "test");
@@ -82,20 +83,21 @@ public class Cas30JsonServiceTicketValidatorTests extends AbstractTicketValidato
 
     @Test
     public void testSuccessfulXmlResponseWithJson() throws Exception {
-        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
-                                + "test</cas:user><cas:proxyGrantingTicket>PGTIOU</cas:proxyGrantingTicket></cas:authenticationSuccess></cas:serviceResponse>";
+        final var RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>"
+                             + "test</cas:user><cas:proxyGrantingTicket>PGTIOU</cas:proxyGrantingTicket></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
         ticketValidator.validate("test", "test");
     }
 
-    private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
+    private static ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
         return new ProxyGrantingTicketStorageImpl();
     }
 
-    private ProxyRetriever getProxyRetriever() {
+    private static ProxyRetriever getProxyRetriever() {
         return new ProxyRetriever() {
 
             /** Unique Id for serialization. */
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override

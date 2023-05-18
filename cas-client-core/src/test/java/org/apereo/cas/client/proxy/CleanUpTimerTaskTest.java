@@ -22,8 +22,6 @@ import org.apereo.cas.client.validation.Cas20ProxyReceivingTicketValidationFilte
 
 import junit.framework.TestCase;
 
-import java.util.TimerTask;
-
 /**
  * Unit test for the {@link CleanUpTimerTask}
  *
@@ -32,10 +30,10 @@ import java.util.TimerTask;
 public class CleanUpTimerTaskTest extends TestCase {
 
     public void testRun() throws Exception {
-        final ProxyGrantingTicketStorageTestImpl storage = new ProxyGrantingTicketStorageTestImpl();
+        final var storage = new ProxyGrantingTicketStorageTestImpl();
         new Cas20ProxyReceivingTicketValidationFilter().setProxyGrantingTicketStorage(storage);
 
-        final TimerTask timerTask = new CleanUpTimerTask(storage);
+        final Runnable timerTask = new CleanUpTimerTask(storage);
 
         timerTask.run();
         assertTrue(storage.cleanUpWasCalled());

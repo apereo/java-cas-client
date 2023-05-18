@@ -69,7 +69,7 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
     @Test
     public void testYesResponse() throws TicketValidationException, UnsupportedEncodingException {
         server.content = "yes\nusername\n\n".getBytes(server.encoding);
-        final Assertion assertion = this.ticketValidator.validate("testTicket", "myService");
+        final var assertion = this.ticketValidator.validate("testTicket", "myService");
         assertEquals(CONST_USERNAME, assertion.getPrincipal().getName());
     }
 
@@ -86,12 +86,12 @@ public final class Cas10TicketValidatorTests extends AbstractTicketValidatorTest
 
     @Test
     public void urlEncodedValues() {
-        final String ticket =
+        final var ticket =
             "ST-1-owKEOtYJjg77iHcCQpkl-cas01.example.org%26%73%65%72%76%69%63%65%3d%68%74%74%70%25%33%41%25%32%46%25%32%46%31%32%37%2e%30%2e%30%2e%31%25%32%46%62%6f%72%69%6e%67%25%32%46%23";
-        final String service = "foobar";
-        final String url = this.ticketValidator.constructValidationUrl(ticket, service);
+        final var service = "foobar";
+        final var url = this.ticketValidator.constructValidationUrl(ticket, service);
 
-        final String encodedValue = this.ticketValidator.encodeUrl(ticket);
+        final var encodedValue = AbstractUrlBasedTicketValidator.encodeUrl(ticket);
         assertTrue(url.contains(encodedValue));
         assertFalse(url.contains(ticket));
     }

@@ -20,11 +20,7 @@ package org.apereo.cas.client.validation;
 
 import org.apereo.cas.client.util.XmlUtils;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,27 +52,27 @@ public class Cas30ServiceTicketValidator extends Cas20ServiceTicketValidator {
      */
     @Override
     protected Map<String, Object> extractCustomAttributes(final String xml) {
-        final Document document = XmlUtils.newDocument(xml);
+        final var document = XmlUtils.newDocument(xml);
 
         // Check if attributes are inlined.  If not return default super method results
-        final NodeList attributeList = document.getElementsByTagName("cas:attribute");
+        final var attributeList = document.getElementsByTagName("cas:attribute");
         if (attributeList.getLength() == 0) {
             return super.extractCustomAttributes(xml);
         }
 
-        final HashMap<String, Object> attributes = new HashMap<String, Object>();
+        final Map<String, Object> attributes = new HashMap<>();
 
-        for (int i = 0; i < attributeList.getLength(); i++) {
-            final Node casAttributeNode = attributeList.item(i);
-            final NamedNodeMap nodeAttributes = casAttributeNode.getAttributes();
-            final String name = nodeAttributes.getNamedItem("name").getNodeValue();
-            final String value = nodeAttributes.getNamedItem("value").getTextContent();
-            final Object mapValue = attributes.get(name);
+        for (var i = 0; i < attributeList.getLength(); i++) {
+            final var casAttributeNode = attributeList.item(i);
+            final var nodeAttributes = casAttributeNode.getAttributes();
+            final var name = nodeAttributes.getNamedItem("name").getNodeValue();
+            final var value = nodeAttributes.getNamedItem("value").getTextContent();
+            final var mapValue = attributes.get(name);
             if (mapValue != null) {
                 if (mapValue instanceof List) {
                     ((List) mapValue).add(value);
                 } else {
-                    final LinkedList<Object> list = new LinkedList<Object>();
+                    final Deque<Object> list = new LinkedList<>();
                     list.add(mapValue);
                     list.add(value);
                     attributes.put(name, list);

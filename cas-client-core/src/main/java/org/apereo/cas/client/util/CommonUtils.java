@@ -25,6 +25,8 @@ import org.apereo.cas.client.ssl.HttpsURLConnectionFactory;
 import org.apereo.cas.client.validation.ProxyList;
 import org.apereo.cas.client.validation.ProxyListEditor;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -42,7 +44,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Common utilities so that we don't need to include Commons Lang.
@@ -69,8 +70,8 @@ public final class CommonUtils {
     private static final String SERVICE_PARAMETER_NAMES;
 
     static {
-        final Set<String> serviceParameterSet = new HashSet<String>(4);
-        for (final Protocol protocol : Protocol.values()) {
+        final Collection<String> serviceParameterSet = new HashSet<>(4);
+        for (final var protocol : Protocol.values()) {
             serviceParameterSet.add(protocol.getServiceParameterName());
         }
         SERVICE_PARAMETER_NAMES = serviceParameterSet.toString()
@@ -142,7 +143,7 @@ public final class CommonUtils {
      * @param string the string to check
      * @return true if its null or length of 0, false otherwise.
      */
-    public static boolean isEmpty(final String string) {
+    public static boolean isEmpty(final CharSequence string) {
         return string == null || string.isEmpty();
     }
 
@@ -226,12 +227,12 @@ public final class CommonUtils {
         }
     }
 
-    public static void readAndRespondToProxyReceptorRequest(final HttpServletRequest request,
-                                                            final HttpServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage)
+    public static void readAndRespondToProxyReceptorRequest(final ServletRequest request,
+                                                            final ServletResponse response, final ProxyGrantingTicketStorage proxyGrantingTicketStorage)
         throws IOException {
-        final String proxyGrantingTicketIou = request.getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+        final var proxyGrantingTicketIou = request.getParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
 
-        final String proxyGrantingTicket = request.getParameter(PARAM_PROXY_GRANTING_TICKET);
+        final var proxyGrantingTicket = request.getParameter(PARAM_PROXY_GRANTING_TICKET);
 
         if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
             response.getWriter().write("");
@@ -250,15 +251,15 @@ public final class CommonUtils {
         response.getWriter().write("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
     }
 
-    protected static String findMatchingServerName(final HttpServletRequest request, final String serverName) {
-        final String[] serverNames = serverName.split(" ");
+    private static String findMatchingServerName(final HttpServletRequest request, final String serverName) {
+        final var serverNames = serverName.split(" ");
 
         if (serverNames.length == 0 || serverNames.length == 1) {
             return serverName;
         }
 
-        final String host = request.getHeader("Host");
-        final String xHost = request.getHeader("X-Forwarded-Host");
+        final var host = request.getHeader("Host");
+        final var xHost = request.getHeader("X-Forwarded-Host");
 
         final String comparisonHost;
         comparisonHost = (xHost != null) ? xHost : host;
@@ -267,8 +268,8 @@ public final class CommonUtils {
             return serverName;
         }
 
-        for (final String server : serverNames) {
-            final String lowerCaseServer = server.toLowerCase();
+        for (final var server : serverNames) {
+            final var lowerCaseServer = server.toLowerCase();
 
             if (lowerCaseServer.contains(comparisonHost)) {
                 return server;
@@ -278,8 +279,8 @@ public final class CommonUtils {
         return serverNames[0];
     }
 
-    private static boolean requestIsOnStandardPort(final HttpServletRequest request) {
-        final int serverPort = request.getServerPort();
+    private static boolean requestIsOnStandardPort(final ServletRequest request) {
+        final var serverPort = request.getServerPort();
         return serverPort == 80 || serverPort == 443;
     }
 
@@ -330,13 +331,13 @@ public final class CommonUtils {
             return encode ? response.encodeURL(service) : service;
         }
 
-        final String serverName = findMatchingServerName(request, serverNames);
-        final URIBuilder originalRequestUrl = new URIBuilder(request.getRequestURL().toString(), encode);
+        final var serverName = findMatchingServerName(request, serverNames);
+        final var originalRequestUrl = new URIBuilder(request.getRequestURL().toString(), encode);
         originalRequestUrl.setParameters(request.getQueryString());
 
         final URIBuilder builder;
         if (!serverName.startsWith("https://") && !serverName.startsWith("http://")) {
-            final String scheme = request.isSecure() ? "https://" : "http://";
+            final var scheme = request.isSecure() ? "https://" : "http://";
             builder = new URIBuilder(scheme + serverName, encode);
         } else {
             builder = new URIBuilder(serverName, encode);
@@ -348,29 +349,29 @@ public final class CommonUtils {
 
         builder.setEncodedPath(builder.getEncodedPath() + request.getRequestURI());
 
-        final List<String> serviceParameterNames = Arrays.asList(serviceParameterName.split(","));
+        final var serviceParameterNames = Arrays.asList(serviceParameterName.split(","));
         if (!serviceParameterNames.isEmpty() && !originalRequestUrl.getQueryParams().isEmpty()) {
-            for (final URIBuilder.BasicNameValuePair pair : originalRequestUrl.getQueryParams()) {
-                final String name = pair.getName();
+            for (final var pair : originalRequestUrl.getQueryParams()) {
+                final var name = pair.name();
                 if (!name.equals(artifactParameterName) && !serviceParameterNames.contains(name)) {
                     if (name.contains("&") || name.contains("=")) {
-                        final URIBuilder encodedParamBuilder = new URIBuilder();
+                        final var encodedParamBuilder = new URIBuilder();
                         encodedParamBuilder.setParameters(name);
-                        for (final URIBuilder.BasicNameValuePair pair2 : encodedParamBuilder.getQueryParams()) {
-                            final String name2 = pair2.getName();
+                        for (final var pair2 : encodedParamBuilder.getQueryParams()) {
+                            final var name2 = pair2.name();
                             if (!name2.equals(artifactParameterName) && !serviceParameterNames.contains(name2)) {
-                                builder.addParameter(name2, pair2.getValue());
+                                builder.addParameter(name2, pair2.value());
                             }
                         }
                     } else {
-                        builder.addParameter(name, pair.getValue());
+                        builder.addParameter(name, pair.value());
                     }
                 }
             }
         }
 
-        final String result = builder.toString();
-        final String returnValue = encode ? response.encodeURL(result) : result;
+        final var result = builder.toString();
+        final var returnValue = encode ? response.encodeURL(result) : result;
         LOGGER.debug("serviceUrl generated: {}", returnValue);
         return returnValue;
     }
@@ -392,7 +393,7 @@ public final class CommonUtils {
      * @return the value of the parameter.
      */
     public static String safeGetParameter(final HttpServletRequest request, final String parameter,
-                                          final List<String> parameters) {
+                                          final Collection<String> parameters) {
         if ("POST".equals(request.getMethod()) && parameters.contains(parameter)) {
             LOGGER.debug("safeGetParameter called on a POST HttpServletRequest for Restricted Parameters.  Cannot complete check safely.  Reverting to standard behavior for this Parameter");
             return request.getParameter(parameter);
@@ -402,7 +403,7 @@ public final class CommonUtils {
     }
 
     public static String safeGetParameter(final HttpServletRequest request, final String parameter) {
-        return safeGetParameter(request, parameter, Arrays.asList("logoutRequest"));
+        return safeGetParameter(request, parameter, List.of("logoutRequest"));
     }
 
 
@@ -449,7 +450,7 @@ public final class CommonUtils {
                 in = new InputStreamReader(conn.getInputStream(), encoding);
             }
 
-            final StringBuilder builder = new StringBuilder(255);
+            final var builder = new StringBuilder(255);
             int byteRead;
             while ((byteRead = in.read()) != -1) {
                 builder.append((char) byteRead);
@@ -478,7 +479,7 @@ public final class CommonUtils {
             return new ProxyList();
         }
 
-        final ProxyListEditor editor = new ProxyListEditor();
+        final var editor = new ProxyListEditor();
         editor.setAsText(proxies);
         return (ProxyList) editor.getValue();
     }
@@ -499,7 +500,7 @@ public final class CommonUtils {
     }
 
     /**
-     * Unconditionally close a {@link Closeable}. Equivalent to {@link java.io.Closeable#close()}close(), except any exceptions 
+     * Unconditionally close a {@link Closeable}. Equivalent to {@link Closeable#close()}close(), except any exceptions
      * will be ignored. This is typically used in finally blocks.
      * @param resource the resource to close
      */
@@ -580,7 +581,7 @@ public final class CommonUtils {
      * @param str  the String to check; upper and lower case are treated as the same
      * @return the Boolean value of the string, {@code null} if no match or {@code null} input
      */
-    public static Boolean toBooleanObject(final String str) {
+    public static Boolean toBooleanObject(final CharSequence str) {
         // Previously used equalsIgnoreCase, which was fast for interned 'true'.
         // Non interned 'true' matched 15 times slower.
         //
@@ -595,7 +596,7 @@ public final class CommonUtils {
         }
         switch (str.length()) {
             case 1: {
-                final char ch0 = str.charAt(0);
+                final var ch0 = str.charAt(0);
                 if (ch0 == 'y' || ch0 == 'Y' ||
                     ch0 == 't' || ch0 == 'T') {
                     return Boolean.TRUE;
@@ -607,8 +608,8 @@ public final class CommonUtils {
                 break;
             }
             case 2: {
-                final char ch0 = str.charAt(0);
-                final char ch1 = str.charAt(1);
+                final var ch0 = str.charAt(0);
+                final var ch1 = str.charAt(1);
                 if ((ch0 == 'o' || ch0 == 'O') &&
                     (ch1 == 'n' || ch1 == 'N')) {
                     return Boolean.TRUE;
@@ -620,9 +621,9 @@ public final class CommonUtils {
                 break;
             }
             case 3: {
-                final char ch0 = str.charAt(0);
-                final char ch1 = str.charAt(1);
-                final char ch2 = str.charAt(2);
+                final var ch0 = str.charAt(0);
+                final var ch1 = str.charAt(1);
+                final var ch2 = str.charAt(2);
                 if ((ch0 == 'y' || ch0 == 'Y') &&
                     (ch1 == 'e' || ch1 == 'E') &&
                     (ch2 == 's' || ch2 == 'S')) {
@@ -636,10 +637,10 @@ public final class CommonUtils {
                 break;
             }
             case 4: {
-                final char ch0 = str.charAt(0);
-                final char ch1 = str.charAt(1);
-                final char ch2 = str.charAt(2);
-                final char ch3 = str.charAt(3);
+                final var ch0 = str.charAt(0);
+                final var ch1 = str.charAt(1);
+                final var ch2 = str.charAt(2);
+                final var ch3 = str.charAt(3);
                 if ((ch0 == 't' || ch0 == 'T') &&
                     (ch1 == 'r' || ch1 == 'R') &&
                     (ch2 == 'u' || ch2 == 'U') &&
@@ -649,11 +650,11 @@ public final class CommonUtils {
                 break;
             }
             case 5: {
-                final char ch0 = str.charAt(0);
-                final char ch1 = str.charAt(1);
-                final char ch2 = str.charAt(2);
-                final char ch3 = str.charAt(3);
-                final char ch4 = str.charAt(4);
+                final var ch0 = str.charAt(0);
+                final var ch1 = str.charAt(1);
+                final var ch2 = str.charAt(2);
+                final var ch3 = str.charAt(3);
+                final var ch4 = str.charAt(4);
                 if ((ch0 == 'f' || ch0 == 'F') &&
                     (ch1 == 'a' || ch1 == 'A') &&
                     (ch2 == 'l' || ch2 == 'L') &&

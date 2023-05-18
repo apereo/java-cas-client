@@ -30,11 +30,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.crypto.Cipher;
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.StringReader;
 import java.security.PrivateKey;
@@ -104,21 +102,21 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
 
     @Override
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
-        final String error = parseAuthenticationFailureFromResponse(response);
+        final var error = parseAuthenticationFailureFromResponse(response);
 
         if (CommonUtils.isNotBlank(error)) {
             throw new TicketValidationException(error);
         }
 
-        final String principal = parsePrincipalFromResponse(response);
-        final String proxyGrantingTicket = retrieveProxyGrantingTicket(response);
+        final var principal = parsePrincipalFromResponse(response);
+        final var proxyGrantingTicket = retrieveProxyGrantingTicket(response);
 
         if (CommonUtils.isEmpty(principal)) {
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
         }
 
         final Assertion assertion;
-        final Map<String, Object> attributes = extractCustomAttributes(response);
+        final var attributes = extractCustomAttributes(response);
         if (CommonUtils.isNotBlank(proxyGrantingTicket)) {
             attributes.remove(PGT_ATTRIBUTE);
             final AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes,
@@ -134,8 +132,8 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     }
 
     protected String retrieveProxyGrantingTicket(final String response) {
-        final List<String> values = XmlUtils.getTextForElements(response, PGT_ATTRIBUTE);
-        for (final String value : values) {
+        final var values = XmlUtils.getTextForElements(response, PGT_ATTRIBUTE);
+        for (final var value : values) {
             if (value != null) {
                 if (value.startsWith(PGTIOU_PREFIX)) {
                     return retrieveProxyGrantingTicketFromStorage(value);
@@ -157,11 +155,11 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     protected String retrieveProxyGrantingTicketViaEncryption(final String encryptedPgt) {
         if (this.privateKey != null) {
             try {
-                final Cipher cipher = Cipher.getInstance(privateKey.getAlgorithm());
-                final byte[] cred64 = new Base64().decode(encryptedPgt);
+                final var cipher = Cipher.getInstance(privateKey.getAlgorithm());
+                final var cred64 = new Base64().decode(encryptedPgt);
                 cipher.init(Cipher.DECRYPT_MODE, privateKey);
-                final byte[] cipherData = cipher.doFinal(cred64);
-                final String pgt = new String(cipherData);
+                final var cipherData = cipher.doFinal(cred64);
+                final var pgt = new String(cipherData);
                 logger.debug("Decrypted PGT: {}", pgt);
                 return pgt;
             } catch (final Exception e) {
@@ -171,11 +169,11 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
         return null;
     }
 
-    protected String parsePrincipalFromResponse(final String response) {
+    protected static String parsePrincipalFromResponse(final String response) {
         return XmlUtils.getTextForElement(response, "user");
     }
 
-    protected String parseAuthenticationFailureFromResponse(final String response) {
+    protected static String parseAuthenticationFailureFromResponse(final String response) {
         return XmlUtils.getTextForElement(response, "authenticationFailure");
     }
 
@@ -198,13 +196,13 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @return the map of attributes.
      */
     protected Map<String, Object> extractCustomAttributes(final String xml) {
-        final SAXParserFactory spf = SAXParserFactory.newInstance();
+        final var spf = SAXParserFactory.newInstance();
         spf.setNamespaceAware(true);
         spf.setValidating(false);
         try {
-            final SAXParser saxParser = spf.newSAXParser();
-            final XMLReader xmlReader = saxParser.getXMLReader();
-            final CustomAttributeHandler handler = new CustomAttributeHandler();
+            final var saxParser = spf.newSAXParser();
+            final var xmlReader = saxParser.getXMLReader();
+            final var handler = new CustomAttributeHandler();
             xmlReader.setContentHandler(handler);
             xmlReader.parse(new InputSource(new StringReader(xml)));
             return handler.getAttributes();
@@ -262,7 +260,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
 
         @Override
         public void startDocument() throws SAXException {
-            this.attributes = new HashMap<String, Object>();
+            this.attributes = new HashMap<>();
         }
 
         @Override
@@ -283,7 +281,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
                 this.foundAttributes = false;
                 this.currentAttribute = null;
             } else if (this.foundAttributes) {
-                final Object o = this.attributes.get(this.currentAttribute);
+                final var o = this.attributes.get(this.currentAttribute);
 
                 if (o == null) {
                     this.attributes.put(this.currentAttribute, this.value.toString());
@@ -292,7 +290,7 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
                     if (o instanceof List) {
                         items = (List<Object>) o;
                     } else {
-                        items = new LinkedList<Object>();
+                        items = new LinkedList<>();
                         items.add(o);
                         this.attributes.put(this.currentAttribute, items);
                     }

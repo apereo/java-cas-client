@@ -29,12 +29,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.KeyFactory;
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.Security;
+import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 /**
@@ -52,7 +51,7 @@ public class PrivateKeyUtils {
     }
 
     public static PrivateKey createKey(final String path, final String algorithm) {
-        final PrivateKey key = readPemPrivateKey(path);
+        final var key = readPemPrivateKey(path);
         if (key == null) {
             return readDERPrivateKey(path, algorithm);
         } else {
@@ -62,54 +61,31 @@ public class PrivateKeyUtils {
 
     private static PrivateKey readPemPrivateKey(final String path) {
         LOGGER.debug("Attempting to read as PEM [{}]", path);
-        final File file = new File(path);
-        InputStreamReader isr = null;
-        BufferedReader br = null;
-        try {
-            isr = new FileReader(file);
-            br = new BufferedReader(isr);
-            final PEMParser pp = new PEMParser(br);
-            final PEMKeyPair pemKeyPair = (PEMKeyPair) pp.readObject();
-            final KeyPair kp = new JcaPEMKeyConverter().getKeyPair(pemKeyPair);
+        final var file = new File(path);
+        try (final InputStreamReader isr = new FileReader(file); final var br = new BufferedReader(isr)) {
+            final var pp = new PEMParser(br);
+            final var pemKeyPair = (PEMKeyPair) pp.readObject();
+            final var kp = new JcaPEMKeyConverter().getKeyPair(pemKeyPair);
             return kp.getPrivate();
         } catch (final Exception e) {
             LOGGER.error("Unable to read key", e);
             return null;
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-                if (isr != null) {
-                    isr.close();
-                }
-            } catch (final IOException e) {
-            }
         }
     }
 
     private static PrivateKey readDERPrivateKey(final String path, final String algorithm) {
         LOGGER.debug("Attempting to read key as DER [{}]", path);
-        final File file = new File(path);
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            final long byteLength = file.length();
-            final byte[] bytes = new byte[(int) byteLength];
+        final var file = new File(path);
+        try (final var fis = new FileInputStream(file)) {
+            final var byteLength = file.length();
+            final var bytes = new byte[(int) byteLength];
             fis.read(bytes, 0, (int) byteLength);
-            final PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(bytes);
-            final KeyFactory factory = KeyFactory.getInstance(algorithm);
+            final KeySpec privSpec = new PKCS8EncodedKeySpec(bytes);
+            final var factory = KeyFactory.getInstance(algorithm);
             return factory.generatePrivate(privSpec);
         } catch (final Exception e) {
             LOGGER.error("Unable to read key", e);
             return null;
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (final IOException e) {
-            }
         }
     }
 }

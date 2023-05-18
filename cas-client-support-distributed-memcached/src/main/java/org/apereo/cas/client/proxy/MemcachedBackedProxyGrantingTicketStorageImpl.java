@@ -20,7 +20,6 @@ package org.apereo.cas.client.proxy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ import net.spy.memcached.MemcachedClientIF;
 public final class MemcachedBackedProxyGrantingTicketStorageImpl extends
         AbstractEncryptedProxyGrantingTicketStorageImpl {
 
-    protected final MemcachedClientIF client;
+    private final MemcachedClientIF client;
 
     /**
      * Default constructor reads from the /casclient_memcached_hosts.txt in the classpath.  Each line should be a host:port
@@ -50,14 +49,13 @@ public final class MemcachedBackedProxyGrantingTicketStorageImpl extends
         this(getHostsFromClassPath());
     }
 
-    protected static String[] getHostsFromClassPath() {
-        final InputStream inputStream = MemcachedBackedProxyGrantingTicketStorageImpl.class
+    private static String[] getHostsFromClassPath() {
+        final var inputStream = MemcachedBackedProxyGrantingTicketStorageImpl.class
                 .getResourceAsStream("/cas/casclient_memcached_hosts.txt");
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        final List<String> hosts = new ArrayList<String>();
+        final var hosts = new ArrayList<String>();
 
         String line;
-        try {
+        try (final var reader = new BufferedReader(new InputStreamReader(inputStream))) {
             while ((line = reader.readLine()) != null) {
                 hosts.add(line);
             }
@@ -65,26 +63,17 @@ public final class MemcachedBackedProxyGrantingTicketStorageImpl extends
             return hosts.toArray(new String[hosts.size()]);
         } catch (final IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            try {
-                reader.close();
-            } catch (final IOException e) {
-                // nothing to do
-            }
-
-            try {
-                inputStream.close();
-            } catch (final IOException e) {
-                // do nothing
-            }
         }
+        // nothing to do
+
+        // do nothing
     }
 
     public MemcachedBackedProxyGrantingTicketStorageImpl(final String[] hostnamesAndPorts) {
-        final List<InetSocketAddress> addresses = new ArrayList<InetSocketAddress>();
+        final List<InetSocketAddress> addresses = new ArrayList<>();
 
-        for (final String hostname : hostnamesAndPorts) {
-            final String[] hostPort = hostname.split(":");
+        for (final var hostname : hostnamesAndPorts) {
+            final var hostPort = hostname.split(":");
             addresses.add(new InetSocketAddress(hostPort[0], Integer.parseInt(hostPort[1])));
         }
 
@@ -110,7 +99,7 @@ public final class MemcachedBackedProxyGrantingTicketStorageImpl extends
         // we actually don't have anything to do here, yay!
     }
 
-    private void handleSynchronousRequest(final Future<?> f) {
+    private static void handleSynchronousRequest(final Future<?> f) {
         try {
             f.get();
         } catch (final Exception e) {

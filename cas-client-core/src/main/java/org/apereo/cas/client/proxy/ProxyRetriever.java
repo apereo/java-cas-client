@@ -27,6 +27,7 @@ import java.io.Serializable;
  * @author Scott Battaglia
  * @since 3.0
  */
+@FunctionalInterface
 public interface ProxyRetriever extends Serializable {
 
     /**

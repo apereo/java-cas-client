@@ -31,7 +31,6 @@ import javax.security.auth.login.LoginException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -62,7 +61,7 @@ public class CasLoginModuleTests {
     public void setUp() throws Exception {
         module = new CasLoginModule();
         subject = new Subject();
-        options = new HashMap<String, String>();
+        options = new HashMap<>();
         options.put("service", "https://service.example.com/webapp");
         options.put("ticketValidatorClass", Cas20ServiceTicketValidator.class.getName());
         options.put("casServerUrlPrefix", CONST_CAS_SERVER_URL);
@@ -79,18 +78,18 @@ public class CasLoginModuleTests {
      */
     @Test
     public void testLoginSuccess() throws Exception {
-        final String USERNAME = "username";
-        final String SERVICE = "https://example.com/service";
-        final String TICKET = "ST-100000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
-        final String RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
-                                + "<cas:authenticationSuccess><cas:user>" + USERNAME
-                                + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
+        final var USERNAME = "username";
+        final var SERVICE = "https://example.com/service";
+        final var TICKET = "ST-100000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
+        final var RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
+                             + "<cas:authenticationSuccess><cas:user>" + USERNAME
+                             + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
 
         module.initialize(
             subject,
             new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-            new HashMap<String, Object>(),
+            new HashMap<>(),
             options);
         module.login();
         module.commit();
@@ -106,15 +105,15 @@ public class CasLoginModuleTests {
      */
     @Test
     public void testLoginFailure() throws Exception {
-        final String SERVICE = "https://example.com/service";
-        final String TICKET = "ST-200000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
-        final String RESPONSE =
+        final var SERVICE = "https://example.com/service";
+        final var TICKET = "ST-200000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
+        final var RESPONSE =
             "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-200000-aA5Yuvrxzpv8Tau1cYQ7-srv1 not recognized</cas:authenticationFailure></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
         module.initialize(
             subject,
             new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-            new HashMap<String, Object>(),
+            new HashMap<>(),
             options);
         try {
             module.login();
@@ -147,13 +146,13 @@ public class CasLoginModuleTests {
      */
     @Test
     public void testAssertionCaching() throws Exception {
-        final String USERNAME = "username";
-        final String SERVICE = "https://example.com/service";
-        final String TICKET = "ST-300000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
-        final String SUCCESS_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
-                                        + "<cas:authenticationSuccess><cas:user>" + USERNAME
-                                        + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
-        final String FAILURE_RESPONSE =
+        final var USERNAME = "username";
+        final var SERVICE = "https://example.com/service";
+        final var TICKET = "ST-300000-aA5Yuvrxzpv8Tau1cYQ7-srv1";
+        final var SUCCESS_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
+                                     + "<cas:authenticationSuccess><cas:user>" + USERNAME
+                                     + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
+        final var FAILURE_RESPONSE =
             "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-300000-aA5Yuvrxzpv8Tau1cYQ7-srv1 not recognized</cas:authenticationFailure></cas:serviceResponse>";
 
         options.put("cacheAssertions", "true");
@@ -163,7 +162,7 @@ public class CasLoginModuleTests {
         module.initialize(
             subject,
             new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-            new HashMap<String, Object>(),
+            new HashMap<>(),
             options);
         module.login();
         module.commit();
@@ -180,7 +179,7 @@ public class CasLoginModuleTests {
         module.initialize(
             subject,
             new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-            new HashMap<String, Object>(),
+            new HashMap<>(),
             options);
         try {
             module.login();
@@ -201,13 +200,13 @@ public class CasLoginModuleTests {
      */
     @Test
     public void testAssertionCachingExpiration() throws Exception {
-        final String USERNAME = "hizzy";
-        final String SERVICE = "https://example.com/service";
-        final String TICKET = "ST-12345-ABCDEFGHIJKLMNOPQRSTUVWXYZ-hosta";
-        final String SUCCESS_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
-                                        + "<cas:authenticationSuccess><cas:user>" + USERNAME
-                                        + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
-        final String FAILURE_RESPONSE =
+        final var USERNAME = "hizzy";
+        final var SERVICE = "https://example.com/service";
+        final var TICKET = "ST-12345-ABCDEFGHIJKLMNOPQRSTUVWXYZ-hosta";
+        final var SUCCESS_RESPONSE = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
+                                     + "<cas:authenticationSuccess><cas:user>" + USERNAME
+                                     + "</cas:user></cas:authenticationSuccess></cas:serviceResponse>";
+        final var FAILURE_RESPONSE =
             "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code=\"INVALID_TICKET\">Ticket ST-12345-ABCDEFGHIJKLMNOPQRSTUVWXYZ-hosta not recognized</cas:authenticationFailure></cas:serviceResponse>";
 
         options.put("cacheAssertions", "true");
@@ -219,7 +218,7 @@ public class CasLoginModuleTests {
         module.initialize(
             subject,
             new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-            new HashMap<String, Object>(),
+            new HashMap<>(),
             options);
         assertTrue(module.login());
         module.commit();
@@ -230,7 +229,7 @@ public class CasLoginModuleTests {
         module.initialize(
             subject,
             new ServiceAndTicketCallbackHandler(SERVICE, TICKET),
-            new HashMap<String, Object>(),
+            new HashMap<>(),
             options);
         try {
             module.login();
@@ -240,9 +239,9 @@ public class CasLoginModuleTests {
         }
     }
 
-    private boolean hasPrincipalName(final Subject subject, final Class<? extends Principal> principalClass,
-                                     final String name) {
-        final Set<? extends Principal> principals = subject.getPrincipals(principalClass);
+    private static boolean hasPrincipalName(final Subject subject, final Class<? extends Principal> principalClass,
+                                            final String name) {
+        final var principals = subject.getPrincipals(principalClass);
         for (final Principal p : principals) {
             if (p.getName().equals(name)) {
                 return true;

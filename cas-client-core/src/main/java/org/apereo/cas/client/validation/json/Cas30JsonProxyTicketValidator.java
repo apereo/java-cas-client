@@ -40,7 +40,7 @@ public class Cas30JsonProxyTicketValidator extends Cas30ProxyTicketValidator {
     @Override
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         try {
-            final TicketValidationJsonResponse json = new JsonValidationResponseParser().parse(response);
+            final var json = new JsonValidationResponseParser().parse(response);
             return json.getAssertion(getProxyGrantingTicketStorage(), getProxyRetriever());
         } catch (final Exception e) {
             logger.warn("Unable parse the JSON response");
@@ -51,8 +51,8 @@ public class Cas30JsonProxyTicketValidator extends Cas30ProxyTicketValidator {
     @Override
     protected List<String> parseProxiesFromResponse(final String response) {
         try {
-            final TicketValidationJsonResponse json = new JsonValidationResponseParser().parse(response);
-            return json.getServiceResponse().getAuthenticationSuccess().getProxies();
+            final var json = new JsonValidationResponseParser().parse(response);
+            return json.serviceResponse().authenticationSuccess().getProxies();
         } catch (final Exception e) {
             logger.warn("Unable to locate proxies from the JSON response", e);
             return super.parseProxiesFromResponse(response);

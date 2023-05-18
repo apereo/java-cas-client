@@ -43,22 +43,22 @@ final class JsonValidationResponseParser {
             throw new TicketValidationException("Invalid JSON response; The response is empty");
         }
 
-        final TicketValidationJsonResponse json = this.objectMapper.readValue(response, TicketValidationJsonResponse.class);
+        final var json = this.objectMapper.readValue(response, TicketValidationJsonResponse.class);
 
-        final TicketValidationJsonResponse.CasServiceResponseAuthentication serviceResponse = json.getServiceResponse();
-        if (serviceResponse.getAuthenticationFailure() != null
-            && serviceResponse.getAuthenticationSuccess() != null) {
+        final var serviceResponse = json.serviceResponse();
+        if (serviceResponse.authenticationFailure() != null
+            && serviceResponse.authenticationSuccess() != null) {
             throw new TicketValidationException("Invalid JSON response; It indicates both a success "
                                                 + "and a failure event, which is indicative of a server error. The actual response is " + response);
         }
 
-        if (serviceResponse.getAuthenticationFailure() != null) {
-            final String error = json.getServiceResponse().getAuthenticationFailure().getCode()
-                                 + " - " + serviceResponse.getAuthenticationFailure().getDescription();
+        if (serviceResponse.authenticationFailure() != null) {
+            final var error = json.serviceResponse().authenticationFailure().getCode()
+                              + " - " + serviceResponse.authenticationFailure().getDescription();
             throw new TicketValidationException(error);
         }
 
-        final String principal = json.getServiceResponse().getAuthenticationSuccess().getUser();
+        final var principal = json.serviceResponse().authenticationSuccess().getUser();
         if (CommonUtils.isEmpty(principal)) {
             throw new TicketValidationException("No principal was found in the response from the CAS server.");
         }

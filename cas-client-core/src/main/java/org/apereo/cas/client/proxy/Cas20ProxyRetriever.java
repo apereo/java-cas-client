@@ -25,6 +25,7 @@ import org.apereo.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -43,6 +44,7 @@ import java.net.URLEncoder;
 public final class Cas20ProxyRetriever implements ProxyRetriever {
 
     /** Unique Id for serialization. */
+    @Serial
     private static final long serialVersionUID = 560409469568911792L;
 
     private static final Logger logger = LoggerFactory.getLogger(Cas20ProxyRetriever.class);
@@ -82,7 +84,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
         CommonUtils.assertNotNull(proxyGrantingTicketId, "proxyGrantingTicketId cannot be null.");
         CommonUtils.assertNotNull(targetService, "targetService cannot be null.");
 
-        final URL url = constructUrl(proxyGrantingTicketId, targetService);
+        final var url = constructUrl(proxyGrantingTicketId, targetService);
         final String response;
 
         if (this.urlConnectionFactory != null) {
@@ -90,14 +92,14 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
         } else {
             response = CommonUtils.getResponseFromServer(url, this.encoding);
         }
-        final String error = XmlUtils.getTextForElement(response, "proxyFailure");
+        final var error = XmlUtils.getTextForElement(response, "proxyFailure");
 
         if (CommonUtils.isNotEmpty(error)) {
             logger.debug(error);
             return null;
         }
 
-        final String ticket = XmlUtils.getTextForElement(response, "proxyTicket");
+        final var ticket = XmlUtils.getTextForElement(response, "proxyTicket");
         logger.debug("Got proxy ticket {}", ticket);
         return ticket;
     }

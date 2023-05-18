@@ -24,6 +24,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
 import static org.junit.Assert.*;
@@ -41,18 +42,18 @@ public final class HttpsURLConnectionFactoryTests {
 
     @Test
     public void serializeAndDeserialize() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+        final var baos = new ByteArrayOutputStream();
+        final ObjectOutput oos = new ObjectOutputStream(baos);
 
         oos.writeObject(this.httpsURLConnectionFactory);
         oos.close();
 
-        final byte[] serializedHttpsUrlConnectionFactory = baos.toByteArray();
+        final var serializedHttpsUrlConnectionFactory = baos.toByteArray();
 
-        final ByteArrayInputStream bais = new ByteArrayInputStream(serializedHttpsUrlConnectionFactory);
-        final ObjectInputStream ois = new ObjectInputStream(bais);
+        final var bais = new ByteArrayInputStream(serializedHttpsUrlConnectionFactory);
+        final var ois = new ObjectInputStream(bais);
 
-        final HttpsURLConnectionFactory deserializedObject = (HttpsURLConnectionFactory) ois.readObject();
+        final var deserializedObject = (HttpsURLConnectionFactory) ois.readObject();
         assertEquals(this.httpsURLConnectionFactory, deserializedObject);
     }
 }

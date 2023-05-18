@@ -48,7 +48,7 @@ public final class XmlUtils {
     /**
      * Static instance of Commons Logging.
      */
-    private final static Logger LOGGER = LoggerFactory.getLogger(XmlUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlUtils.class);
 
 
     /**
@@ -59,16 +59,16 @@ public final class XmlUtils {
      * @return DOM document.
      */
     public static Document newDocument(final String xml) {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final Map<String, Boolean> features = new HashMap<String, Boolean>();
+        final var factory = DocumentBuilderFactory.newInstance();
+        final Map<String, Boolean> features = new HashMap<>();
         features.put(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         features.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         features.put("http://apache.org/xml/features/disallow-doctype-decl", true);
-        for (final Map.Entry<String, Boolean> entry : features.entrySet()) {
+        for (final var entry : features.entrySet()) {
             try {
                 factory.setFeature(entry.getKey(), entry.getValue());
             } catch (final ParserConfigurationException e) {
-                LOGGER.warn("Failed setting XML feature {}: {}", entry.getKey(), e);
+                LOGGER.warn("Failed setting XML feature {}", entry.getKey(), e);
             }
         }
         factory.setExpandEntityReferences(false);
@@ -87,7 +87,7 @@ public final class XmlUtils {
      */
     public static XMLReader getXmlReader() {
         try {
-            final SAXParserFactory factory = SAXParserFactory.newInstance();
+            final var factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -111,10 +111,10 @@ public final class XmlUtils {
      * @return the list of text from the elements.
      */
     public static List<String> getTextForElements(final String xmlAsString, final String element) {
-        final List<String> elements = new ArrayList<String>(2);
-        final XMLReader reader = getXmlReader();
+        final List<String> elements = new ArrayList<>(2);
+        final var reader = getXmlReader();
 
-        final DefaultHandler handler = new DefaultHandler() {
+        final var handler = new DefaultHandler() {
 
             private boolean foundElement = false;
 
@@ -129,7 +129,7 @@ public final class XmlUtils {
             }
 
             @Override
-            public void endElement(final String uri, final String localName, final String qName) throws SAXException {
+            public void endElement(final String uri, final String localName, final String qName) {
                 if (localName.equals(element)) {
                     this.foundElement = false;
                     elements.add(this.buffer.toString());
@@ -138,7 +138,7 @@ public final class XmlUtils {
             }
 
             @Override
-            public void characters(final char[] ch, final int start, final int length) throws SAXException {
+            public void characters(final char[] ch, final int start, final int length) {
                 if (this.foundElement) {
                     this.buffer.append(ch, start, length);
                 }
@@ -167,10 +167,10 @@ public final class XmlUtils {
      * @return the text value of the element.
      */
     public static String getTextForElement(final String xmlAsString, final String element) {
-        final XMLReader reader = getXmlReader();
-        final StringBuilder builder = new StringBuilder();
+        final var reader = getXmlReader();
+        final var builder = new StringBuilder();
 
-        final DefaultHandler handler = new DefaultHandler() {
+        final var handler = new DefaultHandler() {
 
             private boolean foundElement = false;
 

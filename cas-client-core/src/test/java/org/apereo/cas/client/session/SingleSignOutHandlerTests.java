@@ -24,6 +24,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 
+import jakarta.servlet.http.HttpSession;
+
 import static org.junit.Assert.*;
 
 /**
@@ -32,15 +34,15 @@ import static org.junit.Assert.*;
  */
 public final class SingleSignOutHandlerTests {
 
-    private final static String ANOTHER_PARAMETER = "anotherParameter";
+    private static final String ANOTHER_PARAMETER = "anotherParameter";
 
-    private final static String TICKET = "ST-xxxxxxxx";
+    private static final String TICKET = "ST-xxxxxxxx";
 
-    private final static String LOGOUT_PARAMETER_NAME = "logoutRequest";
+    private static final String LOGOUT_PARAMETER_NAME = "logoutRequest";
 
-    private final static String RELAY_STATE_PARAMETER_NAME = "RelayState";
+    private static final String RELAY_STATE_PARAMETER_NAME = "RelayState";
 
-    private final static String ARTIFACT_PARAMETER_NAME = "ticket2";
+    private static final String ARTIFACT_PARAMETER_NAME = "ticket2";
 
     private SingleSignOutHandler handler;
 
@@ -66,39 +68,39 @@ public final class SingleSignOutHandlerTests {
         request.setParameter(ARTIFACT_PARAMETER_NAME, TICKET);
         request.setQueryString(ARTIFACT_PARAMETER_NAME + "=" + TICKET);
         assertTrue(handler.process(request, response));
-        final SessionMappingStorage storage = handler.getSessionMappingStorage();
+        final var storage = handler.getSessionMappingStorage();
         assertNull(storage.removeSessionByMappingId(TICKET));
     }
 
     @Test
     public void tokenRequestFailsIfBadParameter() {
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         request.setSession(session);
         request.setParameter(ANOTHER_PARAMETER, TICKET);
         request.setQueryString(ANOTHER_PARAMETER + "=" + TICKET);
         assertTrue(handler.process(request, response));
-        final SessionMappingStorage storage = handler.getSessionMappingStorage();
+        final var storage = handler.getSessionMappingStorage();
         assertNull(storage.removeSessionByMappingId(TICKET));
     }
 
     @Test
     public void tokenRequestOK() {
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         request.setSession(session);
         request.setParameter(ARTIFACT_PARAMETER_NAME, TICKET);
         request.setQueryString(ARTIFACT_PARAMETER_NAME + "=" + TICKET);
         assertTrue(handler.process(request, response));
-        final SessionMappingStorage storage = handler.getSessionMappingStorage();
+        final var storage = handler.getSessionMappingStorage();
         assertEquals(session, storage.removeSessionByMappingId(TICKET));
     }
 
     @Test
     public void backChannelLogoutFailsIfMultipart() {
-        final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
+        final var logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
         request.setContentType("multipart/form-data");
-        final MockHttpSession session = new MockHttpSession();
+        final var session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         assertTrue(handler.process(request, response));
         assertFalse(session.isInvalid());
@@ -106,10 +108,10 @@ public final class SingleSignOutHandlerTests {
 
     @Test
     public void backChannelLogoutFailsIfNoSessionIndex() {
-        final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage("");
+        final var logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage("");
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
-        final MockHttpSession session = new MockHttpSession();
+        final var session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         assertFalse(handler.process(request, response));
         assertFalse(session.isInvalid());
@@ -117,7 +119,7 @@ public final class SingleSignOutHandlerTests {
 
     @Test
     public void backChannelLogoutOK() {
-        final MockHttpSession session = doBackChannelLogout();
+        final var session = doBackChannelLogout();
         assertFalse(handler.process(request, response));
         assertTrue(session.isInvalid());
     }
@@ -126,7 +128,7 @@ public final class SingleSignOutHandlerTests {
     public void backChannelLogoutDoesNotRunIfPathIsNotEligibleForLogout() {
         handler.setLogoutCallbackPath("/logout");
         request.setServletPath("/not-a-logout");
-        final MockHttpSession session = doBackChannelLogout();
+        final var session = doBackChannelLogout();
         assertTrue(handler.process(request, response));
         assertFalse(session.isInvalid());
     }
@@ -135,18 +137,18 @@ public final class SingleSignOutHandlerTests {
     public void backChannelLogoutRunsIfPathEqualsLogoutPath() {
         handler.setLogoutCallbackPath("/logout");
         request.setServletPath("/logout");
-        final MockHttpSession session = doBackChannelLogout();
+        final var session = doBackChannelLogout();
         assertFalse(handler.process(request, response));
         assertTrue(session.isInvalid());
     }
 
     @Test
     public void frontChannelLogoutFailsIfBadParameter() {
-        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
         request.setParameter(ANOTHER_PARAMETER, logoutMessage);
         request.setMethod("GET");
         request.setQueryString(ANOTHER_PARAMETER + "=" + logoutMessage);
-        final MockHttpSession session = new MockHttpSession();
+        final var session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         assertTrue(handler.process(request, response));
         assertFalse(session.isInvalid());
@@ -154,11 +156,11 @@ public final class SingleSignOutHandlerTests {
 
     @Test
     public void frontChannelLogoutFailsIfNoSessionIndex() {
-        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage("");
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage("");
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
         request.setMethod("GET");
-        final MockHttpSession session = new MockHttpSession();
+        final var session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         assertFalse(handler.process(request, response));
         assertFalse(session.isInvalid());
@@ -166,11 +168,11 @@ public final class SingleSignOutHandlerTests {
 
     @Test
     public void frontChannelLogoutOK() {
-        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
         request.setMethod("GET");
-        final MockHttpSession session = new MockHttpSession();
+        final var session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         assertFalse(handler.process(request, response));
         assertTrue(session.isInvalid());
@@ -179,22 +181,22 @@ public final class SingleSignOutHandlerTests {
 
     @Test
     public void frontChannelLogoutRelayStateOK() {
-        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setParameter(RELAY_STATE_PARAMETER_NAME, TICKET);
         request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" + RELAY_STATE_PARAMETER_NAME + "=" + TICKET);
         request.setMethod("GET");
-        final MockHttpSession session = new MockHttpSession();
+        final var session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         assertFalse(handler.process(request, response));
         assertTrue(session.isInvalid());
     }
 
     private MockHttpSession doBackChannelLogout() {
-        final String logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
+        final var logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
         request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
         request.setMethod("POST");
-        final MockHttpSession session = new MockHttpSession();
+        final var session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         return session;
     }

@@ -74,7 +74,7 @@ public final class ReflectUtils {
      */
     public static <T> T newInstance(final Class<T> clazz, final Object... args) {
         final Class<?>[] argClasses = new Class[args.length];
-        for (int i = 0; i < args.length; i++) {
+        for (var i = 0; i < args.length; i++) {
             argClasses[i] = args[i].getClass();
         }
         try {
@@ -108,8 +108,8 @@ public final class ReflectUtils {
      * name exists.
      */
     public static PropertyDescriptor getPropertyDescriptor(final BeanInfo info, final String propertyName) {
-        for (int i = 0; i < info.getPropertyDescriptors().length; i++) {
-            final PropertyDescriptor pd = info.getPropertyDescriptors()[i];
+        for (var i = 0; i < info.getPropertyDescriptors().length; i++) {
+            final var pd = info.getPropertyDescriptors()[i];
             if (pd.getName().equals(propertyName)) {
                 return pd;
             }
@@ -141,7 +141,7 @@ public final class ReflectUtils {
     public static void setProperty(final String propertyName, final Object value, final Object target,
                                    final BeanInfo info) {
         try {
-            final PropertyDescriptor pd = getPropertyDescriptor(info, propertyName);
+            final var pd = getPropertyDescriptor(info, propertyName);
             pd.getWriteMethod().invoke(target, value);
         } catch (final InvocationTargetException e) {
             throw new RuntimeException("Error setting property " + propertyName, e.getCause());
@@ -159,7 +159,7 @@ public final class ReflectUtils {
      * @return Field value.
      */
     public static Object getField(final String fieldName, final Object target) {
-        Class<?> clazz = target.getClass();
+        var clazz = target.getClass();
         Field field = null;
         do {
             try {

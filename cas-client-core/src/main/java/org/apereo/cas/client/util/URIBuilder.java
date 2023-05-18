@@ -21,6 +21,7 @@ package org.apereo.cas.client.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -28,7 +29,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -122,16 +123,16 @@ public final class URIBuilder {
         digestURI(uri);
     }
 
-    private static boolean isIPv6Address(final String input) {
+    private static boolean isIPv6Address(final CharSequence input) {
         return IPV6_STD_PATTERN.matcher(input).matches();
     }
 
     private static String normalizePath(final String path) {
-        String s = path;
+        var s = path;
         if (s == null) {
             return null;
         }
-        int n = 0;
+        var n = 0;
         for (; n < s.length(); n++) {
             if (s.charAt(n) != '/') {
                 break;
@@ -203,8 +204,8 @@ public final class URIBuilder {
      * will remove custom query if present.
      * </p>
      */
-    public URIBuilder setParameters(final List<BasicNameValuePair> nvps) {
-        this.queryParams = new ArrayList<BasicNameValuePair>();
+    public URIBuilder setParameters(final Collection<BasicNameValuePair> nvps) {
+        this.queryParams = new ArrayList<>();
         this.queryParams.addAll(nvps);
         this.encodedQuery = null;
         this.encodedSchemeSpecificPart = null;
@@ -213,7 +214,7 @@ public final class URIBuilder {
     }
 
     public URIBuilder setParameters(final String queryParameters) {
-        this.queryParams = new ArrayList<BasicNameValuePair>();
+        this.queryParams = new ArrayList<>();
         this.queryParams.addAll(parseQuery(queryParameters));
         this.encodedQuery = null;
         this.encodedSchemeSpecificPart = null;
@@ -229,9 +230,9 @@ public final class URIBuilder {
      * will remove custom query if present.
      * </p>
      */
-    public URIBuilder addParameters(final List<BasicNameValuePair> nvps) {
+    public URIBuilder addParameters(final Collection<BasicNameValuePair> nvps) {
         if (this.queryParams == null || this.queryParams.isEmpty()) {
-            this.queryParams = new ArrayList<BasicNameValuePair>();
+            this.queryParams = new ArrayList<>();
         }
         this.queryParams.addAll(nvps);
         this.encodedQuery = null;
@@ -250,11 +251,11 @@ public final class URIBuilder {
      */
     public URIBuilder setParameters(final BasicNameValuePair... nvps) {
         if (this.queryParams == null) {
-            this.queryParams = new ArrayList<BasicNameValuePair>();
+            this.queryParams = new ArrayList<>();
         } else {
             this.queryParams.clear();
         }
-        for (final BasicNameValuePair nvp : nvps) {
+        for (final var nvp : nvps) {
             this.queryParams.add(nvp);
         }
         this.encodedQuery = null;
@@ -273,7 +274,7 @@ public final class URIBuilder {
      */
     public URIBuilder addParameter(final String param, final String value) {
         if (this.queryParams == null) {
-            this.queryParams = new ArrayList<BasicNameValuePair>();
+            this.queryParams = new ArrayList<>();
         }
         this.queryParams.add(new BasicNameValuePair(param, value));
         this.encodedQuery = null;
@@ -292,12 +293,12 @@ public final class URIBuilder {
      */
     public URIBuilder setParameter(final String param, final String value) {
         if (this.queryParams == null) {
-            this.queryParams = new ArrayList<BasicNameValuePair>();
+            this.queryParams = new ArrayList<>();
         }
         if (!this.queryParams.isEmpty()) {
-            for (final Iterator<BasicNameValuePair> it = this.queryParams.iterator(); it.hasNext(); ) {
-                final BasicNameValuePair nvp = it.next();
-                if (nvp.getName().equals(param)) {
+            for (final var it = this.queryParams.iterator(); it.hasNext(); ) {
+                final var nvp = it.next();
+                if (nvp.name().equals(param)) {
                     it.remove();
                 }
             }
@@ -437,9 +438,9 @@ public final class URIBuilder {
 
     public List<BasicNameValuePair> getQueryParams() {
         if (this.queryParams != null) {
-            return new ArrayList<BasicNameValuePair>(this.queryParams);
+            return new ArrayList<>(this.queryParams);
         }
-        return new ArrayList<BasicNameValuePair>();
+        return new ArrayList<>();
 
     }
 
@@ -459,7 +460,7 @@ public final class URIBuilder {
 
     @Override
     public int hashCode() {
-        int result = scheme != null ? scheme.hashCode() : 0;
+        var result = scheme != null ? scheme.hashCode() : 0;
         result = 31 * result + (encodedSchemeSpecificPart != null ? encodedSchemeSpecificPart.hashCode() : 0);
         result = 31 * result + (encodedAuthority != null ? encodedAuthority.hashCode() : 0);
         result = 31 * result + (userInfo != null ? userInfo.hashCode() : 0);
@@ -486,7 +487,7 @@ public final class URIBuilder {
             return false;
         }
 
-        final URIBuilder that = (URIBuilder) o;
+        final var that = (URIBuilder) o;
 
         if (port != that.port) {
             return false;
@@ -539,12 +540,9 @@ public final class URIBuilder {
         return buildString();
     }
 
-    public static class BasicNameValuePair implements Cloneable, Serializable {
-        private static final long serialVersionUID = -6437800749411518984L;
-
-        private final String name;
-
-        private final String value;
+    public record BasicNameValuePair(String name, String value) implements Cloneable, Serializable {
+            @Serial
+            private static final long serialVersionUID = -6437800749411518984L;
 
         /**
          * Default Constructor taking a name and a value. The value may be null.
@@ -552,89 +550,73 @@ public final class URIBuilder {
          * @param name  The name.
          * @param value The value.
          */
-        public BasicNameValuePair(final String name, final String value) {
-            super();
-            this.name = name;
-            this.value = value;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public String getValue() {
-            return this.value;
+        public BasicNameValuePair {
         }
 
         @Override
-        public int hashCode() {
-            return 133 * this.name.hashCode() * this.value.hashCode();
-        }
+            public boolean equals(final Object object) {
+                if (this == object) {
+                    return true;
+                }
 
-        @Override
-        public boolean equals(final Object object) {
-            if (this == object) {
-                return true;
-            }
+                if (object == null) {
+                    return false;
+                }
 
-            if (object == null) {
+                if (object instanceof BasicNameValuePair) {
+                    final var that = (BasicNameValuePair) object;
+                    return this.name.equals(that.name)
+                           && this.value.equals(that.value);
+                }
                 return false;
             }
 
-            if (object instanceof BasicNameValuePair) {
-                final BasicNameValuePair that = (BasicNameValuePair) object;
-                return this.name.equals(that.name)
-                       && this.value.equals(that.value);
+            @Override
+            public Object clone() throws CloneNotSupportedException {
+                return super.clone();
             }
-            return false;
-        }
 
-        @Override
-        public Object clone() throws CloneNotSupportedException {
-            return super.clone();
-        }
+            @Override
+            public String toString() {
+                // don't call complex default formatting for a simple toString
 
-        @Override
-        public String toString() {
-            // don't call complex default formatting for a simple toString
-
-            if (this.value == null) {
-                return name;
+                if (this.value == null) {
+                    return name;
+                }
+                final var len = this.name.length() + 1 + this.value.length();
+                final var buffer = new StringBuilder(len);
+                buffer.append(this.name);
+                buffer.append("=");
+                buffer.append(this.value);
+                return buffer.toString();
             }
-            final int len = this.name.length() + 1 + this.value.length();
-            final StringBuilder buffer = new StringBuilder(len);
-            buffer.append(this.name);
-            buffer.append("=");
-            buffer.append(this.value);
-            return buffer.toString();
+
         }
 
-    }
-
-    private List<BasicNameValuePair> parseQuery(final String query) {
+    private static List<BasicNameValuePair> parseQuery(final String query) {
 
         try {
-            final Charset utf8 = Charset.forName("UTF-8");
+            final var utf8 = Charset.forName("UTF-8");
             if (query != null && !query.isEmpty()) {
-                final List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
-                final String[] parametersArray = query.split("&");
+                final List<BasicNameValuePair> list = new ArrayList<>();
+                final var parametersArray = query.split("&");
 
-                for (final String parameter : parametersArray) {
-                    final int firstIndex = parameter.indexOf("=");
+                for (final var parameter : parametersArray) {
+                    final var firstIndex = parameter.indexOf("=");
                     if (firstIndex != -1) {
-                        final String paramName = parameter.substring(0, firstIndex);
-                        final String decodedParamName = URLDecoder.decode(paramName, utf8.name());
+                        final var paramName = parameter.substring(0, firstIndex);
+                        final var decodedParamName = URLDecoder.decode(paramName, utf8.name());
 
-                        final String paramVal = parameter.substring(firstIndex + 1);
-                        final String decodedParamVal = URLDecoder.decode(paramVal, utf8.name());
+                        final var paramVal = parameter.substring(firstIndex + 1);
+                        final var decodedParamVal = URLDecoder.decode(paramVal, utf8.name());
 
                         list.add(new BasicNameValuePair(decodedParamName, decodedParamVal));
                     } else {
                         // Either we do not have a query parameter, or it might be encoded; take it verbaitm
-                        final String[] parameterCombo = parameter.split("=");
+                        final var parameterCombo = parameter.split("=");
                         if (parameterCombo.length >= 1) {
-                            final String key = URLDecoder.decode(parameterCombo[0], utf8.name());
-                            final String val = parameterCombo.length == 2 ? URLDecoder.decode(parameterCombo[1], utf8.name()) : "";
+                            final var key = URLDecoder.decode(parameterCombo[0], utf8.name());
+                            final var val = parameterCombo.length == 2 ? URLDecoder.decode(parameterCombo[1], utf8.name()) : "";
                             list.add(new BasicNameValuePair(key, val));
                         }
                     }
@@ -644,11 +626,11 @@ public final class URIBuilder {
         } catch (final UnsupportedEncodingException e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return new ArrayList<BasicNameValuePair>();
+        return new ArrayList<>();
     }
 
     private String buildString() {
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         if (this.scheme != null) {
             sb.append(this.scheme).append(':');
         }
@@ -702,11 +684,11 @@ public final class URIBuilder {
         return this.encode ? CommonUtils.urlEncode(path) : path;
     }
 
-    private String encodeUrlForm(final List<BasicNameValuePair> params) {
-        final StringBuilder result = new StringBuilder();
-        for (final BasicNameValuePair parameter : params) {
-            final String encodedName = this.encode ? CommonUtils.urlEncode(parameter.getName()) : parameter.getName();
-            final String encodedValue = this.encode ? CommonUtils.urlEncode(parameter.getValue()) : parameter.getValue();
+    private String encodeUrlForm(final Iterable<BasicNameValuePair> params) {
+        final var result = new StringBuilder();
+        for (final var parameter : params) {
+            final var encodedName = this.encode ? CommonUtils.urlEncode(parameter.name()) : parameter.name();
+            final var encodedValue = this.encode ? CommonUtils.urlEncode(parameter.value()) : parameter.value();
 
             if (result.length() > 0) {
                 result.append("&");

@@ -45,7 +45,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
 
     private final AtomicBoolean handlerInitialized = new AtomicBoolean(false);
 
-    protected static SingleSignOutHandler getSingleSignOutHandler() {
+    static SingleSignOutHandler getSingleSignOutHandler() {
         return HANDLER;
     }
 
@@ -64,31 +64,31 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         handlerInitialized.set(true);
     }
 
-    public void setArtifactParameterName(final String name) {
+    public static void setArtifactParameterName(final String name) {
         HANDLER.setArtifactParameterName(name);
     }
 
-    public void setLogoutParameterName(final String name) {
+    public static void setLogoutParameterName(final String name) {
         HANDLER.setLogoutParameterName(name);
     }
 
-    public void setRelayStateParameterName(final String name) {
+    public static void setRelayStateParameterName(final String name) {
         HANDLER.setRelayStateParameterName(name);
     }
 
-    public void setLogoutCallbackPath(final String logoutCallbackPath) {
+    public static void setLogoutCallbackPath(final String logoutCallbackPath) {
         HANDLER.setLogoutCallbackPath(logoutCallbackPath);
     }
 
-    public void setSessionMappingStorage(final SessionMappingStorage storage) {
+    public static void setSessionMappingStorage(final SessionMappingStorage storage) {
         HANDLER.setSessionMappingStorage(storage);
     }
 
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                          final FilterChain filterChain) throws IOException, ServletException {
-        final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpServletResponse response = (HttpServletResponse) servletResponse;
+        final var request = (HttpServletRequest) servletRequest;
+        final var response = (HttpServletResponse) servletResponse;
 
         /**
          * <p>Workaround for now for the fact that Spring Security will fail since it doesn't call {@link #init(javax.servlet.FilterConfig)}.</p>

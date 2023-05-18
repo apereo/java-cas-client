@@ -31,6 +31,7 @@ import java.io.IOException;
  * @author Scott Battaglia
  * @since 3.3.0
  */
+@FunctionalInterface
 public interface AuthenticationRedirectStrategy {
 
     /**

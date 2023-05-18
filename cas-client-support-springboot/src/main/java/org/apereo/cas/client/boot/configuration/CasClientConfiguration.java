@@ -49,7 +49,6 @@ import org.springframework.util.StringUtils;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -81,7 +80,7 @@ public class CasClientConfiguration {
                                    final Filter targetFilter,
                                    final int filterOrder,
                                    final Map<String, String> initParams,
-                                   final List<String> urlPatterns) {
+                                   final Collection<String> urlPatterns) {
 
         filterRegistrationBean.setFilter(targetFilter);
         filterRegistrationBean.setOrder(filterOrder);
@@ -94,7 +93,7 @@ public class CasClientConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "cas", name = "skipTicketValidation", havingValue = "false", matchIfMissing = true)
     public FilterRegistrationBean casValidationFilter() {
-        final FilterRegistrationBean validationFilter = new FilterRegistrationBean();
+        final var validationFilter = new FilterRegistrationBean();
         final Filter targetCasValidationFilter;
         switch (this.configProps.getValidationType()) {
             case CAS:
@@ -153,7 +152,7 @@ public class CasClientConfiguration {
 
     @Bean
     public FilterRegistrationBean casAuthenticationFilter() {
-        final FilterRegistrationBean authnFilter = new FilterRegistrationBean();
+        final var authnFilter = new FilterRegistrationBean();
         final Filter targetCasAuthnFilter =
             this.configProps.getValidationType() == EnableCasClient.ValidationType.CAS
             || configProps.getValidationType() == EnableCasClient.ValidationType.CAS3
@@ -178,7 +177,7 @@ public class CasClientConfiguration {
 
     @Bean
     public FilterRegistrationBean casHttpServletRequestWrapperFilter() {
-        final FilterRegistrationBean reqWrapperFilter = new FilterRegistrationBean();
+        final var reqWrapperFilter = new FilterRegistrationBean();
         reqWrapperFilter.setFilter(new HttpServletRequestWrapperFilter());
         if (!this.configProps.getRequestWrapperUrlPatterns().isEmpty()) {
             reqWrapperFilter.setUrlPatterns(this.configProps.getRequestWrapperUrlPatterns());
@@ -193,7 +192,7 @@ public class CasClientConfiguration {
 
     @Bean
     public FilterRegistrationBean casAssertionThreadLocalFilter() {
-        final FilterRegistrationBean assertionTLFilter = new FilterRegistrationBean();
+        final var assertionTLFilter = new FilterRegistrationBean();
         assertionTLFilter.setFilter(new AssertionThreadLocalFilter());
         if (!this.configProps.getAssertionThreadLocalUrlPatterns().isEmpty()) {
             assertionTLFilter.setUrlPatterns(this.configProps.getAssertionThreadLocalUrlPatterns());
@@ -223,7 +222,7 @@ public class CasClientConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "cas", value = "single-logout.enabled", havingValue = "true")
     public FilterRegistrationBean casSingleSignOutFilter() {
-        final FilterRegistrationBean singleSignOutFilter = new FilterRegistrationBean();
+        final var singleSignOutFilter = new FilterRegistrationBean();
         singleSignOutFilter.setFilter(new SingleSignOutFilter());
         final Map<String, String> initParameters = new HashMap<>(1);
         initParameters.put(ConfigurationKeys.CAS_SERVER_URL_PREFIX.getName(), configProps.getServerUrlPrefix());
@@ -235,7 +234,7 @@ public class CasClientConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "cas", value = "single-logout.enabled", havingValue = "true")
     public ServletListenerRegistrationBean<EventListener> casSingleSignOutListener() {
-        ServletListenerRegistrationBean<EventListener> singleSignOutListener = new ServletListenerRegistrationBean<>();
+        final var singleSignOutListener = new ServletListenerRegistrationBean<>();
         singleSignOutListener.setListener(new SingleSignOutHttpSessionListener());
         singleSignOutListener.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return singleSignOutListener;
@@ -250,7 +249,7 @@ public class CasClientConfiguration {
         @Bean
         @ConditionalOnMissingBean(name = "springSecurityAssertionSessionContextFilter")
         public FilterRegistrationBean springSecurityAssertionSessionContextFilter() {
-            final FilterRegistrationBean filter = new FilterRegistrationBean();
+            final var filter = new FilterRegistrationBean();
             filter.setFilter(new SpringSecurityAssertionSessionContextFilter(springSecurityCasUserDetailsService()));
             filter.setEnabled(!configProps.getAttributeAuthorities().isEmpty());
             filter.setOrder(0);
@@ -264,7 +263,7 @@ public class CasClientConfiguration {
         @ConditionalOnMissingBean(name = "springSecurityCasUserDetailsService")
         public AuthenticationUserDetailsService springSecurityCasUserDetailsService() {
             return token -> {
-                final List<SimpleGrantedAuthority> authorities = configProps.getAttributeAuthorities()
+                final var authorities = configProps.getAttributeAuthorities()
                     .stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
                 return new User(token.getPrincipal().toString(), null, authorities);
             };

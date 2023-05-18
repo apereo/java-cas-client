@@ -34,9 +34,9 @@ public class ProxyGrantingTicketStorageImplTest {
 
     @Test
     public void cleanUp() throws Exception {
-        final String proxyGrantingTicketIou = "proxyGrantingTicketIou";
+        final var proxyGrantingTicketIou = "proxyGrantingTicketIou";
 
-        final int timeout = 250;
+        final var timeout = 250;
         this.storage.save(proxyGrantingTicketIou, "proxyGrantingTicket");
 
         // sleep long enough for the ticket to timeout

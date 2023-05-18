@@ -24,6 +24,7 @@ import org.apereo.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
     private static final Logger LOGGER = LoggerFactory.getLogger(AttributePrincipalImpl.class);
 
     /** Unique Id for Serialization */
+    @Serial
     private static final long serialVersionUID = -1443182634624927187L;
 
     /** Map of key/value pairs about this principal. */

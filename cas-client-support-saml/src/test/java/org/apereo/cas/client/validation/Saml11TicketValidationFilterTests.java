@@ -25,6 +25,8 @@ import org.junit.Test;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockServletContext;
 
+import jakarta.servlet.FilterConfig;
+
 /**
  * Unit test for {@link Saml11TicketValidationFilter}.
  *
@@ -33,8 +35,8 @@ import org.springframework.mock.web.MockServletContext;
 public class Saml11TicketValidationFilterTests {
     @Test
     public void testRenewInitParamThrows() throws Exception {
-        final Saml11TicketValidationFilter f = new Saml11TicketValidationFilter();
-        final MockFilterConfig config = new MockFilterConfig();
+        final var f = new Saml11TicketValidationFilter();
+        final var config = new MockFilterConfig();
         config.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         config.addInitParameter("renew", "true");
         try {
@@ -47,14 +49,14 @@ public class Saml11TicketValidationFilterTests {
 
     @Test
     public void testAllowsRenewContextParam() throws Exception {
-        final Saml11TicketValidationFilter f = new Saml11TicketValidationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new Saml11TicketValidationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         context.addInitParameter("renew", "true");
         context.addInitParameter("service", "http://www.jasig.org");
-        final MockFilterConfig config = new MockFilterConfig(context);
+        final FilterConfig config = new MockFilterConfig(context);
         f.init(config);
-        final TicketValidator validator = f.getTicketValidator(config);
+        final var validator = f.getTicketValidator(config);
         assertTrue(validator instanceof Saml11TicketValidator);
         assertTrue(((Saml11TicketValidator) validator).isRenew());
     }

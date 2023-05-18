@@ -66,8 +66,8 @@ public final class IOUtils {
      */
     public static String readString(final InputStream in, final Charset charset) throws IOException {
         final Reader reader = new InputStreamReader(in, charset);
-        final StringBuilder builder = new StringBuilder();
-        final CharBuffer buffer = CharBuffer.allocate(2048);
+        final var builder = new StringBuilder();
+        final var buffer = CharBuffer.allocate(2048);
         try {
             while (reader.read(buffer) > -1) {
                 buffer.flip();

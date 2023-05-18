@@ -34,6 +34,7 @@ package org.apereo.cas.client.ssl;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
 /**
@@ -49,7 +50,7 @@ public class RegexHostnameVerifierTests extends TestCase {
      * Test method for {@link RegexHostnameVerifier#verify(String, SSLSession)}.
      */
     public void testVerify() {
-        final RegexHostnameVerifier verifier = new RegexHostnameVerifier("\\w+\\.vt\\.edu");
+        final HostnameVerifier verifier = new RegexHostnameVerifier("\\w+\\.vt\\.edu");
         Assert.assertTrue(verifier.verify("a.vt.edu", null));
         Assert.assertTrue(verifier.verify("host.vt.edu", null));
         Assert.assertFalse(verifier.verify("1-host.vt.edu", null));

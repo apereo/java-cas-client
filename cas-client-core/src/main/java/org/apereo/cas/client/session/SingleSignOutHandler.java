@@ -24,9 +24,10 @@ import org.apereo.cas.client.util.CommonUtils;
 import org.apereo.cas.client.util.XmlUtils;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ import java.util.zip.Inflater;
  */
 public final class SingleSignOutHandler {
 
-    private final static int DECOMPRESSION_FACTOR = 10;
+    private static final int DECOMPRESSION_FACTOR = 10;
 
     /** Logger instance */
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -170,12 +171,13 @@ public final class SingleSignOutHandler {
     /**
      * Abstracts the ways we can force logout with the Servlet spec.
      */
+    @FunctionalInterface
     private interface LogoutStrategy {
 
         void logout(HttpServletRequest request);
     }
 
-    private class Servlet25LogoutStrategy implements LogoutStrategy {
+    private static class Servlet25LogoutStrategy implements LogoutStrategy {
 
         @Override
         public void logout(final HttpServletRequest request) {
@@ -232,7 +234,7 @@ public final class SingleSignOutHandler {
         return logoutCallbackPath == null || logoutCallbackPath.equals(getPath(request));
     }
 
-    private String getPath(final HttpServletRequest request) {
+    private static String getPath(final HttpServletRequest request) {
         return request.getServletPath() + CommonUtils.nullToEmpty(request.getPathInfo());
     }
 
@@ -243,14 +245,14 @@ public final class SingleSignOutHandler {
      * @param request HTTP request containing an authentication token.
      */
     private void recordSession(final HttpServletRequest request) {
-        final HttpSession session = request.getSession(this.eagerlyCreateSessions);
+        final var session = request.getSession(this.eagerlyCreateSessions);
 
         if (session == null) {
             logger.debug("No session currently exists (and none created).  Cannot record session information for single sign out.");
             return;
         }
 
-        final String token = CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters);
+        final var token = CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters);
         logger.debug("Recording session for token {}", token);
 
         try {
@@ -268,16 +270,16 @@ public final class SingleSignOutHandler {
      * @return the uncompressed logout message.
      */
     private String uncompressLogoutMessage(final String originalMessage) {
-        final byte[] binaryMessage = Base64.getDecoder().decode(originalMessage);
+        final var binaryMessage = Base64.getDecoder().decode(originalMessage);
 
         Inflater decompresser = null;
         try {
             // decompress the bytes
             decompresser = new Inflater();
             decompresser.setInput(binaryMessage);
-            final byte[] result = new byte[binaryMessage.length * DECOMPRESSION_FACTOR];
+            final var result = new byte[binaryMessage.length * DECOMPRESSION_FACTOR];
 
-            final int resultLength = decompresser.inflate(result);
+            final var resultLength = decompresser.inflate(result);
 
             // decode the bytes into a String
             return new String(result, 0, resultLength, "UTF-8");
@@ -297,7 +299,7 @@ public final class SingleSignOutHandler {
      * @param request HTTP request containing a CAS logout message.
      */
     private void destroySession(final HttpServletRequest request) {
-        String logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
+        var logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
         if (CommonUtils.isBlank(logoutMessage)) {
             logger.error("Could not locate logout message of the request from {}", this.logoutParameterName);
             return;
@@ -308,12 +310,12 @@ public final class SingleSignOutHandler {
         }
 
         logger.trace("Logout request:\n{}", logoutMessage);
-        final String token = XmlUtils.getTextForElement(logoutMessage, "SessionIndex");
+        final var token = XmlUtils.getTextForElement(logoutMessage, "SessionIndex");
         if (CommonUtils.isNotBlank(token)) {
-            final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(token);
+            final var session = this.sessionMappingStorage.removeSessionByMappingId(token);
 
             if (session != null) {
-                final String sessionID = session.getId();
+                final var sessionID = session.getId();
                 logger.debug("Invalidating session [{}] for token [{}]", sessionID, token);
 
                 try {
@@ -326,7 +328,7 @@ public final class SingleSignOutHandler {
         }
     }
 
-    private boolean isMultipartRequest(final HttpServletRequest request) {
+    private static boolean isMultipartRequest(final ServletRequest request) {
         return request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart");
     }
 }

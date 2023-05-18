@@ -23,7 +23,6 @@ import org.apereo.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -50,7 +49,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
     /**
      * Map that stores the PGTIOU to PGT mappings.
      */
-    private final ConcurrentMap<String, ProxyGrantingTicketHolder> cache = new ConcurrentHashMap<String, ProxyGrantingTicketHolder>();
+    private final ConcurrentMap<String, ProxyGrantingTicketHolder> cache = new ConcurrentHashMap<>();
 
     /**
      * time, in milliseconds, before a {@link ProxyGrantingTicketHolder}
@@ -79,7 +78,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
 
     @Override
     public void save(final String proxyGrantingTicketIou, final String proxyGrantingTicket) {
-        final ProxyGrantingTicketHolder holder = new ProxyGrantingTicketHolder(proxyGrantingTicket);
+        final var holder = new ProxyGrantingTicketHolder(proxyGrantingTicket);
 
         logger.debug("Saving ProxyGrantingTicketIOU and ProxyGrantingTicket combo: [{}, {}]", proxyGrantingTicketIou,
             proxyGrantingTicket);
@@ -96,7 +95,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
             return null;
         }
 
-        final ProxyGrantingTicketHolder holder = this.cache.get(proxyGrantingTicketIou);
+        final var holder = this.cache.get(proxyGrantingTicketIou);
 
         if (holder == null) {
             logger.info("No Proxy Ticket found for [{}].", proxyGrantingTicketIou);
@@ -115,7 +114,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
      */
     @Override
     public void cleanUp() {
-        for (final Map.Entry<String, ProxyGrantingTicketHolder> holder : this.cache.entrySet()) {
+        for (final var holder : this.cache.entrySet()) {
             if (holder.getValue().isExpired(this.timeout)) {
                 this.cache.remove(holder.getKey());
             }
@@ -128,7 +127,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
 
         private final long timeInserted;
 
-        protected ProxyGrantingTicketHolder(final String proxyGrantingTicket) {
+        private ProxyGrantingTicketHolder(final String proxyGrantingTicket) {
             this.proxyGrantingTicket = proxyGrantingTicket;
             this.timeInserted = System.currentTimeMillis();
         }

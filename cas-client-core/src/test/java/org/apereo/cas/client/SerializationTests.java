@@ -28,7 +28,9 @@ import org.junit.Assert;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
 
@@ -43,35 +45,29 @@ import java.util.Collections;
 public class SerializationTests extends TestCase {
 
     public void testSerializeDeserialize() throws Exception {
-        final Object[] subjects = getTestSubjects();
-        for (int i = 0; i < subjects.length; i++) {
-            final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            final ObjectOutputStream out = new ObjectOutputStream(byteOut);
-            try {
-                out.writeObject(subjects[i]);
+        final var subjects = getTestSubjects();
+        for (final Object subject : subjects) {
+            final var byteOut = new ByteArrayOutputStream();
+            try (final ObjectOutput out = new ObjectOutputStream(byteOut)) {
+                out.writeObject(subject);
             } catch (final Exception e) {
-                Assert.fail("Serialization failed for " + subjects[i]);
-            } finally {
-                out.close();
+                Assert.fail("Serialization failed for " + subject);
             }
 
-            final ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
-            final ObjectInputStream in = new ObjectInputStream(byteIn);
-            try {
-                Assert.assertEquals(subjects[i], in.readObject());
+            final var byteIn = new ByteArrayInputStream(byteOut.toByteArray());
+            try (final ObjectInput in = new ObjectInputStream(byteIn)) {
+                Assert.assertEquals(subject, in.readObject());
             } catch (final Exception e) {
-                Assert.fail("Deserialization failed for " + subjects[i]);
-            } finally {
-                in.close();
+                Assert.fail("Deserialization failed for " + subject);
             }
         }
     }
 
-    private Object[] getTestSubjects() {
-        final SimplePrincipal simplePrincipal = new SimplePrincipal("simple");
-        final AttributePrincipalImpl attributePrincipal = new AttributePrincipalImpl("attr",
+    private static Object[] getTestSubjects() {
+        final var simplePrincipal = new SimplePrincipal("simple");
+        final var attributePrincipal = new AttributePrincipalImpl("attr",
             Collections.<String, Object>singletonMap("LOA", "3"));
-        final AssertionPrincipal assertionPrincipal = new AssertionPrincipal("assertion", new AssertionImpl(
+        final var assertionPrincipal = new AssertionPrincipal("assertion", new AssertionImpl(
             attributePrincipal, Collections.<String, Object>singletonMap("authenticationMethod", "username")));
 
         return new Object[]{simplePrincipal, attributePrincipal, assertionPrincipal,};

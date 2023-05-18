@@ -22,6 +22,8 @@ import org.junit.Test;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockServletContext;
 
+import jakarta.servlet.FilterConfig;
+
 import static org.junit.Assert.*;
 
 /**
@@ -32,8 +34,8 @@ import static org.junit.Assert.*;
 public class Cas10TicketValidationFilterTests {
     @Test
     public void testThrowsRenewInitParam() throws Exception {
-        final Cas10TicketValidationFilter f = new Cas10TicketValidationFilter();
-        final MockFilterConfig config = new MockFilterConfig();
+        final var f = new Cas10TicketValidationFilter();
+        final var config = new MockFilterConfig();
         config.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         config.addInitParameter("renew", "true");
         try {
@@ -46,14 +48,14 @@ public class Cas10TicketValidationFilterTests {
 
     @Test
     public void testAllowsRenewContextParam() throws Exception {
-        final Cas10TicketValidationFilter f = new Cas10TicketValidationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new Cas10TicketValidationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         context.addInitParameter("renew", "true");
         context.addInitParameter("service", "http://www.jasig.org");
-        final MockFilterConfig config = new MockFilterConfig(context);
+        final FilterConfig config = new MockFilterConfig(context);
         f.init(config);
-        final TicketValidator validator = f.getTicketValidator(config);
+        final var validator = f.getTicketValidator(config);
         assertTrue(validator instanceof Cas10TicketValidator);
         assertTrue(((Cas10TicketValidator) validator).isRenew());
     }

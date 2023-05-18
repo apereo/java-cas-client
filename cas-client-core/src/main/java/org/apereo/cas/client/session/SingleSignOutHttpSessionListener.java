@@ -18,7 +18,6 @@
  */
 package org.apereo.cas.client.session;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 
@@ -42,7 +41,7 @@ public final class SingleSignOutHttpSessionListener implements HttpSessionListen
      *
      * @return the SessionMappingStorage
      */
-    protected static SessionMappingStorage getSessionMappingStorage() {
+    private static SessionMappingStorage getSessionMappingStorage() {
         return SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage();
     }
 
@@ -56,7 +55,7 @@ public final class SingleSignOutHttpSessionListener implements HttpSessionListen
         if (sessionMappingStorage == null) {
             sessionMappingStorage = getSessionMappingStorage();
         }
-        final HttpSession session = event.getSession();
+        final var session = event.getSession();
         sessionMappingStorage.removeBySessionById(session.getId());
     }
 }

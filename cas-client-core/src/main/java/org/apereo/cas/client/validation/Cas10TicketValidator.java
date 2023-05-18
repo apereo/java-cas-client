@@ -47,9 +47,9 @@ public final class Cas10TicketValidator extends AbstractCasProtocolUrlBasedTicke
         }
 
         try {
-            final BufferedReader reader = new BufferedReader(new StringReader(response));
+            final var reader = new BufferedReader(new StringReader(response));
             reader.readLine();
-            final String name = reader.readLine();
+            final var name = reader.readLine();
 
             return new AssertionImpl(name);
         } catch (final IOException e) {

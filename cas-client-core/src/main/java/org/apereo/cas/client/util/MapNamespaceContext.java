@@ -40,11 +40,11 @@ public class MapNamespaceContext implements NamespaceContext {
      * @param namespaceDeclarations An array of namespace declarations of the form prefix->uri.
      */
     public MapNamespaceContext(final String... namespaceDeclarations) {
-        namespaceMap = new HashMap<String, String>();
+        namespaceMap = new HashMap<>();
         int index;
         String key;
         String value;
-        for (final String decl : namespaceDeclarations) {
+        for (final var decl : namespaceDeclarations) {
             index = decl.indexOf('-');
             key = decl.substring(0, index);
             value = decl.substring(index + 2);
@@ -68,7 +68,7 @@ public class MapNamespaceContext implements NamespaceContext {
 
     @Override
     public String getPrefix(final String namespaceURI) {
-        for (final Map.Entry<String, String> entry : namespaceMap.entrySet()) {
+        for (final var entry : namespaceMap.entrySet()) {
             if (entry.getValue().equalsIgnoreCase(namespaceURI)) {
                 return entry.getKey();
             }

@@ -24,7 +24,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * Implementation of the redirect strategy that can handle a Faces Ajax request in addition to the standard redirect style.
@@ -45,7 +44,7 @@ public final class FacesCompatibleAuthenticationRedirectStrategy implements Auth
             response.setContentType("text/xml");
             response.setStatus(200);
 
-            final PrintWriter writer = response.getWriter();
+            final var writer = response.getWriter();
             writer.write("<?xml version='1.0' encoding='UTF-8'?>");
             writer.write(String.format("<partial-response><redirect url=\"%s\"></redirect></partial-response>",
                 potentialRedirectUrl));

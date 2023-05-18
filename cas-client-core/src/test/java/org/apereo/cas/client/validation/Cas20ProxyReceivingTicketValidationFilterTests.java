@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockServletContext;
 
+import jakarta.servlet.FilterConfig;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,10 +47,10 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     private final CleanUpTimerTask defaultTimerTask = new CleanUpTimerTask(storage);
 
     public void testStartsThreadAtStartup() throws Exception {
-        final MethodFlag scheduleMethodFlag = new MethodFlag();
-        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final var scheduleMethodFlag = new MethodFlag();
+        final var filter = newCas20ProxyReceivingTicketValidationFilter();
 
-        final Timer timer = new Timer(true) {
+        final var timer = new Timer(true) {
             @Override
             public void schedule(final TimerTask task, final long delay, final long period) {
                 scheduleMethodFlag.setCalled();
@@ -65,10 +67,10 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     }
 
     public void testShutsDownTimerThread() throws Exception {
-        final MethodFlag cancelMethodFlag = new MethodFlag();
-        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final var cancelMethodFlag = new MethodFlag();
+        final var filter = newCas20ProxyReceivingTicketValidationFilter();
 
-        final Timer timer = new Timer(true) {
+        final var timer = new Timer(true) {
             @Override
             public void cancel() {
                 cancelMethodFlag.setCalled();
@@ -87,17 +89,17 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     }
 
     public void testCallsCleanAllOnSchedule() throws Exception {
-        final MethodFlag timerTaskFlag = new MethodFlag();
-        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final var timerTaskFlag = new MethodFlag();
+        final var filter = newCas20ProxyReceivingTicketValidationFilter();
 
-        final TimerTask timerTask = new TimerTask() {
+        final var timerTask = new TimerTask() {
             @Override
             public void run() {
                 timerTaskFlag.setCalled();
             }
         };
 
-        final int millisBetweenCleanUps = 250;
+        final var millisBetweenCleanUps = 250;
         filter.setProxyGrantingTicketStorage(storage);
         filter.setTimerTask(timerTask);
         filter.setTimer(defaultTimer);
@@ -113,17 +115,17 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     }
 
     public void testDelaysFirstCleanAll() throws Exception {
-        final MethodFlag timerTaskFlag = new MethodFlag();
-        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final var timerTaskFlag = new MethodFlag();
+        final var filter = newCas20ProxyReceivingTicketValidationFilter();
 
-        final TimerTask timerTask = new TimerTask() {
+        final var timerTask = new TimerTask() {
             @Override
             public void run() {
                 timerTaskFlag.setCalled();
             }
         };
 
-        final int millisBetweenCleanUps = 250;
+        final var millisBetweenCleanUps = 250;
         filter.setProxyGrantingTicketStorage(storage);
         filter.setMillisBetweenCleanUps(millisBetweenCleanUps);
         filter.setTimer(defaultTimer);
@@ -142,7 +144,7 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     }
 
     public void testThrowsForNullStorage() throws Exception {
-        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final var filter = newCas20ProxyReceivingTicketValidationFilter();
         filter.setProxyGrantingTicketStorage(null);
 
         try {
@@ -154,10 +156,10 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     }
 
     public void testGetTicketValidator() throws Exception {
-        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final var filter = newCas20ProxyReceivingTicketValidationFilter();
 
         // Test case #1
-        final MockFilterConfig config1 = new MockFilterConfig();
+        final var config1 = new MockFilterConfig();
         config1.addInitParameter("allowedProxyChains", "https://a.example.com");
         config1.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
         config1.addInitParameter("service", "http://www.jasig.org");
@@ -167,9 +169,9 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
 
     @Test
     public void getTicketValidatorWithProxyChains() throws Exception {
-        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final var filter = newCas20ProxyReceivingTicketValidationFilter();
         // Test case #2
-        final MockFilterConfig config2 = new MockFilterConfig();
+        final var config2 = new MockFilterConfig();
         config2.addInitParameter("allowedProxyChains", "https://a.example.com https://b.example.com");
         config2.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
         config2.addInitParameter("service", "http://www.jasig.org");
@@ -180,10 +182,10 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
 
     @Test
     public void getTIcketValidatorWithProxyChainsAndLineBreak() throws Exception {
-        final Cas20ProxyReceivingTicketValidationFilter filter = newCas20ProxyReceivingTicketValidationFilter();
+        final var filter = newCas20ProxyReceivingTicketValidationFilter();
 
         // Test case #3
-        final MockFilterConfig config3 = new MockFilterConfig();
+        final var config3 = new MockFilterConfig();
         config3.addInitParameter("allowedProxyChains",
             "https://a.example.com https://b.example.com\nhttps://c.example.com");
         config3.addInitParameter("casServerUrlPrefix", "https://cas.jasig.org/");
@@ -193,8 +195,8 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     }
 
     public void testRenewInitParamThrows() throws Exception {
-        final Cas20ProxyReceivingTicketValidationFilter f = new Cas20ProxyReceivingTicketValidationFilter();
-        final MockFilterConfig config = new MockFilterConfig();
+        final var f = new Cas20ProxyReceivingTicketValidationFilter();
+        final var config = new MockFilterConfig();
         config.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         config.addInitParameter("renew", "true");
         try {
@@ -206,14 +208,14 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     }
 
     public void testAllowsRenewContextParam() throws Exception {
-        final Cas20ProxyReceivingTicketValidationFilter f = new Cas20ProxyReceivingTicketValidationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new Cas20ProxyReceivingTicketValidationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerUrlPrefix", "https://cas.example.com");
         context.addInitParameter("renew", "true");
         context.addInitParameter("service", "http://www.jasig.org");
-        final MockFilterConfig config = new MockFilterConfig(context);
+        final FilterConfig config = new MockFilterConfig(context);
         f.init(config);
-        final TicketValidator validator = f.getTicketValidator(config);
+        final var validator = f.getTicketValidator(config);
         assertTrue(validator instanceof AbstractUrlBasedTicketValidator);
         assertTrue(((AbstractUrlBasedTicketValidator) validator).isRenew());
     }
@@ -221,8 +223,8 @@ public class Cas20ProxyReceivingTicketValidationFilterTests extends TestCase {
     /**
      * construct a working {@link Cas20ProxyReceivingTicketValidationFilter}
      */
-    private Cas20ProxyReceivingTicketValidationFilter newCas20ProxyReceivingTicketValidationFilter() {
-        final Cas20ProxyReceivingTicketValidationFilter filter = new Cas20ProxyReceivingTicketValidationFilter();
+    private static Cas20ProxyReceivingTicketValidationFilter newCas20ProxyReceivingTicketValidationFilter() {
+        final var filter = new Cas20ProxyReceivingTicketValidationFilter();
         filter.setServerName("localhost");
         filter.setTicketValidator(new Cas20ProxyTicketValidator(""));
 

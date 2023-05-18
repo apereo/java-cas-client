@@ -35,7 +35,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-import java.beans.BeanInfo;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -43,11 +43,10 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -144,7 +143,7 @@ public class CasLoginModule implements LoginModule {
      * CAS tickets are one-time-use, a cached assertion must be provided on
      * re-authentication.
      */
-    protected static final Map<TicketCredential, Assertion> ASSERTION_CACHE = new HashMap<TicketCredential, Assertion>();
+    protected static final Map<TicketCredential, Assertion> ASSERTION_CACHE = new HashMap<>();
 
     /**
      * Logger instance
@@ -154,7 +153,7 @@ public class CasLoginModule implements LoginModule {
     /**
      * Names of attributes in the CAS assertion that should be used for role data
      */
-    protected final Set<String> roleAttributeNames = new HashSet<String>();
+    protected final Collection<String> roleAttributeNames = new HashSet<>();
 
     /**
      * JAAS authentication subject
@@ -278,11 +277,11 @@ public class CasLoginModule implements LoginModule {
         this.callbackHandler = handler;
         this.subject = subject;
         this.sharedState = (Map<String, Object>) state;
-        this.sharedState = new HashMap<String, Object>(state);
+        this.sharedState = new HashMap<>(state);
 
         String ticketValidatorClass = null;
 
-        for (final String key : options.keySet()) {
+        for (final var key : options.keySet()) {
             logger.trace("Processing option {}", key);
             if ("service".equals(key)) {
                 this.service = (String) options.get(key);
@@ -291,14 +290,14 @@ public class CasLoginModule implements LoginModule {
                 ticketValidatorClass = (String) options.get(key);
                 logger.debug("Set ticketValidatorClass={}", ticketValidatorClass);
             } else if ("defaultRoles".equals(key)) {
-                final String roles = (String) options.get(key);
+                final var roles = (String) options.get(key);
                 logger.trace("Got defaultRoles value {}", roles);
                 this.defaultRoles = roles.split(",\\s*");
                 logger.debug("Set defaultRoles={}", Arrays.asList(this.defaultRoles));
             } else if ("roleAttributeNames".equals(key)) {
-                final String attrNames = (String) options.get(key);
+                final var attrNames = (String) options.get(key);
                 logger.trace("Got roleAttributeNames value {}", attrNames);
-                final String[] attributes = attrNames.split(",\\s*");
+                final var attributes = attrNames.split(",\\s*");
                 this.roleAttributeNames.addAll(Arrays.asList(attributes));
                 logger.debug("Set roleAttributeNames={}", this.roleAttributeNames);
             } else if ("principalGroupName".equals(key)) {
@@ -336,9 +335,9 @@ public class CasLoginModule implements LoginModule {
             return false;
         }
 
-        final NameCallback serviceCallback = new NameCallback("service");
-        final PasswordCallback ticketCallback = new PasswordCallback("ticket", false);
-        boolean result = false;
+        final var serviceCallback = new NameCallback("service");
+        final var ticketCallback = new PasswordCallback("ticket", false);
+        var result = false;
         try {
             try {
                 this.callbackHandler.handle(new Callback[]{ticketCallback, serviceCallback});
@@ -353,7 +352,7 @@ public class CasLoginModule implements LoginModule {
 
             if (ticketCallback.getPassword() != null) {
                 this.ticket = new TicketCredential(new String(ticketCallback.getPassword()));
-                final String service = CommonUtils.isNotBlank(serviceCallback.getName()) ? serviceCallback.getName()
+                final var service = CommonUtils.isNotBlank(serviceCallback.getName()) ? serviceCallback.getName()
                     : this.service;
 
                 if (this.cacheAssertions) {
@@ -398,7 +397,7 @@ public class CasLoginModule implements LoginModule {
         if (!preCommit()) {
             return false;
         }
-        boolean result = false;
+        var result = false;
         try {
             if (this.assertion != null) {
                 if (this.ticket != null) {
@@ -407,7 +406,7 @@ public class CasLoginModule implements LoginModule {
                     throw new LoginException("Ticket credential not found.");
                 }
 
-                final AssertionPrincipal casPrincipal = new AssertionPrincipal(this.assertion.getPrincipal().getName(),
+                final Principal casPrincipal = new AssertionPrincipal(this.assertion.getPrincipal().getName(),
                     this.assertion);
                 this.subject.getPrincipals().add(casPrincipal);
 
@@ -455,7 +454,7 @@ public class CasLoginModule implements LoginModule {
 
         // Remove cache entry if assertion caching is enabled
         if (this.cacheAssertions) {
-            for (final TicketCredential ticket : this.subject.getPrivateCredentials(TicketCredential.class)) {
+            for (final var ticket : this.subject.getPrivateCredentials(TicketCredential.class)) {
                 logger.debug("Removing cached assertion for {}", ticket);
                 ASSERTION_CACHE.remove(ticket);
             }
@@ -479,7 +478,7 @@ public class CasLoginModule implements LoginModule {
      *
      * @return true if you'd like login to continue, false otherwise.
      */
-    protected boolean preLogin() {
+    protected static boolean preLogin() {
         return true;
     }
 
@@ -497,7 +496,7 @@ public class CasLoginModule implements LoginModule {
      *
      * @return true if you'd like commit to continue, false otherwise.
      */
-    protected boolean preCommit() {
+    protected static boolean preCommit() {
         return true;
     }
 
@@ -515,7 +514,7 @@ public class CasLoginModule implements LoginModule {
      *
      * @return true if we should continue, false otherwise.
      */
-    protected boolean preLogout() {
+    protected static boolean preLogout() {
         return true;
     }
 
@@ -538,17 +537,17 @@ public class CasLoginModule implements LoginModule {
             "Required property casServerUrlPrefix not found.");
 
         final Class<TicketValidator> validatorClass = ReflectUtils.loadClass(className);
-        final TicketValidator validator = ReflectUtils.newInstance(validatorClass,
+        final var validator = ReflectUtils.newInstance(validatorClass,
             propertyMap.get("casServerUrlPrefix"));
 
         try {
-            final BeanInfo info = Introspector.getBeanInfo(validatorClass);
+            final var info = Introspector.getBeanInfo(validatorClass);
 
-            for (final String property : propertyMap.keySet()) {
+            for (final var property : propertyMap.keySet()) {
                 if (!"casServerUrlPrefix".equals(property)) {
                     logger.debug("Attempting to set TicketValidator property {}", property);
-                    final String value = (String) propertyMap.get(property);
-                    final PropertyDescriptor pd = ReflectUtils.getPropertyDescriptor(info, property);
+                    final var value = (String) propertyMap.get(property);
+                    final var pd = ReflectUtils.getPropertyDescriptor(info, property);
                     if (pd != null) {
                         ReflectUtils.setProperty(property, convertIfNecessary(pd, value), validator, info);
                         logger.debug("Set {} = {}", property, value);
@@ -587,12 +586,12 @@ public class CasLoginModule implements LoginModule {
      */
     private void cleanCache() {
         logger.debug("Cleaning assertion cache of size {}", ASSERTION_CACHE.size());
-        final Iterator<Map.Entry<TicketCredential, Assertion>> iter = ASSERTION_CACHE.entrySet().iterator();
-        final Calendar cutoff = Calendar.getInstance();
+        final var iter = ASSERTION_CACHE.entrySet().iterator();
+        final var cutoff = Calendar.getInstance();
         cutoff.setTimeInMillis(System.currentTimeMillis() - this.cacheTimeoutUnit.toMillis(this.cacheTimeout));
         while (iter.hasNext()) {
-            final Assertion assertion = iter.next().getValue();
-            final Calendar created = Calendar.getInstance();
+            final var assertion = iter.next().getValue();
+            final var created = Calendar.getInstance();
             created.setTime(assertion.getValidFromDate());
             if (created.before(cutoff)) {
                 logger.debug("Removing expired assertion for principal {}", assertion.getPrincipal());

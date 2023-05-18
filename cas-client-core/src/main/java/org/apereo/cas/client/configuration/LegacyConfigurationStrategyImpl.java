@@ -44,7 +44,7 @@ public final class LegacyConfigurationStrategyImpl extends BaseConfigurationStra
 
     @Override
     protected String get(final ConfigurationKey key) {
-        final String value1 = this.webXmlConfigurationStrategy.get(key);
+        final var value1 = this.webXmlConfigurationStrategy.get(key);
 
         if (CommonUtils.isNotBlank(value1)) {
             return value1;

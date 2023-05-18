@@ -29,7 +29,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -68,7 +67,7 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                          final FilterChain filterChain) throws IOException, ServletException {
-        final AttributePrincipal principal = retrievePrincipalFromSessionOrRequest(servletRequest);
+        final var principal = retrievePrincipalFromSessionOrRequest(servletRequest);
 
         filterChain.doFilter(new CasHttpServletRequestWrapper((HttpServletRequest) servletRequest, principal),
             servletResponse);
@@ -86,10 +85,10 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
         this.ignoreCase = getBoolean(ConfigurationKeys.IGNORE_CASE);
     }
 
-    protected AttributePrincipal retrievePrincipalFromSessionOrRequest(final ServletRequest servletRequest) {
-        final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpSession session = request.getSession(false);
-        final Assertion assertion = (Assertion) (session == null ? request
+    private static AttributePrincipal retrievePrincipalFromSessionOrRequest(final ServletRequest servletRequest) {
+        final var request = (HttpServletRequest) servletRequest;
+        final var session = request.getSession(false);
+        final var assertion = (Assertion) (session == null ? request
             .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : session
             .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION));
 
@@ -127,7 +126,7 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
                 return false;
             }
 
-            final Object value = this.principal.getAttributes().get(roleAttribute);
+            final var value = this.principal.getAttributes().get(roleAttribute);
 
             if (value instanceof Collection<?>) {
                 for (final Object o : (Collection<?>) value) {
@@ -138,7 +137,7 @@ public final class HttpServletRequestWrapperFilter extends AbstractConfiguration
                 }
             }
 
-            final boolean isMember = rolesEqual(role, value);
+            final var isMember = rolesEqual(role, value);
             logger.debug("User [{}] is in role [{}]: {}", getRemoteUser(), role, isMember);
             return isMember;
         }

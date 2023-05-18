@@ -21,6 +21,7 @@ package org.apereo.cas.client.jaas;
 import org.apereo.cas.client.authentication.SimplePrincipal;
 import org.apereo.cas.client.validation.Assertion;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -34,6 +35,7 @@ import java.io.Serializable;
 public class AssertionPrincipal extends SimplePrincipal implements Serializable {
 
     /** AssertionPrincipal.java */
+    @Serial
     private static final long serialVersionUID = 2288520214366461693L;
 
     /** CAS assertion describing authenticated state */

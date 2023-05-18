@@ -20,6 +20,8 @@ package org.apereo.cas.client.ssl;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -32,6 +34,7 @@ import java.io.Serializable;
  */
 public final class WhitelistHostnameVerifier implements HostnameVerifier, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** Allowed hosts */
@@ -59,7 +62,7 @@ public final class WhitelistHostnameVerifier implements HostnameVerifier, Serial
     @Override
     public boolean verify(final String hostname, final SSLSession session) {
 
-        for (final String allowedHost : this.allowedHosts) {
+        for (final var allowedHost : this.allowedHosts) {
             if (hostname.equalsIgnoreCase(allowedHost)) {
                 return true;
             }

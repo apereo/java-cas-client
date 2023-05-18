@@ -66,15 +66,15 @@ public class JndiConfigurationStrategyImpl extends BaseConfigurationStrategy {
             return null;
         }
 
-        final String propertyName = configurationKey.getName();
-        final String filterValue = loadFromContext(context, this.environmentPrefix + this.simpleFilterName + "/" + propertyName);
+        final var propertyName = configurationKey.getName();
+        final var filterValue = loadFromContext(context, this.environmentPrefix + this.simpleFilterName + "/" + propertyName);
 
         if (CommonUtils.isNotBlank(filterValue)) {
             logger.info("Property [{}] loaded from JNDI Filter Specific Property with value [{}]", propertyName, filterValue);
             return filterValue;
         }
 
-        final String rootValue = loadFromContext(context, this.environmentPrefix + propertyName);
+        final var rootValue = loadFromContext(context, this.environmentPrefix + propertyName);
 
         if (CommonUtils.isNotBlank(rootValue)) {
             logger.info("Property [{}] loaded from JNDI with value [{}]", propertyName, rootValue);
@@ -84,7 +84,7 @@ public class JndiConfigurationStrategyImpl extends BaseConfigurationStrategy {
         return null;
     }
 
-    private String loadFromContext(final InitialContext context, final String path) {
+    private static String loadFromContext(final InitialContext context, final String path) {
         try {
             return (String) context.lookup(path);
         } catch (final NamingException e) {

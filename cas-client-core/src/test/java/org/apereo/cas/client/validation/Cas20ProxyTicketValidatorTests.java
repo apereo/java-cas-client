@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.Serial;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
 
     @Before
     public void setUp() throws Exception {
-        final List<String[]> list = new ArrayList<String[]>();
+        final List<String[]> list = new ArrayList<>();
         list.add(new String[]{"proxy1", "proxy2", "proxy3"});
 
         this.ticketValidator = new Cas20ProxyTicketValidator(CONST_CAS_SERVER_URL_PREFIX + "8089");
@@ -69,18 +70,18 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
 
     @Test
     public void testProxyChainWithValidProxy() throws TicketValidationException, UnsupportedEncodingException {
-        final String USERNAME = "username";
-        final String RESPONSE =
+        final var USERNAME = "username";
+        final var RESPONSE =
             "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
 
-        final Assertion assertion = this.ticketValidator.validate("test", "test");
+        final var assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
     }
 
     @Test
     public void testProxyChainWithInvalidProxy() throws TicketValidationException, UnsupportedEncodingException {
-        final String RESPONSE =
+        final var RESPONSE =
             "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy7</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
 
@@ -94,26 +95,26 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
 
     @Test
     public void testRegexProxyChainWithValidProxy() throws TicketValidationException, UnsupportedEncodingException {
-        final List<String[]> list = new ArrayList<String[]>();
+        final List<String[]> list = new ArrayList<>();
         list.add(new String[]{"proxy1", "proxy2", "^proxy3/[a-z]*/"});
         this.ticketValidator.setAllowedProxyChains(new ProxyList(list));
 
-        final String USERNAME = "username";
-        final String RESPONSE =
+        final var USERNAME = "username";
+        final var RESPONSE =
             "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3/abc/</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
 
-        final Assertion assertion = this.ticketValidator.validate("test", "test");
+        final var assertion = this.ticketValidator.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
     }
 
     @Test
     public void testRegexProxyChainWithInvalidProxy() throws TicketValidationException, UnsupportedEncodingException {
-        final List<String[]> list = new ArrayList<String[]>();
+        final List<String[]> list = new ArrayList<>();
         list.add(new String[]{"proxy1", "proxy2", "^proxy3/[a-z]*/"});
         this.ticketValidator.setAllowedProxyChains(new ProxyList(list));
 
-        final String RESPONSE =
+        final var RESPONSE =
             "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3/ABC/</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
 
@@ -127,28 +128,29 @@ public final class Cas20ProxyTicketValidatorTests extends AbstractTicketValidato
 
     @Test
     public void testConstructionFromSpringBean() throws TicketValidationException, UnsupportedEncodingException {
-        final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+        final var context = new ClassPathXmlApplicationContext(
             "classpath:cas20ProxyTicketValidator.xml");
-        final Cas20ProxyTicketValidator v = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidator");
+        final TicketValidator v = (Cas20ProxyTicketValidator) context.getBean("proxyTicketValidator");
 
-        final String USERNAME = "username";
-        final String RESPONSE =
+        final var USERNAME = "username";
+        final var RESPONSE =
             "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationSuccess><cas:user>username</cas:user><cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket><cas:proxies><cas:proxy>proxy1</cas:proxy><cas:proxy>proxy2</cas:proxy><cas:proxy>proxy3</cas:proxy></cas:proxies></cas:authenticationSuccess></cas:serviceResponse>";
         server.content = RESPONSE.getBytes(server.encoding);
 
-        final Assertion assertion = v.validate("test", "test");
+        final var assertion = v.validate("test", "test");
         assertEquals(USERNAME, assertion.getPrincipal().getName());
 
     }
 
-    private ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
+    private static ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
         return new ProxyGrantingTicketStorageImpl();
     }
 
-    private ProxyRetriever getProxyRetriever() {
+    private static ProxyRetriever getProxyRetriever() {
         return new ProxyRetriever() {
 
             /** Unique Id For serialization. */
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override

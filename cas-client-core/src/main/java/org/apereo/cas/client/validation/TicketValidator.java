@@ -27,6 +27,7 @@ package org.apereo.cas.client.validation;
  * @version $Revision$ $Date$
  * @since 3.1
  */
+@FunctionalInterface
 public interface TicketValidator {
 
     /**

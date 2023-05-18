@@ -43,35 +43,35 @@ public final class WebXmlConfigurationStrategyImplTests {
 
     @Test
     public void noKeyFoundGetDefaultForBoolean() {
-        final ConfigurationKey<Boolean> key = ConfigurationKeys.ACCEPT_ANY_PROXY;
+        final var key = ConfigurationKeys.ACCEPT_ANY_PROXY;
         assertEquals(key.getDefaultValue(), this.impl.getBoolean(key));
     }
 
 
     @Test
     public void noKeyFoundGetDefaultForString() {
-        final ConfigurationKey<String> key = ConfigurationKeys.ARTIFACT_PARAMETER_NAME;
+        final var key = ConfigurationKeys.ARTIFACT_PARAMETER_NAME;
         assertEquals(key.getDefaultValue(), this.impl.getString(key));
     }
 
 
     @Test
     public void noKeyFoundGetDefaultForLong() {
-        final ConfigurationKey<Long> key = ConfigurationKeys.TOLERANCE;
+        final var key = ConfigurationKeys.TOLERANCE;
         assertEquals(key.getDefaultValue().longValue(), this.impl.getLong(key));
     }
 
 
     @Test
     public void noKeyFoundGetDefaultForInt() {
-        final ConfigurationKey<Integer> key = ConfigurationKeys.MILLIS_BETWEEN_CLEAN_UPS;
+        final var key = ConfigurationKeys.MILLIS_BETWEEN_CLEAN_UPS;
         assertEquals(key.getDefaultValue().intValue(), this.impl.getInt(key));
     }
 
     @Test
     public void filterConfigValueForBoolean() {
-        final ConfigurationKey<Boolean> key = ConfigurationKeys.ACCEPT_ANY_PROXY;
-        final Boolean value = Boolean.TRUE;
+        final var key = ConfigurationKeys.ACCEPT_ANY_PROXY;
+        final var value = Boolean.TRUE;
         this.filterConfig.addInitParameter(key.getName(), value.toString());
         assertEquals(value, this.impl.getBoolean(key));
     }
@@ -79,8 +79,8 @@ public final class WebXmlConfigurationStrategyImplTests {
 
     @Test
     public void filterConfigValueForString() {
-        final ConfigurationKey<String> key = ConfigurationKeys.ARTIFACT_PARAMETER_NAME;
-        final String value = "foobar";
+        final var key = ConfigurationKeys.ARTIFACT_PARAMETER_NAME;
+        final var value = "foobar";
         this.filterConfig.addInitParameter(key.getName(), value);
         assertEquals(value, this.impl.getString(key));
     }
@@ -88,7 +88,7 @@ public final class WebXmlConfigurationStrategyImplTests {
 
     @Test
     public void filterConfigValueForLong() {
-        final ConfigurationKey<Long> key = ConfigurationKeys.TOLERANCE;
+        final var key = ConfigurationKeys.TOLERANCE;
         final long value = 1500;
         this.filterConfig.addInitParameter(key.getName(), Long.toString(value));
         assertEquals(value, this.impl.getLong(key));
@@ -97,8 +97,8 @@ public final class WebXmlConfigurationStrategyImplTests {
 
     @Test
     public void filterConfigValueForInt() {
-        final ConfigurationKey<Integer> key = ConfigurationKeys.MILLIS_BETWEEN_CLEAN_UPS;
-        final int value = 1500;
+        final var key = ConfigurationKeys.MILLIS_BETWEEN_CLEAN_UPS;
+        final var value = 1500;
         this.filterConfig.addInitParameter(key.getName(), Integer.toString(value));
         assertEquals(value, this.impl.getInt(key));
     }
@@ -106,9 +106,9 @@ public final class WebXmlConfigurationStrategyImplTests {
 
     @Test
     public void servletConfigValueForBoolean() {
-        final ConfigurationKey<Boolean> key = ConfigurationKeys.ACCEPT_ANY_PROXY;
-        final Boolean value = Boolean.TRUE;
-        final MockServletContext context = (MockServletContext) this.filterConfig.getServletContext();
+        final var key = ConfigurationKeys.ACCEPT_ANY_PROXY;
+        final var value = Boolean.TRUE;
+        final var context = (MockServletContext) this.filterConfig.getServletContext();
         context.addInitParameter(key.getName(), value.toString());
         assertEquals(value, this.impl.getBoolean(key));
     }
@@ -116,9 +116,9 @@ public final class WebXmlConfigurationStrategyImplTests {
 
     @Test
     public void servletConfigValueForString() {
-        final ConfigurationKey<String> key = ConfigurationKeys.ARTIFACT_PARAMETER_NAME;
-        final String value = "foobar";
-        final MockServletContext context = (MockServletContext) this.filterConfig.getServletContext();
+        final var key = ConfigurationKeys.ARTIFACT_PARAMETER_NAME;
+        final var value = "foobar";
+        final var context = (MockServletContext) this.filterConfig.getServletContext();
         context.addInitParameter(key.getName(), value);
         assertEquals(value, this.impl.getString(key));
     }
@@ -126,9 +126,9 @@ public final class WebXmlConfigurationStrategyImplTests {
 
     @Test
     public void servletConfigValueForLong() {
-        final ConfigurationKey<Long> key = ConfigurationKeys.TOLERANCE;
+        final var key = ConfigurationKeys.TOLERANCE;
         final long value = 1500;
-        final MockServletContext context = (MockServletContext) this.filterConfig.getServletContext();
+        final var context = (MockServletContext) this.filterConfig.getServletContext();
         context.addInitParameter(key.getName(), Long.toString(value));
         assertEquals(value, this.impl.getLong(key));
     }
@@ -136,9 +136,9 @@ public final class WebXmlConfigurationStrategyImplTests {
 
     @Test
     public void servletConfigValueForInt() {
-        final ConfigurationKey<Integer> key = ConfigurationKeys.MILLIS_BETWEEN_CLEAN_UPS;
-        final int value = 1500;
-        final MockServletContext context = (MockServletContext) this.filterConfig.getServletContext();
+        final var key = ConfigurationKeys.MILLIS_BETWEEN_CLEAN_UPS;
+        final var value = 1500;
+        final var context = (MockServletContext) this.filterConfig.getServletContext();
         context.addInitParameter(key.getName(), Integer.toString(value));
         assertEquals(value, this.impl.getInt(key));
     }

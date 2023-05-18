@@ -46,7 +46,7 @@ public class Cas30JsonServiceTicketValidator extends Cas30ServiceTicketValidator
     @Override
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         try {
-            final TicketValidationJsonResponse json = new JsonValidationResponseParser().parse(response);
+            final var json = new JsonValidationResponseParser().parse(response);
             return json.getAssertion(getProxyGrantingTicketStorage(), getProxyRetriever());
         } catch (final JsonProcessingException e) {
             logger.warn("Unable parse the JSON response. Falling back to XML", e);

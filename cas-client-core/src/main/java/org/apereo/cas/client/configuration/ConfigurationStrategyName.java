@@ -54,14 +54,14 @@ public enum ConfigurationStrategyName {
             return DEFAULT.configurationStrategyClass;
         }
 
-        for (final ConfigurationStrategyName csn : values()) {
+        for (final var csn : values()) {
             if (csn.name().equalsIgnoreCase(value)) {
                 return csn.configurationStrategyClass;
             }
         }
 
         try {
-            final Class<?> clazz = Class.forName(value);
+            final var clazz = Class.forName(value);
 
             if (ConfigurationStrategy.class.isAssignableFrom(clazz)) {
                 return (Class<? extends ConfigurationStrategy>) clazz;

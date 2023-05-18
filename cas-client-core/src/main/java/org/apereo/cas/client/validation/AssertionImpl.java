@@ -22,6 +22,7 @@ import org.apereo.cas.client.authentication.AttributePrincipal;
 import org.apereo.cas.client.authentication.AttributePrincipalImpl;
 import org.apereo.cas.client.util.CommonUtils;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -39,6 +40,7 @@ import java.util.Map;
 public final class AssertionImpl implements Assertion {
 
     /** Unique Id for serialization. */
+    @Serial
     private static final long serialVersionUID = -7767943925833639221L;
 
     /** The date from which the assertion is valid. */
@@ -154,7 +156,7 @@ public final class AssertionImpl implements Assertion {
             return true;
         }
 
-        final Date now = new Date();
+        final var now = new Date();
         return (this.validFromDate.before(now) || this.validFromDate.equals(now))
                && (this.validUntilDate == null || this.validUntilDate.after(now) || this.validUntilDate.equals(now));
     }

@@ -55,15 +55,15 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
     @Override
     public void init(final FilterConfig filterConfig, final Class<? extends Filter> filterClazz) {
         this.simpleFilterName = filterClazz.getSimpleName();
-        final String fileLocationFromFilterConfig = filterConfig.getInitParameter(CONFIGURATION_FILE_LOCATION);
-        final boolean filterConfigFileLoad = loadPropertiesFromFile(fileLocationFromFilterConfig);
+        final var fileLocationFromFilterConfig = filterConfig.getInitParameter(CONFIGURATION_FILE_LOCATION);
+        final var filterConfigFileLoad = loadPropertiesFromFile(fileLocationFromFilterConfig);
 
         if (!filterConfigFileLoad) {
-            final String fileLocationFromServletConfig = filterConfig.getServletContext().getInitParameter(CONFIGURATION_FILE_LOCATION);
-            final boolean servletContextFileLoad = loadPropertiesFromFile(fileLocationFromServletConfig);
+            final var fileLocationFromServletConfig = filterConfig.getServletContext().getInitParameter(CONFIGURATION_FILE_LOCATION);
+            final var servletContextFileLoad = loadPropertiesFromFile(fileLocationFromServletConfig);
 
             if (!servletContextFileLoad) {
-                final boolean defaultConfigFileLoaded = loadPropertiesFromFile(DEFAULT_CONFIGURATION_FILE_LOCATION);
+                final var defaultConfigFileLoaded = loadPropertiesFromFile(DEFAULT_CONFIGURATION_FILE_LOCATION);
                 CommonUtils.assertTrue(defaultConfigFileLoaded, "unable to load properties to configure CAS client");
             }
         }
@@ -71,10 +71,10 @@ public final class PropertiesConfigurationStrategyImpl extends BaseConfiguration
 
     @Override
     protected String get(final ConfigurationKey configurationKey) {
-        final String property = configurationKey.getName();
-        final String filterSpecificProperty = this.simpleFilterName + "." + property;
+        final var property = configurationKey.getName();
+        final var filterSpecificProperty = this.simpleFilterName + "." + property;
 
-        final String filterSpecificValue = this.properties.getProperty(filterSpecificProperty);
+        final var filterSpecificValue = this.properties.getProperty(filterSpecificProperty);
 
         if (CommonUtils.isNotEmpty(filterSpecificValue)) {
             return filterSpecificValue;

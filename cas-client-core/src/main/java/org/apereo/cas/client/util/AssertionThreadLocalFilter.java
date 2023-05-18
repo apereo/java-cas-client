@@ -27,7 +27,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -47,9 +46,9 @@ public final class AssertionThreadLocalFilter implements Filter {
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                          final FilterChain filterChain) throws IOException, ServletException {
-        final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpSession session = request.getSession(false);
-        final Assertion assertion = (Assertion) (session == null ? request
+        final var request = (HttpServletRequest) servletRequest;
+        final var session = request.getSession(false);
+        final var assertion = (Assertion) (session == null ? request
             .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : session
             .getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION));
 

@@ -34,6 +34,8 @@ package org.apereo.cas.client.ssl;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
+import javax.net.ssl.HostnameVerifier;
+
 /**
  * Unit test for {@link WhitelistHostnameVerifier} class.
  *
@@ -46,7 +48,7 @@ public class WhitelistHostnameVerifierTests extends TestCase {
      * Test method for {@link WhitelistHostnameVerifier#verify(String, javax.net.ssl.SSLSession)}.
      */
     public void testVerify() {
-        final WhitelistHostnameVerifier verifier = new WhitelistHostnameVerifier("red.vt.edu, green.vt.edu,blue.vt.edu");
+        final HostnameVerifier verifier = new WhitelistHostnameVerifier("red.vt.edu, green.vt.edu,blue.vt.edu");
         Assert.assertTrue(verifier.verify("red.vt.edu", null));
         Assert.assertTrue(verifier.verify("green.vt.edu", null));
         Assert.assertTrue(verifier.verify("blue.vt.edu", null));

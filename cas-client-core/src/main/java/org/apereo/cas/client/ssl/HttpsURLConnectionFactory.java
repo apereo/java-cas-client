@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.security.KeyStore;
@@ -54,6 +55,7 @@ import java.util.Properties;
  */
 public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpsURLConnectionFactory.class);
@@ -99,7 +101,7 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
 
     @Override
     public int hashCode() {
-        int result = hostnameVerifier.hashCode();
+        var result = hostnameVerifier.hashCode();
         result = 31 * result + sslConfiguration.hashCode();
         return result;
     }
@@ -113,7 +115,7 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
             return false;
         }
 
-        final HttpsURLConnectionFactory that = (HttpsURLConnectionFactory) o;
+        final var that = (HttpsURLConnectionFactory) o;
 
         if (!hostnameVerifier.equals(that.hostnameVerifier)) {
             return false;
@@ -134,8 +136,8 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
      */
     private HttpURLConnection configureHttpsConnectionIfNeeded(final URLConnection conn) {
         if (conn instanceof HttpsURLConnection) {
-            final HttpsURLConnection httpsConnection = (HttpsURLConnection) conn;
-            final SSLSocketFactory socketFactory = this.createSSLSocketFactory();
+            final var httpsConnection = (HttpsURLConnection) conn;
+            final var socketFactory = this.createSSLSocketFactory();
             if (socketFactory != null) {
                 httpsConnection.setSSLSocketFactory(socketFactory);
             }
@@ -170,9 +172,9 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
         InputStream keyStoreIS = null;
 
         try {
-            final SSLContext sslContext = SSLContext.getInstance(this.sslConfiguration.getProperty("protocol", "SSL"));
+            final var sslContext = SSLContext.getInstance(this.sslConfiguration.getProperty("protocol", "SSL"));
             if (isIgnoreSslFailures()) {
-                final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                final var trustAllCerts = new TrustManager[]{new X509TrustManager() {
                     public void checkClientTrusted(final X509Certificate[] certs, final String authType) {
                     }
 
@@ -188,13 +190,13 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
             }
 
             if (this.sslConfiguration.getProperty("keyStoreType") != null) {
-                final KeyStore keyStore = KeyStore.getInstance(this.sslConfiguration.getProperty("keyStoreType"));
+                final var keyStore = KeyStore.getInstance(this.sslConfiguration.getProperty("keyStoreType"));
                 if (this.sslConfiguration.getProperty("keyStorePath") != null) {
                     keyStoreIS = new FileInputStream(this.sslConfiguration.getProperty("keyStorePath"));
                     if (this.sslConfiguration.getProperty("keyStorePass") != null) {
                         keyStore.load(keyStoreIS, this.sslConfiguration.getProperty("keyStorePass").toCharArray());
                         LOGGER.debug("Keystore has {} keys", keyStore.size());
-                        final KeyManagerFactory keyManager = KeyManagerFactory.getInstance(this.sslConfiguration
+                        final var keyManager = KeyManagerFactory.getInstance(this.sslConfiguration
                             .getProperty("keyManagerType", "SunX509"));
                         keyManager.init(keyStore, this.sslConfiguration.getProperty("certificatePassword").toCharArray());
                         sslContext.init(keyManager.getKeyManagers(), null, null);
@@ -211,6 +213,7 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
         return null;
     }
 
+    @Serial
     private void writeObject(final ObjectOutputStream out) throws IOException {
         if (this.hostnameVerifier == HttpsURLConnection.getDefaultHostnameVerifier()) {
             out.writeObject(null);
@@ -222,8 +225,9 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
 
     }
 
+    @Serial
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        final Object internalHostNameVerifier = in.readObject();
+        final var internalHostNameVerifier = in.readObject();
         if (internalHostNameVerifier == null) {
             this.hostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
         } else {

@@ -18,6 +18,8 @@
  */
 package org.apereo.cas.client.validation;
 
+import java.io.Serial;
+
 /**
  * Generic exception to be thrown when ticket validation fails.
  *
@@ -30,6 +32,7 @@ public class TicketValidationException extends Exception {
     /**
      * Unique Id for Serialization
      */
+    @Serial
     private static final long serialVersionUID = -7036248720402711806L;
 
     /**

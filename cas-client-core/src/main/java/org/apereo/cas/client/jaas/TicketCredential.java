@@ -50,7 +50,7 @@ public final class TicketCredential implements Principal {
     }
 
     public int hashCode() {
-        int hash = HASHCODE_SEED;
+        var hash = HASHCODE_SEED;
         hash = hash * 31 + (ticket == null ? 0 : ticket.hashCode());
         return hash;
     }
@@ -63,7 +63,7 @@ public final class TicketCredential implements Principal {
             return false;
         }
 
-        final TicketCredential that = (TicketCredential) o;
+        final var that = (TicketCredential) o;
 
         if (ticket != null ? !ticket.equals(that.ticket) : that.ticket != null) {
             return false;

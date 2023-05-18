@@ -24,6 +24,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -41,14 +43,14 @@ public final class CasFilterTests {
 
     @Test
     public void serverName() {
-        final String serverNameWithoutSlash = "http://www.cnn.com";
-        final String serverNameWithSlash = "http://www.cnn.com/";
+        final var serverNameWithoutSlash = "http://www.cnn.com";
+        final var serverNameWithSlash = "http://www.cnn.com/";
 
-        final TestCasFilter testCasFilter = new TestCasFilter();
+        final var testCasFilter = new TestCasFilter();
         testCasFilter.setServerName(serverNameWithoutSlash);
 
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final var request = new MockHttpServletRequest();
+        final HttpServletResponse response = new MockHttpServletResponse();
         request.setContextPath("/cas");
         request.setRequestURI("/cas/test");
 

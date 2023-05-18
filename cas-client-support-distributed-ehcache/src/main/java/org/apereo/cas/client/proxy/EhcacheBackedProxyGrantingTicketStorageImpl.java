@@ -19,7 +19,6 @@
 package org.apereo.cas.client.proxy;
 
 import org.ehcache.Cache;
-import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
@@ -40,7 +39,7 @@ public final class EhcacheBackedProxyGrantingTicketStorageImpl extends AbstractE
     private final Cache cache;
 
     public EhcacheBackedProxyGrantingTicketStorageImpl() {
-        final CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build();
+        final var cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build();
         cacheManager.init();
         cache = cacheManager.createCache(EHCACHE_CACHE_NAME,
             CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class,

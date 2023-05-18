@@ -18,6 +18,8 @@
  */
 package org.apereo.cas.client.validation;
 
+import java.io.Serial;
+
 /**
  * Exception denotes that an invalid proxy chain was sent from the CAS server to the local application. 
  *
@@ -30,6 +32,7 @@ public final class InvalidProxyChainTicketValidationException extends TicketVali
     /**
      * Unique Id for Serialization
      */
+    @Serial
     private static final long serialVersionUID = -7736653266370691534L;
 
     /**

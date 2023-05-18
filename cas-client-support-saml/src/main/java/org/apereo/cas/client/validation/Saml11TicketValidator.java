@@ -18,15 +18,6 @@
  */
 package org.apereo.cas.client.validation;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.*;
 import org.apereo.cas.client.authentication.AttributePrincipalImpl;
 import org.apereo.cas.client.util.CommonUtils;
 import org.apereo.cas.client.util.IOUtils;
@@ -35,11 +26,25 @@ import org.apereo.cas.client.util.SamlUtils;
 import org.apereo.cas.client.util.ThreadLocalXPathExpression;
 import org.apereo.cas.client.util.XmlUtils;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.namespace.NamespaceContext;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * TicketValidator that can understand validating a SAML artifact.  This includes the SOAP request/response.
@@ -90,7 +95,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     private final Random random;
 
 
-    /** Class initializer. */
+    /* Class initializer. */
     static {
         try {
             SAML_REQUEST_TEMPLATE = IOUtils.readString(
@@ -118,7 +123,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
     @Override
     protected void populateUrlAttributeMap(final Map<String, String> urlParameters) {
-        final String service = urlParameters.get("service");
+        final var service = urlParameters.get("service");
         urlParameters.remove("service");
         urlParameters.remove("ticket");
         urlParameters.put("TARGET", service);
@@ -127,25 +132,25 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     @Override
     protected Assertion parseResponseFromServer(final String response) throws TicketValidationException {
         try {
-            final Document document = XmlUtils.newDocument(response);
-            final Date assertionValidityStart = SamlUtils.parseUtcDate(
+            final var document = XmlUtils.newDocument(response);
+            final var assertionValidityStart = SamlUtils.parseUtcDate(
                     XPATH_ASSERTION_DATE_START.evaluateAsString(document));
-            final Date assertionValidityEnd = SamlUtils.parseUtcDate(
+            final var assertionValidityEnd = SamlUtils.parseUtcDate(
                     XPATH_ASSERTION_DATE_END.evaluateAsString(document));
             if (!isValidAssertion(assertionValidityStart, assertionValidityEnd)) {
                 throw new TicketValidationException("Invalid SAML assertion");
             }
-            final String nameId = XPATH_NAME_ID.evaluateAsString(document);
+            final var nameId = XPATH_NAME_ID.evaluateAsString(document);
             if (nameId == null) {
                 throw new TicketValidationException("SAML assertion does not contain NameIdentifier element");
             }
-            final String authMethod = XPATH_AUTH_METHOD.evaluateAsString(document);
-            final NodeList attributes = XPATH_ATTRIBUTES.evaluateAsNodeList(document);
-            final Map<String, Object> principalAttributes = new HashMap<String, Object>(attributes.getLength());
+            final var authMethod = XPATH_AUTH_METHOD.evaluateAsString(document);
+            final var attributes = XPATH_ATTRIBUTES.evaluateAsNodeList(document);
+            final Map<String, Object> principalAttributes = new HashMap<>(attributes.getLength());
             Element attribute;
             NodeList values;
             String name;
-            for (int i = 0; i < attributes.getLength(); i++) {
+            for (var i = 0; i < attributes.getLength(); i++) {
                 attribute = (Element) attributes.item(i);
                 name = attribute.getAttribute("AttributeName");
                 logger.trace("Processing attribute {}", name);
@@ -153,8 +158,8 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
                 if (values.getLength() == 1) {
                     principalAttributes.put(name, values.item(0).getTextContent());
                 } else {
-                    final Collection<Object> items = new ArrayList<Object>(values.getLength());
-                    for (int j = 0; j < values.getLength(); j++) {
+                    final var items = new ArrayList<>(values.getLength());
+                    for (var j = 0; j < values.getLength(); j++) {
                         items.add(values.item(j).getTextContent());
                     }
                     principalAttributes.put(name, items);
@@ -177,9 +182,9 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             return false;
         }
 
-        final ZonedDateTime currentTime = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime startTime = ZonedDateTime.ofInstant(notBefore.toInstant().minusMillis(tolerance), ZoneOffset.UTC);
-        final ZonedDateTime endTime = ZonedDateTime.ofInstant(notOnOrAfter.toInstant().plusMillis(tolerance), ZoneOffset.UTC);
+        final var currentTime = ZonedDateTime.now(ZoneOffset.UTC);
+        final var startTime = ZonedDateTime.ofInstant(notBefore.toInstant().minusMillis(tolerance), ZoneOffset.UTC);
+        final var endTime = ZonedDateTime.ofInstant(notOnOrAfter.toInstant().plusMillis(tolerance), ZoneOffset.UTC);
 
         // This is awkward, because we want to INCLUDE startTime and EXCLUDE endTime
         if (!currentTime.isBefore(startTime) && endTime.isAfter(currentTime)) {
@@ -197,7 +202,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
 
     @Override
     protected String retrieveResponseFromServer(final URL validationUrl, final String ticket) {
-        final String request = String.format(
+        final var request = String.format(
                 SAML_REQUEST_TEMPLATE,
                 generateId(),
                 SamlUtils.formatForUtcTime(new Date()),
@@ -213,7 +218,7 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
             conn.setDoOutput(true);
 
 
-            final Charset charset = CommonUtils.isNotBlank(getEncoding()) ?
+            final var charset = CommonUtils.isNotBlank(getEncoding()) ?
                     Charset.forName(getEncoding()) : IOUtils.UTF8;
             conn.getOutputStream().write(request.getBytes(charset));
             return IOUtils.readString(conn.getInputStream(), charset);
@@ -231,13 +236,13 @@ public final class Saml11TicketValidator extends AbstractUrlBasedTicketValidator
     }
 
     private String generateId() {
-        final byte[] data = new byte[16];
+        final var data = new byte[16];
         random.nextBytes(data);
-        final StringBuilder id = new StringBuilder(33);
+        final var id = new StringBuilder(33);
         id.append('_');
-        for (int i = 0; i < data.length; i++) {
-            id.append(HEX_CHARS.charAt((data[i] & 0xF0) >> 4));
-            id.append(HEX_CHARS.charAt(data[i] & 0x0F));
+        for (final byte datum : data) {
+            id.append(HEX_CHARS.charAt((datum & 0xF0) >> 4));
+            id.append(HEX_CHARS.charAt(datum & 0x0F));
         }
         return id.toString();
     }

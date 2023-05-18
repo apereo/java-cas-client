@@ -137,7 +137,7 @@ public class CasClientConfigurationProperties {
             return enabled;
         }
 
-        public void setEnabled(boolean enabled) {
+        public void setEnabled(final boolean enabled) {
             this.enabled = enabled;
         }
     }

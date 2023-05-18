@@ -22,6 +22,8 @@ import org.apereo.cas.client.Protocol;
 import org.apereo.cas.client.configuration.ConfigurationKeys;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpSession;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockFilterChain;
@@ -42,9 +44,9 @@ import static org.junit.Assert.*;
  */
 public class SingleSignOutFilterTests {
 
-    private final static String TICKET = "ST-yyyyy";
+    private static final String TICKET = "ST-yyyyy";
 
-    private final static String RELAY_STATE = "e1s1";
+    private static final String RELAY_STATE = "e1s1";
 
     private SingleSignOutFilter filter = new SingleSignOutFilter();
 
@@ -68,7 +70,7 @@ public class SingleSignOutFilterTests {
     public void tokenRequest() throws IOException, ServletException {
         request.setParameter(Protocol.CAS2.getArtifactParameterName(), TICKET);
         request.setQueryString(Protocol.CAS2.getArtifactParameterName() + "=" + TICKET);
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         request.setSession(session);
         filter.doFilter(request, response, filterChain);
         assertEquals(session, SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));
@@ -79,7 +81,7 @@ public class SingleSignOutFilterTests {
         request.setParameter(ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue(),
             LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET));
         request.setMethod("POST");
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
         filter.doFilter(request, response, filterChain);
         assertNull(SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));
@@ -87,11 +89,11 @@ public class SingleSignOutFilterTests {
 
     @Test
     public void frontChannelRequest() throws IOException, ServletException {
-        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
         request.setParameter(ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue(), logoutMessage);
         request.setQueryString(ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue() + "=" + logoutMessage);
         request.setMethod("GET");
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
         filter.doFilter(request, response, filterChain);
         assertNull(SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));
@@ -100,13 +102,13 @@ public class SingleSignOutFilterTests {
 
     @Test
     public void frontChannelRequestRelayState() throws IOException, ServletException {
-        final String logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
         request.setParameter(ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue(), logoutMessage);
         request.setParameter(ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue(), RELAY_STATE);
         request.setQueryString(ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue() + "=" + logoutMessage + "&" +
                                ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue() + "=" + RELAY_STATE);
         request.setMethod("GET");
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().addSessionById(TICKET, session);
         filter.doFilter(request, response, filterChain);
         assertNull(SingleSignOutFilter.getSingleSignOutHandler().getSessionMappingStorage().removeSessionByMappingId(TICKET));

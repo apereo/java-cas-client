@@ -28,11 +28,10 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -61,14 +60,14 @@ public class SpringSecurityAssertionSessionContextFilter extends AbstractConfigu
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                          final FilterChain filterChain) throws IOException, ServletException {
-        final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        final HttpSession session = request.getSession();
+        final var request = (HttpServletRequest) servletRequest;
+        final ServletResponse response = (HttpServletResponse) servletResponse;
+        final var session = request.getSession();
         if (session != null && session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) != null) {
-            final Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+            final var assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
 
-            final CasAuthenticationToken authentication = new CasAuthenticationToken(assertion);
-            final UserDetails userDetails = userDetailsService.loadUserDetails(authentication);
+            final var authentication = new CasAuthenticationToken(assertion);
+            final var userDetails = userDetailsService.loadUserDetails(authentication);
             authentication.getAuthorities().addAll(userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

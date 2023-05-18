@@ -31,7 +31,7 @@ public class AssertionHolder {
     /**
      * ThreadLocal to hold the Assertion for Threads to access.
      */
-    private static final ThreadLocal<Assertion> threadLocal = new ThreadLocal<Assertion>();
+    private static final ThreadLocal<Assertion> threadLocal = new ThreadLocal<>();
 
     /**
      * Retrieve the assertion from the ThreadLocal.

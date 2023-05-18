@@ -23,7 +23,6 @@ import org.xml.sax.InputSource;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -103,7 +102,7 @@ public class ThreadLocalXPathExpression extends ThreadLocal<XPathExpression> imp
     @Override
     protected XPathExpression initialValue() {
         try {
-            final XPath xPath = XPathFactory.newInstance().newXPath();
+            final var xPath = XPathFactory.newInstance().newXPath();
             xPath.setNamespaceContext(context);
             return xPath.compile(expression);
         } catch (final XPathExpressionException e) {

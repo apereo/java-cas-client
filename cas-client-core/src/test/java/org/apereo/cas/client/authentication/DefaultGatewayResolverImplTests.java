@@ -23,6 +23,9 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import static org.junit.Assert.*;
 
 public class DefaultGatewayResolverImplTests {
@@ -36,7 +39,7 @@ public class DefaultGatewayResolverImplTests {
 
     @Test
     public void testReentrancy() throws Exception {
-        final MockHttpServletRequest request1 = new MockHttpServletRequest();
+        final HttpServletRequest request1 = new MockHttpServletRequest();
         assertFalse(this.resolver.hasGatewayedAlready(request1, "foo"));
         assertFalse(this.resolver.hasGatewayedAlready(request1, "foo"));
         assertEquals("foo", this.resolver.storeGatewayInformation(request1, "foo"));
@@ -47,9 +50,9 @@ public class DefaultGatewayResolverImplTests {
 
     @Test
     public void testSessionConcurrency() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request1 = new MockHttpServletRequest();
-        final MockHttpServletRequest request2 = new MockHttpServletRequest();
+        final HttpSession session = new MockHttpSession();
+        final var request1 = new MockHttpServletRequest();
+        final var request2 = new MockHttpServletRequest();
         request1.setSession(session);
         request2.setSession(session);
 

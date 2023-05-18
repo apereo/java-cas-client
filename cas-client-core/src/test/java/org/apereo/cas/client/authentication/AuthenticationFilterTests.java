@@ -25,6 +25,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +37,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -60,7 +61,7 @@ public final class AuthenticationFilterTests {
     @Before
     public void setUp() throws Exception {
         this.filter = new AuthenticationFilter();
-        final MockFilterConfig config = new MockFilterConfig();
+        final var config = new MockFilterConfig();
         config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         config.addInitParameter("service", CAS_SERVICE_URL);
         this.filter.init(config);
@@ -84,13 +85,13 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testRedirectWithQueryString() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final HttpSession session = new MockHttpSession();
+        final var request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
         request.setQueryString("test=12456");
         request.setRequestURI("/test");
         request.setSecure(true);
-        final FilterChain filterChain = new FilterChain() {
+        final var filterChain = new FilterChain() {
 
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
@@ -101,7 +102,7 @@ public final class AuthenticationFilterTests {
         request.setSession(session);
         this.filter = new AuthenticationFilter();
 
-        final MockFilterConfig config = new MockFilterConfig();
+        final var config = new MockFilterConfig();
         config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         config.addInitParameter("serverName", "localhost:8443");
         this.filter.init(config);
@@ -118,10 +119,10 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testAssertion() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
+        final HttpSession session = new MockHttpSession();
+        final var request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
+        final var filterChain = new FilterChain() {
 
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
@@ -138,10 +139,10 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testRenew() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
+        final HttpSession session = new MockHttpSession();
+        final var request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
+        final var filterChain = new FilterChain() {
 
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
@@ -159,10 +160,10 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testGateway() throws Exception {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
+        final HttpSession session = new MockHttpSession();
+        final var request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
+        final var filterChain = new FilterChain() {
 
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
@@ -177,12 +178,12 @@ public final class AuthenticationFilterTests {
         assertNotNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNotNull(response.getRedirectedUrl());
 
-        final MockHttpServletResponse response2 = new MockHttpServletResponse();
+        final var response2 = new MockHttpServletResponse();
         this.filter.doFilter(request, response2, filterChain);
         assertNotNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNull(response2.getRedirectedUrl());
 
-        final MockHttpServletResponse response3 = new MockHttpServletResponse();
+        final var response3 = new MockHttpServletResponse();
         this.filter.doFilter(request, response3, filterChain);
         assertNotNull(session.getAttribute(DefaultGatewayResolverImpl.CONST_CAS_GATEWAY));
         assertNull(response3.getRedirectedUrl());
@@ -190,8 +191,8 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testRenewInitParamThrows() throws Exception {
-        final AuthenticationFilter f = new AuthenticationFilter();
-        final MockFilterConfig config = new MockFilterConfig();
+        final var f = new AuthenticationFilter();
+        final var config = new MockFilterConfig();
         config.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         config.addInitParameter("service", CAS_SERVICE_URL);
         config.addInitParameter("renew", "true");
@@ -205,21 +206,21 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testAllowsRenewContextParam() throws Exception {
-        final AuthenticationFilter f = new AuthenticationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new AuthenticationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         context.addInitParameter("service", CAS_SERVICE_URL);
         context.addInitParameter("renew", "true");
         f.init(new MockFilterConfig(context));
-        final Field renewField = AuthenticationFilter.class.getDeclaredField("renew");
+        final var renewField = AuthenticationFilter.class.getDeclaredField("renew");
         renewField.setAccessible(true);
         assertTrue((Boolean) renewField.get(f));
     }
 
     @Test
     public void customRedirectStrategy() throws Exception {
-        final AuthenticationFilter f = new AuthenticationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new AuthenticationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
         context.addInitParameter("service", CAS_SERVICE_URL);
         context.addInitParameter("authenticationRedirectStrategyClass",
@@ -229,24 +230,24 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testIgnorePatterns() throws Exception {
-        final AuthenticationFilter f = new AuthenticationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new AuthenticationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
 
         context.addInitParameter("ignorePattern", "=valueTo(\\w+)");
         context.addInitParameter("service", CAS_SERVICE_URL);
         f.init(new MockFilterConfig(context));
 
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        final var request = new MockHttpServletRequest();
+        final var URL = CAS_SERVICE_URL + "?param=valueToIgnore";
         request.setRequestURI(URL);
 
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         request.setSession(session);
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final var response = new MockHttpServletResponse();
 
-        final FilterChain filterChain = new FilterChain() {
+        final var filterChain = new FilterChain() {
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
@@ -258,8 +259,8 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testIgnorePatternsWithContainsMatching() throws Exception {
-        final AuthenticationFilter f = new AuthenticationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new AuthenticationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
 
         context.addInitParameter("ignorePattern", "=valueToIgnore");
@@ -267,16 +268,16 @@ public final class AuthenticationFilterTests {
         context.addInitParameter("service", CAS_SERVICE_URL);
         f.init(new MockFilterConfig(context));
 
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        final var request = new MockHttpServletRequest();
+        final var URL = CAS_SERVICE_URL + "?param=valueToIgnore";
         request.setRequestURI(URL);
 
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         request.setSession(session);
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final var response = new MockHttpServletResponse();
 
-        final FilterChain filterChain = new FilterChain() {
+        final var filterChain = new FilterChain() {
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
@@ -288,30 +289,30 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testIgnorePatternsWithExactMatching() throws Exception {
-        final AuthenticationFilter f = new AuthenticationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new AuthenticationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
 
-        final URL url = new URL(CAS_SERVICE_URL + "?param=valueToIgnore");
+        final var url = new URL(CAS_SERVICE_URL + "?param=valueToIgnore");
 
         context.addInitParameter("ignorePattern", url.toExternalForm());
         context.addInitParameter("ignoreUrlPatternType", "EXACT");
         context.addInitParameter("service", CAS_SERVICE_URL);
         f.init(new MockFilterConfig(context));
 
-        final MockHttpServletRequest request = new MockHttpServletRequest();
+        final var request = new MockHttpServletRequest();
         request.setScheme(url.getProtocol());
         request.setServerName(url.getHost());
         request.setServerPort(url.getPort());
         request.setQueryString(url.getQuery());
         request.setRequestURI(url.getPath());
 
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         request.setSession(session);
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final var response = new MockHttpServletResponse();
 
-        final FilterChain filterChain = new FilterChain() {
+        final var filterChain = new FilterChain() {
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
@@ -323,8 +324,8 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testIgnorePatternsWithExactClassname() throws Exception {
-        final AuthenticationFilter f = new AuthenticationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new AuthenticationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
 
         context.addInitParameter("ignorePattern", "=valueToIgnore");
@@ -332,16 +333,16 @@ public final class AuthenticationFilterTests {
         context.addInitParameter("service", CAS_SERVICE_URL);
         f.init(new MockFilterConfig(context));
 
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        final var request = new MockHttpServletRequest();
+        final var URL = CAS_SERVICE_URL + "?param=valueToIgnore";
         request.setRequestURI(URL);
 
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         request.setSession(session);
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final var response = new MockHttpServletResponse();
 
-        final FilterChain filterChain = new FilterChain() {
+        final var filterChain = new FilterChain() {
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
@@ -353,8 +354,8 @@ public final class AuthenticationFilterTests {
 
     @Test
     public void testIgnorePatternsWithInvalidClassname() throws Exception {
-        final AuthenticationFilter f = new AuthenticationFilter();
-        final MockServletContext context = new MockServletContext();
+        final var f = new AuthenticationFilter();
+        final var context = new MockServletContext();
         context.addInitParameter("casServerLoginUrl", CAS_LOGIN_URL);
 
         context.addInitParameter("ignorePattern", "=valueToIgnore");
@@ -362,16 +363,16 @@ public final class AuthenticationFilterTests {
         context.addInitParameter("service", CAS_SERVICE_URL);
         f.init(new MockFilterConfig(context));
 
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final String URL = CAS_SERVICE_URL + "?param=valueToIgnore";
+        final var request = new MockHttpServletRequest();
+        final var URL = CAS_SERVICE_URL + "?param=valueToIgnore";
         request.setRequestURI(URL);
 
-        final MockHttpSession session = new MockHttpSession();
+        final HttpSession session = new MockHttpSession();
         request.setSession(session);
 
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final var response = new MockHttpServletResponse();
 
-        final FilterChain filterChain = new FilterChain() {
+        final var filterChain = new FilterChain() {
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
             }
@@ -383,17 +384,17 @@ public final class AuthenticationFilterTests {
 
     private void replaceFilterWithPrefixConfiguredFilter() throws ServletException {
         this.filter = new AuthenticationFilter();
-        final MockFilterConfig config = new MockFilterConfig();
+        final var config = new MockFilterConfig();
         config.addInitParameter("casServerUrlPrefix", CAS_PREFIX);
         config.addInitParameter("service", CAS_SERVICE_URL);
         this.filter.init(config);
     }
 
     private void doRedirectTest() throws IOException, ServletException {
-        final MockHttpSession session = new MockHttpSession();
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
-        final FilterChain filterChain = new FilterChain() {
+        final HttpSession session = new MockHttpSession();
+        final var request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
+        final var filterChain = new FilterChain() {
 
             @Override
             public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {

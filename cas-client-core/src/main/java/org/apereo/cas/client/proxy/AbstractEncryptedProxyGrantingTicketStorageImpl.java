@@ -84,7 +84,7 @@ public abstract class AbstractEncryptedProxyGrantingTicketStorageImpl implements
         }
 
         try {
-            final Cipher cipher = Cipher.getInstance(this.cipherAlgorithm);
+            final var cipher = Cipher.getInstance(this.cipherAlgorithm);
             cipher.init(Cipher.ENCRYPT_MODE, this.key);
             return new String(cipher.doFinal(value.getBytes()));
         } catch (final Exception e) {
@@ -102,7 +102,7 @@ public abstract class AbstractEncryptedProxyGrantingTicketStorageImpl implements
         }
 
         try {
-            final Cipher cipher = Cipher.getInstance(this.cipherAlgorithm);
+            final var cipher = Cipher.getInstance(this.cipherAlgorithm);
             cipher.init(Cipher.DECRYPT_MODE, this.key);
             return new String(cipher.doFinal(value.getBytes()));
         } catch (final Exception e) {

@@ -24,8 +24,7 @@ import org.apereo.cas.client.Protocol;
  * Creates either a Cas30ProxyTicketValidator or a Cas30ServiceTicketValidator depending on whether any of the
  * proxy parameters are set.
  * <p/>
- * This filter can also pass additional parameters to the ticket validator.  Any init parameter not included in the
- * reserved list {@link Cas20ProxyReceivingTicketValidationFilter#RESERVED_INIT_PARAMS}.
+ * This filter can also pass additional parameters to the ticket validator.
  *
  * @author Jerome Leleu
  * @since 3.4.0

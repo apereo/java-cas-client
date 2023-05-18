@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -37,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class PublicTestHttpServer extends Thread {
 
-    private static final Map<Integer, PublicTestHttpServer> serverMap = new HashMap<Integer, PublicTestHttpServer>();
+    private static final Map<Integer, PublicTestHttpServer> serverMap = new HashMap<>();
 
     public final String encoding;
 
@@ -61,19 +60,19 @@ public final class PublicTestHttpServer extends Thread {
         this.content = data;
         this.port = port;
         this.encoding = encoding;
-        final String header = "HTTP/1.0 200 OK\r\n" + "Server: OneFile 1.0\r\n" + "Content-type: " + MIMEType + "\r\n\r\n";
+        final var header = "HTTP/1.0 200 OK\r\n" + "Server: OneFile 1.0\r\n" + "Content-type: " + MIMEType + "\r\n\r\n";
         this.header = header.getBytes("ASCII");
     }
 
     public static synchronized PublicTestHttpServer instance(final int port) {
         if (serverMap.containsKey(port)) {
-            final PublicTestHttpServer server = serverMap.get(port);
+            final var server = serverMap.get(port);
             server.waitUntilReady();
             return server;
         }
 
         try {
-            final PublicTestHttpServer server = new PublicTestHttpServer("test", "ASCII", "text/plain", port);
+            final var server = new PublicTestHttpServer("test", "ASCII", "text/plain", port);
             server.start();
             serverMap.put(port, server);
             server.waitUntilReady();
@@ -101,15 +100,13 @@ public final class PublicTestHttpServer extends Thread {
             notifyReady();
             while (true) {
 
-                Socket connection = null;
-                try {
-                    connection = server.accept();
+                try (final var connection = server.accept()) {
                     final OutputStream out = new BufferedOutputStream(connection.getOutputStream());
                     final InputStream in = new BufferedInputStream(connection.getInputStream());
                     // read the first line only; that's all we need
-                    final StringBuffer request = new StringBuffer(80);
+                    final var request = new StringBuffer(80);
                     while (true) {
-                        final int c = in.read();
+                        final var c = in.read();
                         if (c == '\r' || c == '\n' || c == -1) {
                             break;
                         }
@@ -125,13 +122,8 @@ public final class PublicTestHttpServer extends Thread {
                     }
                     out.write(this.content);
                     out.flush();
-                } // end try
-                catch (final IOException e) {
+                } catch (final IOException e) {
                     // nothing to do with this IOException
-                } finally {
-                    if (connection != null) {
-                        connection.close();
-                    }
                 }
 
             } // end while

@@ -42,13 +42,13 @@ public final class LogoutMessageGenerator {
     }
 
     public static String generateFrontChannelLogoutMessage(final String sessionIndex) {
-        final String logoutMessage = generateBackChannelLogoutMessage(sessionIndex);
-        final Deflater deflater = new Deflater();
+        final var logoutMessage = generateBackChannelLogoutMessage(sessionIndex);
+        final var deflater = new Deflater();
         deflater.setInput(logoutMessage.getBytes(Charset.forName("ASCII")));
         deflater.finish();
-        final byte[] buffer = new byte[logoutMessage.length()];
-        final int resultSize = deflater.deflate(buffer);
-        final byte[] output = new byte[resultSize];
+        final var buffer = new byte[logoutMessage.length()];
+        final var resultSize = deflater.deflate(buffer);
+        final var output = new byte[resultSize];
         System.arraycopy(buffer, 0, output, 0, resultSize);
         return Base64.getEncoder().encodeToString(output);
     }

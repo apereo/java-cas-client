@@ -19,6 +19,8 @@
 package org.apereo.cas.client.util;
 
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletRequest;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockFilterChain;
@@ -41,7 +43,7 @@ public final class ErrorRedirectFilterTests {
     public void setUp() throws Exception {
         this.errorRedirectFilter = new ErrorRedirectFilter();
 
-        final MockFilterConfig filterConfig = new MockFilterConfig();
+        final var filterConfig = new MockFilterConfig();
         filterConfig.addInitParameter(IllegalStateException.class.getName(), REDIRECT_URL);
         this.errorRedirectFilter.init(filterConfig);
         this.filterChain = new MockFilterChain();
@@ -50,8 +52,8 @@ public final class ErrorRedirectFilterTests {
 
     @Test
     public void noRootCause() throws Exception {
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final ServletRequest request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
 
         // this should be okay as the mock filter chain allows one call
         this.errorRedirectFilter.doFilter(request, response, this.filterChain);

@@ -41,7 +41,7 @@ public final class WebXmlConfigurationStrategyImpl extends BaseConfigurationStra
 
     @Override
     protected String get(final ConfigurationKey configurationKey) {
-        final String value = this.filterConfig.getInitParameter(configurationKey.getName());
+        final var value = this.filterConfig.getInitParameter(configurationKey.getName());
 
         if (CommonUtils.isNotBlank(value)) {
             CommonUtils.assertFalse(ConfigurationKeys.RENEW.equals(configurationKey), "Renew MUST be specified via context parameter or JNDI environment to avoid misconfiguration.");
@@ -49,7 +49,7 @@ public final class WebXmlConfigurationStrategyImpl extends BaseConfigurationStra
             return value;
         }
 
-        final String value2 = filterConfig.getServletContext().getInitParameter(configurationKey.getName());
+        final var value2 = filterConfig.getServletContext().getInitParameter(configurationKey.getName());
 
         if (CommonUtils.isNotBlank(value2)) {
             logger.info("Property [{}] loaded from ServletContext.getInitParameter with value [{}]", configurationKey,

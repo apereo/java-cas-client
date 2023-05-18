@@ -92,12 +92,12 @@ public final class DelegatingFilter implements Filter {
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
         throws IOException, ServletException {
 
-        final String parameter = CommonUtils.safeGetParameter((HttpServletRequest) request, this.requestParameterName);
+        final var parameter = CommonUtils.safeGetParameter((HttpServletRequest) request, this.requestParameterName);
 
         if (CommonUtils.isNotEmpty(parameter)) {
-            for (final String key : this.delegators.keySet()) {
+            for (final var key : this.delegators.keySet()) {
                 if ((parameter.equals(key) && this.exactMatch) || (parameter.matches(key) && !this.exactMatch)) {
-                    final Filter filter = this.delegators.get(key);
+                    final var filter = this.delegators.get(key);
                     logger.debug("Match found for parameter [{}] with value [{}]. Delegating to filter [{}]",
                         this.requestParameterName, parameter, filter.getClass().getName());
                     filter.doFilter(request, response, filterChain);

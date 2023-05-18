@@ -45,8 +45,8 @@ public class Saml11TicketValidationFilter extends AbstractTicketValidationFilter
 
     @Override
     protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
-        final Saml11TicketValidator validator = new Saml11TicketValidator(getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX));
-        final long tolerance = getLong(ConfigurationKeys.TOLERANCE);
+        final var validator = new Saml11TicketValidator(getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX));
+        final var tolerance = getLong(ConfigurationKeys.TOLERANCE);
         validator.setTolerance(tolerance);
         validator.setRenew(getBoolean(ConfigurationKeys.RENEW));
 

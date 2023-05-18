@@ -36,54 +36,31 @@ public abstract class BaseConfigurationStrategy implements ConfigurationStrategy
 
     @Override
     public final boolean getBoolean(final ConfigurationKey<Boolean> configurationKey) {
-        return getValue(configurationKey, new Parser<Boolean>() {
-            @Override
-            public Boolean parse(final String value) {
-                return CommonUtils.toBoolean(value);
-            }
-        });
+        return getValue(configurationKey, CommonUtils::toBoolean);
     }
 
     @Override
     public final String getString(final ConfigurationKey<String> configurationKey) {
-        return getValue(configurationKey, new Parser<String>() {
-            @Override
-            public String parse(final String value) {
-                return value;
-            }
-        });
+        return getValue(configurationKey, value -> value);
     }
 
     @Override
     public final long getLong(final ConfigurationKey<Long> configurationKey) {
-        return getValue(configurationKey, new Parser<Long>() {
-            @Override
-            public Long parse(final String value) {
-                return CommonUtils.toLong(value, configurationKey.getDefaultValue());
-            }
-        });
+        return getValue(configurationKey, value -> CommonUtils.toLong(value, configurationKey.getDefaultValue()));
     }
 
     @Override
     public final int getInt(final ConfigurationKey<Integer> configurationKey) {
-        return getValue(configurationKey, new Parser<Integer>() {
-            @Override
-            public Integer parse(final String value) {
-                return CommonUtils.toInt(value, configurationKey.getDefaultValue());
-            }
-        });
+        return getValue(configurationKey, value -> CommonUtils.toInt(value, configurationKey.getDefaultValue()));
     }
 
     @Override
     public <T> Class<? extends T> getClass(final ConfigurationKey<Class<? extends T>> configurationKey) {
-        return getValue(configurationKey, new Parser<Class<? extends T>>() {
-            @Override
-            public Class<? extends T> parse(final String value) {
-                try {
-                    return ReflectUtils.loadClass(value);
-                } catch (final IllegalArgumentException e) {
-                    return configurationKey.getDefaultValue();
-                }
+        return getValue(configurationKey, value -> {
+            try {
+                return ReflectUtils.loadClass(value);
+            } catch (final IllegalArgumentException e) {
+                return configurationKey.getDefaultValue();
             }
         });
     }
@@ -96,13 +73,14 @@ public abstract class BaseConfigurationStrategy implements ConfigurationStrategy
      */
     protected abstract String get(ConfigurationKey configurationKey);
 
+    @FunctionalInterface
     private interface Parser<T> {
 
         T parse(String value);
     }
 
     private <T> T getValue(final ConfigurationKey<T> configurationKey, final Parser<T> parser) {
-        final String value = getWithCheck(configurationKey);
+        final var value = getWithCheck(configurationKey);
 
         if (CommonUtils.isBlank(value)) {
             logger.trace("No value found for property {}, returning default {}", configurationKey.getName(), configurationKey.getDefaultValue());

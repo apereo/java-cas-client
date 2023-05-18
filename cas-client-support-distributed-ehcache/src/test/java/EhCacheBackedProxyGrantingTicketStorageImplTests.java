@@ -18,6 +18,7 @@
  */
 
 import org.apereo.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl;
+import org.apereo.cas.client.proxy.ProxyGrantingTicketStorage;
 
 import junit.framework.TestCase;
 
@@ -30,7 +31,7 @@ public class EhCacheBackedProxyGrantingTicketStorageImplTests extends TestCase {
 
     public void testEncryptionMechanisms() throws Exception {
 
-        final EhcacheBackedProxyGrantingTicketStorageImpl cache = new EhcacheBackedProxyGrantingTicketStorageImpl();
+        final ProxyGrantingTicketStorage cache = new EhcacheBackedProxyGrantingTicketStorageImpl();
 
         assertNull(cache.retrieve(null));
         assertNull(cache.retrieve("foobar"));

@@ -42,8 +42,8 @@ public class Cas10TicketValidationFilter extends AbstractTicketValidationFilter 
 
     @Override
     protected final TicketValidator getTicketValidator(final FilterConfig filterConfig) {
-        final String casServerUrlPrefix = getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX);
-        final Cas10TicketValidator validator = new Cas10TicketValidator(casServerUrlPrefix);
+        final var casServerUrlPrefix = getString(ConfigurationKeys.CAS_SERVER_URL_PREFIX);
+        final var validator = new Cas10TicketValidator(casServerUrlPrefix);
         validator.setRenew(getBoolean(ConfigurationKeys.RENEW));
 
         final HttpURLConnectionFactory factory = new HttpsURLConnectionFactory(getHostnameVerifier(),

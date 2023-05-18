@@ -109,15 +109,15 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
             return;
         }
 
-        final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        final String ticket = retrieveTicketFromRequest(request);
+        final var request = (HttpServletRequest) servletRequest;
+        final var response = (HttpServletResponse) servletResponse;
+        final var ticket = retrieveTicketFromRequest(request);
 
         if (CommonUtils.isNotBlank(ticket)) {
             logger.debug("Attempting to validate ticket: {}", ticket);
 
             try {
-                final Assertion assertion = this.ticketValidator.validate(ticket,
+                final var assertion = this.ticketValidator.validate(ticket,
                     constructServiceUrl(request, response));
 
                 logger.debug("Successfully authenticated user: {}", assertion.getPrincipal().getName());
@@ -185,8 +185,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * @return Properties that can contains key/trust info for Client Side Certificates
      */
     protected Properties getSSLConfig() {
-        final Properties properties = new Properties();
-        final String fileName = getString(ConfigurationKeys.SSL_CONFIG_FILE);
+        final var properties = new Properties();
+        final var fileName = getString(ConfigurationKeys.SSL_CONFIG_FILE);
 
         if (fileName != null) {
             FileInputStream fis = null;
@@ -209,8 +209,8 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
      * @return Instance of specified host name verifier or null if none specified.
      */
     protected HostnameVerifier getHostnameVerifier() {
-        final Class<? extends HostnameVerifier> className = getClass(ConfigurationKeys.HOSTNAME_VERIFIER);
-        final String config = getString(ConfigurationKeys.HOSTNAME_VERIFIER_CONFIG);
+        final var className = getClass(ConfigurationKeys.HOSTNAME_VERIFIER);
+        final var config = getString(ConfigurationKeys.HOSTNAME_VERIFIER_CONFIG);
         if (className != null) {
             if (config != null) {
                 return ReflectUtils.newInstance(className, config);
