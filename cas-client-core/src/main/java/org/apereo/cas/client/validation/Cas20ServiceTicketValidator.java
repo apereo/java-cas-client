@@ -53,6 +53,11 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
     public static final String PGT_ATTRIBUTE = "proxyGrantingTicket";
 
     private static final String PGTIOU_PREFIX = "PGTIOU-";
+    private static final SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+    static {
+        saxParserFactory.setNamespaceAware(true);
+        saxParserFactory.setValidating(false);
+    }
 
     /** The CAS 2.0 protocol proxy callback url. */
     private String proxyCallbackUrl;
@@ -196,11 +201,8 @@ public class Cas20ServiceTicketValidator extends AbstractCasProtocolUrlBasedTick
      * @return the map of attributes.
      */
     protected Map<String, Object> extractCustomAttributes(final String xml) {
-        final var spf = SAXParserFactory.newInstance();
-        spf.setNamespaceAware(true);
-        spf.setValidating(false);
         try {
-            final var saxParser = spf.newSAXParser();
+            final var saxParser = saxParserFactory.newSAXParser();
             final var xmlReader = saxParser.getXMLReader();
             final var handler = new CustomAttributeHandler();
             xmlReader.setContentHandler(handler);
