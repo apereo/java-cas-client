@@ -103,6 +103,9 @@
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven.source.plugin.version}</version>
+                <configuration>
+                    <classifier>sources</classifier>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
