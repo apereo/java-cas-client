@@ -356,17 +356,18 @@ At the moment, only JWTs that are first signed and then encrypted (in that order
 </filter-mapping>
 ```
 
-| Property                  | Description                                                           | Required |
-|---------------------------|-----------------------------------------------------------------------|----------|
-| `signingKey `             | The signing key. Only `AES` secret keys are supported.                | Yes      |
-| `encryptionKey `          | The encryption key. Only `AES` secret keys are supported.             | Yes      |
-| `expectedIssuer `         | `iss` claim value that is required to match what is in the JWT.       | Yes      |
-| `expectedAudience `       | `aud` claim value that is required to match what is in the JWT.       | Yes      |
-| `encryptionKeyAlgorithm ` | Default is `AES`.                                                     | No       |
-| `encryptionKeyAlgorithm ` | Default is `AES`.                                                     | No       |
-| `requiredClaims `         | Default is `sub,aud,iat,jti,exp,iss`.                                 | No       |
-| `base64EncryptionKey `    | If encryption key should be base64-decoded first. Default is `true`.  | No       |
-| `base64SigningKey `       | If encryption key should be base64-decoded first. Default is `false`. | No       |
+| Property                  | Description                                                                              | Required |
+|---------------------------|------------------------------------------------------------------------------------------|----------|
+| `signingKey `             | The signing key. Only `AES` secret keys are supported.                                   | Yes      |
+| `encryptionKey `          | The encryption key. Only `AES` secret keys are supported.                                | Yes      |
+| `expectedIssuer `         | `iss` claim value that is required to match what is in the JWT.                          | Yes      |
+| `expectedAudience `       | `aud` claim value that is required to match what is in the JWT.                          | Yes      |
+| `encryptionKeyAlgorithm ` | Default is `AES`.                                                                        | No       |
+| `encryptionKeyAlgorithm ` | Default is `AES`.                                                                        | No       |
+| `requiredClaims `         | Default is `sub,aud,iat,jti,exp,iss`.                                                    | No       |
+| `base64EncryptionKey `    | If encryption key should be base64-decoded first. Default is `true`.                     | No       |
+| `base64SigningKey `       | If encryption key should be base64-decoded first. Default is `false`.                    | No       |
+| `maxClockSkew `           | Maximum acceptable clock skew when validating expiration dates. Default is `60` seconds. | No       |
 
 ##### Proxy Authentication vs. Distributed Caching
 The client has support for clustering and distributing the TGT state among application nodes that are behind a load balancer. In order to do so, 
@@ -865,18 +866,18 @@ cas {
 ```
 
 
-| Property                | Description                                                                                                                                                                                                                            | Required |
-|-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
-| `ticketValidatorClass ` | Fully-qualified class name of CAS ticket validator class.                                                                                                                                                                              | Yes      |
-| `casServerUrlPrefix`    | URL to root of CAS Web application context.                                                                                                                                                                                            | Yes      |
-| `service`               | CAS service parameter that may be overridden by callback handler. **Note**: service must be specified by at least one component such that it is available at service ticket validation time.                                           | No       |
-| `defaultRoles`          | Comma-delimited list of static roles applied to all authenticated principals.                                                                                                                                                          | No       |
-| `roleAttributeNames`    | Comma-delimited list of attribute names that describe role data delivered to CAS in the service-ticket validation response that should be applied to the current authenticated principal.                                              | No       |
-| `principalGroupName`    | The name of a group principal containing the primary principal name of the current JAAS subject. The default value is `CallerPrincipal`.                                                                                               | No       |
-| `roleGroupName`         | The name of a group principal containing all role data. The default value is `Roles`.                                                                                                                                                  | No       |
+| Property                | Description                                                                                                                                                                                                                           | Required |
+|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `ticketValidatorClass ` | Fully-qualified class name of CAS ticket validator class.                                                                                                                                                                             | Yes      |
+| `casServerUrlPrefix`    | URL to root of CAS Web application context.                                                                                                                                                                                           | Yes      |
+| `service`               | CAS service parameter that may be overridden by callback handler. **Note**: service must be specified by at least one component such that it is available at service ticket validation time.                                          | No       |
+| `defaultRoles`          | Comma-delimited list of static roles applied to all authenticated principals.                                                                                                                                                         | No       |
+| `roleAttributeNames`    | Comma-delimited list of attribute names that describe role data delivered to CAS in the service-ticket validation response that should be applied to the current authenticated principal.                                             | No       |
+| `principalGroupName`    | The name of a group principal containing the primary principal name of the current JAAS subject. The default value is `CallerPrincipal`.                                                                                              | No       |
+| `roleGroupName`         | The name of a group principal containing all role data. The default value is `Roles`.                                                                                                                                                 | No       |
 | `cacheAssertions`       | Flag to enable assertion caching. This may be required for JAAS providers that attempt to periodically reauthenticate to renew principal. Since CAS tickets are one-time-use, a cached assertion must be provided on reauthentication. | No       |
-| `cacheTimeout`          | Assertion cache timeout in minutes.                                                                                                                                                                                                    | No       |
-| `tolerance`             | The tolerance for drifting clocks when validating SAML tickets.                                                                                                                                                                        | No       |
+| `cacheTimeout`          | Assertion cache timeout in minutes.                                                                                                                                                                                                   | No       |
+| `tolerance`             | The tolerance for drifting clocks when validating SAML tickets.                                                                                                                                                                       | No       |
 
 ### Programmatic JAAS login using the Servlet 3
 A `jaas.org.apereo.cas.client.Servlet3AuthenticationFilter` servlet filter that performs a programmatic JAAS login using the Servlet 3.0 `HttpServletRequest#login()` facility. This component should be compatible with any servlet container that supports the Servlet 3.0/JEE6 specification.
