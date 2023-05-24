@@ -78,6 +78,8 @@ public class CasJWTTicketValidator implements TicketValidator {
 
     private boolean base64SigningKey;
 
+    private int maxClockSkew = 60;
+
     private ConfigurableJWTProcessor<SecurityContext> jwtProcessor;
 
     @Override
@@ -117,6 +119,7 @@ public class CasJWTTicketValidator implements TicketValidator {
             .audience(expectedAudience)
             .build();
         final var jwtClaimsSetVerifier = new DefaultJWTClaimsVerifier<>(exactMatchClaims, requiredClaimsSet);
+        jwtClaimsSetVerifier.setMaxClockSkew(this.maxClockSkew);
         jwtProcessor.setJWTClaimsSetVerifier(jwtClaimsSetVerifier);
     }
 
@@ -173,5 +176,9 @@ public class CasJWTTicketValidator implements TicketValidator {
 
     public void setEncryptionKey(final String encryptionKey) {
         this.encryptionKey = encryptionKey;
+    }
+
+    public void setMaxClockSkew(final int maxClockSkew) {
+        this.maxClockSkew = maxClockSkew;
     }
 }

@@ -24,6 +24,7 @@ public class CasJWTTicketValidationFilter extends AbstractTicketValidationFilter
         validator.setRequiredClaims(getString(new ConfigurationKey<>("requiredClaims", "sub,aud,iat,jti,exp,iss")));
         validator.setBase64EncryptionKey(getBoolean(new ConfigurationKey<>("base64EncryptionKey", true)));
         validator.setBase64SigningKey(getBoolean(new ConfigurationKey<>("base64SigningKey", true)));
+        validator.setMaxClockSkew(getInt(new ConfigurationKey<>("maxClockSkew", 60)));
         validator.initialize();
         return validator;
     }
