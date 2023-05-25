@@ -92,7 +92,7 @@ public final class DelegatingFilter implements Filter {
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
         throws IOException, ServletException {
 
-        final var parameter = CommonUtils.safeGetParameter((HttpServletRequest) request, this.requestParameterName);
+        final var parameter = WebUtils.safeGetParameter((HttpServletRequest) request, this.requestParameterName);
 
         if (CommonUtils.isNotEmpty(parameter)) {
             for (final var key : this.delegators.keySet()) {

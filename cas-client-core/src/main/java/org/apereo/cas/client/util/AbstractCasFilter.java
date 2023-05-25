@@ -127,7 +127,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
     }
 
     protected final String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response) {
-        return CommonUtils.constructServiceUrl(request, response, this.service, this.serverName,
+        return WebUtils.constructServiceUrl(request, response, this.service, this.serverName,
             this.protocol.getServiceParameterName(),
             this.protocol.getArtifactParameterName(), this.encodeServiceUrl);
     }
@@ -143,7 +143,7 @@ public abstract class AbstractCasFilter extends AbstractConfigurationFilter {
      * @return the ticket if its found, null otherwise.
      */
     protected String retrieveTicketFromRequest(final HttpServletRequest request) {
-        return CommonUtils.safeGetParameter(request, this.protocol.getArtifactParameterName(),
+        return WebUtils.safeGetParameter(request, this.protocol.getArtifactParameterName(),
             Collections.singletonList(this.protocol.getArtifactParameterName()));
     }
 }

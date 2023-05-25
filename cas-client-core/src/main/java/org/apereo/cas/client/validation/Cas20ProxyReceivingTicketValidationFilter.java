@@ -28,6 +28,7 @@ import org.apereo.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.apereo.cas.client.ssl.HttpURLConnectionFactory;
 import org.apereo.cas.client.ssl.HttpsURLConnectionFactory;
 import org.apereo.cas.client.util.CommonUtils;
+import org.apereo.cas.client.util.WebUtils;
 import org.apereo.cas.client.util.PrivateKeyUtils;
 import org.apereo.cas.client.util.ReflectUtils;
 
@@ -232,7 +233,7 @@ public class Cas20ProxyReceivingTicketValidationFilter extends AbstractTicketVal
         }
 
         try {
-            CommonUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
+            WebUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
         } catch (final RuntimeException e) {
             logger.error(e.getMessage(), e);
             throw e;
