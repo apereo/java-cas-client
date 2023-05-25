@@ -20,7 +20,7 @@ package org.apereo.cas.client.jaas;
 
 import org.apereo.cas.client.Protocol;
 import org.apereo.cas.client.util.AbstractCasFilter;
-import org.apereo.cas.client.util.CommonUtils;
+import org.apereo.cas.client.util.WebUtils;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -60,7 +60,7 @@ public final class Servlet3AuthenticationFilter extends AbstractCasFilter {
         final var request = (HttpServletRequest) servletRequest;
         final var response = (HttpServletResponse) servletResponse;
         final var session = request.getSession();
-        final var ticket = CommonUtils.safeGetParameter(request, getProtocol().getArtifactParameterName());
+        final var ticket = WebUtils.safeGetParameter(request, getProtocol().getArtifactParameterName());
 
         if (session != null && session.getAttribute(CONST_CAS_ASSERTION) == null && ticket != null) {
             try {

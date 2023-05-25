@@ -21,6 +21,7 @@ package org.apereo.cas.client.session;
 import org.apereo.cas.client.Protocol;
 import org.apereo.cas.client.configuration.ConfigurationKeys;
 import org.apereo.cas.client.util.CommonUtils;
+import org.apereo.cas.client.util.WebUtils;
 import org.apereo.cas.client.util.XmlUtils;
 
 import jakarta.servlet.ServletException;
@@ -205,7 +206,7 @@ public final class SingleSignOutHandler {
      * @return True if request contains authentication token, false otherwise.
      */
     private boolean isTokenRequest(final HttpServletRequest request) {
-        return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.artifactParameterName,
+        return CommonUtils.isNotBlank(WebUtils.safeGetParameter(request, this.artifactParameterName,
             this.safeParameters));
     }
 
@@ -220,12 +221,12 @@ public final class SingleSignOutHandler {
         if ("POST".equalsIgnoreCase(request.getMethod())) {
             return !isMultipartRequest(request)
                    && pathEligibleForLogout(request)
-                   && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
+                   && CommonUtils.isNotBlank(WebUtils.safeGetParameter(request, this.logoutParameterName,
                 this.safeParameters));
         }
 
         if ("GET".equalsIgnoreCase(request.getMethod())) {
-            return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters));
+            return CommonUtils.isNotBlank(WebUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters));
         }
         return false;
     }
@@ -252,7 +253,7 @@ public final class SingleSignOutHandler {
             return;
         }
 
-        final var token = CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters);
+        final var token = WebUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters);
         logger.debug("Recording session for token {}", token);
 
         try {
@@ -299,7 +300,7 @@ public final class SingleSignOutHandler {
      * @param request HTTP request containing a CAS logout message.
      */
     private void destroySession(final HttpServletRequest request) {
-        var logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
+        var logoutMessage = WebUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
         if (CommonUtils.isBlank(logoutMessage)) {
             logger.error("Could not locate logout message of the request from {}", this.logoutParameterName);
             return;
