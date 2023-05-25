@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Commons utilities related to the Jakarta request/response.
+ * Commons utilities related to the web (Jakarta) request/response.
  *
  * @author Jerome LELEU
  * @since 4.0.3
@@ -64,6 +64,9 @@ public final class WebUtils {
         SERVICE_PARAMETER_NAMES = serviceParameterSet.toString()
                 .replaceAll("\\[|\\]", "")
                 .replaceAll("\\s", "");
+    }
+
+    private WebUtils() {
     }
 
     public static void readAndRespondToProxyReceptorRequest(final ServletRequest request,
