@@ -26,7 +26,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apereo.cas.client</groupId>
-    <version>4.0.3-SNAPSHOT</version>
+    <version>4.0.3</version>
     <artifactId>cas-client</artifactId>
     <packaging>pom</packaging>
 
