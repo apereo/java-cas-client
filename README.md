@@ -334,8 +334,12 @@ for more info.
 <a name="orgapereocasclientvalidationcasjwtticketvalidationfilter"></a>
 #### org.apereo.cas.client.validation.CasJWTTicketValidationFilter
 Validates service tickets that issued by the CAS server as JWTs.
+  
+Supported JWTs are:
 
-At the moment, only JWTs that are first signed and then encrypted (in that order) are supported by this filter.
+- The JWT must be signed and encrypted, in that order, or...
+- The JWT must be encrypted and signed, in that order, or...
+- The JWT must be encrypted.
 
 ```xml
 <filter>
