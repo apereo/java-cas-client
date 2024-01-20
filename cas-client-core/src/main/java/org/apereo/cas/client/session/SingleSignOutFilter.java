@@ -94,8 +94,13 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
          * <p>Workaround for now for the fact that Spring Security will fail since it doesn't call {@link #init(javax.servlet.FilterConfig)}.</p>
          * <p>Ultimately we need to allow deployers to actually inject their fully-initialized {@link SingleSignOutHandler}.</p>
          */
-        if (!this.handlerInitialized.getAndSet(true)) {
-            HANDLER.init();
+        if (!this.handlerInitialized.get()) {
+            synchronized (this) {
+                if (!this.handlerInitialized.get()) {
+                    HANDLER.init();
+                    this.handlerInitialized.set(true);
+                }
+            }
         }
 
         if (HANDLER.process(request, response)) {
