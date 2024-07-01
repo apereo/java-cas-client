@@ -41,8 +41,6 @@
             <scope>compile</scope>
         </dependency>
 
-
-        
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>

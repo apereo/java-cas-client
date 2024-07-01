@@ -80,12 +80,12 @@ public final class ProxyList {
                     if (proxyChain.get(linkIndex).matches(linkToTest)) {
                         //If we are at the last link, we found a good proxyChain.
                         if (linkIndex == proxyChain.size() - 1) {
-                            logger.info("Proxy chain matched: {}", loggingOutput.toString());
+                            logger.info("Proxy chain matched: {}", loggingOutput);
                             return true;
                         }
 
                     } else {
-                        logger.warn("Proxy chain did not match at {}. Skipping to next allowedProxyChain", loggingOutput.toString());
+                        logger.warn("Proxy chain did not match at {}. Skipping to next allowedProxyChain", loggingOutput);
                         break;
                     }
                     loggingOutput.append("->");

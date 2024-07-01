@@ -27,7 +27,7 @@ import org.apereo.cas.client.configuration.ConfigurationKeys;
 import org.apereo.cas.client.ssl.HttpsURLConnectionFactory;
 
 /**
- * Implementation of TicketValidationFilter that can instanciate a SAML 1.1 Ticket Validator.
+ * Implementation of TicketValidationFilter that can instantiate a SAML 1.1 Ticket Validator.
  * <p/>
  * Deployers can provide the "casServerUrlPrefix" and "tolerance" properties of the Saml11TicketValidator via the
  * context or filter init parameters.

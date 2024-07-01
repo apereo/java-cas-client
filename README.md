@@ -424,7 +424,7 @@ Configure the client:
 </init-param>
 ```
 
-When loading from the `web.xml`, the Client relies on a series of default values, one of which being that the list of memcached servers must be defined in `/cas/casclient_memcached_hosts.txt` on the classpath). The file is a simple list of `<hostname>:<ports>` on separate lines. **BE SURE NOT TO HAVE EXTRA LINE BREAKS**.
+When loading from the `web.xml`, the Client relies on a series of default values, one of which being that the list of memcached servers must be defined in `/cas/casclient_memcached_hosts.txt` on the classpath. The file is a simple list of `<hostname>:<ports>` on separate lines. **BE SURE NOT TO HAVE EXTRA LINE BREAKS**.
 
 <a name="orgapereocasclientutilhttpservletrequestwrapperfilter"></a>
 #### org.apereo.cas.client.HttpServletRequestWrapperFilter
@@ -879,7 +879,7 @@ cas {
 | `roleAttributeNames`    | Comma-delimited list of attribute names that describe role data delivered to CAS in the service-ticket validation response that should be applied to the current authenticated principal.                                             | No       |
 | `principalGroupName`    | The name of a group principal containing the primary principal name of the current JAAS subject. The default value is `CallerPrincipal`.                                                                                              | No       |
 | `roleGroupName`         | The name of a group principal containing all role data. The default value is `Roles`.                                                                                                                                                 | No       |
-| `cacheAssertions`       | Flag to enable assertion caching. This may be required for JAAS providers that attempt to periodically reauthenticate to renew principal. Since CAS tickets are one-time-use, a cached assertion must be provided on reauthentication. | No       |
+| `cacheAssertions`       | Flag to enable assertion caching. This may be required for JAAS providers that attempt to periodically reauthenticate to renew principal. Since CAS tickets are one-time-use, a cached assertion must be provided on reauthentication.| No       |
 | `cacheTimeout`          | Assertion cache timeout in minutes.                                                                                                                                                                                                   | No       |
 | `tolerance`             | The tolerance for drifting clocks when validating SAML tickets.                                                                                                                                                                       | No       |
 

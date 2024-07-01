@@ -38,7 +38,7 @@ public final class IOUtils {
     public static final Charset UTF8 = Charset.forName("UTF-8");
 
 
-    private IOUtils() { /** Utility class pattern. */}
+    private IOUtils() { /* Utility class pattern. */}
 
     /**
      * Reads all data from the given stream as UTF-8 character data and closes it on completion or errors.

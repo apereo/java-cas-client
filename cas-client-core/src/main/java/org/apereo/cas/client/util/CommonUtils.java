@@ -143,7 +143,7 @@ public final class CommonUtils {
      * at least one non-whitespace character.
      *
      * @param string the string to check.
-     * @return true if its not blank, false otherwise.
+     * @return true if it's not blank, false otherwise.
      */
     public static boolean isNotBlank(final String string) {
         return !isBlank(string);

@@ -241,7 +241,7 @@ public final class SingleSignOutHandler {
 
     /**
      * Associates a token request with the current HTTP session by recording the mapping
-     * in the the configured {@link SessionMappingStorage} container.
+     * in the configured {@link SessionMappingStorage} container.
      *
      * @param request HTTP request containing an authentication token.
      */
