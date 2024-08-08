@@ -28,12 +28,9 @@ import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWEAlgorithm;
-import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jose.JWEHeader;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.KeySourceException;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.BadJWEException;
@@ -61,7 +58,6 @@ import java.text.ParseException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 /**

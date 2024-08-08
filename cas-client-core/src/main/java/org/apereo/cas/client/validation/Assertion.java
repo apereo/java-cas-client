@@ -48,7 +48,7 @@ public interface Assertion extends Serializable {
     Date getValidUntilDate();
 
     /**
-     * The date the authentication actually occurred on.  If its unable to be determined, it should be set to the current
+     * The date the authentication actually occurred on.  If it's unable to be determined, it should be set to the current
      * time.
      *
      * @return the authentication date, or the current time if it can't be determined.

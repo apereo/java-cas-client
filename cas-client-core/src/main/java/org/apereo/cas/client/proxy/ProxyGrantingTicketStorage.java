@@ -33,7 +33,7 @@ public interface ProxyGrantingTicketStorage {
      * @param proxyGrantingTicketIou used as the key
      * @param proxyGrantingTicket    used as the value
      */
-    public void save(String proxyGrantingTicketIou, String proxyGrantingTicket);
+    void save(String proxyGrantingTicketIou, String proxyGrantingTicket);
 
     /**
      * Method to retrieve a ProxyGrantingTicket based on the
@@ -44,11 +44,11 @@ public interface ProxyGrantingTicketStorage {
      * @param proxyGrantingTicketIou used as the key
      * @return the ProxyGrantingTicket Id or null if it can't be found
      */
-    public String retrieve(String proxyGrantingTicketIou);
+    String retrieve(String proxyGrantingTicketIou);
 
     /**
      * Called on a regular basis by an external timer,
      * giving implementations a chance to remove stale data.
      */
-    public void cleanUp();
+    void cleanUp();
 }

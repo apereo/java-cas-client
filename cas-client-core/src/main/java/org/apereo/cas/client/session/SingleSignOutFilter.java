@@ -90,7 +90,7 @@ public final class SingleSignOutFilter extends AbstractConfigurationFilter {
         final var request = (HttpServletRequest) servletRequest;
         final var response = (HttpServletResponse) servletResponse;
 
-        /**
+        /*
          * <p>Workaround for now for the fact that Spring Security will fail since it doesn't call {@link #init(javax.servlet.FilterConfig)}.</p>
          * <p>Ultimately we need to allow deployers to actually inject their fully-initialized {@link SingleSignOutHandler}.</p>
          */

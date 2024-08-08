@@ -41,7 +41,7 @@ public interface HttpURLConnectionFactory extends Serializable {
      * @param url The url connection that needs to be configured
      * @return The configured {@link HttpURLConnection} instance
      *
-     * @see {@link HttpsURLConnectionFactory}
+     * @see HttpsURLConnectionFactory
      */
     HttpURLConnection buildHttpURLConnection(final URLConnection url);
 }

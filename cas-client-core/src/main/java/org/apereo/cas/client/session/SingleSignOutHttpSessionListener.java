@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpSessionListener;
  * <p>
  * Enables the CAS Single Sign out feature.
  *
- * Scott Battaglia
+ * @author Scott Battaglia
  * @version $Revision$ Date$
  * @since 3.1
  */

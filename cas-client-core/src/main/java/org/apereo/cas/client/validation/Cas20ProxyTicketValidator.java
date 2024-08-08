@@ -89,7 +89,7 @@ public class Cas20ProxyTicketValidator extends Cas20ServiceTicketValidator {
                     + "However, none are allowed by allowed proxy chain of the client which is {}",
             Arrays.toString(proxiedList), this.allowedProxyChains);
 
-        throw new InvalidProxyChainTicketValidationException("Invalid proxy chain: " + proxies.toString());
+        throw new InvalidProxyChainTicketValidationException("Invalid proxy chain: " + proxies);
     }
 
     protected List<String> parseProxiesFromResponse(final String response) {

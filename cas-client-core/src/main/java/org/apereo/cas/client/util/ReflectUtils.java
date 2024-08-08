@@ -118,7 +118,7 @@ public final class ReflectUtils {
     }
 
     /**
-     * Sets the given property on the target JavaBean using bean instrospection.
+     * Sets the given property on the target JavaBean using bean introspection.
      * @param propertyName Property to set.
      * @param value Property value to set.
      * @param target Target java bean on which to set property.
@@ -132,7 +132,7 @@ public final class ReflectUtils {
     }
 
     /**
-     * Sets the given property on the target JavaBean using bean instrospection.
+     * Sets the given property on the target JavaBean using bean introspection.
      * @param propertyName Property to set.
      * @param value Property value to set.
      * @param target Target JavaBean on which to set property.

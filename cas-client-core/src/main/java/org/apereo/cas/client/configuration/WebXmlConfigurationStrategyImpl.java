@@ -24,8 +24,8 @@ import jakarta.servlet.Filter;
 import jakarta.servlet.FilterConfig;
 
 /**
- * Implementation of the {@link ConfigurationStrategy} that first checks the {@link javax.servlet.FilterConfig} and
- * then checks the {@link javax.servlet.ServletContext}, ultimately falling back to the <code>defaultValue</code>.
+ * Implementation of the {@link ConfigurationStrategy} that first checks the {@link jakarta.servlet.FilterConfig} and
+ * then checks the {@link jakarta.servlet.ServletContext}, ultimately falling back to the <code>defaultValue</code>.
  *
  * @author Scott Battaglia
  * @since 3.4.0

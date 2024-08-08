@@ -87,7 +87,7 @@ public final class ProxyGrantingTicketStorageImpl implements ProxyGrantingTicket
 
     /**
      * NOTE: you can only retrieve a ProxyGrantingTicket once with this method.
-     * Its removed after retrieval.
+     * It's removed after retrieval.
      */
     @Override
     public String retrieve(final String proxyGrantingTicketIou) {

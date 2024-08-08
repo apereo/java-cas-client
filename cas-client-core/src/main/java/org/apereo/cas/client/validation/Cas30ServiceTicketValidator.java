@@ -44,7 +44,7 @@ public class Cas30ServiceTicketValidator extends Cas20ServiceTicketValidator {
     }
 
     /**
-     * Custom attribute extractor that will account for inlined CAS attributes.  Useful when CAS is acting as
+     * Custom attribute extractor that will account for inlined CAS attributes.  Useful when CAS is acting
      * as SAML 2 IdP and returns SAML attributes with names that contains namespaces.
      *
      * @param xml the XML to parse.
