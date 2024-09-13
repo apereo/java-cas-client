@@ -56,7 +56,7 @@ public abstract class AbstractUrlBasedTicketValidator implements TicketValidator
     private HttpURLConnectionFactory urlConnectionFactory = new HttpsURLConnectionFactory();
 
     /**
-     * Whether the request include a renew or not.
+     * Whether the request includes a renew or not.
      */
     private boolean renew;
 

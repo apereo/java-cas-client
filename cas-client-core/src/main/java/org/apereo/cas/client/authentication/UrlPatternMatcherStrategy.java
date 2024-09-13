@@ -37,7 +37,7 @@ public interface UrlPatternMatcherStrategy {
 
     /**
      * The pattern against which the url is compared
-     * @param pattern
+     * @param pattern the pattern against which the url is compared
      */
     void setPattern(String pattern);
 }

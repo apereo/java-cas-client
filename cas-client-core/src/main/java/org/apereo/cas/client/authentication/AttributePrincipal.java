@@ -26,7 +26,7 @@ import java.util.Map;
  * Extension to the standard Java Principal that includes a way to retrieve proxy tickets for a particular user
  * and attributes.
  * <p>
- * Developer's who don't want their code tied to CAS merely need to work with the Java Principal then.  Working with
+ * Developers who don't want their code tied to CAS merely need to work with the Java Principal then.  Working with
  * the CAS-specific features requires knowledge of the AttributePrincipal class.
  *
  * @author Scott Battaglia

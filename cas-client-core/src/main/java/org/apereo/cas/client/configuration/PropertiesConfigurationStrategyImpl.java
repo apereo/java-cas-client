@@ -36,7 +36,7 @@ import java.util.Properties;
 public final class PropertiesConfigurationStrategyImpl extends BaseConfigurationStrategy {
 
     /**
-     * Property name we'll use in the {@link javax.servlet.FilterConfig} and {@link javax.servlet.ServletConfig} to try and find where
+     * Property name we'll use in the {@link jakarta.servlet.FilterConfig} and {@link jakarta.servlet.ServletConfig} to try and find where
      * you stored the configuration file.
      */
     private static final String CONFIGURATION_FILE_LOCATION = "configFileLocation";
