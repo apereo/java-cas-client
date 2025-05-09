@@ -258,7 +258,7 @@
         <bouncycastle.version>1.80</bouncycastle.version>
         <springboot.version>3.4.5</springboot.version>
         <spring.security.version>6.4.5</spring.security.version>
-        <nimbus.jose.jwt.version>10.2</nimbus.jose.jwt.version>
+        <nimbus.jose.jwt.version>10.3</nimbus.jose.jwt.version>
         <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
         <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
         <maven.surefire.plugin.version>3.5.3</maven.surefire.plugin.version>
