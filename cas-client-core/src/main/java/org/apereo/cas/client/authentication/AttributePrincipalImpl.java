@@ -114,4 +114,13 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
     public Map<String, Object> getAttributes() {
         return this.attributes;
     }
+
+    /**
+     * Returns the proxy granting ticket associated with this principal, if available.
+     *
+     * @return the proxy granting ticket or null
+     */
+    public String getProxyGrantingTicket() {
+        return proxyGrantingTicket;
+    }
 }
