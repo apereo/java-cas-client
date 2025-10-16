@@ -247,7 +247,7 @@
 
     <properties>
         <junit4.version>4.13.2</junit4.version>
-        <spring.version>6.2.11</spring.version>
+        <spring.version>6.2.12</spring.version>
         <ehcache.version>3.11.1</ehcache.version>
         <slf4j.version>2.0.17</slf4j.version>
         <jackson.version>2.20.0</jackson.version>
