@@ -18,6 +18,8 @@
  */
 package org.apereo.cas.client.session;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.apereo.cas.client.Protocol;
 import org.apereo.cas.client.configuration.ConfigurationKeys;
 import org.apereo.cas.client.util.CommonUtils;
@@ -50,24 +52,43 @@ public final class SingleSignOutHandler {
 
     private static final int DECOMPRESSION_FACTOR = 10;
 
-    /** Logger instance */
+    /**
+     * Logger instance
+     */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
 
-    /** Mapping of token IDs and session IDs to HTTP sessions */
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    /**
+     * Mapping of token IDs and session IDs to HTTP sessions
+     */
     private SessionMappingStorage sessionMappingStorage = new HashMapBackedSessionMappingStorage();
 
-    /** The name of the artifact parameter.  This is used to capture the session identifier. */
+    /**
+     * The name of the artifact parameter.  This is used to capture the session identifier.
+     */
     private String artifactParameterName = Protocol.CAS2.getArtifactParameterName();
 
-    /** Parameter name that stores logout request for SLO */
+    /**
+     * The name of the JSONP callback parameter for front-channel logout requests
+     */
+    private String jsonpCallbackParameterName = ConfigurationKeys.JSONP_CALLBACK_PARAMETER_NAME.getDefaultValue();
+
+    /**
+     * Parameter name that stores logout request for SLO
+     */
     private String logoutParameterName = ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue();
 
-    /** Parameter name that stores the state of the CAS server webflow for the callback */
+    /**
+     * Parameter name that stores the state of the CAS server webflow for the callback
+     */
     private String relayStateParameterName = ConfigurationKeys.RELAY_STATE_PARAMETER_NAME.getDefaultValue();
 
-    /** The logout callback path configured at the CAS server, if there is one */
+    /**
+     * The logout callback path configured at the CAS server, if there is one
+     */
     private String logoutCallbackPath;
 
     private boolean artifactParameterOverPost = false;
@@ -101,6 +122,13 @@ public final class SingleSignOutHandler {
      */
     public void setArtifactParameterName(final String name) {
         this.artifactParameterName = name;
+    }
+
+    /**
+     * @param name Name of the JSONP callback parameter for front-channel logout requests.
+     */
+    public void setJsonpCallbackParameterName(final String name) {
+        this.jsonpCallbackParameterName = name;
     }
 
     /**
@@ -149,7 +177,7 @@ public final class SingleSignOutHandler {
     /**
      * Process a request regarding the SLO process: record the session or destroy it.
      *
-     * @param request the incoming HTTP request.
+     * @param request  the incoming HTTP request.
      * @param response the HTTP response.
      * @return if the request should continue to be processed.
      */
@@ -163,6 +191,15 @@ public final class SingleSignOutHandler {
         if (isLogoutRequest(request)) {
             logger.trace("Received a logout request");
             destroySession(request);
+            final var callback = WebUtils.safeGetParameter(request, this.jsonpCallbackParameterName, this.safeParameters);
+            if (callback != null) {
+                try {
+                    response.setContentType("application/javascript");
+                    mapper.writeValue(response.getWriter(), new JSONPObject(callback, true));
+                } catch (final Exception e) {
+                    logger.debug("Error writing JSONP logout response.", e);
+                }
+            }
             return false;
         }
         logger.trace("Ignoring URI for logout: {}", request.getRequestURI());
@@ -202,27 +239,25 @@ public final class SingleSignOutHandler {
      * Determines whether the given request contains an authentication token.
      *
      * @param request HTTP reqest.
-     *
      * @return True if request contains authentication token, false otherwise.
      */
     private boolean isTokenRequest(final HttpServletRequest request) {
         return CommonUtils.isNotBlank(WebUtils.safeGetParameter(request, this.artifactParameterName,
-            this.safeParameters));
+                this.safeParameters));
     }
 
     /**
      * Determines whether the given request is a CAS  logout request.
      *
      * @param request HTTP request.
-     *
      * @return True if request is logout request, false otherwise.
      */
     private boolean isLogoutRequest(final HttpServletRequest request) {
         if ("POST".equalsIgnoreCase(request.getMethod())) {
             return !isMultipartRequest(request)
-                   && pathEligibleForLogout(request)
-                   && CommonUtils.isNotBlank(WebUtils.safeGetParameter(request, this.logoutParameterName,
-                this.safeParameters));
+                    && pathEligibleForLogout(request)
+                    && CommonUtils.isNotBlank(WebUtils.safeGetParameter(request, this.logoutParameterName,
+                    this.safeParameters));
         }
 
         if ("GET".equalsIgnoreCase(request.getMethod())) {

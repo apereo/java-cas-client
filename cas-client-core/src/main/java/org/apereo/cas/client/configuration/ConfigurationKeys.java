@@ -85,4 +85,5 @@ public interface ConfigurationKeys {
     ConfigurationKey<String> PROXY_CALLBACK_URL = new ConfigurationKey<>("proxyCallbackUrl", null);
     ConfigurationKey<String> RELAY_STATE_PARAMETER_NAME = new ConfigurationKey<>("relayStateParameterName", "RelayState");
     ConfigurationKey<String> LOGOUT_CALLBACK_PATH = new ConfigurationKey<>("logoutCallbackPath", null);
+    ConfigurationKey<String> JSONP_CALLBACK_PARAMETER_NAME = new ConfigurationKey<>("jsonpCallbackParameterName", "callback");
 }
