@@ -26,6 +26,8 @@ import org.springframework.mock.web.MockHttpSession;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.io.UnsupportedEncodingException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -37,6 +39,8 @@ public final class SingleSignOutHandlerTests {
     private static final String ANOTHER_PARAMETER = "anotherParameter";
 
     private static final String TICKET = "ST-xxxxxxxx";
+
+    private static final String JSONP_CALLBACK_PARAMETER_NAME = "jsonpCallback";
 
     private static final String LOGOUT_PARAMETER_NAME = "logoutRequest";
 
@@ -53,6 +57,7 @@ public final class SingleSignOutHandlerTests {
     @Before
     public void setUp() throws Exception {
         handler = new SingleSignOutHandler();
+        handler.setJsonpCallbackParameterName(JSONP_CALLBACK_PARAMETER_NAME);
         handler.setLogoutParameterName(LOGOUT_PARAMETER_NAME);
         handler.setRelayStateParameterName(RELAY_STATE_PARAMETER_NAME);
         handler.setArtifactParameterName(ARTIFACT_PARAMETER_NAME);
@@ -189,6 +194,34 @@ public final class SingleSignOutHandlerTests {
         final var session = new MockHttpSession();
         handler.getSessionMappingStorage().addSessionById(TICKET, session);
         assertFalse(handler.process(request, response));
+        assertTrue(session.isInvalid());
+    }
+
+    @Test
+    public void frontChannelLogoutCallbackOK() throws UnsupportedEncodingException {
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setParameter(JSONP_CALLBACK_PARAMETER_NAME, "testCallback");
+        request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage + "&" + JSONP_CALLBACK_PARAMETER_NAME + "=testCallback");
+        request.setMethod("GET");
+        final var session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+        assertFalse(handler.process(request, response));
+        assertEquals("application/javascript", response.getContentType());
+        assertEquals("testCallback(true)", response.getContentAsString());
+        assertTrue(session.isInvalid());
+    }
+
+    @Test
+    public void frontChannelLogoutCallbackNotPresentOK() throws UnsupportedEncodingException {
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
+        request.setMethod("GET");
+        final var session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+        assertFalse(handler.process(request, response));
+        assertTrue(response.getContentAsString().isEmpty());
         assertTrue(session.isInvalid());
     }
 
