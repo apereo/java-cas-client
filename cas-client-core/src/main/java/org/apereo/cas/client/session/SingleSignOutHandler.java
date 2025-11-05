@@ -18,6 +18,8 @@
  */
 package org.apereo.cas.client.session;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.apereo.cas.client.Protocol;
 import org.apereo.cas.client.configuration.ConfigurationKeys;
 import org.apereo.cas.client.util.CommonUtils;
@@ -55,11 +57,18 @@ public final class SingleSignOutHandler {
 
     private final LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     /** Mapping of token IDs and session IDs to HTTP sessions */
     private SessionMappingStorage sessionMappingStorage = new HashMapBackedSessionMappingStorage();
 
     /** The name of the artifact parameter.  This is used to capture the session identifier. */
     private String artifactParameterName = Protocol.CAS2.getArtifactParameterName();
+
+    /**
+     * The name of the JSONP callback parameter for front-channel logout requests
+     */
+    private String jsonpCallbackParameterName = ConfigurationKeys.JSONP_CALLBACK_PARAMETER_NAME.getDefaultValue();
 
     /** Parameter name that stores logout request for SLO */
     private String logoutParameterName = ConfigurationKeys.LOGOUT_PARAMETER_NAME.getDefaultValue();
@@ -101,6 +110,13 @@ public final class SingleSignOutHandler {
      */
     public void setArtifactParameterName(final String name) {
         this.artifactParameterName = name;
+    }
+
+    /**
+     * @param name Name of the JSONP callback parameter for front-channel logout requests.
+     */
+    public void setJsonpCallbackParameterName(final String name) {
+        this.jsonpCallbackParameterName = name;
     }
 
     /**
@@ -163,6 +179,15 @@ public final class SingleSignOutHandler {
         if (isLogoutRequest(request)) {
             logger.trace("Received a logout request");
             destroySession(request);
+            final var callback = WebUtils.safeGetParameter(request, this.jsonpCallbackParameterName, this.safeParameters);
+            if (callback != null) {
+                try {
+                    response.setContentType("application/javascript");
+                    mapper.writeValue(response.getWriter(), new JSONPObject(callback, true));
+                } catch (final Exception e) {
+                    logger.debug("Error writing JSONP logout response.", e);
+                }
+            }
             return false;
         }
         logger.trace("Ignoring URI for logout: {}", request.getRequestURI());
