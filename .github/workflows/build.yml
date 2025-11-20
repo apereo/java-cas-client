@@ -55,7 +55,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: cancel-previous-runs
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       #      - name: Setup tmate session
       #        uses: mxschmitt/action-tmate@v3
       - name: Set up JDK
@@ -73,7 +73,7 @@ jobs:
     needs: [build]
     if: ${{ github.event_name == 'push' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
