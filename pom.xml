@@ -250,7 +250,7 @@
         <spring.version>7.0.3</spring.version>
         <ehcache.version>3.11.1</ehcache.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <jackson.version>2.20.1</jackson.version>
+        <jackson.version>2.21.0</jackson.version>
         <javax.servlet.version>6.1.0</javax.servlet.version>
         <commons.codec.version>1.20.0</commons.codec.version>
         <log4j.version>1.2.17</log4j.version>
