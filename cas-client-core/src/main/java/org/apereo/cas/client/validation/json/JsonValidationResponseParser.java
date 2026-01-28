@@ -20,10 +20,7 @@ package org.apereo.cas.client.validation.json;
 
 import org.apereo.cas.client.util.CommonUtils;
 import org.apereo.cas.client.validation.TicketValidationException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * This is {@link JsonValidationResponseParser}.
@@ -31,19 +28,18 @@ import java.io.IOException;
  * @author Misagh Moayyed
  */
 final class JsonValidationResponseParser {
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public JsonValidationResponseParser() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.findAndRegisterModules();
+        this.jsonMapper = JsonMapper.builder().build();
     }
 
-    public TicketValidationJsonResponse parse(final String response) throws TicketValidationException, IOException {
+    public TicketValidationJsonResponse parse(final String response) throws TicketValidationException {
         if (CommonUtils.isBlank(response)) {
             throw new TicketValidationException("Invalid JSON response; The response is empty");
         }
 
-        final var json = this.objectMapper.readValue(response, TicketValidationJsonResponse.class);
+        final var json = this.jsonMapper.readValue(response, TicketValidationJsonResponse.class);
 
         final var serviceResponse = json.serviceResponse();
         if (serviceResponse.authenticationFailure() != null
