@@ -22,9 +22,8 @@ import org.apereo.cas.client.validation.Assertion;
 import org.apereo.cas.client.validation.Cas30ServiceTicketValidator;
 import org.apereo.cas.client.validation.TicketValidationException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -48,11 +47,9 @@ public class Cas30JsonServiceTicketValidator extends Cas30ServiceTicketValidator
         try {
             final var json = new JsonValidationResponseParser().parse(response);
             return json.getAssertion(getProxyGrantingTicketStorage(), getProxyRetriever());
-        } catch (final JsonProcessingException e) {
+        } catch (final JacksonException e) {
             logger.warn("Unable parse the JSON response. Falling back to XML", e);
             return super.parseResponseFromServer(response);
-        } catch (final IOException e) {
-            throw new TicketValidationException(e.getMessage(), e);
         }
     }
 
