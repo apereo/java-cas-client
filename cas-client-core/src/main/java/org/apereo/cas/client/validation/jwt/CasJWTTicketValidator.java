@@ -18,22 +18,13 @@
  */
 package org.apereo.cas.client.validation.jwt;
 
-import org.apereo.cas.client.authentication.AttributePrincipalImpl;
-import org.apereo.cas.client.validation.Assertion;
-import org.apereo.cas.client.validation.AssertionImpl;
-import org.apereo.cas.client.validation.TicketValidationException;
-import org.apereo.cas.client.validation.TicketValidator;
-
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWEAlgorithm;
-import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jose.JWEHeader;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.KeySourceException;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.BadJWEException;
@@ -50,18 +41,21 @@ import com.nimbusds.jwt.proc.BadJWTException;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import org.apereo.cas.client.authentication.AttributePrincipalImpl;
+import org.apereo.cas.client.validation.Assertion;
+import org.apereo.cas.client.validation.AssertionImpl;
+import org.apereo.cas.client.validation.TicketValidationException;
+import org.apereo.cas.client.validation.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.spec.SecretKeySpec;
-
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 /**
@@ -216,7 +210,7 @@ public class CasJWTTicketValidator implements TicketValidator {
                             try {
                                 var innerJwt = JWTParser.parse(signedJWT.getPayload().toString());
                                 if (innerJwt instanceof EncryptedJWT encryptedJWT) {
-                                    return process(encryptedJWT, context);
+                                    return decryptNestedJwt(encryptedJWT, context);
                                 }
                             } catch (final ParseException e) {
                                 throw new BadJWSException("Unable to parse inner JWT", e);
@@ -264,14 +258,45 @@ public class CasJWTTicketValidator implements TicketValidator {
 
                 if ("JWT".equalsIgnoreCase(encryptedJWT.getHeader().getContentType())) {
                     var signedJWTPayload = encryptedJWT.getPayload().toSignedJWT();
-                    if (signedJWTPayload != null) {
-                        return process(signedJWTPayload, context);
-                    }
-                    if (encryptedJWT.getPayload().toJSONObject() == null) {
+                    if (signedJWTPayload == null) {
                         throw new BadJWTException("The payload is not a nested signed JWT");
                     }
+                    return process(signedJWTPayload, context);
                 }
 
+                try {
+                    var claimsSet = encryptedJWT.getJWTClaimsSet();
+                    if (getJWTClaimsSetVerifier() != null) {
+                        getJWTClaimsSetVerifier().verify(claimsSet, context);
+                    }
+                    return claimsSet;
+                } catch (final ParseException e) {
+                    throw new BadJWTException(e.getMessage(), e);
+                }
+            }
+            throw new BadJOSEException("Encrypted JWT rejected: No matching decrypter(s) found");
+        }
+
+        private JWTClaimsSet decryptNestedJwt(final EncryptedJWT encryptedJWT, final SecurityContext context) throws BadJOSEException, JOSEException {
+            getJWETypeVerifier().verify(encryptedJWT.getHeader().getType(), context);
+            var keyCandidates = getJWEKeySelector().selectJWEKeys(encryptedJWT.getHeader(), context);
+            if (keyCandidates == null || keyCandidates.isEmpty()) {
+                throw new BadJOSEException("Encrypted JWT rejected: Another algorithm expected, or no matching key(s) found");
+            }
+            var it = keyCandidates.listIterator();
+            while (it.hasNext()) {
+                var decrypter = getJWEDecrypterFactory().createJWEDecrypter(encryptedJWT.getHeader(), it.next());
+                if (decrypter == null) {
+                    continue;
+                }
+                try {
+                    encryptedJWT.decrypt(decrypter);
+                } catch (JOSEException e) {
+                    if (it.hasNext()) {
+                        continue;
+                    }
+                    throw new BadJWEException("Encrypted JWT rejected: " + e.getMessage(), e);
+                }
                 try {
                     var claimsSet = encryptedJWT.getJWTClaimsSet();
                     if (getJWTClaimsSetVerifier() != null) {
