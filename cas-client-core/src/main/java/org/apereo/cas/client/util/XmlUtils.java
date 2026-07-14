@@ -50,6 +50,44 @@ public final class XmlUtils {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlUtils.class);
 
+    private static final SAXParserFactory saxParserFactory;
+
+    static {
+        try {
+            saxParserFactory = SAXParserFactory.newInstance();
+            saxParserFactory.setNamespaceAware(true);
+            saxParserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            saxParserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            saxParserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            saxParserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to create SAXParserFactory", e);
+        }
+    }
+
+    private static final DocumentBuilderFactory documentBuilderFactory;
+
+    static {
+        try {
+            documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            final Map<String, Boolean> features = new HashMap<>();
+            features.put(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            features.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            features.put("http://apache.org/xml/features/disallow-doctype-decl", true);
+            for (final var entry : features.entrySet()) {
+                try {
+                    documentBuilderFactory.setFeature(entry.getKey(), entry.getValue());
+                } catch (final ParserConfigurationException e) {
+                    LOGGER.warn("Failed setting XML feature {}", entry.getKey(), e);
+                }
+            }
+            documentBuilderFactory.setExpandEntityReferences(false);
+            documentBuilderFactory.setNamespaceAware(true);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to create DocumentBuilderFactory", e);
+        }
+    }
 
     /**
      * Creates a new namespace-aware DOM document object by parsing the given XML.
@@ -59,22 +97,8 @@ public final class XmlUtils {
      * @return DOM document.
      */
     public static Document newDocument(final String xml) {
-        final var factory = DocumentBuilderFactory.newInstance();
-        final Map<String, Boolean> features = new HashMap<>();
-        features.put(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        features.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        features.put("http://apache.org/xml/features/disallow-doctype-decl", true);
-        for (final var entry : features.entrySet()) {
-            try {
-                factory.setFeature(entry.getKey(), entry.getValue());
-            } catch (final ParserConfigurationException e) {
-                LOGGER.warn("Failed setting XML feature {}", entry.getKey(), e);
-            }
-        }
-        factory.setExpandEntityReferences(false);
-        factory.setNamespaceAware(true);
         try {
-            return factory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+            return documentBuilderFactory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
         } catch (final Exception e) {
             throw new RuntimeException("XML parsing error: " + e);
         }
@@ -87,19 +111,11 @@ public final class XmlUtils {
      */
     public static XMLReader getXmlReader() {
         try {
-            final var factory = SAXParserFactory.newInstance();
-            factory.setNamespaceAware(true);
-            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            return factory.newSAXParser().getXMLReader();
+            return saxParserFactory.newSAXParser().getXMLReader();
         } catch (final Exception e) {
             throw new RuntimeException("Unable to create XMLReader", e);
         }
     }
-
 
     /**
      * Retrieve the text for a group of elements. Each text element is an entry
