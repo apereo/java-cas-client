@@ -275,7 +275,7 @@
         <junit4.version>4.13.2</junit4.version>
         <spring.version>7.0.9</spring.version>
         <ehcache.version>3.12.0</ehcache.version>
-        <slf4j.version>2.0.19</slf4j.version>
+        <slf4j.version>2.0.20</slf4j.version>
         <jackson.version>2.22.3</jackson.version>
         <javax.servlet.version>6.1.0</javax.servlet.version>
         <commons.codec.version>1.22.1</commons.codec.version>
