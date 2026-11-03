@@ -27,6 +27,7 @@ import org.springframework.mock.web.MockHttpSession;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -223,6 +224,204 @@ public final class SingleSignOutHandlerTests {
         assertFalse(handler.process(request, response));
         assertTrue(response.getContentAsString().isEmpty());
         assertTrue(session.isInvalid());
+    }
+
+    // === Tests for surviving PIT mutants ===
+
+    @Test(expected = IllegalArgumentException.class)
+    public void initFailsWithNullArtifactParameterName() {
+        final SingleSignOutHandler h = new SingleSignOutHandler();
+        h.setArtifactParameterName(null);
+        h.init();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void initFailsWithNullLogoutParameterName() {
+        final SingleSignOutHandler h = new SingleSignOutHandler();
+        h.setLogoutParameterName(null);
+        h.init();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void initFailsWithNullRelayStateParameterName() {
+        final SingleSignOutHandler h = new SingleSignOutHandler();
+        h.setRelayStateParameterName(null);
+        h.init();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void initFailsWithNullSessionMappingStorage() {
+        final SingleSignOutHandler h = new SingleSignOutHandler();
+        h.setSessionMappingStorage(null);
+        h.init();
+    }
+
+    @Test
+    public void destroySessionCallsRequestLogout() throws Exception {
+        final MockHttpServletRequest req = new MockHttpServletRequest();
+        req.setMethod("POST");
+        req.setRemoteUser("testUser");
+        req.setAuthType("CAS");
+
+        final MockHttpSession session = new MockHttpSession();
+        req.setSession(session);
+        session.setAttribute("testKey", "testValue");
+
+        final String token = "ST-1234567890";
+        handler.getSessionMappingStorage().addSessionById(token, session);
+
+        final String logoutMessage = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
+            + "<authenticationSuccess>"
+            + "<user>testUser</user>"
+            + "<SessionIndex>" + token + "</SessionIndex>"
+            + "</authenticationSuccess>"
+            + "</cas:serviceResponse>";
+
+        req.addParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+
+        final MockHttpServletResponse resp = new MockHttpServletResponse();
+        handler.process(req, resp);
+
+        assertTrue("Session should be invalidated", session.isInvalid());
+        assertNull("request.logout() should clear remoteUser", req.getRemoteUser());
+        assertNull("request.logout() should clear authType", req.getAuthType());
+    }
+
+    @Test
+    public void recordSessionRemovesExistingMappingForSameSession() throws Exception {
+        final MockHttpServletRequest req = new MockHttpServletRequest();
+        final HttpSession session = req.getSession();
+
+        final String oldToken = "ST-old-token";
+        final String newToken = "ST-new-token";
+
+        handler.getSessionMappingStorage().addSessionById(oldToken, session);
+
+        req.setParameter(ARTIFACT_PARAMETER_NAME, newToken);
+        req.setQueryString(ARTIFACT_PARAMETER_NAME + "=" + newToken);
+        handler.process(req, new MockHttpServletResponse());
+
+        assertNull("Old token should be removed when same session gets new token",
+            handler.getSessionMappingStorage().removeSessionByMappingId(oldToken));
+        assertNotNull("New token should be mapped",
+            handler.getSessionMappingStorage().removeSessionByMappingId(newToken));
+    }
+
+    // === Additional tests to kill surviving PIT mutants ===
+
+    @Test
+    public void destroySessionWithBlankLogoutMessageReturnsFalse() {
+        final var session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+
+        request.setParameter(LOGOUT_PARAMETER_NAME, "");
+        request.setQueryString(LOGOUT_PARAMETER_NAME + "=");
+        request.setMethod("GET");
+
+        assertTrue(handler.process(request, response));
+        assertFalse(session.isInvalid());
+    }
+
+    @Test
+    public void destroySessionWithNonExistentTokenDoesNotInvalidate() {
+        final var logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage("ST-nonexistent");
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setMethod("POST");
+
+        final var session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+
+        assertFalse(handler.process(request, response));
+        assertFalse(session.isInvalid());
+    }
+
+    @Test
+    public void postRequestWithoutLogoutParameterIsNotLogout() {
+        request.setMethod("POST");
+        request.setParameter(ANOTHER_PARAMETER, "someValue");
+        assertTrue(handler.process(request, response));
+    }
+
+    @Test
+    public void getRequestWithoutLogoutParameterIsNotLogout() {
+        request.setMethod("GET");
+        request.setParameter(ANOTHER_PARAMETER, "someValue");
+        request.setQueryString(ANOTHER_PARAMETER + "=someValue");
+        assertTrue(handler.process(request, response));
+    }
+
+    @Test
+    public void putRequestIsNotLogout() {
+        request.setMethod("PUT");
+        request.setParameter(LOGOUT_PARAMETER_NAME, "someLogoutMessage");
+        assertTrue(handler.process(request, response));
+    }
+
+    @Test
+    public void deleteRequestIsNotLogout() {
+        request.setMethod("DELETE");
+        request.setParameter(LOGOUT_PARAMETER_NAME, "someLogoutMessage");
+        assertTrue(handler.process(request, response));
+    }
+
+    @Test
+    public void logoutWithPathInfoMatchesCallbackPath() {
+        handler.setLogoutCallbackPath("/logout/callback");
+        request.setServletPath("/logout");
+        request.setPathInfo("/callback");
+
+        final var logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setMethod("POST");
+
+        final var session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+
+        assertFalse(handler.process(request, response));
+        assertTrue(session.isInvalid());
+    }
+
+    @Test
+    public void multipartWithUppercaseContentTypeIsNotLogout() {
+        final var logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setMethod("POST");
+        request.setContentType("MULTIPART/FORM-DATA");
+
+        final var session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+
+        assertTrue(handler.process(request, response));
+        assertFalse(session.isInvalid());
+    }
+
+    @Test
+    public void multipartWithMixedCaseContentTypeIsNotLogout() {
+        final var logoutMessage = LogoutMessageGenerator.generateBackChannelLogoutMessage(TICKET);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setMethod("POST");
+        request.setContentType("Multipart/Form-Data; boundary=something");
+
+        final var session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+
+        assertTrue(handler.process(request, response));
+        assertFalse(session.isInvalid());
+    }
+
+    @Test
+    public void logoutWithoutJsonpCallbackProducesNoResponse() throws Exception {
+        final var logoutMessage = LogoutMessageGenerator.generateFrontChannelLogoutMessage(TICKET);
+        request.setParameter(LOGOUT_PARAMETER_NAME, logoutMessage);
+        request.setQueryString(LOGOUT_PARAMETER_NAME + "=" + logoutMessage);
+        request.setMethod("GET");
+
+        final var session = new MockHttpSession();
+        handler.getSessionMappingStorage().addSessionById(TICKET, session);
+
+        assertFalse(handler.process(request, response));
+        assertTrue(session.isInvalid());
+        assertEquals("", response.getContentAsString());
     }
 
     private MockHttpSession doBackChannelLogout() {
